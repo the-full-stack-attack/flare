@@ -1,0 +1,19 @@
+{
+  "name": "flare",
+  "version": "1.0.0",
+  "description": "Thesis Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/the-full-stack-attack/flare.git"
+  },
+  "author": "Full-Stack-Attack Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/the-full-stack-attack/flare/issues"
+  },
+  "homepage": "https://github.com/the-full-stack-attack/flare#readme"
+}
