@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-dom';
-import { Home } from './views/Home';
+import { BrowserRouter, Routes, Route } from 'react-router';
+import Home from './views/Home';
 
 
 
