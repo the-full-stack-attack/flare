@@ -3,6 +3,7 @@ const path = require('path');
 const app = express();
 const cors = require('cors');
 const GoogleStrategy = require('passport-google-oauth20').Strategy
+const session = require('express-session');
 const passport = require('passport');
 require('dotenv').config();
 
@@ -17,11 +18,40 @@ app.use(
         credentials: true,
     }))
 
+// Create a session for the passport to use
+app.use(session({
+    // Name of the cookie
+    name: 'google-auth-session',
+    // String, stored in .env file
+    secret: process.env.SESSION_SECRET,
+      /*
+    Forces the session to be saved back to the session store:
+    Cookie has an expiration time of one hour, so we'll need to re-save
+    while the client is using the site to keep the cookie from expiring.
+  */
+  resave: true,
+  /*
+    Forces a session that is "uninitialized" to be saved to the store.
+    "uninitialized" => New, but not modified
+    Choosing false is useful for:
+      - Implementing login sessions
+      - Reducing server storage usage
+      - Complying with laws that require permission before setting a cookie
+      - Helps with race conditions where a client makes multiple parallel requests without a session
+  */
+  saveUninitialized: false,
+  // Cookie settings
+  cookie: {
+    // The cookie will last one hour from when it is created/re-saved
+    maxAge: 60000 * 60,
+  },
+}))
 
 app.use(passport.initialize());
-app.use(passport.session())
-app.use(new GoogleStrategy({
-    clientId: process.env.GOOGLE_CLIENT_ID,
+app.use(passport.session());
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: '/auth/callback',
     passReqToCallback: true,
@@ -68,9 +98,9 @@ app.get('/logout', async (req, res) => {
 });
 
 
-// One day...
-app.get('/check-session', (req, res) => {
-
+app.all('*', (req, res) => {
+    console.log('Req from routes: ', req);
+    res.sendFile('index.html', { root: path.resolve(__dirname, '..', '..', 'dist')});
 })
 
 
