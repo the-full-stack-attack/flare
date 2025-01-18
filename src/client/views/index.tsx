@@ -6,7 +6,7 @@ import Signup from "./Signup";
 import Task from "./Task";
 import Events from "./Events";
 
-export default {
+export {
   AiConversations,
   Chatroom,
   Home,
