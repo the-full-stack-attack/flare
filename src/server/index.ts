@@ -1,8 +1,8 @@
+require('./db/index.ts')
 const { app } = require('./app.ts')
 const https = require('https');
 const PORT = 4000;
 const fs = require('fs');
-+
 
 
 if (process.env.DEVELOPMENT === 'true') {
