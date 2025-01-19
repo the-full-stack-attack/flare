@@ -17,7 +17,7 @@ const {
     event2Router,
     userRouter,
     taskRouter,
-} = require('/routes');
+} = require('./routes/index.ts');
 
 require('dotenv').config();
 
@@ -123,7 +123,6 @@ app.get('/logout', async (req, res) => {
 
 
 app.all('*', (req, res) => {
-    console.log('Req from routes: ', req);
     res.sendFile('index.html', { root: path.resolve(__dirname, '..', '..', 'dist')});
 })
 
