@@ -1,3 +1,4 @@
+require('./db/index.ts')
 const { app } = require('./app.ts')
 const https = require('https');
 const PORT = 4000;

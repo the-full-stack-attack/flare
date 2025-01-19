@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const avatarRouter = Router();
 
-module.exports{
+module.exports = {
   avatarRouter
-}
+};
