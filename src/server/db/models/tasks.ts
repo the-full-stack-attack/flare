@@ -1,7 +1,7 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize();
+const { DataTypes } = require('sequelize');
+const database = require('../index.ts');
 
-const Tasks = sequelize.define('Task', {
+const Task = database.define('Task', {
   description: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -22,5 +22,5 @@ const Tasks = sequelize.define('Task', {
 })
 
 module.exports = {
-  Tasks,
+  Task,
 }
