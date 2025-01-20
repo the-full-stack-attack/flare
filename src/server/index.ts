@@ -14,7 +14,7 @@ if (process.env.DEVELOPMENT === 'true') {
         cert: fs.readFileSync('/etc/letsencrypt/live/slayer.events/fullchain.pem'),
         key: fs.readFileSync('/etc/letsencrypt/live/slayer.events/privkey.pem'),
     }
-    https.createServer(options, app).listen(443);
+    https.createServer(options, app).listen(443)
 }
 
 
