@@ -73,7 +73,7 @@ app.use('/event', eventRouter);
 app.use('/event', event2Router);
 app.use('/task', taskRouter);
 app.use('/user', userRouter);
-    app.use('/signup', signUpRouter);
+app.use('/signup', signUpRouter);
     
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,

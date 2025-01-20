@@ -4,15 +4,19 @@ import axios from 'axios';
 function Signup() {
   const [userName, setUserName] = useState('');
   const [phone, setPhone] = useState('');
-  const [interests, setInterests] = useState([]);
+  const [interests, setInterests] = useState(['bowling', 'clubs', 'concerts', 'festivals']);
   const [selectedInterests, setSelectedInterests] = useState([]);
 
   // when the user clicks submit, we handle the signup
-  const handleSignup = (e: string) => {
+  const handleSignup = (e: any) => {
     e.preventDefault();
     console.log(`username ${userName}, \n phone ${phone}, \n selected Interests ${selectedInterests}`)
   }
   
+  const hideMe = (e: any) => {
+    console.log(e)
+    e.target.style.display = 'none'
+  }
   // return the signup template
   return (
     <div>
@@ -20,6 +24,7 @@ function Signup() {
     <form onSubmit={handleSignup}>
   <label>
     Username:
+    <div/>
     <input 
     type="text" 
     placeholder="Create your Username" 
@@ -27,8 +32,10 @@ function Signup() {
     name="userName" 
     />
   </label>
+  <div/>
   <label>
     Phone-Number:
+    <div/>
     <input 
     type="text" 
     name="phoneNumber" 
@@ -36,6 +43,10 @@ function Signup() {
     onChange={(e) => setUserName(e.target.value)} 
     />
   </label>
+  <div/>
+  { interests.map((interest) => (
+    <button style={{ display: 'block' }} onClick={hideMe} type="button">{interest}</button>
+  ))}
   <button type="submit" value="Submit" > Complete </button>
     </form>
     </div>
