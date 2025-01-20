@@ -7,11 +7,13 @@ function Signup() {
   const [interests, setInterests] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
 
-  const handleSignup = (e) => {
+  // when the user clicks submit, we handle the signup
+  const handleSignup = (e: string) => {
     e.preventDefault();
-    console.log(`username ${userName}, \n phone ${phone}`)
+    console.log(`username ${userName}, \n phone ${phone}, \n selected Interests ${selectedInterests}`)
   }
   
+  // return the signup template
   return (
     <div>
       <h4>Hello Stanky</h4>
