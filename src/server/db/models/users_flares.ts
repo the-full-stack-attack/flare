@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const { database } = require('../index.ts');
-const { User, Flare, } = require('../index.ts');
+const { User } = require('./users.ts');
+const { Flare } = require('./flares.ts');
 
 const User_Flare = database.define('User_Flare', {
     user_id: { type: Sequelize.INTEGER, },

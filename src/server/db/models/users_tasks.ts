@@ -1,6 +1,9 @@
 const { DataTypes } = require('sequelize');
 const { database } = require('../index.ts');
-const { User, Task } = require('../index.ts');
+const { User } = require('./users.ts');
+const { Task } = require('./tasks.ts');
+
+// const { User, Task } = require('../index.ts');
 
 // Join table for the users and tasks
 // Need a user foreign key and a task foreign key

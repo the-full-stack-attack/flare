@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const { database } = require('../index.ts');
-const { Chatroom, User } = require('../index.ts');
+const { Chatroom } = require('./chatrooms.ts');
+const { User } = require('./users.ts');
 
 const Chat = database.define('Chat', {
     user_id: { type: Sequelize.INTEGER, },

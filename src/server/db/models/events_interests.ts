@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const { database } = require('../index.ts');
-const { Event, Interest } = require('../index.ts');
+const { Event } = require('./events.ts');
+const { Interest } = require('./interests.ts');
 
 const Event_Interest = database.define('Event_Interest', {
     event_id: { type: Sequelize.INTEGER },

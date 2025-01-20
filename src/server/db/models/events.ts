@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const { database } = require('../index.ts');
-const { User, Venue, } = require('../index.ts');
+const { User } = require('./users.ts');
+const { Venue } = require('./venues.ts');
 
 const Event = database.define('Event', {
     title: { type: Sequelize.STRING(60) },
@@ -15,7 +16,6 @@ const Event = database.define('Event', {
 
 Event.belongsTo(User, { foreignKey: 'created_by', });
 Event.belongsTo(Venue, { foreignKey: 'venue_id', });
-Venue.hasMany(Event, { foreignKey: 'venue_id' });
 
 module.exports = {
     Event,

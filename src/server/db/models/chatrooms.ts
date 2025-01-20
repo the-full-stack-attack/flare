@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const { database } = require('../index.ts');
-const { Event } = require('../index.ts');
+const { Event } = require('./events.ts');
 
 const Chatroom = database.define('Chatroom', {
     map: { type: Sequelize.STRING, },

@@ -2,12 +2,6 @@ const Sequelize = require('sequelize');
 const { database } = require('../index.ts');
 
 const User = database.define('User', {
-  id:{
-    type:Sequelize.INTEGER,
-    autoIncrement:true,
-    allowNull:false,
-    primaryKey:true,
-  },
   username: { type: Sequelize.STRING(20) },
   email: { type: Sequelize.STRING } ,
   full_name: { type: Sequelize.STRING },
@@ -21,5 +15,5 @@ const User = database.define('User', {
 });
 
 module.exports = {
-  User
+  User,
 };

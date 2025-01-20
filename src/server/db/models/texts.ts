@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const { database } = require('../index.ts');
-const { User } = require('../index.ts');
+const { User } = require('./users.ts');
 
 const Text = database.define('Text', {
     content: { type: Sequelize.STRING},
