@@ -9,6 +9,7 @@ const { eventRouter } = require('./event.ts');
 const { userRouter } = require('./user.ts');
 const { taskRouter } = require('./task.ts');
 const { event2Router } = require('./event2.ts');
+const { signUpRouter } = require('./signup.ts');
 
 module.exports = {
   aiRouter,
@@ -22,6 +23,7 @@ module.exports = {
   userRouter,
   taskRouter,
   event2Router,
+  signUpRouter,
 }
 
 
