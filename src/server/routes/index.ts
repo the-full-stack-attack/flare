@@ -24,6 +24,4 @@ module.exports = {
   taskRouter,
   event2Router,
   signUpRouter,
-}
-
-
+};

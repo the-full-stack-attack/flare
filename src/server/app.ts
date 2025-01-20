@@ -1,37 +1,41 @@
 const express = require('express');
 const path = require('path');
-const app = express();
 const cors = require('cors');
-const GoogleStrategy = require('passport-google-oauth20').Strategy
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 const passport = require('passport');
+
+const app = express();
 const {
-    aiRouter,
-    aiConversationRouter,
-    aiTaskRouter,
-    avatarRouter,
-    chatRouter,
-    chatroomRouter,
-    flareRouter,
-    eventRouter,
-    event2Router,
-    userRouter,
-    taskRouter,
-    signUpRouter,
+  aiRouter,
+  aiConversationRouter,
+  aiTaskRouter,
+  avatarRouter,
+  chatRouter,
+  chatroomRouter,
+  flareRouter,
+  eventRouter,
+  event2Router,
+  userRouter,
+  taskRouter,
+  signUpRouter,
 } = require('./routes/index.ts');
 
 require('dotenv').config();
 
-app.use(express.static(path.resolve(__dirname, '../../dist')))
+app.use(express.static(path.resolve(__dirname, '../../dist')));
 app.use(express.json());
 
-app.use(cors({
+app.use(
+  cors({
     origin: 'http://localhost:8080',
     credentials: true,
-}));
-    
+  })
+);
+
 // Create a session for the passport to use
-app.use(session({
+app.use(
+  session({
     // Name of the cookie
     name: 'google-auth-session',
     // String, stored in .env file
@@ -54,11 +58,12 @@ app.use(session({
     saveUninitialized: false,
     // Cookie settings
     cookie: {
-        // The cookie will last one hour from when it is created/re-saved
-        maxAge: 60000 * 60,
+      // The cookie will last one hour from when it is created/re-saved
+      maxAge: 60000 * 60,
     },
-}));
-    
+  })
+);
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -74,60 +79,70 @@ app.use('/event', event2Router);
 app.use('/task', taskRouter);
 app.use('/user', userRouter);
 app.use('/signup', signUpRouter);
-    
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/auth/callback',
-    passReqToCallback: true,
-}, (req: unknown, accessToken: unknown, refreshToken: unknown, profile: any, done: Function) => {
-    // Can save user info
-    done(null, profile);
-}));
 
-
-
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: '/auth/callback',
+      passReqToCallback: true,
+    },
+    (
+      req: unknown,
+      accessToken: unknown,
+      refreshToken: unknown,
+      profile: any,
+      done: Function
+    ) => {
+      // Can save user info
+      done(null, profile);
+    }
+  )
+);
 
 passport.serializeUser((user: any, done: Function) => {
-    done(null, user);
+  done(null, user);
 });
-
 
 passport.deserializeUser((user: any, done: Function) => {
-    done(null, user);
+  done(null, user);
 });
 
+app.get(
+  '/auth',
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+  })
+);
 
-app.get('/auth', passport.authenticate('google', {
-    scope: ['profile', 'email', ],
-}));
-
-
-app.get('/auth/callback/', passport.authenticate('google', {
+app.get(
+  '/auth/callback/',
+  passport.authenticate('google', {
     failureRedirect: '/',
     successRedirect: '/home',
-}));
-
+  })
+);
 
 app.get('/logout', async (req: any, res: any) => {
-    req.logout(async(error: Error) => {
-        if (error) {
-            console.error('Error logging out user', error);
-            res.sendStatus(500);
-        } else {
-            await req.session.destroy();
-            await req.sessionStore.clear();
-            res.redirect('/');
-        }
-    });
+  req.logout(async (error: Error) => {
+    if (error) {
+      console.error('Error logging out user', error);
+      res.sendStatus(500);
+    } else {
+      await req.session.destroy();
+      await req.sessionStore.clear();
+      res.redirect('/');
+    }
+  });
 });
-
 
 app.all('*', (req: any, res: any) => {
-    res.sendFile('index.html', { root: path.resolve(__dirname, '..', '..', 'dist')});
+  res.sendFile('index.html', {
+    root: path.resolve(__dirname, '..', '..', 'dist'),
+  });
 });
 
-
 module.exports = {
-    app
+  app,
 };
