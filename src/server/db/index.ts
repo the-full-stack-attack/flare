@@ -6,6 +6,7 @@ const database = new Sequelize('flare', 'root', '', {
 
 database.authenticate()
   .then(() => {
+
     console.log('Connection has been established to the \'flare\' database.');
   })
   .catch((err: Error) => {

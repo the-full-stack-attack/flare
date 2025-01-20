@@ -23,4 +23,4 @@ const Task = database.define('Task', {
 
 module.exports = {
   Task,
-}
+};

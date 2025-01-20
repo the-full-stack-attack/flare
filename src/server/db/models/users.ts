@@ -1,13 +1,7 @@
 const Sequelize = require('sequelize');
 const { database } = require('../index.ts');
 
-const Users = database.define('Users', {
-  id:{
-    type:Sequelize.INTEGER,
-    autoIncrement:true,
-    allowNull:false,
-    primaryKey:true,
-  },
+const User = database.define('User', {
   username: { type: Sequelize.STRING(20) },
   email: { type: Sequelize.STRING } ,
   full_name: { type: Sequelize.STRING },
@@ -15,11 +9,11 @@ const Users = database.define('Users', {
   tasks_completed: { type: Sequelize.INTEGER },
   events_attended: {type: Sequelize.INTEGER },
   location: { type: Sequelize.STRING },
+  avatar_id: { type: Sequelize.INTEGER, },
   avatar_shirt: { type: Sequelize.STRING },
   avatar_pants: { type: Sequelize.STRING },
-
-})
+});
 
 module.exports = {
-  Users
-}
+  User,
+};
