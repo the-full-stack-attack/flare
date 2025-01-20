@@ -13,7 +13,7 @@ function Signup() {
   const handleSignup = (e: any) => {
     e.preventDefault();
     console.log(`username ${userName}, \n ${full_Name}, \n phone ${phone}, \n selected Interests ${selectedInterests}`)
-    axios.post('signup/', { userName, phone, selectedInterests })
+    axios.post('signup/', { userName, phone, selectedInterests, full_Name })
     .then(() => {
       console.log('successful post')
     })
