@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const database = require('../index.ts');
+const { database } = require('../index.ts');
 const { Users, Task } = require('./index.ts');
 
 // Join table for the users and tasks

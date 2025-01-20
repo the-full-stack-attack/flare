@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const database = require('../index.ts');
+const { database } = require('../index.ts');
 const { User, Event } = require('./index.ts');
 
 const User_Event = database.define('User_Event', {
@@ -18,4 +18,4 @@ Event.belongsToMany(User, { through: User_Event });
 
 module.exports = {
     User_Event,
-}
+};

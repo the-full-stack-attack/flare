@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const database = require('../index.ts');
+const { database } = require('../index.ts');
 
 const Interest = database.define('Interest', {
     name: { type: Sequelize.STRING },
@@ -7,4 +7,4 @@ const Interest = database.define('Interest', {
 
 module.exports = {
     Interest,
-}
+};

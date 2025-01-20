@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const database = require('../index.ts');
+const { database } = require('../index.ts');
 const { User, Interest } = require ('./index.ts');
 
 const User_Interest = database.define('User_Interest', {
@@ -12,4 +12,4 @@ Interest.belongsToMany(User, { through: User_Interest });
 
 module.exports = {
     User_Interest,
-}
+};

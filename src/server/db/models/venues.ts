@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const database = require('../index.ts');
+const { database } = require('../index.ts');
 const { Event } = require('./index.ts');
 
 const Venue = database.define('Venue', {
@@ -12,4 +12,4 @@ Venue.hasMany(Event, { foreignKey: 'venue_id' });
 
 module.exports = {
     Venue,
-}
+};

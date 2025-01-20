@@ -1,5 +1,5 @@
 const Sequelize = require('sezuelize');
-const database = require('../index.ts');
+const { database } = require('../index.ts');
 
 const Category = database.define('Category', {
     name: { type: Sequelize.STRING },
@@ -7,4 +7,4 @@ const Category = database.define('Category', {
 
 module.exports = {
     Category,
-}
+};
