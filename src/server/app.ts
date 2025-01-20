@@ -17,6 +17,7 @@ const {
     event2Router,
     userRouter,
     taskRouter,
+    signUpRouter,
 } = require('./routes/index.ts');
 
 require('dotenv').config();
