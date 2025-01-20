@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+
 function Signup() {
   const [userName, setUserName] = useState('');
   const [phone, setPhone] = useState('');
-  const [interests, setInterests] = useState(['bowling', 'clubs', 'concerts', 'festivals']);
-  const [selectedInterests, setSelectedInterests] = useState([]);
+  const [interests, setInterests] = useState<string[]>(['bowling', 'clubs', 'concerts', 'festivals']);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
   // when the user clicks submit, we handle the signup
   const handleSignup = (e: any) => {
@@ -16,6 +17,9 @@ function Signup() {
   const hideMe = (e: any) => {
     console.log(e)
     e.target.style.display = 'none'
+    const value = e.target.innerText;
+    setSelectedInterests( [...selectedInterests, value] );
+
   }
   // return the signup template
   return (
