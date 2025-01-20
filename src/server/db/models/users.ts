@@ -17,8 +17,7 @@ const User = database.define('User', {
   location: { type: Sequelize.STRING },
   avatar_shirt: { type: Sequelize.STRING },
   avatar_pants: { type: Sequelize.STRING },
-
-})
+});
 
 module.exports = {
   User

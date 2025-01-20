@@ -14,7 +14,10 @@ const Event = database.define('Event', {
 });
 
 Event.belongsTo(User, { foreignKey: 'created_by', });
-Event.belongsTo(Venue, { foreignKey: 'venue_id' });
+Event.belongsTo(Venue, { foreignKey: 'venue_id', });
 
+module.exports = {
+    Event,
+}
 
 

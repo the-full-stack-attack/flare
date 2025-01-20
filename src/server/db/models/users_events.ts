@@ -1,4 +1,4 @@
-const Sequelize = require('sezuelize');
+const Sequelize = require('sequelize');
 const database = require('../index.ts');
 const { User, Event } = require('./index.ts');
 
