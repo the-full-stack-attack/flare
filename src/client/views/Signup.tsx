@@ -4,6 +4,7 @@ import axios from 'axios';
 
 function Signup() {
   const [userName, setUserName] = useState('');
+  const [full_Name, setFull_Name] = useState('');
   const [phone, setPhone] = useState('');
   const [interests, setInterests] = useState<string[]>(['bowling', 'clubs', 'concerts', 'festivals']);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -11,7 +12,14 @@ function Signup() {
   // when the user clicks submit, we handle the signup
   const handleSignup = (e: any) => {
     e.preventDefault();
-    console.log(`username ${userName}, \n phone ${phone}, \n selected Interests ${selectedInterests}`)
+    console.log(`username ${userName}, \n ${full_Name}, \n phone ${phone}, \n selected Interests ${selectedInterests}`)
+    axios.post('signup/', { userName, phone, selectedInterests })
+    .then(() => {
+      console.log('successful post')
+    })
+    .catch((err) => {
+      console.error('error', err)
+    })
   }
   
   const hideMe = (e: any) => {
@@ -44,7 +52,18 @@ function Signup() {
     type="text" 
     name="phoneNumber" 
     placeholder="Enter Your Phone Number" 
-    onChange={(e) => setUserName(e.target.value)} 
+    onChange={(e) => setPhone(e.target.value)} 
+    />
+  </label>
+  <div/>
+  <label>
+    Name:
+    <div/>
+    <input 
+    type="text" 
+    name="Enter Your Full Name" 
+    placeholder="Enter Your Full Name!" 
+    onChange={(e) => setFull_Name(e.target.value)} 
     />
   </label>
   <div/>

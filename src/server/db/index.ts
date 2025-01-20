@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const { Sequelize, sequelize } = require('sequelize');
 
 const database = new Sequelize('flare', 'root', '', {
   dialect: 'mysql'
