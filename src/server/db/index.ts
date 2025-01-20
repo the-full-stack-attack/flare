@@ -8,7 +8,7 @@ database.authenticate()
   .then(() => {
     console.log('Connection has been established to the \'flare\' database.');
   })
-  .catch((err) => {
+  .catch((err: Error) => {
     console.error('Unable to connect to the \'flare\' database:', err);
   })
 
