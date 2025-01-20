@@ -15,6 +15,7 @@ const User = database.define('User', {
   tasks_completed: { type: Sequelize.INTEGER },
   events_attended: {type: Sequelize.INTEGER },
   location: { type: Sequelize.STRING },
+  avatar_id: { type: Sequelize.INTEGER, },
   avatar_shirt: { type: Sequelize.STRING },
   avatar_pants: { type: Sequelize.STRING },
 });
