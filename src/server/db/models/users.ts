@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const database = require('../index.ts');
 
-const Users = database.define('Users', {
+const User = database.define('User', {
   id:{
     type:Sequelize.INTEGER,
     autoIncrement:true,
@@ -21,5 +21,5 @@ const Users = database.define('Users', {
 })
 
 module.exports = {
-  Users
+  User
 }
