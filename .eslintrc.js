@@ -10,8 +10,8 @@ module.exports = {
     'airbnb-typescript',
     'airbnb/hooks',
     'plugin:@typescript-eslint/recommended',
-    "plugin:react/recommended",
-    // Add prettier if you are using it
+    'plugin:react/recommended',
+    'plugin:prettier/recommended',
   ],
   // Specify parser to use for typescript code
   parser: '@typescript-eslint/parser',
@@ -26,18 +26,18 @@ module.exports = {
     project: './tsconfig.json', // Path to your tsconfig.json file
   },
   plugins: [
-      'react',
-      // Enforce react hooks rules
-      'react-hooks',
-      // Checks for accessibility issues in jsx
-      'jsx-a11y',
-      '@typescript-eslint',
-    ],
+    'react',
+    // Enforce react hooks rules
+    'react-hooks',
+    '@typescript-eslint',
+    // Checks for accessibility issues in jsx
+    'jsx-a11y',
+    'prettier',
+  ],
   rules: {
     // Add any custom rules here
-    "react/prop-types/": 'off', // turn off prop types since we're using Typescript
+    'react/prop-types/': 'off', // turn off prop types since we're using Typescript
   },
   // Ignore files in the test directory
-  ignorePatterns: ['tests/*',]
+  ignorePatterns: ['tests/*'],
 };
-
