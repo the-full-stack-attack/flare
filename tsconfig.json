@@ -1,17 +1,19 @@
 {
   "compilerOptions": {
-      "outDir": "./dist/",
+      "outDir": "./dist",
       "sourceMap": true,
       "strict": true,
+      "noEmit": true,
       "noImplicitReturns": true,
       "noImplicitAny": true,
-      "module": "es6",
+      "module": "commonjs",
       "moduleDetection": "force",
       "moduleResolution": "node",
       "target": "es5",
       "allowJs": true,
       "jsx": "react",
       "esModuleInterop": true,
+      "skipLibCheck": true,
   },
   "include": [
       "./src/**/*"
