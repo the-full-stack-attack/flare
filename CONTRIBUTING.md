@@ -6,8 +6,12 @@
 - `chore`: Changes to the build process or auxiliary tools.
 - `docs`: Documentation only changes.
 - `refactor`: Code changes that neither fix a bug nor add a feature.
+- `build`: Changes that affect the build system or external dependencies (npm)
+- `revert`: Reverts a previous commit
 - `style`: Changes that do not affect the meaning of the code (white-space, formatting, etc.).
 - `test`: Adding missing tests or correcting existing tests.
+- `ci`: Changes to our CI configuration files and scripts
+- `perf`: performance improvements
 
 2. **Be Descriptive but Concise:**
 - Clearly describe what the commit does.
