@@ -24,12 +24,15 @@ const Sequelize = require('sequelize')
   } )
 
   signUpRouter.get('/interests', ( req: any, res: any ) => {
+    console.log('get req to signup/interests received')
     Interest.findAll()
     .then((allInterests: any) => {
       console.log(allInterests, 'these are all the interests found')
+      res.send(allInterests).status(200);
     })
     .catch((err: Error) => {
       console.error(err, 'error grabbing interests in routes/signup')
+      res.sendStatus(500)
     })
   })
 
