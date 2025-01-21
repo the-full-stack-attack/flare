@@ -26,6 +26,4 @@ database
     console.error(`Unable to connect to the '${dbName}' database:`, err);
   });
 
-module.exports = {
-  database,
-};
+export default database;

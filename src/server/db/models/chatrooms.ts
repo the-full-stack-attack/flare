@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
-const { Event } = require('./events.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
+import Event from './events';
 
 const Chatroom = database.define('Chatroom', {
     map: { type: Sequelize.STRING, },
@@ -10,6 +10,4 @@ const Chatroom = database.define('Chatroom', {
 Chatroom.belongsTo(Event, { foreignKey: 'event_id' });
 Event.hasOne(Chatroom, { foreignKey: 'event_id' });
 
-module.exports = {
-    Chatroom,
-};
+export default Chatroom;

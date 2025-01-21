@@ -1,9 +1,9 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const session = require('express-session');
-const passport = require('passport');
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import session from 'express-session';
+import passport from 'passport';
 
 const app = express();
 const {
@@ -143,6 +143,4 @@ app.all('*', (req: any, res: any) => {
   });
 });
 
-module.exports = {
-  app,
-};
+export default app;

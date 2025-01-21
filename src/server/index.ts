@@ -1,8 +1,8 @@
-require('./db/index');
-const https = require('https');
-const fs = require('fs');
-const { app } = require('./app');
-const { database } = require('./db/index');
+import ('./db/index');
+import https from 'https';
+import fs from 'fs';
+import app from './app';
+import database from './db/index';
 
 const PORT = 4000;
 
