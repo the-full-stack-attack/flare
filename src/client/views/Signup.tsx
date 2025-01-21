@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./../../components/ui/card";
+import MagicCard from "./../../components/ui/magicCard";
 
 function Signup() {
   const [userName, setUserName] = useState('');
@@ -125,6 +126,7 @@ function Signup() {
         </button>
       </form>
       </CardContent>
+      <MagicCard><div>Hello</div></MagicCard>
     </Card>
   );
 }
