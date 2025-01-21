@@ -1,7 +1,5 @@
-const { Router } = require('express');
-
+// const { Router } = require('express');
+import { Router } from 'express';
 const eventRouter = Router();
 // Coltron
-module.exports = {
-  eventRouter,
-};
+export default eventRouter;

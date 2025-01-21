@@ -1,7 +1,5 @@
-const { Router } = require('express');
-
+// const { Router } = require('express');
+import { Router } from 'express';
 const aiRouter = Router();
 
-module.exports = {
-  aiRouter,
-};
+export default aiRouter;

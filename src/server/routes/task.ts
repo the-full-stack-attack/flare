@@ -1,7 +1,5 @@
-const { Router } = require('express');
-
+// const { Router } = require('express');
+import { Router } from 'express';
 const taskRouter = Router();
 
-module.exports = {
-  taskRouter,
-};
+export default taskRouter;

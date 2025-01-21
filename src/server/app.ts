@@ -4,7 +4,18 @@ import cors from 'cors';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import session from 'express-session';
 import passport from 'passport';
-
+// import aiRouter from './routes/index';
+// import aiConversationRouter from './routes/index';
+// import aiTaskRouter from './routes/index';
+// import chatRouter from './routes/index';
+// import chatroomRouter from './routes/index';
+// import flareRouter from './routes/index';
+// import eventRouter from './routes/index';
+// import event2Router from './routes/index';
+// import userRouter from './routes/index';
+// import taskRouter from './routes/index';
+// import signUpRouter from './routes/index';
+import routes from './routes/index';
 const app = express();
 const {
   aiRouter,
@@ -19,7 +30,7 @@ const {
   userRouter,
   taskRouter,
   signUpRouter,
-} = require('./routes/index');
+} = routes;
 
 require('dotenv').config();
 
@@ -39,7 +50,7 @@ app.use(
     // Name of the cookie
     name: 'google-auth-session',
     // String, stored in .env file
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'asldfkjasdlkfjasldfkjasldf',
     /*
     Forces the session to be saved back to the session store:
     Cookie has an expiration time of one hour, so we'll need to re-save

@@ -1,7 +1,6 @@
-const { Router } = require('express');
+// const { Router } = require('express');
 
+import {Router} from 'express';
 const avatarRouter = Router();
 
-module.exports = {
-  avatarRouter,
-};
+export default avatarRouter;

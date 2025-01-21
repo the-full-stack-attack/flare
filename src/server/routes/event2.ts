@@ -1,7 +1,5 @@
-const { Router } = require('express');
-
+// const { Router } = require('express');
+import { Router } from 'express';
 const event2Router = Router();
 // Tyler M
-module.exports = {
-  event2Router,
-};
+export default event2Router;

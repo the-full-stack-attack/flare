@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+import Sequelize from "sequelize";
 require('dotenv').config();
 
 // Retrieve database credentials from environment variables
