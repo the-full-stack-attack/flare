@@ -14,15 +14,9 @@
       "jsx": "react",
       "esModuleInterop": true,
       "skipLibCheck": true,
-      "baseUrl": ".",
-      "paths": {
-        "@/*": [
-          "./src/*"
-        ]
-      }
   },
   "include": [
       "./src/**/*",
-      ".eslintrc.js",
+      ".eslintrc.js", "lib",
   ]
 }

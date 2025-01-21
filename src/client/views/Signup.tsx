@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./../../components/ui/card";
 
 function Signup() {
   const [userName, setUserName] = useState('');
@@ -67,8 +75,11 @@ function Signup() {
 
   // return the signup template
   return (
-    <div>
-      <h4>Hello Stanky</h4>
+    <Card>
+      <CardHeader>
+      <CardTitle>Hello Stanky</CardTitle>
+      </CardHeader>
+      <CardContent>
       <form onSubmit={handleSignup}>
         <label>
           Username:
@@ -113,7 +124,8 @@ function Signup() {
           Complete{' '}
         </button>
       </form>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
