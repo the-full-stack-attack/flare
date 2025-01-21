@@ -19,7 +19,7 @@ const {
   userRouter,
   taskRouter,
   signUpRouter,
-} = require('./routes/index.ts');
+} = require('./routes/index');
 
 require('dotenv').config();
 
