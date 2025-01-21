@@ -39,6 +39,7 @@ module.exports = {
     'react/prop-types/': 'off', // turn off prop types since we're using Typescript
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/naming-convention': 'off',
+    '@typescript-eslint/comma-dangle': 'off',
   },
   // Ignore files in the test directory
   ignorePatterns: ['tests/*'],
