@@ -9,6 +9,7 @@ import {
   Task,
   Home,
 } from './views/index';
+import './styles/main.css';
 
 export default function App() {
   return (
