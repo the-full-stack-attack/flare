@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-      "outDir": "./dist",
+      "outDir": "./dist/",
       "sourceMap": true,
       "strict": true,
       "noEmit": true,
@@ -14,8 +14,8 @@
       "jsx": "react",
       "esModuleInterop": true,
       "skipLibCheck": true,
-  }, 
-  /* 
+  },
+  /*
   DO NOT ADD
    "baseUrl": ".",
     "paths": {
@@ -23,7 +23,7 @@
         "./src/*"
       ]
     }
-  It breaks the webpack. 
+  It breaks the webpack.
   If you are trying to get your component to work
   1.) Go to it in components/ui/<MY CARD COMPONENT>
   2.) Ensure the import statements points to the right directory.
