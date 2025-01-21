@@ -1,6 +1,7 @@
 const { Router } = require('express');
+
 const event2Router = Router();
-//Tyler M
+// Tyler M
 module.exports = {
-  event2Router
+  event2Router,
 };
