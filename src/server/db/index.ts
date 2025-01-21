@@ -1,17 +1,30 @@
-const { Sequelize, sequelize } = require('sequelize');
+const Sequelize = require('sequelize');
+require('dotenv').config();
 
-const database = new Sequelize('flare', 'root', '', {
-  dialect: 'mysql'
+// Retrieve database credentials from environment variables
+const dbName = process.env.DB_NAME || 'flare';
+const dbUser = process.env.DB_USER || 'root';
+const dbPassword = process.env.DB_PASSWORD || '';
+const dbHost = process.env.DB_HOST || 'localhost';
+const dbPort = process.env.DB_PORT || 3306;
+
+// Initialize Sequelize instance with environment variables
+const database = new Sequelize(dbName, dbUser, dbPassword, {
+  host: dbHost,
+  port: dbPort,
+  dialect: 'mysql',
+  logging: true,
 });
 
-database.authenticate()
+// Test the database connection
+database
+  .authenticate()
   .then(() => {
-
-    console.log('Connection has been established to the \'flare\' database.');
+    console.log(`Connection has been established to the '${dbName}' database.`);
   })
   .catch((err: Error) => {
-    console.error('Unable to connect to the \'flare\' database:', err);
-  })
+    console.error(`Unable to connect to the '${dbName}' database:`, err);
+  });
 
 module.exports = {
   database,
