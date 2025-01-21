@@ -31,7 +31,7 @@ const User_Task = database.define('User_Task', {
 });
 // Declare the foreign key for the user id and the task id
 User.belongsToMany(Task, { through: User_Task });
-Task.belongsToMany(User, { through: User_Task});
+Task.belongsToMany(User, { through: User_Task });
 
 module.exports = {
   User_Task,
