@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 
@@ -29,6 +29,18 @@ function Signup() {
     setSelectedInterests( [...selectedInterests, value] );
 
   }
+
+  useEffect(() => {
+    axios.get('signup/interests')
+    .then((interestNames: any) => {
+      console.log(interestNames)
+      setInterests( [...interests, ...interestNames] );
+      console.log('grabbed interests')
+    })
+    .catch((err: Error) => {
+      console.error('error', err)
+    })
+  })
   // return the signup template
   return (
     <div>

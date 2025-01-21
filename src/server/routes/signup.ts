@@ -1,10 +1,7 @@
 const { Router } = require('express');
 const signUpRouter = Router();
-const { Users } = require('../db/models/index.ts');
+const { User, Interest } = require('../db/models/index.ts');
 const Sequelize = require('sequelize')
-// const bodyParser = require('body-parser');
-
-// signUpRouter.use(bodyParser);
 
   signUpRouter.post('/', (req: any, res: any ) => {
     const { userName, phone, selectedInterests, full_Name } = req.body;
@@ -12,7 +9,7 @@ const Sequelize = require('sequelize')
     console.log(`post req to '/' received by signup`)
     // console.log(req)
 
-    Users.create({
+    User.create({
       username: userName,
       full_name: full_Name,
       phone_number: phone,
@@ -25,6 +22,16 @@ const Sequelize = require('sequelize')
     })
     res.sendStatus(201);
   } )
+
+  signUpRouter.get('/interests', ( req: any, res: any ) => {
+    Interest.findAll()
+    .then((allInterests: any) => {
+      console.log(allInterests, 'these are all the interests found')
+    })
+    .catch((err: Error) => {
+      console.error(err, 'error grabbing interests in routes/signup')
+    })
+  })
 
 module.exports = {
   signUpRouter
