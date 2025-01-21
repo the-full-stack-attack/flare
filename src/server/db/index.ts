@@ -13,7 +13,7 @@ const database = new Sequelize(dbName, dbUser, dbPassword, {
   host: dbHost,
   port: dbPort,
   dialect: 'mysql',
-  logging: true,
+  logging: false,
 });
 
 // Test the database connection
