@@ -14,7 +14,23 @@
       "jsx": "react",
       "esModuleInterop": true,
       "skipLibCheck": true,
-  },
+  }, 
+  /* 
+  DO NOT ADD
+   "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  It breaks the webpack. 
+  If you are trying to get your component to work
+  1.) Go to it in components/ui/<MY CARD COMPONENT>
+  2.) Ensure the import statements points to the right directory.
+  3.) Go to the file where you want to use the Magic UI component.
+  4.) Ensure the import statements point to the right directory.
+  - Barry
+  */
   "include": [
       "./src/**/*",
       ".eslintrc.js", "lib",
