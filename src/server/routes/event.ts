@@ -4,7 +4,7 @@ const eventRouter = Router();
 // Coltron
 
 eventRouter.post('/', async (req: unknown, res: unknown ) => {
-  const { username, fullName, phone, address, selectedInterests, category, startDate, endDate, }
+  const { username: string, fullName, phone, address, selectedInterests, category, startDate, endDate, } = req.body;
   console.log('Post req to / received by eventRouter');
   try {
     const newEvent = await Event.create({
@@ -14,9 +14,11 @@ eventRouter.post('/', async (req: unknown, res: unknown ) => {
       address: address,
       interests: selectedInterests,
       category: category,
-      stardate: startDate,
-      endDate: endDate,
+      start_time: startDate,
+      end_time: endDate,
     })
+  } catch (error) {
+
   }
 })
 
