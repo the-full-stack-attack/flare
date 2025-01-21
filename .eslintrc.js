@@ -18,12 +18,11 @@ module.exports = {
   // Configure the parser
   parserOptions: {
     ecmaFeatures: {
-      // Enable jsx syntax checking
       jsx: true,
     },
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: './tsconfig.json', // Path to your tsconfig.json file
+    tsconfigRootDir: __dirname,
   },
   plugins: [
     'react',
