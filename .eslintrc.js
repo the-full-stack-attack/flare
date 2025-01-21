@@ -42,5 +42,10 @@ module.exports = {
     '@typescript-eslint/comma-dangle': 'off',
   },
   // Ignore files in the test directory
-  ignorePatterns: ['tests/*'],
+  ignorePatterns: [
+    'tests/*',
+    '/node_modules/**',
+    '/dist/**',
+    'webpack.config.js',
+  ],
 };
