@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import dayjs from 'dayjs';
 import Task from '../models/tasks';
 
 const dotenv = require('dotenv');
@@ -9,22 +10,32 @@ const { GEMINI_KEY } = process.env;
 const genAI = new GoogleGenerativeAI(GEMINI_KEY || '');
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
+// Helper to parse date strings and convert them to dates using dayjs
+const parseDates = (text: any): dayjs.Dayjs[] => {
+  // Create an array to hold the converted dates
+  const dates: dayjs.Dayjs[] = [];
+  // Clean the dates of unwanted tokens
+  const datesArr = JSON.parse(text.trim().replace(/^```json\s*|```\s*$/g, ''));
+  // Convert each string to a date and push onto dates
+  datesArr.forEach((date: string) => {
+    const newDate = dayjs(date, 'MM/DD/YYYY');
+    dates.push(newDate);
+  });
+  return dates;
+};
+
 const makeDates = () => {
   const today = new Date();
   // eslint-disable-next-line prettier/prettier
   const prompt = `With the first date being ${today}, please provide a JSON array of dates of 3 consecutive dates. Put the dates in ISO string format MM/DD/YY.`;
   return model
     .generateContent(prompt)
-    .then((result: any) => {
-      const dates = result.response.text();
-      // Clean the dates of unwanted tokens
-      const datesArr = dates.trim().replace(/^```json\s*|```\s*$/g, '');
-      return JSON.parse(datesArr);
-    })
+    .then((result: any) => parseDates(result.response.text()))
     .catch((err: any) => {
       console.error('Error generating dates: ', err);
     });
 };
+
 // Helper to parse the GoogleGenerativeAI response
 const parseTasks = (text: any) => {
   // Clean the text of unwanted tokens
@@ -40,6 +51,11 @@ const parseTasks = (text: any) => {
 
 const seedTasks = async () => {
   const dates = await makeDates();
+  // Add conditional logic to make sure dates is an array
+  if (!dates || !Array.isArray(dates)) {
+    console.error('Dates was not an array: ');
+    return;
+  }
   const { count, rows } = await Task.findAndCountAll();
   // Make sure the table isnt empty
   if (count && rows) {
@@ -78,3 +94,4 @@ task will take place.`;
 };
 
 seedTasks();
+// makeDates();
