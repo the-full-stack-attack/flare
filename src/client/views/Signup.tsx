@@ -32,7 +32,7 @@ function Signup() {
     axios
       .post('signup/', { userName, phone, selectedInterests, full_Name })
       .then(() => {
-        navigate('/home');
+        navigate('/Dashboard');
       })
       .catch((err) => {
         console.error('error', err);
