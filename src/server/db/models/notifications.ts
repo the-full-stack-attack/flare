@@ -1,11 +1,9 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
 
 const Notification = database.define('Notification', {
     message: { type: Sequelize.STRING, },
     send_time: { type: Sequelize.DATE, },
 });
 
-module.exports = {
-    Notification,
-};
+export default Notification;

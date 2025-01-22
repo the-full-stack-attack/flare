@@ -1,10 +1,8 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
 
 const Category = database.define('Category', {
     name: { type: Sequelize.STRING },
 });
 
-module.exports = {
-    Category,
-};
+export default Category;
