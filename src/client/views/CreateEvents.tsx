@@ -8,7 +8,7 @@ function CreateEvents() {
             </div>
 
             <div>
-                <form>
+                <form onSubmit={onSubmit}>
                     <label>Title
                         <input name='event-title'/>
                     </label>
@@ -36,7 +36,15 @@ function CreateEvents() {
                     </label>
 
                     <label>Event Interests?
-                        <input name='event-interests'/>
+                        <input type='checkbox' value='Interest 1' className='event-interests' />
+                        Interest 1
+                        <input type='checkbox' value='Interest 2' className='event-interests' />
+                        Interest 2
+                        <input type='checkbox' value='Interest 3' className='event-interests' />
+                        Interest 3
+                        <input type='checkbox' value='Interest 4' className='event-interests' />
+                        Interest 4
+                        <input type='checkbox' value='Interest 5 ERROR' className='event-interests' />
                     </label>
 
                     <label>Venue
