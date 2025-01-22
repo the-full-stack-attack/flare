@@ -17,8 +17,7 @@ import Notification from './notifications';
 import User_Notification from './users_notifications';
 import Text from './texts';
 
-
-export = {
+export default {
   User,
   Task,
   User_Task,
