@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import database from '../index';
+import User from './users';
 
 const Task = database.define('Task', {
   description: {
@@ -26,5 +27,9 @@ const Task = database.define('Task', {
     allowNull: false,
   },
 });
+
+Task.hasMany(User, { foreignKey: 'current_task_id', as: 'users' });
+// Put a currentTask property on the User that points to the Task
+User.belongsTo(Task, { foreignKey: 'current_task_id', as: 'currentTask' });
 
 export default Task;
