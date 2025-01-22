@@ -4,14 +4,29 @@ import axios from 'axios';
 
 function CreateEvents() {
     const [formInfo, setFormInfo] = useState({
+        title: '',
+        description: '',
+        startDate: '',
+        endDate: '',
+        startTime: '',
+        endTime: '',
+        venue: '',
         interests: [],
         interestsRes: [],
         category: '',
         categoryRes: '',
+
     });
     const [categories, setCategories] = useState([]);
     const [interests, setInterests] = useState([]);
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormInfo((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    }
     const onSubmit = () => {
 
     }
@@ -92,7 +107,16 @@ function CreateEvents() {
         getInterests();
         // noinspection JSIgnoredPromiseFromCall
         getCategories();
-        console.log(`Form Info: \n Interests = ${formInfo.interestsRes} \n Category = ${formInfo.categoryRes}`);
+
+        console.log(`
+        Form Info: \n 
+        Title = ${formInfo.title} \n
+        
+        Interests = ${formInfo.interestsRes} \n 
+        Category = ${formInfo.categoryRes}
+        
+        `);
+
     }, [formInfo])
     return (<>
 
@@ -108,45 +132,59 @@ function CreateEvents() {
 
 
                         <label>Title
-                            <input name='event-title'
+                            <input name='title'
+                                   value={formInfo.title}
+                                   onChange={handleChange}
                                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
                         <label>Description
-                            <input name='event-description'
+                            <input name='description'
+                                   value={formInfo.description}
+                                   onChange={handleChange}
                                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
 
                         <label>Start Date
                             <input
+                                name='startDate'
+                                value={formInfo.startDate}
+                                onChange={handleChange}
                                 type='date'
-                                name='event-start-date'
                                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
                         <label>End Date
                             <input
+                                name='endDate'
+                                value={formInfo.endDate}
+                                onChange={handleChange}
                                 type='date'
-                                name='event-end-date'
                                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
                         <label>Start Time
                             <input
+                                name='startTime'
+                                value={formInfo.startTime}
+                                onChange={handleChange}
                                 type='time'
-                                name='event-start-time'
                                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
                         <label>End Time
                             <input
+                                name='endTime'
+                                value={formInfo.endTime}
+                                onChange={handleChange}
                                 type='time'
-                                name='event-end-time'
                                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
                         <label>Event Category
-                            <input name='event-category'
-                                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
+                            <input
+                                name='event-category'
+                                className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
                         <label>Venue
-                            <input name='event-venue'
-                                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
+                            <input
+                                name='event-venue'
+                                className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
                         <div>
                             {categories.map((category) => (
