@@ -9,21 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from '../../components/ui/card';
-import { ShinyButton } from '../../components/ui/shiny-button';
 import { RainbowButton } from '../../components/ui/rainbowbutton';
-import MagicCard from '../../components/ui/magicCard';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../components/ui/select';
-import { SparklesText } from '../../components/ui/sparkletext';
-import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 
 function Signup() {
   const navigate = useNavigate();
@@ -43,8 +32,7 @@ function Signup() {
     axios
       .post('signup/', { userName, phone, selectedInterests, full_Name })
       .then(() => {
-        console.log('successful post');
-        navigate('/home')
+        navigate('/home');
       })
       .catch((err) => {
         console.error('error', err);
@@ -55,8 +43,7 @@ function Signup() {
     setSelectedInterests([...selectedInterests, value]);
   };
 
-  const removeFromSelectedInterests = async (value: string) => {
-    console.log(value, 'removing this');
+  const removeSelectedInterests = async (value: string) => {
     let backToInterests;
     const updatedInterests = selectedInterests.filter((item, i) => {
       if (item === value) {
@@ -64,30 +51,25 @@ function Signup() {
       }
       return item !== value;
     });
-    console.log(updatedInterests, 'updated');
     setInterests([...interests, backToInterests]);
     await setSelectedInterests(updatedInterests);
   };
+
+  // Hides components (Does not work with animated buttons sadly)
   const hideMe = (e: any) => {
-    console.log(e);
-    // e.preventDefault();
     e.target.style.display = 'none';
     const value = e.target.innerText;
-    console.log(value, 'its value');
     e.target.name !== 'selectedInterest'
       ? addToSelectedInterests(value)
-      : removeFromSelectedInterests(value);
+      : removeSelectedInterests(value);
   };
 
+  // Gets all interests
   useEffect(() => {
-    console.log('use effect triggered');
-
     axios
       .get('signup/interests')
       .then((interestNames: any) => {
-        console.log(interestNames.data, 'this is it yo');
         setInterests([...interests, ...interestNames.data]);
-        console.log('grabbed interests');
       })
       .catch((err: Error) => {
         console.error('error', err);
@@ -98,8 +80,8 @@ function Signup() {
   return (
     <div
       style={{
-        'margin-left': 'auto',
-        'margin-right': 'auto',
+        marginLeft: 'auto',
+        marginRight: 'auto',
         maxWidth: 'fit-content',
       }}
     >
