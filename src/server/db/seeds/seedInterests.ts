@@ -1,7 +1,7 @@
 
 
-const { database } = require('../index.ts');
-const { Interest } = require('../models/interests.ts');
+import database from '../index';
+import Interest from '../models/interests';
 
 const allInterests = [
   'Arts & Crafts',
