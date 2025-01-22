@@ -1,9 +1,7 @@
-// const { Router } = require('express');
 import { Router } from 'express';
-import { User, Interest } from '../db/models/index';
+import models from '../db/models/index';
+const { User, Interest } = models;
 const signUpRouter = Router();
-import Sequelize from 'sequelize';
-// const { User, Interest } = require('../db/models/index.ts');
 
 signUpRouter.post('/', (req: any, res: any) => {
   const { userName, phone, selectedInterests, full_Name } = req.body;

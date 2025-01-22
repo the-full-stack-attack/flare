@@ -4,18 +4,9 @@ import cors from 'cors';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import session from 'express-session';
 import passport from 'passport';
-// import aiRouter from './routes/index';
-// import aiConversationRouter from './routes/index';
-// import aiTaskRouter from './routes/index';
-// import chatRouter from './routes/index';
-// import chatroomRouter from './routes/index';
-// import flareRouter from './routes/index';
-// import eventRouter from './routes/index';
-// import event2Router from './routes/index';
-// import userRouter from './routes/index';
-// import taskRouter from './routes/index';
-// import signUpRouter from './routes/index';
 import routes from './routes/index';
+import dotenv from 'dotenv';
+
 const app = express();
 const {
   aiRouter,
@@ -32,7 +23,7 @@ const {
   signUpRouter,
 } = routes;
 
-require('dotenv').config();
+dotenv.config();
 
 app.use(express.static(path.resolve(__dirname, '../../dist')));
 app.use(express.json());
@@ -94,8 +85,8 @@ app.use('/signup', signUpRouter);
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID || 'stinky',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'stinky',
       callbackURL: '/auth/callback',
       passReqToCallback: true,
     },

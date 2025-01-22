@@ -1,12 +1,13 @@
-import Sequelize from "sequelize";
-require('dotenv').config();
+import {Sequelize} from "sequelize";
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Retrieve database credentials from environment variables
 const dbName = process.env.DB_NAME || 'flare';
 const dbUser = process.env.DB_USER || 'root';
 const dbPassword = process.env.DB_PASSWORD || '';
 const dbHost = process.env.DB_HOST || 'localhost';
-const dbPort = process.env.DB_PORT || 3306;
+const dbPort = Number(process.env.DB_PORT) || 3306;
 
 // Initialize Sequelize instance with environment variables
 const database = new Sequelize(dbName, dbUser, dbPassword, {
