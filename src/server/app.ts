@@ -1,9 +1,11 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const session = require('express-session');
-const passport = require('passport');
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import session from 'express-session';
+import passport from 'passport';
+import routes from './routes/index';
+import dotenv from 'dotenv';
 
 const app = express();
 const {
@@ -19,9 +21,9 @@ const {
   userRouter,
   taskRouter,
   signUpRouter,
-} = require('./routes/index.ts');
+} = routes;
 
-require('dotenv').config();
+dotenv.config();
 
 app.use(express.static(path.resolve(__dirname, '../../dist')));
 app.use(express.json());
@@ -39,7 +41,7 @@ app.use(
     // Name of the cookie
     name: 'google-auth-session',
     // String, stored in .env file
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'MISSING PASSPORT SESSION SECRET',
     /*
     Forces the session to be saved back to the session store:
     Cookie has an expiration time of one hour, so we'll need to re-save
@@ -83,8 +85,8 @@ app.use('/signup', signUpRouter);
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID || 'MISSING GOOGLE CLIENTID',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'MISSING GOOGLE CLIENT SECRET',
       callbackURL: '/auth/callback',
       passReqToCallback: true,
     },
@@ -143,6 +145,4 @@ app.all('*', (req: any, res: any) => {
   });
 });
 
-module.exports = {
-  app,
-};
+export default app;

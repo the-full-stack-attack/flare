@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
 
 const Venue = database.define('Venue', {
     name: { type: Sequelize.STRING },
@@ -7,7 +7,4 @@ const Venue = database.define('Venue', {
 });
 
 
-
-module.exports = {
-    Venue,
-};
+export default Venue;
