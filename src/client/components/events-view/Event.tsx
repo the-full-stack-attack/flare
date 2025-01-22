@@ -1,7 +1,9 @@
 import React from 'react';
+import axios from 'axios';
 
 import { Button } from '../../../components/ui/button';
-import { Card,
+import {
+  Card,
   CardHeader,
   CardFooter,
   CardTitle,
@@ -26,6 +28,17 @@ type EventProps = {
 };
 
 function Event({ event }: EventProps) {
+  const postAttendEvent = () => {
+    axios
+      .post(`/api/event/attend/${event.id}`)
+      .then(() => {
+        console.log('User attending event.');
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to postAttendEvent:', err);
+      });
+  };
+
   return (
     <li key={event.id} className="text-lg text-center">
       <Card>
@@ -38,7 +51,9 @@ function Event({ event }: EventProps) {
           </div>
         </CardContent>
         <CardFooter className="justify-end">
-          <Button className="">Attend</Button>
+          <Button className="" onClick={postAttendEvent}>
+            Attend
+          </Button>
         </CardFooter>
       </Card>
     </li>
