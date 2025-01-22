@@ -18,12 +18,12 @@ module.exports = {
   // Configure the parser
   parserOptions: {
     ecmaFeatures: {
-      // Enable jsx syntax checking
       jsx: true,
     },
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: './tsconfig.json', // Path to your tsconfig.json file
+    project: 'tsconfig.json',
+    tsconfigRootDir: __dirname,
   },
   plugins: [
     'react',
@@ -42,5 +42,10 @@ module.exports = {
     '@typescript-eslint/comma-dangle': 'off',
   },
   // Ignore files in the test directory
-  ignorePatterns: ['tests/*'],
+  ignorePatterns: [
+    'tests/*',
+    '/node_modules/**',
+    '/dist/**',
+    'webpack.config.js',
+  ],
 };
