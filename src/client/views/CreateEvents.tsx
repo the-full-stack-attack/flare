@@ -8,6 +8,7 @@ function CreateEvents() {
         interests: [],
         response: [],
     });
+    const [categories, setCategories] = useState([]);
     const [isChecked, setIsChecked] = useState(false);
     const [interests, setInterests] = useState([]);
     const [formData, setFormData] = useState();
@@ -49,32 +50,31 @@ function CreateEvents() {
         }
     }
 
+    const getCategories = async () => {
+        try {
+            const allCategories = await axios.get('/event/categories');
+            console.log('This is what we got: ', allCategories);
+
+            setCategories(allCategories.data);
+            console.log('This my mf state: ', allCategories.data);
+        } catch (error) {
+            console.error('Error getting categories from DB', error);
+        }
+    };
+
     useEffect(() => {
         // noinspection JSIgnoredPromiseFromCall
         getInterests();
+        // noinspection JSIgnoredPromiseFromCall
+        getCategories();
     }, [])
     return (<>
-
-            <div>
-
-                {interests.map((interest, index) => (
-                    <input
-                        className='form-check-input'
-                        type='checkbox'
-                        name={interest}
-                        value={interest}
-                        onChange={checkboxHandler}
-                    >
-                    </input>
-
-
-                ))}
-            </div>
 
 
             <div>
                 <h4>Hello Stanky</h4>
             </div>
+
 
             <div>
                 <form onSubmit={onSubmit} className='max-w-sm mx-auto'>
@@ -127,20 +127,38 @@ function CreateEvents() {
                                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
 
-                        <label htmlFor='checkbox'>Event Interests?
-                            Interest 1
-                            <input type='checkbox' placeholder='test' value='Interest 1' name='event-interests'
-                                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-blue-950'/>
-                            Interest 2
-                            <input type='checkbox' value='Interest 2' name='event-interests'
-                                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-blue-950'/>
-                            Interest 3
-                            <input type='checkbox' value='Interest 3' name='event-interests'
-                                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-blue-950'/>
-                            Interest 4
-                            <input type='checkbox' value='Interest 4 ERROR' name='event-interests'
-                                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-blue-950'/>
-                        </label>
+
+                        <div>
+
+                            {categories.map((category, index) => (
+                                <div
+                                    key={index}>
+                                    {category.name}
+                                </div>
+                            ))}
+
+                        </div>
+
+                        <div>
+
+                            {interests.map((interest, index) => (
+                                <div
+                                    key={index}
+                                > {interest}
+                                    <input
+                                        className='form-check-input'
+                                        type='checkbox'
+                                        name={interest}
+                                        value={interest}
+                                        onChange={checkboxHandler}
+                                    >
+                                    </input>
+
+                                </div>
+
+
+                            ))}
+                        </div>
 
 
                     </div>
