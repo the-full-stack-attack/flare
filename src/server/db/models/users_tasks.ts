@@ -3,8 +3,6 @@ import database from '../index';
 import User from './users';
 import Task from './tasks';
 
-
-
 // Join table for the users and tasks
 // Need a user foreign key and a task foreign key
 const User_Task = database.define('User_Task', {
