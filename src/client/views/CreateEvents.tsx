@@ -1,7 +1,13 @@
 import React from 'react';
+import { useState } from 'react';
 
 function CreateEvents() {
 
+    const [formData, setFormData] = useState();
+
+    const onSubmit = () => {
+
+    }
     return (<>
             <div>
                 <h4>Hello Stanky</h4>
