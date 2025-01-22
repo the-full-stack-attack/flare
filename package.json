@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --watch",
     "start": "nodemon ./src/server/index.ts",
-    "update": "rimraf node_modules && rm package-lock.json && npm install && exit 1"
+    "update": "rimraf node_modules && rm package-lock.json && npm install && exit 1",
+    "seedTasks": "ts-node ./src/server/db/seeds/seedTasks.ts"
   },
   "repository": {
     "type": "git",
