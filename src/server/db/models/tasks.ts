@@ -22,7 +22,7 @@ const Task = database.define('Task', {
     defaultValue: 0,
   },
   date: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: false,
   },
 });
