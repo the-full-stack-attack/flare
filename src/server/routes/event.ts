@@ -1,7 +1,7 @@
-const { Router } = require('express');
-const { Event } = require('../db/models/index.ts');
+import { Router } from 'express';
 const eventRouter = Router();
 // Coltron
+
 
 eventRouter.post('/', async (req: unknown, res: unknown ) => {
   // const { username, fullName, phone, title, address, selectedInterests, category, startDate, endDate, } = req.body;
@@ -26,6 +26,4 @@ eventRouter.post('/', async (req: unknown, res: unknown ) => {
   // }
 })
 
-module.exports = {
-  eventRouter,
-};
+export default eventRouter;
