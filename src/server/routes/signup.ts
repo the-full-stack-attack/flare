@@ -15,13 +15,12 @@ signUpRouter.post('/', (req: any, res: any) => {
     phone_number: phone,
   })
     .then((newUser: any) => {
-      res.sendStatus(201);
       console.log(newUser);
+      res.sendStatus(201);
     })
     .catch((err: Error) => {
       console.error(err, 'error on creating the user');
     });
-  res.sendStatus(201);
 });
 
 signUpRouter.get('/interests', (req: any, res: any) => {

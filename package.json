@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --watch",
-    "start": "nodemon ./src/server/index.ts"
+    "start": "nodemon ./src/server/index.ts",
+    "seed": "ts-node ./src/server/db/seeds/seedInterests.ts"
   },
   "repository": {
     "type": "git",
@@ -57,6 +58,9 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.1",
+    "@radix-ui/react-select": "^2.1.4",
+    "@radix-ui/react-slot": "^1.1.1",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -65,7 +69,7 @@
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "lucide-react": "^0.473.0",
-    "motion": "^12.0.0",
+    "motion": "^12.0.1",
     "mysql2": "^3.12.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
