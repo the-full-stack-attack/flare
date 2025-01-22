@@ -1,4 +1,4 @@
-### **Best Practices for Commit Messages**
+'### **Best Practices for Commit Messages**
 
 1. **Use Conventional Commit Types:**
 - `feat`: A new feature for the user.
