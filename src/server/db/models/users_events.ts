@@ -1,7 +1,7 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
-const { User } = require('./users.ts');
-const { Event } = require('./events.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
+import User from './users';
+import Event from './events';
 
 const User_Event = database.define('User_Event', {
     user_id: { type: Sequelize.INTEGER },
@@ -17,6 +17,4 @@ const User_Event = database.define('User_Event', {
 User.belongsToMany(Event, { through: User_Event });
 Event.belongsToMany(User, { through: User_Event });
 
-module.exports = {
-    User_Event,
-};
+export default User_Event;

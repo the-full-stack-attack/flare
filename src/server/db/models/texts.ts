@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
-const { User } = require('./users.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
+import User from './users';
 
 const Text = database.define('Text', {
     content: { type: Sequelize.STRING},
@@ -12,6 +12,4 @@ const Text = database.define('Text', {
 Text.belongsTo(User, { foreignKey: 'user_id' });
 User.hasMany(Text, { foreignKey: 'user_id' });
 
-module.exports = {
-    Text,
-};
+export default Text;

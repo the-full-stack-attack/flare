@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
 
 const Flare = database.define('Flare', {
     name: { type: Sequelize.STRING, },
@@ -8,6 +8,4 @@ const Flare = database.define('Flare', {
     value: { type: Sequelize.INTEGER, },
 });
 
-module.exports = {
-    Flare,
-};
+export default Flare;

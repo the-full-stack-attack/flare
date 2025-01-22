@@ -1,7 +1,7 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
-const { User } = require('./users.ts');
-const { Interest } = require('./interests.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
+import User from './users';
+import Interest from './interests';
 
 const User_Interest = database.define('User_Interest', {
     user_id: { type: Sequelize.INTEGER, },
@@ -11,6 +11,4 @@ const User_Interest = database.define('User_Interest', {
 User.belongsToMany(Interest, { through: User_Interest });
 Interest.belongsToMany(User, { through: User_Interest });
 
-module.exports = {
-    User_Interest,
-};
+export default User_Interest;

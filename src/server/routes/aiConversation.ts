@@ -1,7 +1,4 @@
-const { Router } = require('express');
-
+import { Router } from 'express';
 const aiConversationRouter = Router();
 
-module.exports = {
-  aiConversationRouter,
-};
+export default aiConversationRouter;

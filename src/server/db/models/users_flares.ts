@@ -1,7 +1,7 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
-const { User } = require('./users.ts');
-const { Flare } = require('./flares.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
+import User from './users';
+import Flare from './flares';
 
 const User_Flare = database.define('User_Flare', {
     user_id: { type: Sequelize.INTEGER, },
@@ -11,7 +11,4 @@ const User_Flare = database.define('User_Flare', {
 User.belongsToMany(Flare, { through: User_Flare });
 Flare.belongsToMany(User, { through: User_Flare });
 
-module.exports = {
-    User,
-    Flare,
-}
+export default User_Flare;
