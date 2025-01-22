@@ -1,3 +1,4 @@
+
 import { Router, Request, Response } from 'express';
 const { Event } = require('../db/models/index.ts');
 
@@ -35,6 +36,5 @@ event2Router.get('/', (req: Request, res: Response) => {
     });
 });
 
-module.exports = {
-  event2Router,
-};
+export default event2Router;
+

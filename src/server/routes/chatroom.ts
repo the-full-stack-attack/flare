@@ -1,7 +1,4 @@
-const { Router } = require('express');
-
+import { Router } from 'express';
 const chatroomRouter = Router();
 
-module.exports = {
-  chatroomRouter,
-};
+export default chatroomRouter;
