@@ -12,10 +12,6 @@ const User_Task = database.define('User_Task', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  current_task: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
   overall_rating: {
     type: DataTypes.TINYINT.UNSIGNED,
     defaultValue: 5,
