@@ -57,7 +57,7 @@ function Events() {
 
   const getEvents = () => {
     axios
-      .get('/event')
+      .get('/api/event')
       .then(({ data }) => {
         setEvents(data);
       })
