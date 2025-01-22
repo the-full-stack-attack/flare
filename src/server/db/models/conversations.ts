@@ -1,6 +1,6 @@
-import { DataTypes } from "sequelize";
-import { database } from '../index.ts';
-import { User } from './users.ts'
+import { DataTypes } from 'sequelize';
+import { database } from '../index';
+import { User } from './users';
 
 const Conversation = database.define(
   'Conversation',
