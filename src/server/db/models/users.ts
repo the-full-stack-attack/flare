@@ -1,8 +1,9 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
 
 const User = database.define('User', {
   username: { type: Sequelize.STRING(20) },
+  google_id: { type: Sequelize.STRING },
   email: { type: Sequelize.STRING },
   full_name: { type: Sequelize.STRING },
   phone_number: { type: Sequelize.STRING(10) },
@@ -14,6 +15,4 @@ const User = database.define('User', {
   avatar_pants: { type: Sequelize.STRING },
 });
 
-module.exports = {
-  User,
-};
+export default User;

@@ -1,7 +1,7 @@
-const Sequelize = require('sequelize');
-const { database } = require('../index.ts');
-const { Chatroom } = require('./chatrooms.ts');
-const { User } = require('./users.ts');
+import Sequelize from 'sequelize';
+import database from '../index';
+import Chatroom from './chatrooms';
+import User from './users';
 
 const Chat = database.define('Chat', {
     user_id: { type: Sequelize.INTEGER, },
@@ -15,6 +15,4 @@ Chat.belongsTo(Chatroom, { foreignKey: 'chatroom_id' });
 User.hasMany(Chat, { foreignKey: 'user_id' });
 Chatroom.hasMany(Chat, { foreignKey: 'chatroom_id' });
 
-module.exports = {
-    Chat,
-};
+export default Chat;

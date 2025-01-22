@@ -1,9 +1,13 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const session = require('express-session');
-const passport = require('passport');
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import session from 'express-session';
+import passport from 'passport';
+import dotenv from 'dotenv';
+import routes from './routes/index';
+
+import User from './db/models/users';
 
 const app = express();
 const {
@@ -19,16 +23,16 @@ const {
   userRouter,
   taskRouter,
   signUpRouter,
-} = require('./routes/index');
+} = routes;
 
-require('dotenv').config();
+dotenv.config();
 
 app.use(express.static(path.resolve(__dirname, '../../dist')));
 app.use(express.json());
 
 app.use(
   cors({
-    origin: 'http://localhost:8080',
+    origin: 'http://localhost:4000',
     credentials: true,
   })
 );
@@ -39,7 +43,7 @@ app.use(
     // Name of the cookie
     name: 'google-auth-session',
     // String, stored in .env file
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'MISSING PASSPORT SESSION SECRET',
     /*
     Forces the session to be saved back to the session store:
     Cookie has an expiration time of one hour, so we'll need to re-save
@@ -83,30 +87,55 @@ app.use('/signup', signUpRouter);
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID || 'MISSING GOOGLE CLIENTID',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'MISSING GOOGLE CLIENT SECRET',
       callbackURL: '/auth/callback',
       passReqToCallback: true,
     },
-    (
+    async (
       req: unknown,
       accessToken: unknown,
       refreshToken: unknown,
       profile: any,
       done: Function
     ) => {
-      // Can save user info
-      done(null, profile);
+      try {
+        // Check if they're already a user
+        if (await User.findOne({ where: { google_id: profile.id } })) {
+          console.log('Exists');
+          done(null, profile);
+        } else {
+          // Otherwise, create the user using the id for google_id & emails[0] for email
+          User.create({
+            google_id: profile.id,
+            email: profile.emails[0].value,
+          }).then(() => {
+            done(null, profile);
+          });
+        }
+        // Can save user info
+      } catch (error: unknown) {
+        console.error('Failed to complete Google Callback:', error);
+        done(error, null);
+      }
     }
   )
 );
 
-passport.serializeUser((user: any, done: Function) => {
-  done(null, user);
+passport.serializeUser((profile: any, done: Function) => {
+  // Storing google_id at req.session.passport.user.id
+  done(null, profile.id);
 });
 
-passport.deserializeUser((user: any, done: Function) => {
-  done(null, user);
+passport.deserializeUser(async (google_id: any, done: Function) => {
+  try {
+    const user = await User.findOne({ where: { google_id } });
+    // req.user
+    done(null, user);
+  } catch (error: unknown) {
+    console.error('Failed passport deserialization:', error);
+    done(error, null);
+  }
 });
 
 app.get(
@@ -120,9 +149,18 @@ app.get(
   '/auth/callback/',
   passport.authenticate('google', {
     failureRedirect: '/',
-    successRedirect: '/home',
+    successRedirect: '/auth/success',
   })
 );
+
+app.get('/auth/success', (req: any, res: any) => {
+  // Check if the user has a username
+  if (req.user.username) {
+    res.redirect('/Dashboard');
+  } else {
+    res.redirect('/Signup');
+  }
+});
 
 app.get('/logout', async (req: any, res: any) => {
   req.logout(async (error: Error) => {
@@ -143,6 +181,4 @@ app.all('*', (req: any, res: any) => {
   });
 });
 
-module.exports = {
-  app,
-};
+export default app;

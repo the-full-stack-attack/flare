@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const { database } = require('../index.ts');
+import { DataTypes } from 'sequelize';
+import database from '../index';
 
 const Task = database.define('Task', {
   description: {
@@ -21,8 +21,10 @@ const Task = database.define('Task', {
     allowNull: false,
     defaultValue: 0,
   },
+  date: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
 });
 
-module.exports = {
-  Task,
-};
+export default Task;
