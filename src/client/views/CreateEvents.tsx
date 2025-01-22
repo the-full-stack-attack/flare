@@ -1,14 +1,38 @@
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import axios from 'axios';
 
 function CreateEvents() {
 
+    const [interests, setInterests] = useState([]);
     const [formData, setFormData] = useState();
-
     const onSubmit = () => {
 
     }
+
+    const getInterests = async () => {
+        try {
+            const allInterests = await axios.get('/signup/interests')
+            console.log('allInterests: ', allInterests);
+            setInterests(allInterests.data);
+        } catch (error) {
+            console.error('Error getting interests', error);
+        }
+    }
+
+    useEffect(() => {
+        // noinspection JSIgnoredPromiseFromCall
+        getInterests();
+    }, [])
     return (<>
+
+            <div>
+                {interests.map((interest, index) => (
+                    <div key={index}>
+                        <p>{interest}</p>
+                    </div>
+                ))}
+            </div>
             <div>
                 <h4>Hello Stanky</h4>
             </div>
