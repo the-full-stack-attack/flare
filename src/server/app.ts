@@ -41,7 +41,7 @@ app.use(
     // Name of the cookie
     name: 'google-auth-session',
     // String, stored in .env file
-    secret: process.env.SESSION_SECRET || 'asldfkjasdlkfjasldfkjasldf',
+    secret: process.env.SESSION_SECRET || 'MISSING PASSPORT SESSION SECRET',
     /*
     Forces the session to be saved back to the session store:
     Cookie has an expiration time of one hour, so we'll need to re-save
@@ -85,8 +85,8 @@ app.use('/signup', signUpRouter);
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID || 'stinky',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'stinky',
+      clientID: process.env.GOOGLE_CLIENT_ID || 'MISSING GOOGLE CLIENTID',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'MISSING GOOGLE CLIENT SECRET',
       callbackURL: '/auth/callback',
       passReqToCallback: true,
     },
