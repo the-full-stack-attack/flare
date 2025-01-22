@@ -8,6 +8,7 @@
     "build": "webpack --watch",
     "start": "nodemon ./src/server/index.ts",
     "update": "rimraf node_modules && rm package-lock.json && npm install && exit 1",
+    "seedTasks": "ts-node ./src/server/db/seeds/seedTasks.ts",
     "seed": "ts-node ./src/server/db/seeds/seedInterests.ts"
   },
   "repository": {
@@ -64,6 +65,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@radix-ui/react-label": "^2.1.1",
     "@radix-ui/react-select": "^2.1.4",
     "@radix-ui/react-slot": "^1.1.1",
@@ -71,6 +73,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",

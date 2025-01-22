@@ -21,6 +21,10 @@ const Task = database.define('Task', {
     allowNull: false,
     defaultValue: 0,
   },
+  date: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
 });
 
 export default Task;
