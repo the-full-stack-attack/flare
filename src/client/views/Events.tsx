@@ -77,8 +77,10 @@ function Events() {
       <ul className="container content-center">
         {events.map((event: EventData) => (
           <li key={event.id} className="text-lg text-center">
-            <p>{event.title}</p>
-            <button type="button">Attend</button>
+            <p className="text-lg text-center">{event.title}</p>
+            <button type="button" className="border-black">
+              Attend
+            </button>
           </li>
         ))}
       </ul>
