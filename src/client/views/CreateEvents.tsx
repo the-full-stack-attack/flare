@@ -3,49 +3,75 @@ import {useState, useEffect} from 'react';
 import axios from 'axios';
 
 function CreateEvents() {
-
     const [formInfo, setFormInfo] = useState({
         interests: [],
-        response: [],
+        interestsRes: [],
         category: '',
-        categoryResponse: '',
+        categoryRes: '',
     });
     const [categories, setCategories] = useState([]);
-    const [isChecked, setIsChecked] = useState(false);
     const [interests, setInterests] = useState([]);
-    const [formData, setFormData] = useState();
+
     const onSubmit = () => {
 
     }
 
     const checkboxHandler = (e) => {
-        // setIsChecked(!isChecked);
         const {value, checked} = e.target;
         const {interests} = formInfo;
+        const {category} = formInfo;
 
-        console.log(`${value} is ${checked} `);
+        // Check if data attribute is interest or categories
+        if (e.target.dataset.id === 'interest') {
+            // When user first clicks checkbox
+            if (checked) {
+                // Update State
+                setFormInfo(prevState => ({
+                    ...prevState,
+                    interests: [...interests, value],
+                    interestsRes: [...interests, value],
+                }));
 
-        if (checked) {
-            setFormInfo({
-                interests: [...interests, value],
-                response: [...interests, value],
-            });
-        } else {
-            setFormInfo({
-                interests: interests.filter(
-                    (e) => e !== value
-                ),
-                response: interests.filter(
-                    (e) => e !== value
-                ),
-            });
+                // If checkbox is not active (user deselects)
+            } else {
+                // Update State
+                setFormInfo(prevState => ({
+                    ...prevState,
+                    interests: interests.filter(
+                        (e) => e !== value
+                    ),
+                    interestsRes: interests.filter(
+                        (e) => e !== value
+                    ),
+                }));
+            }
+
+            // Same logic applies for when data attribute is 'category'
+        } else if (e.target.dataset.id === 'category') {
+            if (checked) {
+                setFormInfo(prevState => ({
+                    ...prevState,
+                    category: [...category, value],
+                    categoryRes: [...category, value],
+                }));
+            } else {
+                setFormInfo(prevState => ({
+                    ...prevState,
+                    category: category.filter(
+                        (e) => e !== value
+                    ),
+                    categoryRes: category.filter(
+                        (e) => e !== value
+                    ),
+                }));
+            }
         }
-    }
+    };
+
 
     const getInterests = async () => {
         try {
             const allInterests = await axios.get('/signup/interests')
-            // console.log('allInterests: ', allInterests);
             setInterests(allInterests.data);
         } catch (error) {
             console.error('Error getting interests from DB', error);
@@ -55,10 +81,7 @@ function CreateEvents() {
     const getCategories = async () => {
         try {
             const allCategories = await axios.get('/event/categories');
-            console.log('This is what we got: ', allCategories);
-
             setCategories(allCategories.data);
-            console.log('This my mf state: ', allCategories.data);
         } catch (error) {
             console.error('Error getting categories from DB', error);
         }
@@ -69,7 +92,8 @@ function CreateEvents() {
         getInterests();
         // noinspection JSIgnoredPromiseFromCall
         getCategories();
-    }, [])
+        console.log(`Form Info: \n Interests = ${formInfo.interestsRes} \n Category = ${formInfo.categoryRes}`);
+    }, [formInfo])
     return (<>
 
 
@@ -104,77 +128,61 @@ function CreateEvents() {
                                 name='event-end-date'
                                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
-
                         <label>Start Time
                             <input
                                 type='time'
                                 name='event-start-time'
                                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
-
                         <label>End Time
                             <input
                                 type='time'
                                 name='event-end-time'
                                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
-
                         <label>Event Category
                             <input name='event-category'
                                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
-
                         <label>Venue
                             <input name='event-venue'
                                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
-
-
                         <div>
-
-                            {categories.map((category, index) => (
+                            {categories.map((category) => (
                                 <div
                                     key={category.id}>
                                     {category.name}
                                     <input
                                         className='form-check-input'
+                                        data-id='category'
                                         type='checkbox'
                                         name={category.name}
                                         value={category.name}
                                         onChange={checkboxHandler}
-                                        >
+                                    >
                                     </input>
                                 </div>
                             ))}
-
                         </div>
-
-
                         <div>-----(=^‥^)-----</div>
-
-
                         <div>
-
                             {interests.map((interest, index) => (
                                 <div
                                     key={index}
                                 > {interest}
                                     <input
                                         className='form-check-input'
+                                        data-id='interest'
                                         type='checkbox'
                                         name={interest}
                                         value={interest}
                                         onChange={checkboxHandler}
                                     >
                                     </input>
-
                                 </div>
-
-
                             ))}
                         </div>
-
-
                     </div>
 
 
