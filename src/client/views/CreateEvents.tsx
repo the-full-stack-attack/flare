@@ -4,19 +4,48 @@ import axios from 'axios';
 
 function CreateEvents() {
 
+    const [formInfo, setFormInfo] = useState({
+        interests: [],
+        response: [],
+    });
+    const [isChecked, setIsChecked] = useState(false);
     const [interests, setInterests] = useState([]);
     const [formData, setFormData] = useState();
     const onSubmit = () => {
 
     }
 
+    const checkboxHandler = (e) => {
+        // setIsChecked(!isChecked);
+        const {value, checked} = e.target;
+        const {interests} = formInfo;
+
+        console.log(`${value} is ${checked} `);
+
+        if (checked) {
+            setFormInfo({
+                interests: [...interests, value],
+                response: [...interests, value],
+            });
+        } else {
+            setFormInfo({
+                interests: interests.filter(
+                    (e) => e !== value
+                ),
+                response: interests.filter(
+                    (e) => e !== value
+                ),
+            });
+        }
+    }
+
     const getInterests = async () => {
         try {
             const allInterests = await axios.get('/signup/interests')
-            console.log('allInterests: ', allInterests);
+            // console.log('allInterests: ', allInterests);
             setInterests(allInterests.data);
         } catch (error) {
-            console.error('Error getting interests', error);
+            console.error('Error getting interests from DB', error);
         }
     }
 
@@ -27,12 +56,22 @@ function CreateEvents() {
     return (<>
 
             <div>
+
                 {interests.map((interest, index) => (
-                    <div key={index}>
-                        <p>{interest}</p>
-                    </div>
+                    <input
+                        className='form-check-input'
+                        type='checkbox'
+                        name={interest}
+                        value={interest}
+                        onChange={checkboxHandler}
+                    >
+                    </input>
+
+
                 ))}
             </div>
+
+
             <div>
                 <h4>Hello Stanky</h4>
             </div>
@@ -88,9 +127,9 @@ function CreateEvents() {
                                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
 
-                        <label>Event Interests?
+                        <label htmlFor='checkbox'>Event Interests?
                             Interest 1
-                            <input type='checkbox' value='Interest 1' name='event-interests'
+                            <input type='checkbox' placeholder='test' value='Interest 1' name='event-interests'
                                    className='block mb-2 text-sm font-medium text-gray-900 dark:text-blue-950'/>
                             Interest 2
                             <input type='checkbox' value='Interest 2' name='event-interests'
