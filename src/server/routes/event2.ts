@@ -44,18 +44,18 @@ event2Router.get('/', (req: Request, res: Response) => {
 */
 event2Router.post('/attend/:id', (req: any, res: Response) => {
   // Build object to query and insert new data into the database
-  const user_id = req.user.id;
-  const event_id = req.params.id;
+  const UserId = req.user.id;
+  const EventId = req.params.id;
 
   // Query the User_Events table and insert the newAttendEvent
   User_Event.findOrCreate({
-    where: { user_id, event_id },
-    defaults: { user_id, event_id },
+    where: { UserId, EventId },
+    defaults: { UserId, EventId },
   })
     // Success
     .then(() => {
       // Send Status: 201
-      res.sendStatus(200);
+      res.sendStatus(201);
     })
     // Failue, log error and send Status: 500
     .catch((err: unknown) => {
