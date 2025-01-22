@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../../components/ui/card';
-import { ShinyButton } from "../../components/ui/shiny-button";
+import { ShinyButton } from '../../components/ui/shiny-button';
 import { RainbowButton } from '../../components/ui/rainbowbutton';
 import MagicCard from '../../components/ui/magicCard';
 import { Input } from '../../components/ui/input';
@@ -28,23 +28,7 @@ function Signup() {
   const [userName, setUserName] = useState('');
   const [full_Name, setFull_Name] = useState('');
   const [phone, setPhone] = useState('');
-  const [interests, setInterests] = useState<string[]>([
-    'Arts & Crafts',
-    'Music',
-    'Gaming',
-    'Movies & TV',
-    'Comics & Anime',
-    'Books & Reading',
-    'Technology',
-    'Nature',
-    'Food & Cooking',
-    'Nightlife',
-    'Coffee & Tea',
-    'Health & Wellness',
-    'Pets & Animals',
-    'Sports & Recreation',
-    'Community Events',
-  ]);
+  const [interests, setInterests] = useState<string[]>([]);
 
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
@@ -64,42 +48,57 @@ function Signup() {
       });
   };
 
+  const addToSelectedInterests = (value) => {
+    setSelectedInterests([...selectedInterests, value]);
+  };
+
+  const removeFromSelectedInterests = (value) => {
+    const updatedInterests = selectedInterests.filter((item, i) => {
+      item !== value;
+    });
+    setSelectedInterests(updatedInterests);
+  };
   const hideMe = (e: any) => {
     console.log(e);
     e.target.style.display = 'none';
     const value = e.target.innerText;
-    e.remove();
-    setSelectedInterests([...selectedInterests, value]);
+    e.target.name !== 'selectedInterest'
+      ? addToSelectedInterests(value)
+      : removeFromSelectedInterests(value);
   };
 
   useEffect(() => {
     console.log('use effect triggered');
-    /* 
-   * Gets all interests from `Interests` table: but 'Interests' table is empty 
-    axios.get('signup/interests')
-    .then((interestNames: any) => {
-      console.log(interestNames, 'this is it')
-      setInterests( [...interests, ...interestNames] );
-      console.log('grabbed interests')
-    })
-    .catch((err: Error) => {
-      console.error('error', err)
-    })
-    */
-  }, [selectedInterests]);
+
+    axios
+      .get('signup/interests')
+      .then((interestNames: any) => {
+        console.log(interestNames.data, 'this is it yo');
+        setInterests([...interests, ...interestNames.data]);
+        console.log('grabbed interests');
+      })
+      .catch((err: Error) => {
+        console.error('error', err);
+      });
+  }, []);
 
   // return the signup template
   return (
     <div
-    style={{
-      'margin-left': 'auto',
-      'margin-right': 'auto',
-      'maxWidth': 'fit-content',
-    }}
+      style={{
+        'margin-left': 'auto',
+        'margin-right': 'auto',
+        maxWidth: 'fit-content',
+      }}
     >
-   
       <div style={{ display: 'inline-flex' }}>
-        <div style={{ 'maxWidth': 'fit-content', 'marginLeft': 'auto', 'marginRight': 'auto' }}>
+        <div
+          style={{
+            maxWidth: 'fit-content',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
+        >
           <Card className="w-[350px]">
             <CardHeader>
               <CardTitle>Welcome To Flare</CardTitle>
@@ -140,31 +139,40 @@ function Signup() {
                   </div>
                   <div />
                   <div>
-                  {interests.map((interest) => (
-                    <Button
-                      style={{ display: 'inline-block', float: 'left', maxWidth: 'fit-content' }}
-                      onClick={hideMe}
-                      type="button"
-                    >
-                      {interest}
-                    </Button>
-                  ))}
+                    {interests.map((interest) => (
+                      <Button
+                        style={{
+                          display: 'inline-block',
+                          float: 'left',
+                          maxWidth: 'fit-content',
+                        }}
+                        onClick={hideMe}
+                        type="button"
+                      >
+                        {interest}
+                      </Button>
+                    ))}
                   </div>
                   <CardHeader>
                     <CardTitle>Your Selected Interests</CardTitle>
                     <CardDescription>
-                  <div>
-                  {selectedInterests.map((interest) => (
-                    <Button
-                      style={{ display: 'inline-block', float: 'left', 'maxWidth': 'fit-content' }}
-                      onClick={hideMe}
-                      type="button"
-                    >
-                      {interest}
-                    </Button>
-                  ))}
-                  </div>
-                  </CardDescription>
+                      <div>
+                        {selectedInterests.map((interest) => (
+                          <Button
+                            style={{
+                              display: 'inline-block',
+                              float: 'left',
+                              maxWidth: 'fit-content',
+                            }}
+                            name="selectedInterest"
+                            onClick={hideMe}
+                            type="button"
+                          >
+                            {interest}
+                          </Button>
+                        ))}
+                      </div>
+                    </CardDescription>
                   </CardHeader>
                   <RainbowButton type="submit" value="Submit">
                     {' '}

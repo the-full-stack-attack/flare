@@ -28,7 +28,11 @@ signUpRouter.get('/interests', (req: any, res: any) => {
   Interest.findAll()
     .then((allInterests: any) => {
       console.log(allInterests, 'these are all the interests found');
-      res.send(allInterests).status(200);
+      const interestNames = allInterests.map((interest: any) => {
+        return interest.dataValues.name;
+      })
+      console.log(interestNames)
+      res.send(interestNames).status(200);
     })
     .catch((err: Error) => {
       console.error(err, 'error grabbing interests in routes/signup');
