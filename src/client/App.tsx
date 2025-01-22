@@ -8,6 +8,7 @@ import {
   Signup,
   Task,
   Home,
+  Dashboard,
 } from './views/index';
 import './styles/main.css';
 
@@ -22,7 +23,7 @@ export default function App() {
         <Route path="Events" element={<Events />} />
         <Route path="Signup" element={<Signup />} />
         <Route path="Task" element={<Task />} />
-        <Route path="Home" element={<Home />} />
+        <Route path="Dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );

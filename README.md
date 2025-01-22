@@ -23,18 +23,20 @@
 ### **📈 Git Workflow for Teams:**
 
 1. Checkout to new branch
+    >`git checkout -b <BRANCH NAME>`
 2. Make changes and commit _(frequently)_
-   1. See `CONTRIBUTING.md` for commit message guidelines
+    > See `CONTRIBUTING.md` for commit message guidelines
 3. Push to `origin <BRANCH>`
 4. Create pull request to `<ORG>:<BRANCH>` from fork (origin to upstream)
 5. Have at least two team members review your pull request
-   1. _Never merge your own pull request_
+   > _Never merge your own pull request_
 6.  **✅ If Approved + Merged :**
-   1. Checkout to your local `main`
-   2. Delete your feature branch if no longer needed with `git branch -d <BRANCH>`
-   3. Pull changes from `upstream main`
-   4. Push to `origin main`
-   5. _Continue to Step 1_
+    1. Checkout to your local `main`
+    2. Delete your feature branch if no longer needed with 
+        >`git branch -d <BRANCH>`
+    3. Pull changes from `upstream main`
+    4. Push to `origin main`
+    5. _Continue to Step 1_
 7. **↩️ If Changes Requested:**
    1. Make changes on local (commit/push)
    2. _Continue to Step 5_
