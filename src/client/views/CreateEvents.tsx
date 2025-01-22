@@ -7,6 +7,8 @@ function CreateEvents() {
     const [formInfo, setFormInfo] = useState({
         interests: [],
         response: [],
+        category: '',
+        categoryResponse: '',
     });
     const [categories, setCategories] = useState([]);
     const [isChecked, setIsChecked] = useState(false);
@@ -132,12 +134,24 @@ function CreateEvents() {
 
                             {categories.map((category, index) => (
                                 <div
-                                    key={index}>
+                                    key={category.id}>
                                     {category.name}
+                                    <input
+                                        className='form-check-input'
+                                        type='checkbox'
+                                        name={category.name}
+                                        value={category.name}
+                                        onChange={checkboxHandler}
+                                        >
+                                    </input>
                                 </div>
                             ))}
 
                         </div>
+
+
+                        <div>-----(=^‥^)-----</div>
+
 
                         <div>
 
