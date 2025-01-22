@@ -10,11 +10,18 @@ signUpRouter.post('/', (req: any, res: any) => {
   const { userName, phone, selectedInterests, full_Name } = req.body;
 
   // Create the user who just signed up
-  User.create({
-    username: userName,
-    full_name: full_Name,
-    phone_number: phone,
-  })
+  User.update(
+    {
+      username: userName,
+      full_name: full_Name,
+      phone_number: phone,
+    },
+    {
+      where: {
+        google_id: req.user.google_id,
+      },
+    }
+  )
     .then(async (newUser: any) => {
       // Initialize a variable to hold the interest that
       // matches the users selected interest at each index
