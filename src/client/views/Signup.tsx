@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   Card,
@@ -25,6 +26,7 @@ import { SparklesText } from '../../components/ui/sparkletext';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 
 function Signup() {
+  const navigate = useNavigate();
   const [userName, setUserName] = useState('');
   const [full_Name, setFull_Name] = useState('');
   const [phone, setPhone] = useState('');
@@ -42,26 +44,36 @@ function Signup() {
       .post('signup/', { userName, phone, selectedInterests, full_Name })
       .then(() => {
         console.log('successful post');
+        navigate('/home')
       })
       .catch((err) => {
         console.error('error', err);
       });
   };
 
-  const addToSelectedInterests = (value) => {
+  const addToSelectedInterests = (value: string) => {
     setSelectedInterests([...selectedInterests, value]);
   };
 
-  const removeFromSelectedInterests = (value) => {
+  const removeFromSelectedInterests = async (value: string) => {
+    console.log(value, 'removing this');
+    let backToInterests;
     const updatedInterests = selectedInterests.filter((item, i) => {
-      item !== value;
+      if (item === value) {
+        backToInterests = value;
+      }
+      return item !== value;
     });
-    setSelectedInterests(updatedInterests);
+    console.log(updatedInterests, 'updated');
+    setInterests([...interests, backToInterests]);
+    await setSelectedInterests(updatedInterests);
   };
   const hideMe = (e: any) => {
     console.log(e);
+    // e.preventDefault();
     e.target.style.display = 'none';
     const value = e.target.innerText;
+    console.log(value, 'its value');
     e.target.name !== 'selectedInterest'
       ? addToSelectedInterests(value)
       : removeFromSelectedInterests(value);
@@ -155,15 +167,16 @@ function Signup() {
                   </div>
                   <CardHeader>
                     <CardTitle>Your Selected Interests</CardTitle>
-                    <CardDescription>
+                    <CardFooter>
                       <div>
-                        {selectedInterests.map((interest) => (
+                        {selectedInterests.map((interest, i) => (
                           <Button
                             style={{
                               display: 'inline-block',
                               float: 'left',
                               maxWidth: 'fit-content',
                             }}
+                            key={Math.random()}
                             name="selectedInterest"
                             onClick={hideMe}
                             type="button"
@@ -172,7 +185,7 @@ function Signup() {
                           </Button>
                         ))}
                       </div>
-                    </CardDescription>
+                    </CardFooter>
                   </CardHeader>
                   <RainbowButton type="submit" value="Submit">
                     {' '}
@@ -189,11 +202,3 @@ function Signup() {
 }
 
 export default Signup;
-/*
-
-//////////////////////////////////////////
-
-
-
-
-*/
