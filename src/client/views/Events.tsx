@@ -80,17 +80,6 @@ function Events() {
     }
   };
 
-  const getEvents = () => {
-    axios
-      .get('/api/event')
-      .then(({ data }) => {
-        setEvents(data);
-      })
-      .catch((err: unknown) => {
-        console.error('Failed to getEvents:', err);
-      });
-  };
-
   const getAttendEvents = () => {
     axios
       .get('/api/event/attend')
@@ -102,20 +91,31 @@ function Events() {
       });
   };
 
+  const getEvents = () => {
+    axios
+      .get('/api/event')
+      .then(({ data }) => {
+        setEvents(data);
+      })
+      .then(getAttendEvents)
+      .catch((err: unknown) => {
+        console.error('Failed to getEvents:', err);
+      });
+  };
+
   useEffect(() => {
     getGeoLocation();
     getEvents();
-    getAttendEvents();
-  }, []);
+  });
 
   console.log(attendingEvents);
 
   return (
     <div className="container mx-auto px-4 content-center">
       <h1 className="text-2xl font-bold text-center">Events In Your Area</h1>
-      <EventsList events={events} />
+      <EventsList events={events} getEvents={getEvents} />
       <h1 className="text-2xl font-bold text-center">Events Attending</h1>
-      <AttendingEventsList events={attendingEvents} />
+      <AttendingEventsList events={attendingEvents} getEvents={getEvents} />
     </div>
   );
 }
