@@ -10,7 +10,6 @@ import {
 interface TaskDisplayProps {
   // user: object;
 }
-const types: String[] = ['Action', 'Fun', 'Duo', 'Normal', 'Rejection Therapy'];
 function TaskDisplay() {
   return (
     <Card>
