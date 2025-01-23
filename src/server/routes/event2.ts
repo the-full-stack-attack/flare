@@ -102,7 +102,12 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
 */
 event2Router.patch('/attending/:id', async (req: any, res: Response) => {
   try {
-    const userEvent: any = await User_Event.findByPk(req.params.id);
+    const userEvent: any = await User_Event.findOne({
+      where: {
+        UserId: req.user.id,
+        EventId: req.params.id,
+      },
+    });
     userEvent.user_attending = !userEvent.user_attending;
     await userEvent.save();
     res.sendStatus(200);
