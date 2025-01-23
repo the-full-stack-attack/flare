@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { Router, Request, Response } from 'express';
 import Event from '../db/models/events';
 import User_Event from '../db/models/users_events';
@@ -24,7 +25,7 @@ const event2Router = Router();
 */
 event2Router.get('/', (req: Request, res: Response) => {
   // Query DB for all event objects & send them back to the user
-  Event.findAll()
+  Event.findAll({ where: { start_time: { [Op.gt]: new Date(Date.now()) } } })
     .then((events: object[]) => {
       res.status(200);
       res.send(events);
@@ -67,7 +68,6 @@ event2Router.post('/attend/:id', (req: any, res: Response) => {
   GET /api/event/attend => Retrieve all events the user is attending from the User_Events table
 */
 event2Router.get('/attend', (req: any, res: Response) => {
-  // Query the User_Events table for all of the user's attended events; include Events
   User.findOne({
     where: {
       id: req.user.id,
