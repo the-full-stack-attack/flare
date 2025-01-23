@@ -2,6 +2,20 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 
+type EventData = {
+    title: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+    venue: string;
+    interests: string[];
+    category: string;
+}
+
+
+
 function CreateEvents() {
     const [formInfo, setFormInfo] = useState({
         title: '',
@@ -12,10 +26,7 @@ function CreateEvents() {
         endTime: '',
         venue: '',
         interests: [],
-        interestsRes: [],
         category: '',
-        categoryRes: '',
-
     });
     const [categories, setCategories] = useState([]);
     const [interests, setInterests] = useState([]);
@@ -56,7 +67,7 @@ function CreateEvents() {
 
                 // If checkbox is not active (user deselects)
             } else {
-                // Update State
+                // Update State - remove unchecked interest
                 setFormInfo(prevState => ({
                     ...prevState,
                     interests: interests.filter(
