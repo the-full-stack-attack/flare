@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
-import { database } from '../index';
-import { User } from './users';
+import database from '../index';
+import User from './users';
 
 const Conversation = database.define(
   'Conversation',
@@ -25,9 +25,11 @@ const Conversation = database.define(
   },
   {
     timestamps: true,
-    tablename: 'Conversations',
+    tableName: 'Conversations',
   }
 );
 
 Conversation.belongsTo(User, { foreignKey: 'user_id' });
 User.hasMany(Conversation, { foreignKey: 'user_id' });
+
+export default Conversation;
