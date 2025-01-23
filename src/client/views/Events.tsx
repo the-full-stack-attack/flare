@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+import EventsList from '../components/events-view/EventsList';
+
 type GeoPosition = {
   coords: {
     latitude: number;
@@ -57,7 +59,7 @@ function Events() {
 
   const getEvents = () => {
     axios
-      .get('/event')
+      .get('/api/event')
       .then(({ data }) => {
         setEvents(data);
       })
@@ -74,16 +76,7 @@ function Events() {
   return (
     <div className="container mx-auto px-4 content-center">
       <h1 className="text-2xl font-bold text-center">Events In Your Area</h1>
-      <ul className="container content-center">
-        {events.map((event: EventData) => (
-          <li key={event.id} className="text-lg text-center">
-            <p className="text-lg text-center">{event.title}</p>
-            <button type="button" className="border-black">
-              Attend
-            </button>
-          </li>
-        ))}
-      </ul>
+      <EventsList events={events} />
       <h1 className="text-2xl font-bold text-center">Events Attending</h1>
     </div>
   );
