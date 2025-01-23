@@ -5,25 +5,11 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import session from 'express-session';
 import passport from 'passport';
 import dotenv from 'dotenv';
-import routes from './routes/index';
 
+import apiRouter from './api';
 import User from './db/models/users';
 
 const app = express();
-const {
-  aiRouter,
-  aiConversationRouter,
-  aiTaskRouter,
-  avatarRouter,
-  chatRouter,
-  chatroomRouter,
-  flareRouter,
-  eventRouter,
-  event2Router,
-  userRouter,
-  taskRouter,
-  signUpRouter,
-} = routes;
 
 dotenv.config();
 
@@ -71,18 +57,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/ai', aiRouter);
-app.use('/aiConversation', aiConversationRouter);
-app.use('/aiTask', aiTaskRouter);
-app.use('/avatar', avatarRouter);
-app.use('/chat', chatRouter);
-app.use('/chatroom', chatroomRouter);
-app.use('/flare', flareRouter);
-app.use('/event', eventRouter);
-app.use('/event', event2Router);
-app.use('/task', taskRouter);
-app.use('/user', userRouter);
-app.use('/signup', signUpRouter);
+// For all router endpoints, start with /api
+app.use('/api', apiRouter);
 
 passport.use(
   new GoogleStrategy(
