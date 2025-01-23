@@ -24,6 +24,9 @@ if (process.env.DEVELOPMENT === 'true') {
         io.on('connection', (socket) => {
           console.log('a user connected');
           // Handle socket events here
+          socket.on('disconnect', () => {
+            console.log('user disconnected');
+        });
         });
 
         server.listen(4000, () => {
