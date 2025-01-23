@@ -1,6 +1,6 @@
-
 import { Router, Request, Response } from 'express';
-const { Event } = require('../db/models/index.ts');
+import Event from '../db/models/events';
+import User_Event from '../db/models/users_events';
 
 const event2Router = Router();
 
@@ -19,7 +19,7 @@ const event2Router = Router();
 // };
 
 /*
-  GET /event => Retrieve all events from the database (filter for events near user in future)
+  GET /api/event => Retrieve all events from the database (filter for events near user in future)
 */
 event2Router.get('/', (req: Request, res: Response) => {
   // Query DB for all event objects
@@ -36,5 +36,39 @@ event2Router.get('/', (req: Request, res: Response) => {
     });
 });
 
-export default event2Router;
+/*
+  POST /api/event/attend => Creates a new entry in the User_Tasks table:
+    - Tracks the events a user is attending
+    - req.user => { id } (user_id)
+    - req.params => { id } (event_id)
+*/
+event2Router.post('/attend/:id', (req: any, res: Response) => {
+  // Build object to query and insert new data into the database
+  const UserId = req.user.id;
+  const EventId = req.params.id;
 
+  // Query the User_Events table and insert the newAttendEvent
+  User_Event.findOrCreate({
+    where: { UserId, EventId },
+    defaults: { UserId, EventId },
+  })
+    // Success
+    .then(() => {
+      // Send Status: 201
+      res.sendStatus(201);
+    })
+    // Failue, log error and send Status: 500
+    .catch((err: unknown) => {
+      console.error('Failed to findOrCreate User_Event:', err);
+      res.sendStatus(500);
+    });
+});
+
+/*
+  GET /api/event/attend
+*/
+event2Router.post('/attend', (req: Request, res: Response) => {
+
+});
+
+export default event2Router;
