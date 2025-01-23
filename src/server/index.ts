@@ -27,6 +27,12 @@ if (process.env.DEVELOPMENT === 'true') {
           socket.on('disconnect', () => {
             console.log('user disconnected');
         });
+
+        socket.on('message', (msg) => {
+          console.log('message: ' + msg);
+          io.emit('message', msg);
+      });
+      
         });
 
         server.listen(4000, () => {

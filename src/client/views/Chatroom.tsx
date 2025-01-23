@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Button } from '../../components/ui/button';
 
 const socket = io('http://localhost:4000');
 
@@ -13,6 +16,13 @@ function Chatroom() {
     });
   }, []);
 
+  useEffect(() => {
+    socket.on('message', (msg) => {
+        console.log('message received: ' + msg);
+        // Update UI with the new message
+    });
+}, []);
+
   const sendMessage = () => {
     socket.emit('message', message);
     setMessage('');
@@ -20,12 +30,13 @@ function Chatroom() {
 
   return (
     <div>
-      <input
+      <Label> Oi, put a message in stinky!</Label>
+      <Input
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <button onClick={sendMessage}>Send</button>
+      <Button onClick={sendMessage}>Send</Button>
     </div>
   );
 }
