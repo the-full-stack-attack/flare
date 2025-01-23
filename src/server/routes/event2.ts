@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import Event from '../db/models/events';
 import User_Event from '../db/models/users_events';
+import User from '../db/models/users';
 
 const event2Router = Router();
 
@@ -65,8 +66,21 @@ event2Router.post('/attend/:id', (req: any, res: Response) => {
 /*
   GET /api/event/attend => Retrieve all events the user is attending from the User_Events table
 */
-event2Router.get('/attend', (req: Request, res: Response) => {
-  
+event2Router.get('/attend', (req: any, res: Response) => {
+  // Query the User_Events table for all of the user's attended events; include Events
+  User.findOne({
+    where: {
+      id: req.user.id,
+    },
+    include: Event,
+  })
+    .then((data) => {
+      res.status(200);
+      res.send(data?.dataValues.Events);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to GET /api/event/attend', err);
+    });
 });
 
 export default event2Router;
