@@ -110,5 +110,4 @@ event2Router.patch('/attending/:id', async (req: any, res: Response) => {
     console.error('Failed to PATCH /api/event/attend/:id', err);
   }
 });
-
 export default event2Router;
