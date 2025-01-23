@@ -11,6 +11,7 @@ import {Sequelize} from 'sequelize';
 import database from '../db/index';
 import Event_Category from '../db/models/events_categories';
 import Event_Interest from '../db/models/events_interests';
+import Interest from '../db/models/interests';
 
 const eventRouter = Router();
 // Coltron
@@ -24,7 +25,6 @@ eventRouter.post('/', async (req: any, res: any) => {
     const address = 'test address 1234st.';
     console.log(userId);
 
-
     try {
 
         const result = await database.transaction(async t => { // docs have sequelize but its really instance name >.<
@@ -35,6 +35,12 @@ eventRouter.post('/', async (req: any, res: any) => {
                 {transaction: t},
             )
 
+            const assignCategory = await Category.findOne({
+                    where: {name: category}
+                }, {transaction: t}
+            );
+
+
             const newEvent = await Event.create({
                     title: title,
                     start_time: startTime,
@@ -42,6 +48,7 @@ eventRouter.post('/', async (req: any, res: any) => {
                     address: address,
                     description: description,
                     venue_id: newVenue.id,
+                    category_id: assignCategory.id
                 },
                 {transaction: t},
             );
@@ -50,11 +57,13 @@ eventRouter.post('/', async (req: any, res: any) => {
                 {transaction: t}
             );
 
-            await newEvent.setCategory(category,
-                {transaction: t}
+            const findInterest = await Interest.findAll({
+                    where: {name: interests}
+                }, {transaction: t}
             );
 
-            await newEvent.setInterests(interests,
+
+            await newEvent.setInterests(findInterest,
                 {transaction: t}
             );
 
@@ -71,7 +80,6 @@ eventRouter.post('/', async (req: any, res: any) => {
             );
         })
         res.sendStatus(200);
-
 
 
     } catch (error) {
