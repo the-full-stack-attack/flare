@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import Event from '../db/models/events';
 import User_Event from '../db/models/users_events';
+import User from '../db/models/users';
 
 const event2Router = Router();
 
@@ -22,14 +23,12 @@ const event2Router = Router();
   GET /api/event => Retrieve all events from the database (filter for events near user in future)
 */
 event2Router.get('/', (req: Request, res: Response) => {
-  // Query DB for all event objects
+  // Query DB for all event objects & send them back to the user
   Event.findAll()
-    // Success: set Status: 200 & send the array of event objects
     .then((events: object[]) => {
       res.status(200);
       res.send(events);
     })
-    // Failure: Log error & send Status: 500
     .catch((err: Error) => {
       console.error('Failed to GET /events:', err);
       res.sendStatus(500);
@@ -43,21 +42,21 @@ event2Router.get('/', (req: Request, res: Response) => {
     - req.params => { id } (event_id)
 */
 event2Router.post('/attend/:id', (req: any, res: Response) => {
-  // Build object to query and insert new data into the database
+  // UserId and EventId are needed to create new entry ing User_Tasks table
   const UserId = req.user.id;
   const EventId = req.params.id;
 
-  // Query the User_Events table and insert the newAttendEvent
+  /*
+    Query the User_Events table and insert the new Attended Event
+      - findOrCreate is being used to avoid duplicate entries.
+  */
   User_Event.findOrCreate({
     where: { UserId, EventId },
     defaults: { UserId, EventId },
   })
-    // Success
     .then(() => {
-      // Send Status: 201
       res.sendStatus(201);
     })
-    // Failue, log error and send Status: 500
     .catch((err: unknown) => {
       console.error('Failed to findOrCreate User_Event:', err);
       res.sendStatus(500);
@@ -65,10 +64,23 @@ event2Router.post('/attend/:id', (req: any, res: Response) => {
 });
 
 /*
-  GET /api/event/attend
+  GET /api/event/attend => Retrieve all events the user is attending from the User_Events table
 */
-event2Router.post('/attend', (req: Request, res: Response) => {
-
+event2Router.get('/attend', (req: any, res: Response) => {
+  // Query the User_Events table for all of the user's attended events; include Events
+  User.findOne({
+    where: {
+      id: req.user.id,
+    },
+    include: Event,
+  })
+    .then((data) => {
+      res.status(200);
+      res.send(data?.dataValues.Events);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to GET /api/event/attend', err);
+    });
 });
 
 export default event2Router;
