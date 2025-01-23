@@ -30,7 +30,7 @@ function Signup() {
       `username ${userName}, \n full name ${full_Name}, \n phone ${phone}, \n selected Interests ${selectedInterests}`
     );
     axios
-      .post('signup/', { userName, phone, selectedInterests, full_Name })
+      .post('api/signup/', { userName, phone, selectedInterests, full_Name })
       .then(() => {
         navigate('/Dashboard');
       })
@@ -67,7 +67,7 @@ function Signup() {
   // Gets all interests
   useEffect(() => {
     axios
-      .get('signup/interests')
+      .get('api/signup/interests')
       .then((interestNames: any) => {
         setInterests([...interests, ...interestNames.data]);
       })
