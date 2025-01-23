@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import EventsList from '../components/events-view/EventsList';
-import AttendingEventsList from '../components/events-view/AttendingEventsList';
 
 type GeoPosition = {
   coords: {
@@ -28,21 +27,7 @@ type EventData = {
   chatroom_id: number;
   createdAt: Date;
   updatedAt: Date;
-};
-
-type AttendingEventData = {
-  id: number;
-  title: string;
-  start_time: Date;
-  end_time: Date;
-  address: string;
-  description: string;
-  venue_id: number;
-  created_by: number;
-  chatroom_id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  User_Event: {
+  User_Event?: {
     user_attending: boolean;
   };
 };
@@ -58,9 +43,9 @@ function Events() {
   const [events, setEvents] = useState<EventData[]>([]);
 
   // Events the user can attend will be stored in state on page load
-  const [attendingEvents, setAttendingEvents] = useState<AttendingEventData[]>(
-    []
-  );
+  const [attendingEvents, setAttendingEvents] = useState<EventData[]>([]);
+
+  const [bailedEvents, setBailedEvents] = useState<EventData[]>([]);
 
   const getGeoLocation = () => {
     const success = (position: GeoPosition) => {
@@ -82,9 +67,24 @@ function Events() {
 
   const getAttendEvents = () => {
     axios
-      .get('/api/event/attend')
+      .get('/api/event/attend/true')
       .then(({ data }) => {
-        setAttendingEvents(data);
+        if (data) {
+          setAttendingEvents(data);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to getAttendEvents:', err);
+      });
+  };
+
+  const getBailedEvents = () => {
+    axios
+      .get('/api/event/attend/false')
+      .then(({ data }) => {
+        if (data) {
+          setBailedEvents(data);
+        }
       })
       .catch((err: unknown) => {
         console.error('Failed to getAttendEvents:', err);
@@ -98,6 +98,7 @@ function Events() {
         setEvents(data);
       })
       .then(getAttendEvents)
+      .then(getBailedEvents)
       .catch((err: unknown) => {
         console.error('Failed to getEvents:', err);
       });
@@ -106,16 +107,26 @@ function Events() {
   useEffect(() => {
     getGeoLocation();
     getEvents();
-  });
+  }, []);
 
   console.log(attendingEvents);
 
   return (
     <div className="container mx-auto px-4 content-center">
       <h1 className="text-2xl font-bold text-center">Events In Your Area</h1>
-      <EventsList events={events} getEvents={getEvents} />
+      <EventsList events={events} getEvents={getEvents} category="upcoming" />
       <h1 className="text-2xl font-bold text-center">Events Attending</h1>
-      <AttendingEventsList events={attendingEvents} getEvents={getEvents} />
+      <EventsList
+        events={attendingEvents}
+        getEvents={getEvents}
+        category="attending"
+      />
+      <h1 className="text-2xl font-bold text-center">Events Bailed</h1>
+      <EventsList
+        events={bailedEvents}
+        getEvents={getEvents}
+        category="bailed"
+      />
     </div>
   );
 }
