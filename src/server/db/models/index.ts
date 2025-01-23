@@ -16,6 +16,7 @@ import User_Flare from './users_flares';
 import Notification from './notifications';
 import User_Notification from './users_notifications';
 import Text from './texts';
+import Conversation from './conversations';
 
 export default {
   User,
@@ -36,4 +37,5 @@ export default {
   Notification,
   User_Notification,
   Text,
+  Conversation,
 };
