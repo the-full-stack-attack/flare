@@ -16,13 +16,14 @@ type EventsListProps = {
     createdAt: Date;
     updatedAt: Date;
   }[];
+  getEvents: () => void;
 };
 
-function EventsList({ events }: EventsListProps) {
+function EventsList({ events, getEvents }: EventsListProps) {
   return (
     <ul className="container content-center">
       {events.map((event) => (
-        <Event key={event.id} event={event} />
+        <Event key={event.id} event={event} getEvents={getEvents} />
       ))}
     </ul>
   );

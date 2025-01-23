@@ -19,15 +19,16 @@ type AttendingEventsListProps = {
       user_attending: boolean;
     };
   }[];
+  getEvents: () => void;
 };
 
-function AttendingEventsList({ events }: AttendingEventsListProps) {
+function AttendingEventsList({ events, getEvents }: AttendingEventsListProps) {
   return (
     <ul className="container content-center">
       {events
         .filter((event) => event.User_Event.user_attending)
         .map((event) => (
-          <AttendingEvent key={event.id} event={event} />
+          <AttendingEvent key={event.id} event={event} getEvents={getEvents} />
         ))}
     </ul>
   );

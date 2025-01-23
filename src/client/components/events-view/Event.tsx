@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 import { Button } from '../../../components/ui/button';
 import {
@@ -25,15 +26,14 @@ type EventProps = {
     createdAt: Date;
     updatedAt: Date;
   };
+  getEvents: () => void;
 };
 
-function Event({ event }: EventProps) {
+function Event({ event, getEvents }: EventProps) {
   const postAttendEvent = () => {
     axios
       .post(`/api/event/attend/${event.id}`)
-      .then(() => {
-        console.log('User attending event.');
-      })
+      .then(getEvents)
       .catch((err: unknown) => {
         console.error('Failed to postAttendEvent:', err);
       });
@@ -44,6 +44,7 @@ function Event({ event }: EventProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg text-center">{event.title}</CardTitle>
+          <CardDescription>{`${dayjs(event.start_time).format('MMMM D [--] h:mm A')} - ${dayjs(event.end_time).format('h:mm A')}`}</CardDescription>
         </CardHeader>
         <CardContent>
           <div>

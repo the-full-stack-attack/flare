@@ -28,15 +28,14 @@ type AttendingEventProps = {
       user_attending: boolean;
     };
   };
+  getEvents: () => void;
 };
 
-function AttendingEvent({ event }: AttendingEventProps) {
+function AttendingEvent({ event, getEvents }: AttendingEventProps) {
   const postAttendEvent = () => {
     axios
       .post(`/api/event/attend/${event.id}`)
-      .then(() => {
-        console.log('User attending event.');
-      })
+      .then(getEvents)
       .catch((err: unknown) => {
         console.error('Failed to postAttendEvent:', err);
       });
