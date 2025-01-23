@@ -65,14 +65,14 @@ aiConversationRouter.post('/', async (req: Request, res: Response) => {
     });
 
     // Send the response to the client
-    return res.status(201).json({
+    res.status(201).json({
       conversation: newConversation,
       structured: parsedJson,
     });
     // Log any errors
   } catch (error) {
     console.error('[aiConversationRouter] Error =>', error);
-    return res.sendStatus(500);
+    res.sendStatus(500);
   }
 });
 
