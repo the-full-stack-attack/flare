@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 import { Button } from '../../../components/ui/button';
 import {
@@ -46,6 +47,7 @@ function AttendingEvent({ event, getEvents }: AttendingEventProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg text-center">{event.title}</CardTitle>
+          <CardDescription>{`${dayjs(event.start_time).format('MMMM D [--] h:mm A')} - ${dayjs(event.end_time).format('h:mm A')}`}</CardDescription>
         </CardHeader>
         <CardContent>
           <div>
