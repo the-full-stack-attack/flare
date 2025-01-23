@@ -27,9 +27,16 @@ function CreateEvents() {
             [name]: value,
         }));
     }
-    const onSubmit = () => {
-
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            console.log('this is formdata', formInfo);
+            await axios.post('/api/event', formInfo);
+        } catch (error) {
+            console.error('Error creating event', error);
+        }
     }
+
 
     const checkboxHandler = (e) => {
         const {value, checked} = e.target;
@@ -86,7 +93,7 @@ function CreateEvents() {
 
     const getInterests = async () => {
         try {
-            const allInterests = await axios.get('/signup/interests')
+            const allInterests = await axios.get('/api/signup/interests')
             setInterests(allInterests.data);
         } catch (error) {
             console.error('Error getting interests from DB', error);
@@ -95,7 +102,7 @@ function CreateEvents() {
 
     const getCategories = async () => {
         try {
-            const allCategories = await axios.get('/event/categories');
+            const allCategories = await axios.get('/api/event/categories');
             setCategories(allCategories.data);
         } catch (error) {
             console.error('Error getting categories from DB', error);
@@ -111,10 +118,14 @@ function CreateEvents() {
         console.log(`
         Form Info: \n 
         Title = ${formInfo.title} \n
-        
+        Description = ${formInfo.description} \n
+        Start Time = ${formInfo.startTime} \n
+        End Time = ${formInfo.endTime} \n
+        Start Date = ${formInfo.startDate} \n
+        End Date = ${formInfo.endDate} \n
+        Venue = ${formInfo.venue} \n
         Interests = ${formInfo.interestsRes} \n 
         Category = ${formInfo.categoryRes}
-        
         `);
 
     }, [formInfo])
@@ -183,7 +194,9 @@ function CreateEvents() {
                         </label>
                         <label>Venue
                             <input
-                                name='event-venue'
+                                name='venue'
+                                value={formInfo.venue}
+                                onChange={handleChange}
                                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                         </label>
                         <div>
