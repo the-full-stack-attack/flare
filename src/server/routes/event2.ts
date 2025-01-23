@@ -6,20 +6,6 @@ import User from '../db/models/users';
 
 const event2Router = Router();
 
-// type EventData = {
-//   id: number;
-//   title: string;
-//   start_time: Date;
-//   end_time: Date;
-//   address: string;
-//   description: string;
-//   venue_id: number;
-//   created_by: number;
-//   chatroom_id: number;
-//   createdAt: Date;
-//   updatedAt: Date;
-// };
-
 /*
   GET /api/event => Retrieve all events from the database (filter for events near user in future)
 */
