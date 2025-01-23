@@ -25,17 +25,30 @@ type EventProps = {
     chatroom_id: number;
     createdAt: Date;
     updatedAt: Date;
+    User_Event?: {
+      user_attending: boolean;
+    };
   };
   getEvents: () => void;
+  category: string;
 };
 
-function Event({ event, getEvents }: EventProps) {
+function Event({ event, getEvents, category }: EventProps) {
   const postAttendEvent = () => {
     axios
       .post(`/api/event/attend/${event.id}`)
       .then(getEvents)
       .catch((err: unknown) => {
         console.error('Failed to postAttendEvent:', err);
+      });
+  };
+
+  const patchAttendingEvent = () => {
+    axios
+      .patch(`/api/event/attending/${event.id}`)
+      .then(getEvents)
+      .catch((err: unknown) => {
+        console.error('Failed to patchAttendingEvent', err);
       });
   };
 
@@ -52,9 +65,21 @@ function Event({ event, getEvents }: EventProps) {
           </div>
         </CardContent>
         <CardFooter className="justify-end">
-          <Button className="" onClick={postAttendEvent}>
-            Attend
-          </Button>
+          {category === 'upcoming' ? (
+            <Button className="" onClick={postAttendEvent}>
+              Attend
+            </Button>
+          ) : null}
+          {category === 'attending' ? (
+            <Button className="" onClick={patchAttendingEvent}>
+              Bail
+            </Button>
+          ) : null}
+          {category === 'bailed' ? (
+            <Button className="" onClick={patchAttendingEvent}>
+              Re-attend
+            </Button>
+          ) : null}
         </CardFooter>
       </Card>
     </li>
