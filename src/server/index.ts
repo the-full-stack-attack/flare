@@ -8,6 +8,7 @@ import database from './db/index';
 import('./db/index');
 
 const PORT = 4000;
+// let SOCKET_LIST = {};
 
 if (process.env.DEVELOPMENT === 'true') {
   database
@@ -23,16 +24,20 @@ if (process.env.DEVELOPMENT === 'true') {
         // Register event listeners for Socket.IO
         io.on('connection', (socket) => {
           console.log('a user connected');
+          // socket.id = Math.random();
+          // socket.x = 0;
+          // socket.y = 0;
+          // SOCKET_LIST[socket.id] = socket;
           // Handle socket events here
           socket.on('disconnect', () => {
             console.log('user disconnected');
-        });
+          });
 
-        socket.on('message', (msg) => {
-          console.log('message: ' + msg);
-          io.emit('message', msg);
-      });
-      
+          socket.on('message', (msg) => {
+            console.log('message: ' + msg);
+            io.emit('message', msg);
+          });
+
         });
 
         server.listen(4000, () => {
@@ -56,3 +61,15 @@ if (process.env.DEVELOPMENT === 'true') {
 
   https.createServer(options, app).listen(443);
 }
+
+// setInterval(() => {
+//   for(let key in SOCKET_LIST){
+//     const socket = SOCKET_LIST[key];
+//     socket.x++;
+//     socket.y++;
+//     socket.emit('newPosition', {
+//       x: socket.x,
+//       y:socket.y
+//     });
+//   }
+// }, 1000/25) 
