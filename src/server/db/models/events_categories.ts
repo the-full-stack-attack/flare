@@ -8,7 +8,5 @@ const Event_Category = database.define('Event_Category', {
     category_id: { type: Sequelize.INTEGER, },
 });
 
-Event.belongsToMany(Category, { through: Event_Category });
-Category.belongsToMany(Event, { through: Event_Category});
 
 export default Event_Category;

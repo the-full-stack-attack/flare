@@ -5,8 +5,12 @@ import {Router, Request, Response} from 'express';
 import Category from '../db/models/categories';
 import User from '../db/models/users';
 import Event from '../db/models/events';
-import Venue from '../db/models/events';
-import Chatroom from '../db/models/events';
+import Venue from '../db/models/venues';
+import Chatroom from '../db/models/chatrooms';
+import {Sequelize} from 'sequelize';
+import database from '../db/index';
+import Event_Category from '../db/models/events_categories';
+import Event_Interest from '../db/models/events_interests';
 
 const eventRouter = Router();
 // Coltron
@@ -21,41 +25,54 @@ eventRouter.post('/', async (req: any, res: any) => {
     console.log(userId);
 
 
-
     try {
 
-        const newVenue = await Venue.create({
-            name: venue,
-            description: 'test venue description',
-        });
+        const result = await database.transaction(async t => { // docs have sequelize but its really instance name >.<
+            const newVenue = await Venue.create({
+                    name: venue,
+                    description: 'test venue description :{',
+                },
+                {transaction: t},
+            )
 
-        const chatroom = await Chatroom.create({
-            map: null,
-            event_id: null,
-        });
+            const newEvent = await Event.create({
+                    title: title,
+                    start_time: startTime,
+                    end_time: endTime,
+                    address: address,
+                    description: description,
+                    venue_id: newVenue.id,
+                },
+                {transaction: t},
+            );
+
+            await newEvent.setVenue(newVenue,
+                {transaction: t}
+            );
+
+            await newEvent.setCategory(category,
+                {transaction: t}
+            );
+
+            await newEvent.setInterests(interests,
+                {transaction: t}
+            );
 
 
-        console.log('actual content: ', req.body);
-        console.log('req.user', req.user);
-        console.log('this should be user id too: ', userId);
-        const newEvent = await Event.create({
-            title: title,
-            start_time: startTime,
-            end_time: endTime,
-            address: address,
-            description: description,
-            venue_id: newVenue.id,
-        });
+            const chatroom = await Chatroom.create({
+                    map: null,
+                    event_id: null,
+                },
+                {transaction: t}
+            );
 
-        await chatroom.update({
-            event_id: newEvent.event_id,
-        });
-        await newEvent.update({
-            chatroom_id: chatroom.id,
-        });
-
-
+            await chatroom.setEvent(newEvent,
+                {transaction: t}
+            );
+        })
         res.sendStatus(200);
+
+
 
     } catch (error) {
         console.error('Error adding new event to DB', error);
