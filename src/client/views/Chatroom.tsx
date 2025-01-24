@@ -37,25 +37,25 @@ function Chatroom() {
     graphics?.fill();
   }, []);
 
+  // Temporary variables for collision detection testing
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
+
+  // An array of every player connected to the chatroom
   const [allPlayers, setAllPlayers] = useState([]);
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   // const app = useApp();
-  useEffect(() => {
-    socket.emit('joinChat');
-  }, []);
 
   useEffect(() => {
+    // Player has joined chat
+    socket.emit('joinChat');
     socket.on('message', (msg) => {
       console.log('message received: ' + msg);
       // Update UI with the new message
     });
-  }, []);
-
-  useEffect(() => {
+    // Update state of all players and their respective positions
     socket.on('newPositions', (data) => {
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
@@ -74,6 +74,7 @@ function Chatroom() {
     setMessage('');
   };
 
+  // When the player is typing, remove event listeners for movement
   useEffect(() => {
     console.log('isTyping changed to', isTyping);
   }, [isTyping]);
@@ -94,27 +95,22 @@ function Chatroom() {
     };
   }, [isTyping]);
 
+  // Changes when div containing typing is clicked
   const typing = async () => {
-    console.log('typin');
     await setIsTyping(!isTyping);
   };
 
+  // Controls movement by updating the state on the server
   const keyPress = ({ key }) => {
     if (isTyping === false) {
-      console.log(isTyping);
-      console.log('the key ', key);
-      if (key === 'ArrowUp' || key === 'w') {
-        // up
+      if (key === 'ArrowUp' || key === 'w') { 
         console.log('emitted');
         socket.emit('keyPress', { inputId: 'Up', state: true });
-      } else if (key === 'ArrowDown' || key === 's') {
-        // down
+      } else if (key === 'ArrowDown' || key === 's') { 
         socket.emit('keyPress', { inputId: 'Down', state: true });
-      } else if (key === 'ArrowLeft' || key === 'a') {
-        // left
+      } else if (key === 'ArrowLeft' || key === 'a') { 
         socket.emit('keyPress', { inputId: 'Left', state: true });
-      } else if (key === 'ArrowRight' || key === 'd') {
-        // right
+      } else if (key === 'ArrowRight' || key === 'd') { 
         socket.emit('keyPress', { inputId: 'Right', state: true });
       }
     }
@@ -137,6 +133,7 @@ function Chatroom() {
     }
   };
 
+
   return (
     <div>
       <div>
@@ -155,9 +152,6 @@ function Chatroom() {
                 key={player.id}
               />
             ))}
-            {/* <pixiSprite
-       
-        ></pixiSprite> */}
           </pixiContainer>
         </Application>
       </div>
