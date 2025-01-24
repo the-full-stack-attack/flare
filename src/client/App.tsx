@@ -1,4 +1,5 @@
-import React, { useState, createContext, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import axios from 'axios';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import {
   AiConversations,
@@ -13,33 +14,10 @@ import {
 import NavBar from './components/NavBar';
 import './styles/main.css';
 
-interface User {
-  id: number;
-  username?: string;
-  google_id?: string;
-  email?: string;
-  full_name?: string;
-  phone_number?: string;
-  tasks_complete?: number;
-  events_attended?: number;
-  location?: string;
-  avatar_id?: number;
-  avatar_shirt?: string;
-  avatar_pants?: string;
-}
-
-type UserContextType = {
-  user: User;
-  setUser: (user: User) => void;
-};
-
-const UserContext = createContext<UserContextType>({
-  user: { id: 0 },
-  setUser: () => {},
-});
+import { UserType, UserContext } from './contexts/UserContext';
 
 export default function App() {
-  const [user, setUser] = useState<User>({ id: 0 });
+  const [user, setUser] = useState<UserType>({ id: 0 });
   const userState = useMemo(
     () => ({
       user,
@@ -47,6 +25,21 @@ export default function App() {
     }),
     [user]
   );
+
+  const getUser = () => {
+    axios
+      .get('/api/user')
+      .then(({ data }: any) => {
+        setUser(data);
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to getUser:', err);
+      });
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <UserContext.Provider value={userState}>
