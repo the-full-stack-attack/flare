@@ -4,14 +4,27 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
+  CardFooter,
 } from '../../../components/ui/card';
+import TypeButton from './TypeButton';
 
+interface ChooseTaskProps {
+  // user: object;
+}
+
+const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection Therapy'];
 function ChooseTask() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Pick a Task Category</CardTitle>
       </CardHeader>
+      <CardContent>
+        Hello World
+        {types.map((type) => (
+          <TypeButton key={type} type={type} />
+        ))}
+      </CardContent>
     </Card>
   );
 }
