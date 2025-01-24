@@ -26,7 +26,7 @@ interface PlayerList {
 let SOCKET_LIST: SocketList = {};
 let PLAYER_LIST: PlayerList = {};
 
-const Player = function(id: any){
+const Player = function (id: any) {
   let self = {
     name: id,
     data: {
@@ -39,17 +39,17 @@ const Player = function(id: any){
     pressingUp: false,
     pressingDown: false,
     maxSpd: 10,
-    updatePosition: function() {
-      if(self.pressingRight){
+    updatePosition() {
+      if (self.pressingRight) {
         self.data.x += self.maxSpd;
       }
-      if(self.pressingLeft){
-        self.data.x += self.maxSpd;
+      if (self.pressingLeft) {
+        self.data.x -= self.maxSpd;
       }
-      if(self.pressingUp){
-        self.data.y += self.maxSpd;
+      if (self.pressingUp) {
+        self.data.y -= self.maxSpd;
       }
-      if(self.pressingDown){
+      if (self.pressingDown) {
         self.data.y += self.maxSpd;
       }
     }
@@ -90,18 +90,19 @@ if (process.env.DEVELOPMENT === 'true') {
           });
 
           socket.on('keyPress', (data) => {
-            if(data.inputId === 'Up'){
-            PLAYER_LIST[socket.id].pressingUp = data.state
+            console.log(data)
+            if (data.inputId === 'Up') {
+              PLAYER_LIST[socket.id].pressingUp = data.state
             }
-            if(data.inputId === 'Left'){
+            if (data.inputId === 'Left') {
               PLAYER_LIST[socket.id].pressingLeft = data.state
-              }
-              if(data.inputId === 'Right'){
-                PLAYER_LIST[socket.id].pressingRight = data.state
-                }
-                if(data.inputId === 'Down'){
-                  PLAYER_LIST[socket.id].pressingDown = data.state
-                  }
+            }
+            if (data.inputId === 'Right') {
+              PLAYER_LIST[socket.id].pressingRight = data.state
+            }
+            if (data.inputId === 'Down') {
+              PLAYER_LIST[socket.id].pressingDown = data.state
+            }
           });
 
           socket.on('message', (msg) => {

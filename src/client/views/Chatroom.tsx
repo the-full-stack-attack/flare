@@ -42,9 +42,10 @@ function Chatroom() {
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
   const [allPlayers, setAllPlayers] = useState([]);
   const [message, setMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   // const app = useApp();
   useEffect(() => {
-     socket.emit('joinChat');
+    socket.emit('joinChat');
   }, []);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ function Chatroom() {
 
   useEffect(() => {
     socket.on('newPositions', (data) => {
-      let allPlayerInfo = []
+      let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
         allPlayerInfo.push({
           id: data[i].id,
@@ -73,67 +74,102 @@ function Chatroom() {
     setMessage('');
   };
 
-  const keyPress = (e) => {
-    if(e.keyCode === 38 ){ // up
-      socket.emit('keyPress', {inputId: 'Up', state: true })
+  useEffect(() => {
+    console.log('isTyping changed to', isTyping);
+  }, [isTyping]);
+  useEffect(() => {
+    const handleInputChange = (event) => {
+      console.log('Input changed:', event.target.value);
+    };
+    if (isTyping === false) {
+      document.addEventListener('keydown', keyPress);
+      document.addEventListener('keyup', keyUp);
+    } else {
+      document.removeEventListener('keydown', keyPress);
+      document.removeEventListener('keyup', keyUp);
     }
-  if(e.keyCode === 40 ){ // down
-    socket.emit('keyPress', {inputId: 'Down', state: true })
-  }
-  if(e.keyCode === 37 ){ // left
-    socket.emit('keyPress', {inputId: 'Left', state: true })
-  }
-  if(e.keyCode === 39 ){ // right
-    socket.emit('keyPress', {inputId: 'Right', state: true })
-  } 
-  }
+    return () => {
+      document.removeEventListener('keydown', keyPress);
+      document.removeEventListener('keyup', keyUp);
+    };
+  }, [isTyping]);
 
-  const keyUp = (e) => {
-    if(e.keyCode === 38 ){ // Up
-      socket.emit('keyPress', {inputId: 'Up', state: false })
+  const typing = async () => {
+    console.log('typin');
+    await setIsTyping(!isTyping);
+  };
+
+  const keyPress = ({ key }) => {
+    if (isTyping === false) {
+      console.log(isTyping);
+      console.log('the key ', key);
+      if (key === 'ArrowUp' || key === 'w') {
+        // up
+        console.log('emitted');
+        socket.emit('keyPress', { inputId: 'Up', state: true });
+      } else if (key === 'ArrowDown' || key === 's') {
+        // down
+        socket.emit('keyPress', { inputId: 'Down', state: true });
+      } else if (key === 'ArrowLeft' || key === 'a') {
+        // left
+        socket.emit('keyPress', { inputId: 'Left', state: true });
+      } else if (key === 'ArrowRight' || key === 'd') {
+        // right
+        socket.emit('keyPress', { inputId: 'Right', state: true });
+      }
     }
-  if(e.keyCode === 40 ){ // Down
-    socket.emit('keyPress', {inputId: 'Down', state: false })
-  }
-  if(e.keyCode === 37 ){ // Left
-    socket.emit('keyPress', {inputId: 'Left', state: false })
-  }
-  if(e.keyCode === 39 ){ // Right
-    socket.emit('keyPress', {inputId: 'Right', state: false })
-  } 
-  }
+  };
+
+  const keyUp = ({ key }) => {
+    console.log('aye');
+    if (key === 'ArrowUp' || key === 'w') {
+      // Up
+      socket.emit('keyPress', { inputId: 'Up', state: false });
+    } else if (key === 'ArrowDown' || key === 's') {
+      // Down
+      socket.emit('keyPress', { inputId: 'Down', state: false });
+    } else if (key === 'ArrowLeft' || key === 'a') {
+      // Left
+      socket.emit('keyPress', { inputId: 'Left', state: false });
+    } else if (key === 'ArrowRight' || key === 'd') {
+      // Right
+      socket.emit('keyPress', { inputId: 'Right', state: false });
+    }
+  };
 
   return (
     <div>
-      <div onKeyDown={keyPress} onKeyUp={keyUp}>
+      <div>
         <Application>
           <pixiContainer x={100} y={200}>
             <pixiGraphics draw={drawCallback} />
           </pixiContainer>
           <pixiContainer x={200} y={100}>
             {allPlayers.map((player) => (
-            <pixiSprite
-              texture={Assets.get('https://pixijs.com/assets/bunny.png')}
-              x={player.x}
-              y={player.y}
-              width={20}
-              height={20}
-              key={player.id}
-            />
-          )) }
+              <pixiSprite
+                texture={Assets.get('https://pixijs.com/assets/bunny.png')}
+                x={player.x}
+                y={player.y}
+                width={20}
+                height={20}
+                key={player.id}
+              />
+            ))}
             {/* <pixiSprite
        
         ></pixiSprite> */}
           </pixiContainer>
         </Application>
       </div>
-      <Label> Oi, put a message in stinky!</Label>
-      <Input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <Button onClick={sendMessage}>Send</Button>
+      <div onClick={typing}>
+        <Label> Oi, put a message in stinky!</Label>
+        <Input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <Button onClick={sendMessage}>Send</Button>
+      </div>
     </div>
   );
 }
