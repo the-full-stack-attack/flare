@@ -27,6 +27,9 @@ type EventData = {
   chatroom_id: number;
   createdAt: Date;
   updatedAt: Date;
+  User_Event?: {
+    user_attending: boolean;
+  };
 };
 
 function Events() {
@@ -38,6 +41,11 @@ function Events() {
 
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
+
+  // Events the user can attend will be stored in state on page load
+  const [attendingEvents, setAttendingEvents] = useState<EventData[]>([]);
+
+  const [bailedEvents, setBailedEvents] = useState<EventData[]>([]);
 
   const getGeoLocation = () => {
     const success = (position: GeoPosition) => {
@@ -57,12 +65,40 @@ function Events() {
     }
   };
 
+  const getAttendEvents = () => {
+    axios
+      .get('/api/event/attend/true')
+      .then(({ data }) => {
+        if (data) {
+          setAttendingEvents(data);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to getAttendEvents:', err);
+      });
+  };
+
+  const getBailedEvents = () => {
+    axios
+      .get('/api/event/attend/false')
+      .then(({ data }) => {
+        if (data) {
+          setBailedEvents(data);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to getAttendEvents:', err);
+      });
+  };
+
   const getEvents = () => {
     axios
       .get('/api/event')
       .then(({ data }) => {
         setEvents(data);
       })
+      .then(getAttendEvents)
+      .then(getBailedEvents)
       .catch((err: unknown) => {
         console.error('Failed to getEvents:', err);
       });
@@ -73,11 +109,24 @@ function Events() {
     getEvents();
   }, []);
 
+  console.log(attendingEvents);
+
   return (
     <div className="container mx-auto px-4 content-center">
       <h1 className="text-2xl font-bold text-center">Events In Your Area</h1>
-      <EventsList events={events} />
+      <EventsList events={events} getEvents={getEvents} category="upcoming" />
       <h1 className="text-2xl font-bold text-center">Events Attending</h1>
+      <EventsList
+        events={attendingEvents}
+        getEvents={getEvents}
+        category="attending"
+      />
+      <h1 className="text-2xl font-bold text-center">Events Bailed</h1>
+      <EventsList
+        events={bailedEvents}
+        getEvents={getEvents}
+        category="bailed"
+      />
     </div>
   );
 }
