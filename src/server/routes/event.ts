@@ -1,20 +1,13 @@
 // @ts-nocheck
-
-
 import {Router, Request, Response} from 'express';
 import Category from '../db/models/categories';
-import User from '../db/models/users';
 import Event from '../db/models/events';
 import Venue from '../db/models/venues';
 import Chatroom from '../db/models/chatrooms';
-import {Sequelize} from 'sequelize';
 import database from '../db/index';
-import Event_Category from '../db/models/events_categories';
-import Event_Interest from '../db/models/events_interests';
 import Interest from '../db/models/interests';
 
 const eventRouter = Router();
-// Coltron
 
 
 eventRouter.post('/', async (req: any, res: any) => {
@@ -26,48 +19,58 @@ eventRouter.post('/', async (req: any, res: any) => {
     console.log(userId);
 
     try {
+        // Managed Transactions - if any operation fails, Sequelize will rollback automatically. Either ALL succeed or NONE succeed.
+        const result = await database.transaction(async t => {
 
-        const result = await database.transaction(async t => { // docs have sequelize but its really instance name >.<
+            // Create venue first since Event has venue_id foreign key - Event.belongsTo(Venue)
             const newVenue = await Venue.create({
                     name: venue,
                     description: 'test venue description :{',
                 },
                 {transaction: t},
-            )
-
-            const assignCategory = await Category.findOne({
-                    where: {name: category}
-                }, {transaction: t}
             );
 
-
+            // Create Event
             const newEvent = await Event.create({
                     title: title,
                     start_time: startTime,
                     end_time: endTime,
                     address: address,
                     description: description,
-                    venue_id: newVenue.id,
-                    category_id: assignCategory.id
                 },
                 {transaction: t},
             );
 
+            // Set venue_id column in Events table to newVenue.id - Event.belongsTo(Venue)
             await newEvent.setVenue(newVenue,
                 {transaction: t}
             );
 
+            // Query DB to find Category name - Event can only have one category
+            const assignCategory = await Category.findOne({
+                    where: {name: category}
+                }, {transaction: t}
+            );
+
+            // Set category_id in Event to assignCategory.id
+            await newEvent.setCategory(assignCategory,
+                {transaction: t}
+            );
+
+            // Find all matching Interests
             const findInterest = await Interest.findAll({
                     where: {name: interests}
                 }, {transaction: t}
             );
 
 
-            await newEvent.setInterests(findInterest,
+            // Update Event_Interest join table with event_id and interest_id
+            await newEvent.setInterests(findInterest, // Event.belongsToMany(Interest), which means we use setInterests vs setInterest
                 {transaction: t}
             );
 
 
+            // Create Chatroom
             const chatroom = await Chatroom.create({
                     map: null,
                     event_id: null,
@@ -75,12 +78,12 @@ eventRouter.post('/', async (req: any, res: any) => {
                 {transaction: t}
             );
 
+            // Set event_id in Chatroom to newEvent.id
             await chatroom.setEvent(newEvent,
                 {transaction: t}
             );
         })
         res.sendStatus(200);
-
 
     } catch (error) {
         console.error('Error adding new event to DB', error);
