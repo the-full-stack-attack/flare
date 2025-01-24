@@ -1,6 +1,6 @@
 import React, { JSX, useState } from 'react';
 import { motion } from 'motion/react';
-import { cn } from '../../../lib/utils';
+import cn from '../../../lib/utils';
 
 function NavBar(): JSX.Element {
   /*
@@ -39,7 +39,13 @@ function NavBar(): JSX.Element {
 
   return (
     <nav className="w-full bg-secondary text-secondary-foreground shadow-sm">
-      <div className="mx-auto flex max-w-7x1 items-center justify-between p-4">
+      <div
+        className={cn(
+          'mx-auto flex max-w-7xl items-center justify-between p-4',
+          // Example: Change background color when menu is open
+          isOpen && 'bg-primary'
+        )}
+      >
         <div className="flex items-center">
           <a
             className="text-xl font-bold tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2"
