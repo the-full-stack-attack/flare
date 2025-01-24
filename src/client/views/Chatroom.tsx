@@ -3,20 +3,14 @@ import io from 'socket.io-client';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
-import {
-  Application,
-  extend,
-} from '@pixi/react'
+import { Application, extend, Stage } from '@pixi/react'
 
-import {
+import { Container, Graphics } from 'pixi.js'
+
+extend({
   Container,
   Graphics,
-} from 'pixi.js'
-
-// extend({
-//   Container,
-//   Graphics,
-// })
+})
 
 const socket = io('http://localhost:4000');
 
@@ -32,10 +26,10 @@ function Chatroom() {
 
   useEffect(() => {
     socket.on('message', (msg) => {
-        console.log('message received: ' + msg);
-        // Update UI with the new message
+      console.log('message received: ' + msg);
+      // Update UI with the new message
     });
-}, []);
+  }, []);
 
   const sendMessage = () => {
     socket.emit('message', message);
@@ -45,6 +39,7 @@ function Chatroom() {
   return (
     <div>
       <div>
+
       </div>
       <Label> Oi, put a message in stinky!</Label>
       <Input

@@ -14,7 +14,14 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)$/,
+        test: /\.(m?js)$/,
+        type: 'javascript/auto',
+        resolve: {
+          fullySpecified: false
+        }
+      },
+      {
+        test: /\.(ts|tsx|js|jsx)$/,
         use: [
           {
             loader: 'babel-loader',
