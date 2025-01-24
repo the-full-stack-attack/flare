@@ -1,12 +1,11 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import User from '../db/models/users';
 
 const userRouter = Router();
 
 // GET request to /api/user
-userRouter.get('/', (req, res) => {
+userRouter.get('/', (req: any, res: Response) => {
   const { id } = req.user;
-  console.log(req.user);
   User.findByPk(id)
     .then((user) => {
       if (!user) {
