@@ -10,11 +10,13 @@ import {
   Home,
   Dashboard,
 } from './views/index';
+import NavBar from './components/NavBar';
 import './styles/main.css';
 
 export default function App() {
   return (
     <BrowserRouter>
+      <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="AiConversations" element={<AiConversations />} />
