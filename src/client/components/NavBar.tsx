@@ -96,6 +96,7 @@ function NavBar(): JSX.Element {
         </div>
 
         <button
+          type="button"
           aria-label="Toggle Mobile Menu"
           className="md:hidden flex items-center rounded-sm p-2 focus:outline-none focus:ring-2 focus:ring-ring"
           onClick={handleMenuToggle}
