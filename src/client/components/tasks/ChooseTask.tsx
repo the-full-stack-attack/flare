@@ -9,10 +9,12 @@ import {
 import TypeButton from './TypeButton';
 
 interface ChooseTaskProps {
-  user: object;
+  user: User;
   getUser: any;
 }
-
+type User = {
+  id: number;
+};
 const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection Therapy'];
 function ChooseTask({ user, getUser }: ChooseTaskProps) {
   return (
