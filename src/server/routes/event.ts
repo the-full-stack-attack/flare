@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {Router, Request, Response} from 'express';
 import Category from '../db/models/categories';
 import Event from '../db/models/events';
