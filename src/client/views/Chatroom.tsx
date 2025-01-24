@@ -57,10 +57,12 @@ function Chatroom() {
   }, []);
 
   useEffect(() => {
-    socket.on('newPosition', (data) => {
-      setPlayerX(data.x);
-      setPlayerY(data.y);
-      // Update UI with the new message
+    socket.on('newPositions', (data) => {
+      for(let i = 0; i < data.length; i++){
+      setPlayerX(data[i].x);
+      setPlayerY(data[i].y);
+
+    }
     });
   }, []);
 

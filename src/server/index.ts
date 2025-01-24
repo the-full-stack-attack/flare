@@ -76,13 +76,19 @@ if (process.env.DEVELOPMENT === 'true') {
 }
 
 setInterval(() => {
+  let pack = []
   for(let key in SOCKET_LIST){
     let socket = SOCKET_LIST[key];
     socket.data.x++;
     socket.data.y++;
-    socket.emit('newPosition', {
-      x: socket.data.x,
-      y: socket.data.y
-    });
+    pack.push({
+        x: socket.data.x,
+        y: socket.data.y
+    })
   }
+  for(let key in SOCKET_LIST){
+    let socket = SOCKET_LIST[key];
+  socket.emit('newPositions', pack);
+  console.log(pack.length)
+}
 }, 1000 / 25 ); 
