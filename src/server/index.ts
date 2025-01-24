@@ -35,8 +35,8 @@ if (process.env.DEVELOPMENT === 'true') {
         const io = new Server(server);
         // Register event listeners for Socket.IO
         io.on('connection', (socket) => {
-          console.log('a user connected', socket);
-          socket.data.name = Math.random();
+          console.log('a user connected', socket.id);
+          socket.data.name = socket.id
           socket.data.x = 0;
           socket.data.y = 0;
           let stringName = socket.data.name;
@@ -82,6 +82,7 @@ setInterval(() => {
     socket.data.x++;
     socket.data.y++;
     pack.push({
+        id: socket.name,
         x: socket.data.x,
         y: socket.data.y
     })
@@ -89,6 +90,6 @@ setInterval(() => {
   for(let key in SOCKET_LIST){
     let socket = SOCKET_LIST[key];
   socket.emit('newPositions', pack);
-  console.log(pack.length)
+
 }
 }, 1000 / 25 ); 

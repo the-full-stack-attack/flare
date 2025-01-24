@@ -40,7 +40,7 @@ function Chatroom() {
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
-
+  const [allPlayers, setAllPlayers] = useState([]);
   const [message, setMessage] = useState('');
   // const app = useApp();
   useEffect(() => {
@@ -58,11 +58,15 @@ function Chatroom() {
 
   useEffect(() => {
     socket.on('newPositions', (data) => {
-      for(let i = 0; i < data.length; i++){
-      setPlayerX(data[i].x);
-      setPlayerY(data[i].y);
-
-    }
+      let allPlayerInfo = []
+      for (let i = 0; i < data.length; i++) {
+        allPlayerInfo.push({
+          id: data[i].id,
+          x: data[i].x,
+          y: data[i].y,
+        });
+      }
+      setAllPlayers(allPlayerInfo);
     });
   }, []);
 
@@ -79,14 +83,16 @@ function Chatroom() {
             <pixiGraphics draw={drawCallback} />
           </pixiContainer>
           <pixiContainer x={200} y={100}>
+            {allPlayers.map((player) => (
             <pixiSprite
               texture={Assets.get('https://pixijs.com/assets/bunny.png')}
-              x={playerX}
-              y={playerY}
+              x={player.x}
+              y={player.y}
               width={20}
               height={20}
+              key={player.id}
             />
-
+          )) }
             {/* <pixiSprite
        
         ></pixiSprite> */}
