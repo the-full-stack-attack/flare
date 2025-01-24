@@ -20,7 +20,6 @@ function ChooseTask() {
         <CardTitle>Pick a Task Category</CardTitle>
       </CardHeader>
       <CardContent>
-        Hello World
         {types.map((type) => (
           <TypeButton key={type} type={type} />
         ))}
