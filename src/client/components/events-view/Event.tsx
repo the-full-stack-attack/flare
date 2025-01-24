@@ -53,7 +53,7 @@ function Event({ event, getEvents, category }: EventProps) {
   };
 
   return (
-    <li key={event.id} className="text-lg text-center">
+    <li key={event.id} className="text-lg text-center p-[10px]">
       <Card>
         <CardHeader>
           <CardTitle className="text-lg text-center">{event.title}</CardTitle>
