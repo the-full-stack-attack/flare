@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -9,11 +9,11 @@ import {
 import TypeButton from './TypeButton';
 
 interface ChooseTaskProps {
-  // user: object;
+  user: object;
 }
 
 const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection Therapy'];
-function ChooseTask() {
+function ChooseTask({ user }: ChooseTaskProps) {
   return (
     <Card>
       <CardHeader>

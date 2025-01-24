@@ -8,9 +8,9 @@ import {
 
 // Define the props interface
 interface TaskDisplayProps {
-  // user: object;
+  user: object;
 }
-function TaskDisplay() {
+function TaskDisplay({ user }: TaskDisplayProps) {
   return (
     <Card>
       <CardHeader>
