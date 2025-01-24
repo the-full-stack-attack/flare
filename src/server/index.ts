@@ -4,6 +4,7 @@ import fs from 'fs';
 import { Server } from 'socket.io';
 import app from './app';
 import database from './db/index';
+import './db/models/index';
 
 import('./db/index');
 
