@@ -21,7 +21,7 @@ function ChooseTask({ user }: ChooseTaskProps) {
       </CardHeader>
       <CardContent>
         {types.map((type) => (
-          <TypeButton key={type} type={type} />
+          <TypeButton key={type} type={type} user={user} />
         ))}
       </CardContent>
     </Card>
