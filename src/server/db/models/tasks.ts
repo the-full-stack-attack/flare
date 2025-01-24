@@ -11,11 +11,11 @@ const Task = database.define('Task', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  difficulty_rating: {
+  difficulty: {
     // TINYINT UNSIGNED has a range of -128 to 127 because it is being mapped to TINYINT
     type: Sequelize.TINYINT.UNSIGNED,
     allowNull: false,
-    defaultValue: 5,
+    defaultValue: 3,
   },
   completed_count: {
     type: Sequelize.INTEGER,
