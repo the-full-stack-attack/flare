@@ -10,10 +10,11 @@ import TypeButton from './TypeButton';
 
 interface ChooseTaskProps {
   user: object;
+  getUser: any;
 }
 
 const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection Therapy'];
-function ChooseTask({ user }: ChooseTaskProps) {
+function ChooseTask({ user, getUser }: ChooseTaskProps) {
   return (
     <Card>
       <CardHeader>
@@ -21,7 +22,7 @@ function ChooseTask({ user }: ChooseTaskProps) {
       </CardHeader>
       <CardContent>
         {types.map((type) => (
-          <TypeButton key={type} type={type} user={user} />
+          <TypeButton key={type} type={type} user={user} getUser={getUser} />
         ))}
       </CardContent>
     </Card>

@@ -14,22 +14,25 @@ function Dashboard() {
     id: 0,
     current_task_id: 0,
   });
+  const [task, setTask] = useState({});
 
-  useEffect(() => {
+  const getUser = () => {
     axios
       .get('/api/user')
       .then(({ data }) => {
+        console.log('Data from user: ', data);
         setUser(data);
       })
       .catch((err: Error) => {
         console.error('Error GETting the user in the dashboard: ', err);
       });
-  }, []);
+  };
+  useEffect(getUser, []);
   return (
     <>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
       <TaskDisplay user={user} />
-      <ChooseTask user={user} />
+      <ChooseTask user={user} getUser={getUser} />
     </>
   );
 }
