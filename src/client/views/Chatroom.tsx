@@ -39,7 +39,7 @@ function Chatroom() {
   return (
     <div>
       <div>
-
+        <Application></Application>
       </div>
       <Label> Oi, put a message in stinky!</Label>
       <Input
