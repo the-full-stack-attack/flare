@@ -4,6 +4,7 @@ import fs from 'fs';
 import { Server, Socket as OriginalSocket } from 'socket.io';
 import app from './app';
 import database from './db/index';
+import { data } from 'react-router';
 
 import('./db/index');
 
@@ -86,6 +87,21 @@ if (process.env.DEVELOPMENT === 'true') {
             console.log('user disconnected');
             delete SOCKET_LIST[socket.id];
             delete PLAYER_LIST[socket.id];
+          });
+
+          socket.on('keyPress', (data) => {
+            if(data.inputId === 'Up'){
+            PLAYER_LIST[socket.id].pressingUp = data.state
+            }
+            if(data.inputId === 'Left'){
+              PLAYER_LIST[socket.id].pressingLeft = data.state
+              }
+              if(data.inputId === 'Right'){
+                PLAYER_LIST[socket.id].pressingRight = data.state
+                }
+                if(data.inputId === 'Down'){
+                  PLAYER_LIST[socket.id].pressingDown = data.state
+                  }
           });
 
           socket.on('message', (msg) => {

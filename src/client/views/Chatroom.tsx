@@ -75,31 +75,31 @@ function Chatroom() {
 
   const keyPress = (e) => {
     if(e.keyCode === 38 ){ // up
-      socket.emit('keyPress', {inputId: 'up', state: true })
+      socket.emit('keyPress', {inputId: 'Up', state: true })
     }
   if(e.keyCode === 40 ){ // down
-    socket.emit('keyPress', {inputId: 'down', state: true })
+    socket.emit('keyPress', {inputId: 'Down', state: true })
   }
   if(e.keyCode === 37 ){ // left
-    socket.emit('keyPress', {inputId: 'left', state: true })
+    socket.emit('keyPress', {inputId: 'Left', state: true })
   }
   if(e.keyCode === 39 ){ // right
-    socket.emit('keyPress', {inputId: 'right', state: true })
+    socket.emit('keyPress', {inputId: 'Right', state: true })
   } 
   }
 
   const keyUp = (e) => {
-    if(e.keyCode === 38 ){ // up
-      socket.emit('keyPress', {inputId: 'up', state: false })
+    if(e.keyCode === 38 ){ // Up
+      socket.emit('keyPress', {inputId: 'Up', state: false })
     }
-  if(e.keyCode === 40 ){ // down
-    socket.emit('keyPress', {inputId: 'down', state: false })
+  if(e.keyCode === 40 ){ // Down
+    socket.emit('keyPress', {inputId: 'Down', state: false })
   }
-  if(e.keyCode === 37 ){ // left
-    socket.emit('keyPress', {inputId: 'left', state: false })
+  if(e.keyCode === 37 ){ // Left
+    socket.emit('keyPress', {inputId: 'Left', state: false })
   }
-  if(e.keyCode === 39 ){ // right
-    socket.emit('keyPress', {inputId: 'right', state: false })
+  if(e.keyCode === 39 ){ // Right
+    socket.emit('keyPress', {inputId: 'Right', state: false })
   } 
   }
 
