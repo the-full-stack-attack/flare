@@ -44,9 +44,7 @@ function Chatroom() {
   const [message, setMessage] = useState('');
   // const app = useApp();
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected to server');
-    });
+     socket.emit('joinChat');
   }, []);
 
   useEffect(() => {

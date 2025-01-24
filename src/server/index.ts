@@ -36,14 +36,18 @@ if (process.env.DEVELOPMENT === 'true') {
         // Register event listeners for Socket.IO
         io.on('connection', (socket) => {
           console.log('a user connected', socket.id);
+
+          socket.on('joinChat', () => {
           socket.data.name = socket.id
           socket.data.x = 0;
           socket.data.y = 0;
           let stringName = socket.data.name;
           SOCKET_LIST[stringName] = socket;
+          })
           // Handle socket events here
           socket.on('disconnect', () => {
             console.log('user disconnected');
+            delete SOCKET_LIST[socket.id];
           });
 
           socket.on('message', (msg) => {
@@ -76,20 +80,19 @@ if (process.env.DEVELOPMENT === 'true') {
 }
 
 setInterval(() => {
-  let pack = []
-  for(let key in SOCKET_LIST){
+  let pack = [];
+  for (let key in SOCKET_LIST) {
     let socket = SOCKET_LIST[key];
     socket.data.x++;
     socket.data.y++;
     pack.push({
-        id: socket.name,
-        x: socket.data.x,
-        y: socket.data.y
-    })
+      id: socket.name,
+      x: socket.data.x,
+      y: socket.data.y,
+    });
   }
-  for(let key in SOCKET_LIST){
+  for (let key in SOCKET_LIST) {
     let socket = SOCKET_LIST[key];
-  socket.emit('newPositions', pack);
-
-}
+    socket.emit('newPositions', pack);
+  }
 }, 1000 / 25 ); 
