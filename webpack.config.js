@@ -14,6 +14,17 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.(m?js)$/,
+        type: 'javascript/auto',
+        resolve: {
+          fullySpecified: false,
+        }
+      },
+      {
+        test: /\.(gif|jpg|png|mp3|aac|ogg)$/,
+        type: 'asset/resource',
+      },
+      {
         test: /\.(ts|tsx)$/,
         use: [
           {

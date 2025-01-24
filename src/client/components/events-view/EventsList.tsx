@@ -15,14 +15,24 @@ type EventsListProps = {
     chatroom_id: number;
     createdAt: Date;
     updatedAt: Date;
+    User_Event?: {
+      user_attending: boolean;
+    };
   }[];
+  getEvents: () => void;
+  category: string;
 };
 
-function EventsList({ events }: EventsListProps) {
+function EventsList({ events, getEvents, category }: EventsListProps) {
   return (
     <ul className="container content-center">
       {events.map((event) => (
-        <Event key={event.id} event={event} />
+        <Event
+          key={event.id}
+          event={event}
+          getEvents={getEvents}
+          category={category}
+        />
       ))}
     </ul>
   );
