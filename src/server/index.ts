@@ -19,11 +19,42 @@ const PORT = 4000;
 interface SocketList {
   [key: string]: any;
 }
-interface PLAYER_LIST {
+interface PlayerList {
   [key: string]: any;
 }
 let SOCKET_LIST: SocketList = {};
-let PLAYER_LIST: 
+let PLAYER_LIST: PlayerList = {};
+
+const Player = function(id: any){
+  let self = {
+    name: id,
+    data: {
+      x: 25,
+      y: 25
+    },
+    number: Math.floor(10 * Math.random()),
+    pressingRight: false,
+    pressingLeft: false,
+    pressingUp: false,
+    pressingDown: false,
+    maxSpd: 10,
+    updatePosition: function() {
+      if(self.pressingRight){
+        self.data.x += self.maxSpd;
+      }
+      if(self.pressingLeft){
+        self.data.x += self.maxSpd;
+      }
+      if(self.pressingUp){
+        self.data.y += self.maxSpd;
+      }
+      if(self.pressingDown){
+        self.data.y += self.maxSpd;
+      }
+    }
+  }
+  return self;
+}
 
 if (process.env.DEVELOPMENT === 'true') {
   database
@@ -46,11 +77,15 @@ if (process.env.DEVELOPMENT === 'true') {
             socket.data.y = 0;
             let stringName = socket.data.name;
             SOCKET_LIST[stringName] = socket;
+
+            let player = Player(socket.id);
+            PLAYER_LIST[socket.id] = player;
           });
           // Handle socket events here
           socket.on('disconnect', () => {
             console.log('user disconnected');
             delete SOCKET_LIST[socket.id];
+            delete PLAYER_LIST[socket.id];
           });
 
           socket.on('message', (msg) => {
@@ -83,14 +118,13 @@ if (process.env.DEVELOPMENT === 'true') {
 
 setInterval(() => {
   let pack = [];
-  for (let key in SOCKET_LIST) {
-    let socket = SOCKET_LIST[key];
-    socket.data.x++;
-    socket.data.y++;
+  for (let key in PLAYER_LIST) {
+    let player = PLAYER_LIST[key];
+    player.updatePosition();
     pack.push({
-      id: socket.name,
-      x: socket.data.x,
-      y: socket.data.y,
+      id: player.name,
+      x: player.data.x,
+      y: player.data.y,
     });
   }
   for (let key in SOCKET_LIST) {

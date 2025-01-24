@@ -73,9 +73,39 @@ function Chatroom() {
     setMessage('');
   };
 
+  const keyPress = (e) => {
+    if(e.keyCode === 38 ){ // up
+      socket.emit('keyPress', {inputId: 'up', state: true })
+    }
+  if(e.keyCode === 40 ){ // down
+    socket.emit('keyPress', {inputId: 'down', state: true })
+  }
+  if(e.keyCode === 37 ){ // left
+    socket.emit('keyPress', {inputId: 'left', state: true })
+  }
+  if(e.keyCode === 39 ){ // right
+    socket.emit('keyPress', {inputId: 'right', state: true })
+  } 
+  }
+
+  const keyUp = (e) => {
+    if(e.keyCode === 38 ){ // up
+      socket.emit('keyPress', {inputId: 'up', state: false })
+    }
+  if(e.keyCode === 40 ){ // down
+    socket.emit('keyPress', {inputId: 'down', state: false })
+  }
+  if(e.keyCode === 37 ){ // left
+    socket.emit('keyPress', {inputId: 'left', state: false })
+  }
+  if(e.keyCode === 39 ){ // right
+    socket.emit('keyPress', {inputId: 'right', state: false })
+  } 
+  }
+
   return (
     <div>
-      <div>
+      <div onKeyDown={keyPress} onKeyUp={keyUp}>
         <Application>
           <pixiContainer x={100} y={200}>
             <pixiGraphics draw={drawCallback} />
