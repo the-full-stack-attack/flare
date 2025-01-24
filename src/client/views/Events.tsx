@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../../components/ui/tabs';
+
 import EventsList from '../components/events-view/EventsList';
 
 type GeoPosition = {
@@ -27,6 +34,9 @@ type EventData = {
   chatroom_id: number;
   createdAt: Date;
   updatedAt: Date;
+  User_Event?: {
+    user_attending: boolean;
+  };
 };
 
 function Events() {
@@ -38,6 +48,11 @@ function Events() {
 
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
+
+  // Events the user can attend will be stored in state on page load
+  const [attendingEvents, setAttendingEvents] = useState<EventData[]>([]);
+
+  const [bailedEvents, setBailedEvents] = useState<EventData[]>([]);
 
   const getGeoLocation = () => {
     const success = (position: GeoPosition) => {
@@ -57,12 +72,40 @@ function Events() {
     }
   };
 
+  const getAttendEvents = () => {
+    axios
+      .get('/api/event/attend/true')
+      .then(({ data }) => {
+        if (data) {
+          setAttendingEvents(data);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to getAttendEvents:', err);
+      });
+  };
+
+  const getBailedEvents = () => {
+    axios
+      .get('/api/event/attend/false')
+      .then(({ data }) => {
+        if (data) {
+          setBailedEvents(data);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to getAttendEvents:', err);
+      });
+  };
+
   const getEvents = () => {
     axios
       .get('/api/event')
       .then(({ data }) => {
         setEvents(data);
       })
+      .then(getAttendEvents)
+      .then(getBailedEvents)
       .catch((err: unknown) => {
         console.error('Failed to getEvents:', err);
       });
@@ -73,11 +116,38 @@ function Events() {
     getEvents();
   }, []);
 
+  console.log(attendingEvents);
+
   return (
     <div className="container mx-auto px-4 content-center">
-      <h1 className="text-2xl font-bold text-center">Events In Your Area</h1>
-      <EventsList events={events} />
-      <h1 className="text-2xl font-bold text-center">Events Attending</h1>
+      <Tabs defaultValue="upcoming" className="w-[400px] ">
+        <TabsList className="">
+          <TabsTrigger value="upcoming">{`Events Near You (${events.length})`}</TabsTrigger>
+          <TabsTrigger value="attending">{`Attending (${attendingEvents.length})`}</TabsTrigger>
+          <TabsTrigger value="bailed">{`Bailed (${bailedEvents.length})`}</TabsTrigger>
+        </TabsList>
+        <TabsContent value="upcoming">
+          <EventsList
+            events={events}
+            getEvents={getEvents}
+            category="upcoming"
+          />
+        </TabsContent>
+        <TabsContent value="attending">
+          <EventsList
+            events={attendingEvents}
+            getEvents={getEvents}
+            category="attending"
+          />
+        </TabsContent>
+        <TabsContent value="bailed">
+          <EventsList
+            events={bailedEvents}
+            getEvents={getEvents}
+            category="bailed"
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

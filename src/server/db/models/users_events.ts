@@ -8,6 +8,10 @@ const User_Event = database.define('User_Event', {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
   },
+  user_attending: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: true,
+  },
   private_review: { type: Sequelize.STRING(250) },
   public_review: { type: Sequelize.STRING(250) },
 });
