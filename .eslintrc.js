@@ -40,6 +40,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/naming-convention': 'off',
     '@typescript-eslint/comma-dangle': 'off',
+    'no-console': 'off',
   },
   // Ignore files in the test directory
   ignorePatterns: [
