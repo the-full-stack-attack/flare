@@ -1,14 +1,26 @@
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
-import { Server } from 'socket.io';
+import { Server, Socket as OriginalSocket } from 'socket.io';
 import app from './app';
 import database from './db/index';
 
 import('./db/index');
 
+// declare module 'socket.io' {
+//   interface Socket extends OriginalSocket {
+//     name: number;
+//     x: number;
+//     y: number;
+//   }
+// }
+
 const PORT = 4000;
-// let SOCKET_LIST = {};
+ interface SocketList {
+  [key: string]: any;
+ };
+
+ let SOCKET_LIST: SocketList = {}
 
 if (process.env.DEVELOPMENT === 'true') {
   database
@@ -23,11 +35,12 @@ if (process.env.DEVELOPMENT === 'true') {
         const io = new Server(server);
         // Register event listeners for Socket.IO
         io.on('connection', (socket) => {
-          console.log('a user connected');
-          // socket.id = Math.random();
-          // socket.x = 0;
-          // socket.y = 0;
-          // SOCKET_LIST[socket.id] = socket;
+          console.log('a user connected', socket);
+          socket.data.name = Math.random();
+          socket.data.x = 0;
+          socket.data.y = 0;
+          let stringName = socket.data.name;
+          SOCKET_LIST[stringName] = socket;
           // Handle socket events here
           socket.on('disconnect', () => {
             console.log('user disconnected');
@@ -62,14 +75,14 @@ if (process.env.DEVELOPMENT === 'true') {
   https.createServer(options, app).listen(443);
 }
 
-// setInterval(() => {
-//   for(let key in SOCKET_LIST){
-//     const socket = SOCKET_LIST[key];
-//     socket.x++;
-//     socket.y++;
-//     socket.emit('newPosition', {
-//       x: socket.x,
-//       y:socket.y
-//     });
-//   }
-// }, 1000/25) 
+setInterval(() => {
+  for(let key in SOCKET_LIST){
+    let socket = SOCKET_LIST[key];
+    socket.data.x++;
+    socket.data.y++;
+    socket.emit('newPosition', {
+      x: socket.data.x,
+      y: socket.data.y
+    });
+  }
+}, 1000 / 25 ); 
