@@ -16,11 +16,14 @@ import('./db/index');
 // }
 
 const PORT = 4000;
- interface SocketList {
+interface SocketList {
   [key: string]: any;
- };
-
- let SOCKET_LIST: SocketList = {}
+}
+interface PLAYER_LIST {
+  [key: string]: any;
+}
+let SOCKET_LIST: SocketList = {};
+let PLAYER_LIST: 
 
 if (process.env.DEVELOPMENT === 'true') {
   database
@@ -38,12 +41,12 @@ if (process.env.DEVELOPMENT === 'true') {
           console.log('a user connected', socket.id);
 
           socket.on('joinChat', () => {
-          socket.data.name = socket.id
-          socket.data.x = 0;
-          socket.data.y = 0;
-          let stringName = socket.data.name;
-          SOCKET_LIST[stringName] = socket;
-          })
+            socket.data.name = socket.id;
+            socket.data.x = 0;
+            socket.data.y = 0;
+            let stringName = socket.data.name;
+            SOCKET_LIST[stringName] = socket;
+          });
           // Handle socket events here
           socket.on('disconnect', () => {
             console.log('user disconnected');
@@ -54,7 +57,6 @@ if (process.env.DEVELOPMENT === 'true') {
             console.log('message: ' + msg);
             io.emit('message', msg);
           });
-
         });
 
         server.listen(4000, () => {
@@ -95,4 +97,4 @@ setInterval(() => {
     let socket = SOCKET_LIST[key];
     socket.emit('newPositions', pack);
   }
-}, 1000 / 25 ); 
+}, 1000 / 25);
