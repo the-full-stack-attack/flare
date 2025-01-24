@@ -41,6 +41,7 @@ module.exports = {
     '@typescript-eslint/naming-convention': 'off',
     '@typescript-eslint/comma-dangle': 'off',
     'no-console': 'off',
+    'object-curly-newline': 'off',
   },
   // Ignore files in the test directory
   ignorePatterns: [
