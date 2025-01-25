@@ -6,22 +6,18 @@ import { UserContext } from '../../contexts/UserContext';
 
 type TypeButtonProps = {
   type: string;
+  taskInfo: TaskInfo;
   setTask: React.Dispatch<React.SetStateAction<object>>;
 };
 type TaskInfo = {
   type: string;
   difficulty: number;
   date: dayjs.Dayjs;
-  userId: number;
+  userId?: number;
 };
 
-function TypeButton({ type, setTask }: TypeButtonProps) {
+function TypeButton({ type, taskInfo, setTask }: TypeButtonProps) {
   const { user, getUser } = useContext(UserContext);
-  const [taskInfo, setTaskInfo] = useState({
-    type: '',
-    difficulty: 3,
-    date: dayjs(),
-  });
   // Function to assign the chosen task category to the user
   const pickTask = (element) => {
     const userId = user.id;
@@ -47,6 +43,7 @@ function TypeButton({ type, setTask }: TypeButtonProps) {
         console.error('Error posting task: ', err);
       });
   };
+  console.log('TaskInfo: ', taskInfo);
   return (
     <Button id={type} onClick={pickTask}>
       {type}
