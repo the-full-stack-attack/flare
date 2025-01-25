@@ -40,6 +40,7 @@ taskRouter.post('/', async (req: any, res: Response) => {
     await User_Task.findOrCreate({
       where: { UserId: user.id, TaskId: taskId },
     });
+    res.status(201).send(task);
   }
 });
 
