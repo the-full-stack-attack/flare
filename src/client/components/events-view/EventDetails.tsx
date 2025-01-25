@@ -27,6 +27,13 @@ type EventDetailsProps = {
     User_Event?: {
       user_attending: boolean;
     };
+    Users?: {
+      username: string;
+      full_name: string;
+      User_Event: {
+        user_attending: boolean;
+      };
+    }[];
   };
   postAttendEvent: () => void;
   patchAttendingEvent: () => void;
@@ -39,7 +46,8 @@ function EventDetails({
   postAttendEvent,
   patchAttendingEvent,
 }: EventDetailsProps) {
-  const { title, start_time, end_time, address, description } = event;
+  const { title, start_time, end_time, address, description, Users } = event;
+
   return (
     <div className="mx-auto w-full max-w-sm">
       <DrawerHeader>
@@ -59,6 +67,19 @@ function EventDetails({
           <div className="col-span-2">
             <b>Address:</b>
             <p>{address}</p>
+          </div>
+          <div className="col-span-2">
+            <b>Who is attending?</b>
+            <div className="grid grid-cols-2 gap-4">
+              {Users?.map((user) => {
+                const { username, full_name, User_Event } = user;
+                return User_Event.user_attending ? (
+                  <div key={Math.random().toString(36).slice(0, 7)}>
+                    {full_name ? `${full_name} (${username})` : username}
+                  </div>
+                ) : null;
+              })}
+            </div>
           </div>
         </div>
       </div>
