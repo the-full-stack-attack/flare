@@ -5,6 +5,7 @@ import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
 import { Application, extend, useAssets } from '@pixi/react';
 import { Container, Graphics, Sprite, Texture, Assets } from 'pixi.js';
+import { AnimatedList } from "../../components/ui/animated-list";
 
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
@@ -46,7 +47,8 @@ function Chatroom() {
   const [allPlayers, setAllPlayers] = useState([]);
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  // const app = useApp();
+  const [allMessages, setAllMessages] = useState([]);
+
 
   useEffect(() => {
     console.log('welcome to chat')
@@ -68,6 +70,7 @@ function Chatroom() {
      * */
     socket.on('message', (msg) => {
       console.log('message received: ' + msg);
+      displayMessage(msg);
       // Update UI with the new message
     });
     // Update state of all players and their respective positions
@@ -83,12 +86,7 @@ function Chatroom() {
       setAllPlayers(allPlayerInfo);
     });
   }, []);
-
-  const sendMessage = () => {
-    socket.emit('message', message);
-    setMessage('');
-  };
-
+  
   // When the player is typing, remove event listeners for movement
   useEffect(() => {
     console.log('isTyping changed to', isTyping);
@@ -109,12 +107,20 @@ function Chatroom() {
       document.removeEventListener('keyup', keyUp);
     };
   }, [isTyping]);
-
+  
+  const sendMessage = () => {
+    socket.emit('message', message);
+    displayMessage(message);
+    setMessage('');
+  };
   // Changes when div containing typing is clicked
   const typing = async () => {
     await setIsTyping(!isTyping);
   };
 
+  const displayMessage = (msg: string) => {
+    setAllMessages((prevMessages) => [...prevMessages, msg]);
+  };
   // Controls movement by updating the state on the server
   const keyPress = ({ key }) => {
     if (isTyping === false) {
@@ -178,6 +184,14 @@ function Chatroom() {
           onChange={(e) => setMessage(e.target.value)}
         />
         <Button onClick={sendMessage}>Send</Button>
+      </div>
+      <div>
+            <AnimatedList>
+              {allMessages.map((msg) => (
+               
+                <p >{msg}</p>
+              ))}
+            </AnimatedList>
       </div>
     </div>
   );

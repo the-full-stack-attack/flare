@@ -102,7 +102,7 @@ if (process.env.DEVELOPMENT === 'true') {
 
           socket.on('message', (msg) => {
             console.log('message: ' + msg);
-            io.emit('message', msg);
+            socket.broadcast.emit('message', msg);
           });
         });
 
