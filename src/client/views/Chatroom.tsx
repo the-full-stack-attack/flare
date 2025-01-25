@@ -51,14 +51,20 @@ function Chatroom() {
   useEffect(() => {
     console.log('welcome to chat')
     // Player has joined chat
+
+    // Set the current endpoint to the 'room' for the sockets 
+    // vs
+    // Pass the current endpoint's path of 'chatroom_id' in as data for this socket
     socket.emit('joinChat');
     /**
      * When you join the chat, you need to be assigned a room.
      *
-     *  Send a get request to 'chatroom' along with that room number as a param
-     *  The get request will return a room ,
+     *  Send a get request to 'chatroom' along with the current path endpoint as a param
      *
+     *  The get request will return a chatroom map. set the state to the current room map
      *
+     *  
+     * 
      * */
     socket.on('message', (msg) => {
       console.log('message received: ' + msg);
