@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../../components/ui/tabs';
+
 import EventsList from '../components/events-view/EventsList';
 
 type GeoPosition = {
@@ -113,20 +120,34 @@ function Events() {
 
   return (
     <div className="container mx-auto px-4 content-center">
-      <h1 className="text-2xl font-bold text-center">Events In Your Area</h1>
-      <EventsList events={events} getEvents={getEvents} category="upcoming" />
-      <h1 className="text-2xl font-bold text-center">Events Attending</h1>
-      <EventsList
-        events={attendingEvents}
-        getEvents={getEvents}
-        category="attending"
-      />
-      <h1 className="text-2xl font-bold text-center">Events Bailed</h1>
-      <EventsList
-        events={bailedEvents}
-        getEvents={getEvents}
-        category="bailed"
-      />
+      <Tabs defaultValue="upcoming" className="w-[400px] ">
+        <TabsList className="">
+          <TabsTrigger value="upcoming">{`Events Near You (${events.length})`}</TabsTrigger>
+          <TabsTrigger value="attending">{`Attending (${attendingEvents.length})`}</TabsTrigger>
+          <TabsTrigger value="bailed">{`Bailed (${bailedEvents.length})`}</TabsTrigger>
+        </TabsList>
+        <TabsContent value="upcoming">
+          <EventsList
+            events={events}
+            getEvents={getEvents}
+            category="upcoming"
+          />
+        </TabsContent>
+        <TabsContent value="attending">
+          <EventsList
+            events={attendingEvents}
+            getEvents={getEvents}
+            category="attending"
+          />
+        </TabsContent>
+        <TabsContent value="bailed">
+          <EventsList
+            events={bailedEvents}
+            getEvents={getEvents}
+            category="bailed"
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

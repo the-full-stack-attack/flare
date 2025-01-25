@@ -9,9 +9,16 @@ const event2Router = Router();
 /*
   GET /api/event => Retrieve all events from the database (filter for events near user in future)
 */
-event2Router.get('/', (req: Request, res: Response) => {
+event2Router.get('/', (req: any, res: Response) => {
   // Query DB for all event objects & send them back to the user
-  Event.findAll({ where: { start_time: { [Op.gt]: new Date(Date.now()) } } })
+  Event.findAll({
+    where: {
+      [Op.and]: [
+        { start_time: { [Op.gt]: new Date(Date.now()) } },
+        { created_by: { [Op.not]: req.user.id } },
+      ],
+    },
+  })
     .then((events: object[]) => {
       res.status(200);
       res.send(events);
