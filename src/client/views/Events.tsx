@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+
+import { UserContext } from '../contexts/UserContext';
 
 import {
   Tabs,
@@ -40,6 +42,8 @@ type EventData = {
 };
 
 function Events() {
+  const { user } = useContext(UserContext);
+
   // The latitude and longitude of the user will be stored in state on page load
   const [location, setLocation] = useState<Location>({
     latitude: 0,
@@ -115,8 +119,6 @@ function Events() {
     getGeoLocation();
     getEvents();
   }, []);
-
-  console.log(attendingEvents);
 
   return (
     <div className="container mx-auto px-4 content-center">

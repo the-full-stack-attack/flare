@@ -4,6 +4,7 @@ import fs from 'fs';
 import { Server, Socket as OriginalSocket } from 'socket.io';
 import app from './app';
 import database from './db/index';
+import './db/models/index';
 import { data } from 'react-router';
 
 import('./db/index');
