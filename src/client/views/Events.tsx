@@ -120,6 +120,10 @@ function Events() {
     getEvents();
   }, []);
 
+  // console.log('Events:', events);
+  // console.log('Attending Events:', attendingEvents);
+  // console.log('Bailed Events:', bailedEvents);
+
   return (
     <div className="container mx-auto px-4 content-center">
       <Tabs
