@@ -39,7 +39,6 @@ function TypeButton({ type, setTask }: TypeButtonProps) {
       .post('/api/task', config)
       .then(({ data }) => {
         setTask(data);
-        console.log('Data from task: ', data);
       })
       .then(() => {
         getUser();
