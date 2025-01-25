@@ -13,14 +13,17 @@ export interface UserType {
   avatar_id?: number;
   avatar_shirt?: string;
   avatar_pants?: string;
+  current_task_id?: number;
 }
 
 type UserContextType = {
   user: UserType;
   setUser: (user: UserType) => void;
+  getUser: () => void;
 };
 
 export const UserContext = createContext<UserContextType>({
   user: { id: 0 },
   setUser: () => {},
+  getUser: () => {},
 });

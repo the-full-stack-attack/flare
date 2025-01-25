@@ -1,38 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import ChooseTask from '../components/tasks/ChooseTask';
-
-type User = {
-  id: number;
-  current_task_id: number;
-};
-type SetUser = (user: User) => User;
+import { UserContext } from '../contexts/UserContext';
 
 function Dashboard() {
-  const [user, setUser]: [User, Function] = useState({
-    id: 0,
-    current_task_id: 0,
-  });
-  const [task, setTask] = useState({});
-
-  const getUser = () => {
-    axios
-      .get('/api/user')
-      .then(({ data }) => {
-        console.log('Data from user: ', data);
-        setUser(data);
-      })
-      .catch((err: Error) => {
-        console.error('Error GETting the user in the dashboard: ', err);
-      });
-  };
-  useEffect(getUser, []);
+  const { user } = useContext(UserContext);
+  const [task, setTask] = useState<object | null>({});
+  // Use effect will call getTask if there is a change in user state
+  useEffect((): void => {
+    // Find the task by the id and set the task in state
+    console.log('useEffect function invoked:', user);
+    const { current_task_id } = user;
+    if (current_task_id) {
+      axios
+        .get(`/api/task/${current_task_id}`)
+        .then(({ data }) => {
+          setTask(data);
+        })
+        .catch((err) => {
+          console.error('Error GETting task by id: ', err);
+        });
+    }
+  }, [user]);
   return (
     <>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
-      <TaskDisplay user={user} />
-      <ChooseTask user={user} getUser={getUser} />
+      {user.current_task_id ? (
+        <TaskDisplay task={task} />
+      ) : (
+        <ChooseTask setTask={setTask} />
+      )}
     </>
   );
 }
