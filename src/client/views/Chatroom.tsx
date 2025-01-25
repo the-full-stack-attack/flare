@@ -6,7 +6,9 @@ import { Button } from '../../components/ui/button';
 import { Application, extend, useAssets } from '@pixi/react';
 import { Container, Graphics, Sprite, Texture, Assets } from 'pixi.js';
 import { AnimatedList } from "../../components/ui/animated-list";
-
+import MagicCard from '../../components/ui/magicCard'
+import { InteractiveHoverButton } from "../../components/ui/interactive-hover-button";
+import MsgBox from '../components/chatroom/MsgBox'
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
 // must be passed into extend. Then you can utilize them as components
@@ -48,7 +50,18 @@ function Chatroom() {
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [allMessages, setAllMessages] = useState([]);
+  const [gameWidth, setGameWidth] = useState(window.innerWidth);
+  const [gameHeight, setGameHeight] = useState(window.innerHeight);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setGameWidth(window.innerWidth);
+      setGameHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     console.log('welcome to chat')
@@ -157,7 +170,7 @@ function Chatroom() {
 
   return (
     <div>
-      <div>
+      <div style={{width:{gameWidth}, height:{gameHeight}}}>
         <Application>
           <pixiContainer x={100} y={200}>
             <pixiGraphics draw={drawCallback} />
@@ -183,15 +196,17 @@ function Chatroom() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <Button onClick={sendMessage}>Send</Button>
+        <InteractiveHoverButton onClick={sendMessage}>Send</InteractiveHoverButton>
       </div>
       <div>
+        <MagicCard>
             <AnimatedList>
               {allMessages.map((msg) => (
-               
-                <p >{msg}</p>
+               <MsgBox msg={msg}></MsgBox>
+            
               ))}
             </AnimatedList>
+            </MagicCard>
       </div>
     </div>
   );
