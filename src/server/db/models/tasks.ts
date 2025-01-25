@@ -15,7 +15,6 @@ const Task = database.define('Task', {
     // TINYINT UNSIGNED has a range of -128 to 127 because it is being mapped to TINYINT
     type: Sequelize.TINYINT.UNSIGNED,
     allowNull: false,
-    defaultValue: 3,
   },
   completed_count: {
     type: Sequelize.INTEGER,
