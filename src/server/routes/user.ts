@@ -1,22 +1,26 @@
 import { Router, Request, Response } from 'express';
+
 import User from '../db/models/users';
 
 const userRouter = Router();
 
-// GET request to /api/user
 userRouter.get('/', (req: any, res: Response) => {
-  const { id } = req.user;
-  User.findByPk(id)
-    .then((user) => {
-      if (!user) {
-        res.sendStatus(400);
-      } else {
-        res.status(200).send(user);
-      }
-    })
-    .catch((err) => {
-      console.error('Error finding user: ', err);
-    });
+  if (!req.user) {
+    res.status(200).send({ id: 0 });
+  } else {
+    User.findByPk(req.user.id)
+      .then((userData) => {
+        if (!userData) {
+          res.sendStatus(404);
+        } else {
+          res.status(200).send(userData);
+        } 
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to GET /api/user', err);
+        res.sendStatus(500);
+      });
+  }
 });
 
 export default userRouter;
