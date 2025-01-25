@@ -22,8 +22,6 @@ function DifficultyButton({
   const chooseDifficulty = (element): void => {
     // Turn element's innerHTML to a number to set the correct type
     const difficultyChosen = Number(element.target.innerHTML);
-    console.log('Target InnerHtml: ', difficultyChosen);
-    console.log('Target InnerHtml type: ', typeof difficultyChosen);
     const copyTask = { ...taskInfo };
     copyTask.difficulty = difficultyChosen;
     setTaskInfo(copyTask);
