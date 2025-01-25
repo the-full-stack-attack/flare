@@ -43,7 +43,6 @@ function TypeButton({ type, taskInfo, setTask }: TypeButtonProps) {
         console.error('Error posting task: ', err);
       });
   };
-  console.log('TaskInfo: ', taskInfo);
   return (
     <Button id={type} onClick={pickTask}>
       {type}
