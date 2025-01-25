@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { Button } from '../../../components/ui/button';
-import { getDefaultResultOrder } from 'dns';
+import { UserContext } from '../../contexts/UserContext';
 
 type TypeButtonProps = {
-  key: string;
-  user: User;
   type: string;
-  getUser: any;
+  setTask: React.Dispatch<React.SetStateAction<object>>;
+};
+type TaskInfo = {
+  type: string;
+  difficulty: number;
+  date: dayjs.Dayjs;
+  userId: number;
 };
 
-type User = {
-  id: number;
-};
-function TypeButton({ user, type, getUser }: TypeButtonProps) {
+function TypeButton({ type, setTask }: TypeButtonProps) {
+  const { user, getUser } = useContext(UserContext);
   const [taskInfo, setTaskInfo] = useState({
     type: '',
     difficulty: 3,
@@ -36,9 +38,10 @@ function TypeButton({ user, type, getUser }: TypeButtonProps) {
     axios
       .post('/api/task', config)
       .then(({ data }) => {
-        setTaskInfo(copyTask);
+        setTask(data);
         console.log('Data from task: ', data);
-      }).then(() => {
+      })
+      .then(() => {
         getUser();
       })
       .catch((err) => {
@@ -53,11 +56,3 @@ function TypeButton({ user, type, getUser }: TypeButtonProps) {
 }
 
 export default TypeButton;
-
-/**
- *  setTaskInfo((prevTask) => ({
-      ...prevTask,
-      type: id,
-      date: dayjs(formattedDate),
-    }));
- */
