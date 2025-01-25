@@ -5,6 +5,24 @@ import User_Task from '../db/models/users_tasks';
 
 const taskRouter = Router();
 
+// GET requests to /api/task/:id
+taskRouter.get('/:id', (req: any, res: Response) => {
+  const { id } = req.params;
+  Task.findByPk(id)
+    .then((task) => {
+      if (task) {
+        res.status(200).send(task);
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch((err) => {
+      console.error('Error finding task byPk: ', err);
+      res.sendStatus(500);
+    });
+});
+
+// POST requests to /api/task
 taskRouter.post('/', async (req: any, res: Response) => {
   const { type, difficulty, date, userId } = req.body.taskInfo;
   // Find the task corresponding to the req.body values
