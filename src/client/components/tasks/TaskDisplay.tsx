@@ -37,7 +37,6 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       .patch('/api/task', config)
       .then(({ data }) => {
         setUser(data);
-        console.log('Data from the patch: ', data);
       })
       .catch((err) => {
         console.error('Error completing task/user PATCH: ', err);
