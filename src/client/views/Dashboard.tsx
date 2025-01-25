@@ -26,8 +26,8 @@ function Dashboard() {
   return (
     <>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
-      <TaskDisplay user={user} />
-      <ChooseTask user={user} />
+      <TaskDisplay task={task} />
+      <ChooseTask setTask={setTask} />
     </>
   );
 }
