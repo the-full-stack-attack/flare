@@ -7,6 +7,20 @@ import { UserContext } from '../contexts/UserContext';
 function Dashboard() {
   const { user, setUser } = useContext(UserContext);
   const [task, setTask] = useState();
+  // Function to set the task in state
+  const getTask = (): void => {
+    const { current_task_id } = user;
+    axios
+      .get(`/api/task/${current_task_id}`)
+      .then(({ data }) => {
+        setTask(data);
+      })
+      .catch((err) => {
+        console.error('Error GETting task by id: ', err);
+      });
+  };
+  // Use effect will call getTask if there is a change in user state
+  useEffect(getTask, [user]);
   return (
     <>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
