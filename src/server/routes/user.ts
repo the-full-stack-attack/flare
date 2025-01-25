@@ -14,7 +14,7 @@ userRouter.get('/', (req: any, res: Response) => {
           res.sendStatus(404);
         } else {
           res.status(200).send(userData);
-        } 
+        }
       })
       .catch((err: unknown) => {
         console.error('Failed to GET /api/user', err);
