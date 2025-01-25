@@ -3,6 +3,7 @@ import { Router, Request, Response } from 'express';
 import Event from '../db/models/events';
 import User_Event from '../db/models/users_events';
 import User from '../db/models/users';
+import Venue from '../db/models/venues';
 
 const event2Router = Router();
 
@@ -15,6 +16,20 @@ event2Router.get('/', (req: any, res: Response) => {
     where: {
       [Op.and]: [{ start_time: { [Op.gt]: new Date(Date.now()) } }],
     },
+    include: [
+      {
+        model: User,
+      },
+      {
+        model: Venue,
+      },
+      {
+        association: 'Users',
+        where: {
+          '$Users.User_Event.user_attending$': true,
+        },
+      },
+    ],
   })
     .then((events: object[]) => {
       res.status(200);
@@ -71,6 +86,17 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     include: {
       model: Event,
       where: { start_time: { [Op.gt]: new Date(Date.now()) } },
+      include: [
+        {
+          model: User,
+        },
+        {
+          model: Venue,
+        },
+        {
+          association: 'Users',
+        },
+      ],
     },
   })
     .then((data) => {

@@ -27,13 +27,27 @@ type EventDetailsProps = {
     User_Event?: {
       user_attending: boolean;
     };
+    Users?: {
+      username: string;
+      full_name: string;
+      User_Event: {
+        user_attending: boolean;
+      };
+    }[];
   };
-  getEvents: () => void;
+  postAttendEvent: () => void;
+  patchAttendingEvent: () => void;
   category: string;
 };
 
-function EventDetails({ event, getEvents, category }: EventDetailsProps) {
-  const { title, start_time, end_time, address, description } = event;
+function EventDetails({
+  event,
+  category,
+  postAttendEvent,
+  patchAttendingEvent,
+}: EventDetailsProps) {
+  const { title, start_time, end_time, address, description, Users } = event;
+
   return (
     <div className="mx-auto w-full max-w-sm">
       <DrawerHeader>
@@ -54,9 +68,31 @@ function EventDetails({ event, getEvents, category }: EventDetailsProps) {
             <b>Address:</b>
             <p>{address}</p>
           </div>
+          <div className="col-span-2">
+            <b>Who is attending?</b>
+            <div className="grid grid-cols-2 gap-4">
+              {Users?.map((user) => {
+                const { username, full_name, User_Event } = user;
+                return User_Event.user_attending ? (
+                  <div key={Math.random().toString(36).slice(0, 7)}>
+                    {full_name ? `${full_name} (${username})` : username}
+                  </div>
+                ) : null;
+              })}
+            </div>
+          </div>
         </div>
       </div>
       <DrawerFooter>
+        {category === 'upcoming' ? (
+          <Button onClick={postAttendEvent}>Attend</Button>
+        ) : null}
+        {category === 'attending' ? (
+          <Button onClick={patchAttendingEvent}>Bail</Button>
+        ) : null}
+        {category === 'bailed' ? (
+          <Button onClick={patchAttendingEvent}>Re-attend</Button>
+        ) : null}
         {category === 'attending' ? <Button>Enter Chatroom</Button> : null}
         <DrawerClose asChild>
           <Button>Close</Button>
