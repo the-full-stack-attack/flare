@@ -5,6 +5,7 @@ import Venue from '../db/models/venues';
 import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
 import { Model } from "sequelize"; //
+import dayjs from 'dayjs'; 
 
 const eventRouter = Router();
 
@@ -15,6 +16,28 @@ eventRouter.post('/', async (req: any, res: Response) => {
     const address = 'test address 1234st.';
   
     try {
+
+      console.log('Input dates:', { startDate, endDate, startTime, endTime });
+
+
+      const start_time = dayjs(`${startDate} ${startTime}`).format(
+        'YYYY-MM-DD HH:mm:ss'
+      );
+      const end_time = dayjs(`${endDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
+      
+      console.log('About to create event with:', {
+        title,
+        start_time,
+        end_time,
+        address,
+        description,
+        created_by: userId
+      });
+
+      console.log('Converted dates:', { start_time, end_time });
+
+
+
       // create venue
       const newVenue: any = await Venue.create({
         name: venue,
@@ -24,8 +47,8 @@ eventRouter.post('/', async (req: any, res: Response) => {
       // then create the event 
       const newEvent: any = await Event.create({
         title,
-        start_time: startTime,
-        end_time: endTime,
+        start_time,
+        end_time,
         address,
         description,
         created_by: userId, 

@@ -20,8 +20,8 @@ function CreateEvents() {
     const [formInfo, setFormInfo] = useState({
         title: '',
         description: '',
-        startDate: '',
-        endDate: '',
+        startDate: new Date(),
+        endDate: new Date(),
         startTime: '',
         endTime: '',
         venue: '',
