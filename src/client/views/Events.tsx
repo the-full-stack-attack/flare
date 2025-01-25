@@ -131,7 +131,10 @@ function Events() {
           <TabsTrigger value="attending">{`Attending (${attendingEvents.length})`}</TabsTrigger>
           <TabsTrigger value="bailed">{`Bailed (${bailedEvents.length})`}</TabsTrigger>
         </TabsList>
-        <TabsContent value="upcoming">
+        <TabsContent
+          value="upcoming"
+          className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
+        >
           <EventsList
             events={events}
             getEvents={getEvents}
