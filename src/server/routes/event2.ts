@@ -13,10 +13,7 @@ event2Router.get('/', (req: any, res: Response) => {
   // Query DB for all event objects & send them back to the user
   Event.findAll({
     where: {
-      [Op.and]: [
-        { start_time: { [Op.gt]: new Date(Date.now()) } },
-        { created_by: { [Op.not]: req.user.id } },
-      ],
+      [Op.and]: [{ start_time: { [Op.gt]: new Date(Date.now()) } }],
     },
   })
     .then((events: object[]) => {
