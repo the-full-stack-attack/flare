@@ -18,9 +18,11 @@ export interface UserType {
 type UserContextType = {
   user: UserType;
   setUser: (user: UserType) => void;
+  getUser: () => void;
 };
 
 export const UserContext = createContext<UserContextType>({
   user: { id: 0 },
   setUser: () => {},
+  getUser: () => {},
 });
