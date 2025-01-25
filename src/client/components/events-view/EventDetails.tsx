@@ -1,5 +1,6 @@
 import React from 'react';
 import dayjs from 'dayjs';
+import { Link } from "react-router-dom";
 
 import { Button } from '../../../components/ui/button';
 
@@ -46,7 +47,7 @@ function EventDetails({
   postAttendEvent,
   patchAttendingEvent,
 }: EventDetailsProps) {
-  const { title, start_time, end_time, address, description, Users } = event;
+  const { title, start_time, end_time, address, description, Users, id } = event;
 
   return (
     <div className="mx-auto w-full max-w-sm">
@@ -93,7 +94,7 @@ function EventDetails({
         {category === 'bailed' ? (
           <Button onClick={patchAttendingEvent}>Re-attend</Button>
         ) : null}
-        {category === 'attending' ? <Button>Enter Chatroom</Button> : null}
+        {category === 'attending' ?   <Button><Link style={{flex: 1}} to={`/chatroom/${id}`}>Enter Chatroom</Link></Button> : null}
         <DrawerClose asChild>
           <Button>Close</Button>
         </DrawerClose>
