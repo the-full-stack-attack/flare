@@ -1,11 +1,22 @@
 import { Router } from 'express';
 import Sequelize from 'sequelize';
+import Event from '../db/models/events';
+import Chatroom from '../db/models/chatrooms';
 
 const chatroomRouter = Router();
 
-chatroomRouter.get('/chatroom', (req, res) => {
+chatroomRouter.get('/chatroom/:eventId', (req, res) => {
   // Get the room number based on enpoint params
+  const pathname = req.params.eventId
 
+  Chatroom.findOne({
+    where: { event_id: pathname },
+  }).then((chatroom) => {
+    console.log(chatroom, 'we found it')
+    res.send(chatroom).status(200)
+  }).catch((err) =>{
+    console.error(err, 'nope')
+  })
   // the endpoint should match the Event id. get the chatroom_id off that table
   
   // find the chatroom that has the matching id, get the map from that chatroom
@@ -23,4 +34,4 @@ chatroomRouter.post('/chatroom/chat', (req, res) => {
 
   // send back nothing
 
-})
+});

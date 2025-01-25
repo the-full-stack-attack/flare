@@ -17,6 +17,7 @@ import { AnimatedList } from '../../components/ui/animated-list';
 import MagicCard from '../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import MsgBox from '../components/chatroom/MsgBox';
+import axios from 'axios';
 
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
@@ -65,7 +66,7 @@ function Chatroom() {
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
-
+  const [eventId, setEventId] = useState(document.location.pathname);
   // An array of every player connected to the chatroom
   const [allPlayers, setAllPlayers] = useState([]);
   const [message, setMessage] = useState('');
@@ -73,7 +74,7 @@ function Chatroom() {
   const [allMessages, setAllMessages] = useState([]);
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
-  
+  const [chatRoom, setChatRoom] = useState('');
   const displayMessage = (msg: string) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -127,7 +128,11 @@ function Chatroom() {
 
   useEffect(() => {
     // Player has joined chat
-
+    console.log(eventId)
+    axios.get(`api/chatroom/${eventId}`)
+    .then((chatroomId) => {
+      console.log(chatroomId, 'ayyye')
+    })
     // Set the current endpoint to the 'room' for the sockets
     // vs
     // Pass the current endpoint's path of 'chatroom_id' in as data for this socket
