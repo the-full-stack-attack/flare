@@ -4,10 +4,10 @@ import Chatroom from './chatrooms';
 import User from './users';
 
 const Chat = database.define('Chat', {
-    user_id: { type: Sequelize.INTEGER, },
-    message: { type: Sequelize.STRING(60), },
-    created_at: { type: Sequelize.DATE, },
-    chatroom_id: { type: Sequelize.INTEGER, },
+  user_id: { type: Sequelize.INTEGER },
+  message: { type: Sequelize.STRING(60) },
+  created_at: { type: Sequelize.DATE },
+  chatroom_id: { type: Sequelize.INTEGER },
 });
 
 Chat.belongsTo(User, { foreignKey: 'user_id' });
