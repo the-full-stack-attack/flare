@@ -14,7 +14,7 @@ event2Router.get('/', (req: any, res: Response) => {
   // Query DB for all event objects & send them back to the user
   Event.findAll({
     where: {
-      [Op.and]: [{ start_time: { [Op.gt]: new Date(Date.now()) } }],
+      start_time: { [Op.gt]: new Date(Date.now()) },
     },
     include: [
       {
@@ -25,13 +25,11 @@ event2Router.get('/', (req: any, res: Response) => {
       },
       {
         association: 'Users',
-        where: {
-          '$Users.User_Event.user_attending$': true,
-        },
       },
     ],
   })
     .then((events: object[]) => {
+      console.log(events);
       res.status(200);
       res.send(events);
     })
