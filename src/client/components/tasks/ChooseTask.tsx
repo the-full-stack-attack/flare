@@ -8,13 +8,12 @@ import {
 } from '../../../components/ui/card';
 import TypeButton from './TypeButton';
 
-interface ChooseTaskProps {
-  user: object;
-  getUser: any;
-}
+type ChooseTaskProps = {
+  setTask: React.Dispatch<React.SetStateAction<object>>;
+};
 
 const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection Therapy'];
-function ChooseTask({ user, getUser }: ChooseTaskProps) {
+function ChooseTask({ setTask }: ChooseTaskProps) {
   return (
     <Card>
       <CardHeader>
@@ -22,7 +21,7 @@ function ChooseTask({ user, getUser }: ChooseTaskProps) {
       </CardHeader>
       <CardContent>
         {types.map((type) => (
-          <TypeButton key={type} type={type} user={user} getUser={getUser} />
+          <TypeButton key={type} type={type} setTask={setTask} />
         ))}
       </CardContent>
     </Card>

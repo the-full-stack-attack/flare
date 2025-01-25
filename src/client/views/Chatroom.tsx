@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
-import { Application, extend, useAssets } from '@pixi/react';
+import { Application, extend, useAsset } from '@pixi/react';
 import { Container, Graphics, Sprite, Texture, Assets } from 'pixi.js';
 
 // 'extend' is unique to the beta version of pixi.js

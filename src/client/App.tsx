@@ -18,14 +18,6 @@ import { UserType, UserContext } from './contexts/UserContext';
 
 export default function App() {
   const [user, setUser] = useState<UserType>({ id: 0 });
-  const userState = useMemo(
-    () => ({
-      user,
-      setUser,
-    }),
-    [user]
-  );
-
   const getUser = () => {
     axios
       .get('/api/user')
@@ -36,6 +28,15 @@ export default function App() {
         console.error('Failed to getUser:', err);
       });
   };
+  const userState = useMemo(
+    () => ({
+      user,
+      setUser,
+      getUser,
+    }),
+    [user]
+  );
+
 
   useEffect(() => {
     getUser();
