@@ -49,8 +49,17 @@ function Chatroom() {
   // const app = useApp();
 
   useEffect(() => {
+    console.log('welcome to chat')
     // Player has joined chat
     socket.emit('joinChat');
+    /**
+     * When you join the chat, you need to be assigned a room.
+     *
+     *  Send a get request to 'chatroom' along with that room number as a param
+     *  The get request will return a room ,
+     *
+     *
+     * */
     socket.on('message', (msg) => {
       console.log('message received: ' + msg);
       // Update UI with the new message
