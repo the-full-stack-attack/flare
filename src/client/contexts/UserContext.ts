@@ -13,6 +13,7 @@ export interface UserType {
   avatar_id?: number;
   avatar_shirt?: string;
   avatar_pants?: string;
+  current_task_id?: number;
 }
 
 type UserContextType = {
