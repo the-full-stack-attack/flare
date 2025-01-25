@@ -13,7 +13,7 @@ import { UserContext } from '../../contexts/UserContext';
 
 // Define the props interface
 interface TaskDisplayProps {
-  task: Task | null | object;
+  task: Task | object;
 }
 type Task = {
   id: number;
@@ -25,6 +25,7 @@ type Task = {
 };
 
 function TaskDisplay({ task }: TaskDisplayProps) {
+  // Function for when a task is complete
   const { user, getUser, setUser } = useContext(UserContext);
   // Is it better to use getUser or setUser in this function?
   const completeTask = (): void => {
@@ -42,6 +43,25 @@ function TaskDisplay({ task }: TaskDisplayProps) {
         console.error('Error completing task/user PATCH: ', err);
       });
   };
+  // Function for when a user opts out of a task
+  const optOut = (): void => {
+    const userId = user.id;
+    const taskId = task.id;
+    const config = {
+      taskId: {
+        taskId,
+      },
+    };
+    console.log('Config: ', config);
+    axios
+      .patch(`/api/user/task${userId}`, config)
+      .then(({ data }) => {
+        console.log('Data in optOut PATCH: ', data);
+      })
+      .catch((err) => {
+        console.error('Error in the optOut PATCH: ', err);
+      });
+  };
   return (
     <Card>
       <CardHeader>
@@ -50,6 +70,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       <CardContent>{task.description}</CardContent>
       <CardFooter>
         <Button onClick={completeTask}>Complete</Button>
+        <Button onClick={optOut}>Opt-Out</Button>
       </CardFooter>
     </Card>
   );
