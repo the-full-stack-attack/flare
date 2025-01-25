@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
@@ -17,7 +17,9 @@ import {
   Drawer,
   DrawerTrigger,
   DrawerContent,
-} from './../../../components/ui/drawer';
+} from '../../../components/ui/drawer';
+
+import { UserContext } from '../../contexts/UserContext';
 
 import EventDetails from './EventDetails';
 
@@ -43,6 +45,8 @@ type EventProps = {
 };
 
 function Event({ event, getEvents, category }: EventProps) {
+  const { user } = useContext(UserContext);
+
   const postAttendEvent = () => {
     axios
       .post(`/api/event/attend/${event.id}`)
@@ -74,28 +78,35 @@ function Event({ event, getEvents, category }: EventProps) {
               <DrawerTrigger asChild>
                 <Button>Open</Button>
               </DrawerTrigger>
-              <DrawerContent>
-                <EventDetails />
+              <DrawerContent className="mx-auto w-full max-w-md">
+                <EventDetails
+                  event={event}
+                  getEvents={getEvents}
+                  category={category}
+                />
               </DrawerContent>
             </Drawer>
           </div>
         </CardContent>
-        <CardFooter className="justify-end">
-          {category === 'upcoming' ? (
-            <Button className="" onClick={postAttendEvent}>
-              Attend
-            </Button>
-          ) : null}
-          {category === 'attending' ? (
-            <Button className="" onClick={patchAttendingEvent}>
-              Bail
-            </Button>
-          ) : null}
-          {category === 'bailed' ? (
-            <Button className="" onClick={patchAttendingEvent}>
-              Re-attend
-            </Button>
-          ) : null}
+        <CardFooter>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-2 grid grid-cols-subgrid gap-4">
+              <div className="col-start-1">
+                {user.id === event.created_by ? <b>Host</b> : null}
+              </div>
+            </div>
+            <div>
+              {category === 'upcoming' ? (
+                <Button onClick={postAttendEvent}>Attend</Button>
+              ) : null}
+              {category === 'attending' ? (
+                <Button onClick={patchAttendingEvent}>Bail</Button>
+              ) : null}
+              {category === 'bailed' ? (
+                <Button onClick={patchAttendingEvent}>Re-attend</Button>
+              ) : null}
+            </div>
+          </div>
         </CardFooter>
       </Card>
     </li>
