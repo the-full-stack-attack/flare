@@ -126,8 +126,8 @@ function Events() {
         defaultValue="upcoming"
         className="container mx-auto px-4 content-center"
       >
-        <TabsList className="container mx-auto px-4 content-center">
-          <TabsTrigger value="upcoming">{`Near You (${events.length})`}</TabsTrigger>
+        <TabsList>
+          <TabsTrigger value="upcoming">{`Upcoming (${events.length})`}</TabsTrigger>
           <TabsTrigger value="attending">{`Attending (${attendingEvents.length})`}</TabsTrigger>
           <TabsTrigger value="bailed">{`Bailed (${bailedEvents.length})`}</TabsTrigger>
         </TabsList>
@@ -141,14 +141,20 @@ function Events() {
             category="upcoming"
           />
         </TabsContent>
-        <TabsContent value="attending">
+        <TabsContent
+          value="attending"
+          className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
+        >
           <EventsList
             events={attendingEvents}
             getEvents={getEvents}
             category="attending"
           />
         </TabsContent>
-        <TabsContent value="bailed">
+        <TabsContent
+          value="bailed"
+          className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
+        >
           <EventsList
             events={bailedEvents}
             getEvents={getEvents}

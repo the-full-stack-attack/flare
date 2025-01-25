@@ -73,41 +73,34 @@ function Event({ event, getEvents, category }: EventProps) {
           <CardDescription>{`${dayjs(event.start_time).format('MMMM D [--] h:mm A')} - ${dayjs(event.end_time).format('h:mm A')}`}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div>
-            <Drawer>
-              <DrawerTrigger asChild>
-                <Button>Open</Button>
-              </DrawerTrigger>
-              <DrawerContent className="mx-auto w-full max-w-md">
-                <EventDetails
-                  event={event}
-                  getEvents={getEvents}
-                  category={category}
-                />
-              </DrawerContent>
-            </Drawer>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2 grid grid-cols-subgrid gap-4">
-              <div className="col-start-1">
-                {user.id === event.created_by ? <b>Host</b> : null}
-              </div>
+          <div className="grid grid-cols-2 gap-4 place-content-center">
+            <div>
+              <img
+                className="h-30 w-30 object-contain"
+                src="https://itseverythingdelicious.com/wp-content/uploads/2018/08/Cafe-Du-Monde-man-singing-outside-768x768.jpg"
+                alt="Cafe Du Monde"
+              />
             </div>
             <div>
-              {category === 'upcoming' ? (
-                <Button onClick={postAttendEvent}>Attend</Button>
-              ) : null}
-              {category === 'attending' ? (
-                <Button onClick={patchAttendingEvent}>Bail</Button>
-              ) : null}
-              {category === 'bailed' ? (
-                <Button onClick={patchAttendingEvent}>Re-attend</Button>
-              ) : null}
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button>Details / RSVP</Button>
+                </DrawerTrigger>
+                <DrawerContent className="mx-auto w-full max-w-md">
+                  <EventDetails
+                    event={event}
+                    category={category}
+                    postAttendEvent={postAttendEvent}
+                    patchAttendingEvent={patchAttendingEvent}
+                  />
+                </DrawerContent>
+              </Drawer>
+              <div className="p-2">
+                {user.id === event.created_by ? <b>Host</b> : <b> </b>}
+              </div>
             </div>
           </div>
-        </CardFooter>
+        </CardContent>
       </Card>
     </div>
   );

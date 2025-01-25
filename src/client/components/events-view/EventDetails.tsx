@@ -28,11 +28,17 @@ type EventDetailsProps = {
       user_attending: boolean;
     };
   };
-  getEvents: () => void;
+  postAttendEvent: () => void;
+  patchAttendingEvent: () => void;
   category: string;
 };
 
-function EventDetails({ event, getEvents, category }: EventDetailsProps) {
+function EventDetails({
+  event,
+  category,
+  postAttendEvent,
+  patchAttendingEvent,
+}: EventDetailsProps) {
   const { title, start_time, end_time, address, description } = event;
   return (
     <div className="mx-auto w-full max-w-sm">
@@ -57,6 +63,15 @@ function EventDetails({ event, getEvents, category }: EventDetailsProps) {
         </div>
       </div>
       <DrawerFooter>
+        {category === 'upcoming' ? (
+          <Button onClick={postAttendEvent}>Attend</Button>
+        ) : null}
+        {category === 'attending' ? (
+          <Button onClick={patchAttendingEvent}>Bail</Button>
+        ) : null}
+        {category === 'bailed' ? (
+          <Button onClick={patchAttendingEvent}>Re-attend</Button>
+        ) : null}
         {category === 'attending' ? <Button>Enter Chatroom</Button> : null}
         <DrawerClose asChild>
           <Button>Close</Button>
