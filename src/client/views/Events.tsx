@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+
+import { UserContext } from '../contexts/UserContext';
 
 import {
   Tabs,
@@ -40,6 +42,8 @@ type EventData = {
 };
 
 function Events() {
+  const { user } = useContext(UserContext);
+
   // The latitude and longitude of the user will be stored in state on page load
   const [location, setLocation] = useState<Location>({
     latitude: 0,
@@ -116,13 +120,14 @@ function Events() {
     getEvents();
   }, []);
 
-  console.log(attendingEvents);
-
   return (
     <div className="container mx-auto px-4 content-center">
-      <Tabs defaultValue="upcoming" className="w-[400px] ">
-        <TabsList className="">
-          <TabsTrigger value="upcoming">{`Events Near You (${events.length})`}</TabsTrigger>
+      <Tabs
+        defaultValue="upcoming"
+        className="container mx-auto px-4 content-center"
+      >
+        <TabsList className="container mx-auto px-4 content-center">
+          <TabsTrigger value="upcoming">{`Near You (${events.length})`}</TabsTrigger>
           <TabsTrigger value="attending">{`Attending (${attendingEvents.length})`}</TabsTrigger>
           <TabsTrigger value="bailed">{`Bailed (${bailedEvents.length})`}</TabsTrigger>
         </TabsList>
