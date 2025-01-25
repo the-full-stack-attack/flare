@@ -8,6 +8,7 @@ import { Model } from "sequelize"; //
 
 const eventRouter = Router();
 
+
 eventRouter.post('/', async (req: any, res: Response) => {
     const {title, description, startDate, endDate, startTime, endTime, venue, interests, category} = req.body;
     const userId = req.user.id;
