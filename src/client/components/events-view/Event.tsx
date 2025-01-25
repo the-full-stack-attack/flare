@@ -3,6 +3,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 
 import { Button } from '../../../components/ui/button';
+
 import {
   Card,
   CardHeader,
@@ -11,6 +12,14 @@ import {
   CardDescription,
   CardContent,
 } from '../../../components/ui/card';
+
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+} from './../../../components/ui/drawer';
+
+import EventDetails from './EventDetails';
 
 type EventProps = {
   event: {
@@ -61,7 +70,14 @@ function Event({ event, getEvents, category }: EventProps) {
         </CardHeader>
         <CardContent>
           <div>
-            <p className="italic">{event.description}</p>
+            <Drawer>
+              <DrawerTrigger asChild>
+                <Button>Open</Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <EventDetails />
+              </DrawerContent>
+            </Drawer>
           </div>
         </CardContent>
         <CardFooter className="justify-end">
