@@ -1,109 +1,88 @@
-// @ts-nocheck
-import {Router, Request, Response} from 'express';
+import { Router, Request, Response } from 'express';
 import Category from '../db/models/categories';
 import Event from '../db/models/events';
 import Venue from '../db/models/venues';
 import Chatroom from '../db/models/chatrooms';
-import database from '../db/index';
 import Interest from '../db/models/interests';
+import { Model } from "sequelize"; //
 
 const eventRouter = Router();
 
-
-eventRouter.post('/', async (req: any, res: any) => {
-    const {title, description, startDate, endDate, startTime, endTime, venue, interests, category} = req.body
-    const userGoogleId = req.user.google_id;
-    const userName = req.user.username;
+eventRouter.post('/', async (req: any, res: Response) => {
+    const {title, description, startDate, endDate, startTime, endTime, venue, interests, category} = req.body;
     const userId = req.user.id;
     const address = 'test address 1234st.';
-    console.log(userId);
-
+  
     try {
-        // Managed Transactions - if any operation fails, Sequelize will rollback automatically. Either ALL succeed or NONE succeed.
-        const result = await database.transaction(async t => {
-
-            // Create venue first since Event has venue_id foreign key - Event.belongsTo(Venue)
-            const newVenue = await Venue.create({
-                    name: venue,
-                    description: 'test venue description :{',
-                },
-                {transaction: t},
-            );
-
-            // Create Event
-            const newEvent = await Event.create({
-                    title: title,
-                    start_time: startTime,
-                    end_time: endTime,
-                    address: address,
-                    description: description,
-                },
-                {transaction: t},
-            );
-
-            // Set venue_id column in Events table to newVenue.id - Event.belongsTo(Venue)
-            await newEvent.setVenue(newVenue,
-                {transaction: t}
-            );
-
-            // Query DB to find Category name - Event can only have one category
-            const assignCategory = await Category.findOne({
-                    where: {name: category}
-                }, {transaction: t}
-            );
-
-            // Set category_id in Event to assignCategory.id
-            await newEvent.setCategory(assignCategory,
-                {transaction: t}
-            );
-
-            // Find all matching Interests
-            const findInterest = await Interest.findAll({
-                    where: {name: interests}
-                }, {transaction: t}
-            );
-
-
-            // Update Event_Interest join table with event_id and interest_id
-            await newEvent.setInterests(findInterest, // Event.belongsToMany(Interest), which means we use setInterests vs setInterest
-                {transaction: t}
-            );
-
-
-            // Create Chatroom
-            const chatroom = await Chatroom.create({
-                    map: null,
-                    event_id: null,
-                },
-                {transaction: t}
-            );
-
-            // Set event_id in Chatroom to newEvent.id
-            await chatroom.setEvent(newEvent,
-                {transaction: t}
-            );
-        })
-        res.sendStatus(200);
-
-    } catch (error) {
-        console.error('Error adding new event to DB', error);
-        res.sendStatus(500);
+      // create venue
+      const newVenue: any = await Venue.create({
+        name: venue,
+        description: 'test venue description :{'
+      });
+  
+      // then create the event 
+      const newEvent: any = await Event.create({
+        title,
+        start_time: startTime,
+        end_time: endTime,
+        address,
+        description,
+        created_by: userId, 
+      });
+  
+      // add venue_id to new venue
+      await newEvent.setVenue(newVenue);
+  
+      // find matching category
+      const assignCategory: any = await Category.findOne({
+        where: { name: category }
+      });
+  
+      // confirm matching category located in db
+      if (assignCategory) {
+        // add category_id to new event
+        await newEvent.setCategory(assignCategory);
+      }
+  
+      // find matching interests
+      const findInterest: any[] = await Interest.findAll({
+        where: { name: interests }
+      });
+  
+      // confirm matching interests located in db
+      if (findInterest) {
+        await newEvent.setInterests(findInterest);
+      }
+  
+      // create chatroom
+      const chatroom: any = await Chatroom.create({
+        map: null,
+        event_id: newEvent.dataValues.id
+      });
+  
+      // add event__id to new chatroom 
+      await chatroom.setEvent(newEvent);
+      res.sendStatus(200);
+  
+    } catch (err: any) {
+      console.error('Failed to create event:', err);
+      res.sendStatus(500);
     }
-});
+  });
 
-eventRouter.get('/categories', async (req: Request, res: Response) => {
+  // get all categories in db to populate form category options
+  eventRouter.get('/categories', async (req: Request, res: Response) => {
     try {
-        const allCategories = await Category.findAll();
-        const data = allCategories.map((category) => ({
-            name: category.dataValues.name,
-            id: category.dataValues.id,
-        }));
-        res.send(data).status(200);
-    } catch (error) {
-        console.error('Error getting categories from DB', error);
-        res.sendStatus(500);
+      const categories: any[] = await Category.findAll();
+      const data = categories.map(category => ({
+        name: category.dataValues.name,
+        id: category.dataValues.id
+      }));
+      res.status(200).send(data);
+    } catch (err: any) {
+      console.error('Failed to GET /categories:', err);
+      res.sendStatus(500);
     }
-});
-
+  });
 
 export default eventRouter;
