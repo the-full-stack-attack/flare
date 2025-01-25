@@ -20,7 +20,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="AiConversations" element={<AiConversations />} />
-        <Route path="Chatroom" element={<Chatroom />} />
+        <Route path="/Chatroom/:chatroom_id" element={<Chatroom />} />
         <Route path="CreateEvents" element={<CreateEvents />} />
         <Route path="Events" element={<Events />} />
         <Route path="Signup" element={<Signup />} />
