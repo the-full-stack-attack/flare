@@ -69,12 +69,11 @@ const seedTasks = async () => {
   }
   dates.forEach((date: any) => {
     const prompt = `I am seeding a MySQL database and need the tasks formatted as JSON objects. Please return a JSON array that can be parsed into an array of objects. The objects should
-  have the following properties: description is a task for the user to do in order to get out of the house,
-type is a category of task, difficulty_rating is a number between 1 and 5, completed_count is any positive whole number, and date is ${date}. The type options are:
-Active, Fun, Normal, Duo, and Rejection Therapy. Give me 5 tasks for each category for the provided date, one for each difficulty level.
+have the following properties: description is a task for the user to do in order to get out of the house,
+type is a category of task, difficulty is either 1, 2, 3, 4, or 5, completed_count is 0, and date is ${date}. The type options are:
+Active, Fun, Normal, Duo, and Rejection Therapy. For each type of task, please provide a task for every difficulty level.
 The task should not take more than 60 minutes, but should require the person to leave their house. The tasks should be non specific in the sense that anyone should be able to complete it.
-Take into consideration that most places are not within walking distance for many people. Do not tell people how to reach a destination, just tell them to go to where the
-task will take place.`;
+Take into consideration that most places are not within walking distance for many people. Do not tell people how to reach a destination, just tell them to go to where the task will take place.`;
     model
       .generateContent(prompt)
       .then(async (result: any) => {
@@ -94,4 +93,3 @@ task will take place.`;
 };
 
 seedTasks();
-// makeDates();
