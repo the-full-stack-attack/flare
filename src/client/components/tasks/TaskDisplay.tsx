@@ -1,4 +1,5 @@
 import React from 'react';
+import dayjs from 'dayjs';
 import {
   Card,
   CardHeader,
@@ -8,14 +9,23 @@ import {
 
 // Define the props interface
 interface TaskDisplayProps {
-  user: object;
+  task: Task;
 }
-function TaskDisplay({ user }: TaskDisplayProps) {
+type Task = {
+  id: number;
+  description: string;
+  type: string;
+  completed_count: number;
+  date: dayjs.Dayjs;
+  difficulty: number;
+};
+function TaskDisplay({ task }: TaskDisplayProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Current Task:</CardTitle>
       </CardHeader>
+      <CardContent>{task.description}</CardContent>
     </Card>
   );
 }
