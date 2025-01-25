@@ -42,6 +42,7 @@ module.exports = {
     '@typescript-eslint/comma-dangle': 'off',
     'no-console': 'off',
     'object-curly-newline': 'off',
+    '@typescript-eslint/operator-linebreak': 'off',
   },
   // Ignore files in the test directory
   ignorePatterns: [

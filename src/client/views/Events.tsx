@@ -122,9 +122,12 @@ function Events() {
 
   return (
     <div className="container mx-auto px-4 content-center">
-      <Tabs defaultValue="upcoming" className="w-[400px] ">
-        <TabsList className="">
-          <TabsTrigger value="upcoming">{`Events Near You (${events.length})`}</TabsTrigger>
+      <Tabs
+        defaultValue="upcoming"
+        className="container mx-auto px-4 content-center"
+      >
+        <TabsList className="container mx-auto px-4 content-center">
+          <TabsTrigger value="upcoming">{`Near You (${events.length})`}</TabsTrigger>
           <TabsTrigger value="attending">{`Attending (${attendingEvents.length})`}</TabsTrigger>
           <TabsTrigger value="bailed">{`Bailed (${bailedEvents.length})`}</TabsTrigger>
         </TabsList>
