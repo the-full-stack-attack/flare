@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
@@ -18,18 +19,19 @@ interface PlayerList {
   [key: string]: any;
 }
 
-let SOCKET_LIST: SocketList = {};
-let PLAYER_LIST: PlayerList = {};
+const SOCKET_LIST: SocketList = {};
+const PLAYER_LIST: PlayerList = {};
 
 // Creates a player object with their own state... (replace with keyword 'this'?)
 const Player = function (id: any) {
-  let self = {
+  const self = {
     name: id,
-    data: { // positions
+    data: {
+      // positions
       x: 25,
       y: 25,
     },
-    number: Math.floor(10 * Math.random()), 
+    number: Math.floor(10 * Math.random()),
     pressingRight: false, // states of movement
     pressingLeft: false,
     pressingUp: false,
@@ -37,7 +39,8 @@ const Player = function (id: any) {
     maxSpd: 10,
     sentMessage: false,
     currentMessage: '',
-    updatePosition() { // method for updating state of movement
+    updatePosition() {
+      // method for updating state of movement
       if (self.pressingRight) {
         self.data.x += self.maxSpd;
       }
@@ -50,16 +53,16 @@ const Player = function (id: any) {
       if (self.pressingDown) {
         self.data.y += self.maxSpd;
       }
-    }
-  }
+    },
+  };
   return self;
-}
+};
 
 if (process.env.DEVELOPMENT === 'true') {
   database
     .sync({ alter: true })
     .then(() => {
-      if (process.env.SOCKET !== 'true') { 
+      if (process.env.SOCKET !== 'true') {
         app.listen(PORT, '0.0.0.0', () => {
           console.log(`Listening on http://localhost:${PORT}`);
         });
@@ -69,13 +72,12 @@ if (process.env.DEVELOPMENT === 'true') {
         // Register event listeners for Socket.IO
         io.on('connection', (socket) => {
           console.log('a user connected', socket.id);
-
           // when client joins chat, create a player, add them to the lists
           socket.on('joinChat', () => {
             socket.data.name = socket.id;
-            let stringName = socket.data.name;
+            const stringName = socket.data.name;
             SOCKET_LIST[stringName] = socket;
-            let player = Player(socket.id);
+            const player = Player(socket.id);
             PLAYER_LIST[socket.id] = player;
           });
           // On disconnect, delete them from the lists
@@ -86,30 +88,29 @@ if (process.env.DEVELOPMENT === 'true') {
           });
 
           // Controls movement. Update their respective state via socket.id
-          socket.on('keyPress', (data) => {
-            console.log(data)
-            if (data.inputId === 'Up') {
-              PLAYER_LIST[socket.id].pressingUp = data.state
+          socket.on('keyPress', ({ inputId, state }) => {
+            if (inputId === 'Up') {
+              PLAYER_LIST[socket.id].pressingUp = state;
             }
-            if (data.inputId === 'Left') {
-              PLAYER_LIST[socket.id].pressingLeft = data.state
+            if (inputId === 'Left') {
+              PLAYER_LIST[socket.id].pressingLeft = state;
             }
-            if (data.inputId === 'Right') {
-              PLAYER_LIST[socket.id].pressingRight = data.state
+            if (inputId === 'Right') {
+              PLAYER_LIST[socket.id].pressingRight = state;
             }
-            if (data.inputId === 'Down') {
-              PLAYER_LIST[socket.id].pressingDown = data.state
+            if (inputId === 'Down') {
+              PLAYER_LIST[socket.id].pressingDown = state;
             }
           });
 
           socket.on('message', (msg) => {
-            console.log('message: ' + msg);
             PLAYER_LIST[socket.id].sentMessage = true;
             PLAYER_LIST[socket.id].currentMessage = msg;
             socket.broadcast.emit('message', msg);
+            // Remove message after a few seconds
             setTimeout(() => {
               PLAYER_LIST[socket.id].sentMessage = false;
-            }, 2000)
+            }, 2000);
           });
         });
 
@@ -127,12 +128,67 @@ if (process.env.DEVELOPMENT === 'true') {
     key: fs.readFileSync('/etc/letsencrypt/live/slayer.events/privkey.pem'),
   };
 
-  const io = new Server(https.createServer(options, app));
-  io.on('connection', (socket) => {
-    socket.emit('connect', { message: 'a new client connected!' });
-  });
+  // IF NOT USING SOCKETS
 
-  https.createServer(options, app).listen(443);
+  if (process.env.SOCKET !== 'true') {
+
+    // START SERVER AS NORMAL
+    
+    https.createServer(options, app).listen(443);
+
+
+  } else { // OTHERWISE
+
+    // START THE SERVER WITH SOCKETS
+
+    const io = new Server(https.createServer(options, app));
+    // SOCKET ROUTING
+    io.on('connection', (socket) => {
+      console.log('a user connected', socket.id);
+      // when client joins chat, create a player, add them to the lists
+      socket.on('joinChat', () => {
+        socket.data.name = socket.id;
+        const stringName = socket.data.name;
+        SOCKET_LIST[stringName] = socket;
+        const player = Player(socket.id);
+        PLAYER_LIST[socket.id] = player;
+      });
+      // On disconnect, delete them from the lists
+      socket.on('disconnect', () => {
+        console.log('user disconnected');
+        delete SOCKET_LIST[socket.id];
+        delete PLAYER_LIST[socket.id];
+      });
+
+      // Controls movement. Update their respective state via socket.id
+      socket.on('keyPress', ({ inputId, state }) => {
+        if (inputId === 'Up') {
+          PLAYER_LIST[socket.id].pressingUp = state;
+        }
+        if (inputId === 'Left') {
+          PLAYER_LIST[socket.id].pressingLeft = state;
+        }
+        if (inputId === 'Right') {
+          PLAYER_LIST[socket.id].pressingRight = state;
+        }
+        if (inputId === 'Down') {
+          PLAYER_LIST[socket.id].pressingDown = state;
+        }
+      });
+
+      socket.on('message', (msg) => {
+        PLAYER_LIST[socket.id].sentMessage = true;
+        PLAYER_LIST[socket.id].currentMessage = msg;
+        socket.broadcast.emit('message', msg);
+        // Remove message after a few seconds
+        setTimeout(() => {
+          PLAYER_LIST[socket.id].sentMessage = false;
+        }, 2000);
+      });
+    });
+
+    https.createServer(options, app).listen(443);
+  }
 }
 
 // Async function, updates chatroom state based on all player positions in list
@@ -146,11 +202,11 @@ setInterval(() => {
       x: player.data.x,
       y: player.data.y,
       sentMessage: player.sentMessage,
-      currentMessage: player.currentMessage
+      currentMessage: player.currentMessage,
     });
   }
   // loop through the sockets and send the package to each of them
-  for (let key in SOCKET_LIST) { 
+  for (let key in SOCKET_LIST) {
     let socket = SOCKET_LIST[key];
     socket.emit('newPositions', pack);
   }
