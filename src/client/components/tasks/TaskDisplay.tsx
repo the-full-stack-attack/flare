@@ -48,15 +48,12 @@ function TaskDisplay({ task }: TaskDisplayProps) {
     const userId = user.id;
     const taskId = task.id;
     const config = {
-      taskId: {
-        taskId,
-      },
+      userId,
     };
-    console.log('Config: ', config);
     axios
-      .patch(`/api/user/task/${userId}`, config)
+      .patch(`/api/task/${taskId}`, config)
       .then(({ data }) => {
-        console.log('Data in optOut PATCH: ', data);
+        setUser(data);
       })
       .catch((err) => {
         console.error('Error in the optOut PATCH: ', err);
