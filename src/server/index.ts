@@ -35,6 +35,8 @@ const Player = function (id: any) {
     pressingUp: false,
     pressingDown: false,
     maxSpd: 10,
+    sentMessage: false,
+    currentMessage: '',
     updatePosition() { // method for updating state of movement
       if (self.pressingRight) {
         self.data.x += self.maxSpd;
@@ -102,7 +104,12 @@ if (process.env.DEVELOPMENT === 'true') {
 
           socket.on('message', (msg) => {
             console.log('message: ' + msg);
+            PLAYER_LIST[socket.id].sentMessage = true;
+            PLAYER_LIST[socket.id].currentMessage = msg;
             socket.broadcast.emit('message', msg);
+            setTimeout(() => {
+              PLAYER_LIST[socket.id].sentMessage = false;
+            }, 2000)
           });
         });
 
@@ -138,6 +145,8 @@ setInterval(() => {
       id: player.name,
       x: player.data.x,
       y: player.data.y,
+      sentMessage: player.sentMessage,
+      currentMessage: player.currentMessage
     });
   }
   // loop through the sockets and send the package to each of them
