@@ -39,6 +39,14 @@ type EventProps = {
     User_Event?: {
       user_attending: boolean;
     };
+    Users?: {
+      id: number;
+      username: string;
+      full_name: string;
+      User_Event: {
+        user_attending: boolean;
+      };
+    }[];
   };
   getEvents: () => void;
   category: string;
@@ -46,6 +54,8 @@ type EventProps = {
 
 function Event({ event, getEvents, category }: EventProps) {
   const { user } = useContext(UserContext);
+
+  const { title, start_time, end_time, Users } = event;
 
   const postAttendEvent = () => {
     axios
@@ -69,8 +79,8 @@ function Event({ event, getEvents, category }: EventProps) {
     <div key={event.id} className="text-lg text-center p-[10px]">
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg text-center">{event.title}</CardTitle>
-          <CardDescription>{`${dayjs(event.start_time).format('MMMM D [--] h:mm A')} - ${dayjs(event.end_time).format('h:mm A')}`}</CardDescription>
+          <CardTitle className="text-lg text-center">{title}</CardTitle>
+          <CardDescription>{`${dayjs(start_time).format('MMMM D [--] h:mm A')} - ${dayjs(end_time).format('h:mm A')}`}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 place-content-center">
@@ -96,8 +106,29 @@ function Event({ event, getEvents, category }: EventProps) {
                 </DrawerContent>
               </Drawer>
               <div className="p-2">
-                {user.id === event.created_by ? <b>Host</b> : <b> </b>}
+                {user.id === event.created_by ? <b>Host</b> : null}
               </div>
+              
+              {Users?.reduce((acc, curr) => {
+                if (curr.id === user.id && curr.User_Event.user_attending) {
+                  acc = true;
+                }
+                return acc;
+              }, false) ? (
+                <div className="p-2">
+                  <i>Attending</i>
+                </div>
+              ) : null}
+              {Users?.reduce((acc, curr) => {
+                if (curr.id === user.id && !curr.User_Event.user_attending) {
+                  acc = true;
+                }
+                return acc;
+              }, false) ? (
+                <div className="p-2">
+                  <i>Bailed</i>
+                </div>
+              ) : null}
             </div>
           </div>
         </CardContent>

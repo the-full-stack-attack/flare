@@ -28,6 +28,7 @@ type EventDetailsProps = {
       user_attending: boolean;
     };
     Users?: {
+      id: number;
       username: string;
       full_name: string;
       User_Event: {
