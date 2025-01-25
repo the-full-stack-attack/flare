@@ -6,9 +6,11 @@ import { UserContext } from '../contexts/UserContext';
 
 function Dashboard() {
   const { user } = useContext(UserContext);
-  const [task, setTask] = useState({});
-  // Function to set the task in state
-  const getTask = (): void => {
+  const [task, setTask] = useState<object | null>({});
+  // Use effect will call getTask if there is a change in user state
+  useEffect((): void => {
+    // Find the task by the id and set the task in state
+    console.log('useEffect function invoked:', user);
     const { current_task_id } = user;
     if (current_task_id) {
       axios
@@ -20,14 +22,15 @@ function Dashboard() {
           console.error('Error GETting task by id: ', err);
         });
     }
-  };
-  // Use effect will call getTask if there is a change in user state
-  useEffect(getTask, [user]);
+  }, [user]);
   return (
     <>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
-      <TaskDisplay task={task} />
-      <ChooseTask setTask={setTask} />
+      {user.current_task_id ? (
+        <TaskDisplay task={task} />
+      ) : (
+        <ChooseTask setTask={setTask} />
+      )}
     </>
   );
 }
