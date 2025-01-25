@@ -35,6 +35,23 @@ type EventDetailsProps = {
         user_attending: boolean;
       };
     }[];
+    Category?: {
+      id: number;
+      name: string;
+    };
+    Interests?: {
+      id: number;
+      name: string;
+    }[];
+    Venue?: {
+      id: number;
+      name: string;
+      description: string;
+      street_address: string;
+      city_name: string;
+      state_name: string;
+      zip_code: number;
+    };
   };
   postAttendEvent: () => void;
   patchAttendingEvent: () => void;

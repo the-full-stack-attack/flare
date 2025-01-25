@@ -24,12 +24,17 @@ event2Router.get('/', (req: any, res: Response) => {
         model: Venue,
       },
       {
+        association: 'Category',
+      },
+      {
+        association: 'Interests',
+      },
+      {
         association: 'Users',
       },
     ],
   })
     .then((events: object[]) => {
-      console.log(events);
       res.status(200);
       res.send(events);
     })
@@ -90,6 +95,12 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
         },
         {
           model: Venue,
+        },
+        {
+          association: 'Category',
+        },
+        {
+          association: 'Interests',
         },
         {
           association: 'Users',
