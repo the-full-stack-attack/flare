@@ -68,12 +68,11 @@ function EventDetails({
     title,
     start_time,
     end_time,
-    address,
     description,
     Users,
     Venue,
     Category,
-    Interests
+    Interests,
   } = event;
 
   const { street_address, city_name, state_name, zip_code } = Venue;
@@ -109,8 +108,12 @@ function EventDetails({
             }, '')}</p>
           </div>
           <div className="col-span-2">
-            <b>Address:</b>
-            <p>{address}</p>
+            <b>Venue Address:</b>
+            <p>{`${street_address}, ${city_name}, ${state_name} ${zip_code}`}</p>
+          </div>
+          <div className="col-span-2">
+            <b>Venue Description:</b>
+            <p>{Venue?.description}</p>
           </div>
           <div className="col-span-2">
             <b>Who is attending?</b>
