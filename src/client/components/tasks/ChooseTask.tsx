@@ -80,7 +80,9 @@ function ChooseTask({ setTask }: ChooseTaskProps) {
         ))}
       </CardContent>
       <CardFooter>
-        <Button onClick={chooseTask}>Choose Task</Button>
+        <Button onClick={chooseTask} variant="secondary">
+          Choose Task
+        </Button>
       </CardFooter>
     </Card>
   );

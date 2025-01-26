@@ -25,7 +25,7 @@ function TypeButton({ type, taskInfo, setTaskInfo }: TypeButtonProps) {
   };
   return (
     <Button
-      variant={taskInfo.type === type ? 'secondary' : 'outline'}
+      variant={taskInfo.type === type ? '' : 'ghost'}
       id={type}
       onClick={pickType}
     >
