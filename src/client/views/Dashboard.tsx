@@ -10,7 +10,6 @@ function Dashboard() {
   // Use effect will call getTask if there is a change in user state
   useEffect((): void => {
     // Find the task by the id and set the task in state
-    console.log('useEffect function invoked:', user);
     const { current_task_id } = user;
     if (current_task_id) {
       axios
