@@ -64,7 +64,19 @@ function EventDetails({
   postAttendEvent,
   patchAttendingEvent,
 }: EventDetailsProps) {
-  const { title, start_time, end_time, address, description, Users } = event;
+  const {
+    title,
+    start_time,
+    end_time,
+    address,
+    description,
+    Users,
+    Venue,
+    Category,
+    Interests
+  } = event;
+
+  const { street_address, city_name, state_name, zip_code } = Venue;
 
   return (
     <div className="mx-auto w-full max-w-sm">
@@ -81,6 +93,20 @@ function EventDetails({
           <div>
             <b>Time:</b>
             <p>{`${dayjs(start_time).format('h:mm A')} - ${dayjs(end_time).format('h:mm A')}`}</p>
+          </div>
+          <div>
+            <b>Category:</b>
+            <p>{Category ? Category.name : ''}</p>
+          </div>
+          <div>
+            <b>Interests:</b>
+            <p>{Interests?.reduce((acc, curr, i, arr) => {
+              acc += `${curr.name}, `;
+              if (i === arr.length - 1) {
+                return acc.slice(0, acc.length - 2);
+              }
+              return acc;
+            }, '')}</p>
           </div>
           <div className="col-span-2">
             <b>Address:</b>
