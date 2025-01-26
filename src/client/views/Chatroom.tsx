@@ -18,7 +18,7 @@ import MagicCard from '../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
-
+import whiteCircle from '../assets/images/whiteCircle.png'
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
 // must be passed into extend. Then you can utilize them as components
@@ -60,8 +60,12 @@ function Chatroom() {
     },
   ]);
 
-
-  
+  const {
+    assets: [texture],
+    isSuccess,
+  } = useAssets<Texture>([
+    whiteCircle,
+  ]);
   // Temporary variables for collision detection testing
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
@@ -207,6 +211,15 @@ function Chatroom() {
         <Application>
           <pixiContainer x={100} y={200}>
             <pixiGraphics draw={drawCircle} />
+          </pixiContainer>
+          <pixiContainer>
+            { isSuccess && <pixiSprite
+            texture={texture}
+            x={0}
+            y={0}
+            width={20}
+            height={20}
+            /> }
           </pixiContainer>
           {allPlayers.map((player) => (
             <pixiContainer x={player.x} y={player.y} key={player.id}>
