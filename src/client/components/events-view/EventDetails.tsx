@@ -109,7 +109,11 @@ function EventDetails({
           </div>
           <div className="col-span-2">
             <b>Venue Address:</b>
-            <p>{`${street_address}, ${city_name}, ${state_name} ${zip_code}`}</p>
+            <p>
+              {street_address
+                ? `${street_address}, ${city_name}, ${state_name} ${zip_code}`
+                : event.address}
+            </p>
           </div>
           <div className="col-span-2">
             <b>Venue Description:</b>
