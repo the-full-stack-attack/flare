@@ -115,14 +115,32 @@ function Events() {
       });
   };
 
+  const getLocation = () => {
+    if (location.latitude && location.longitude) {
+      axios
+        .get(`/api/event/location/${location.latitude}/${location.longitude}`)
+        .then(({ data }) => {
+          console.log(data);
+        })
+        .catch((err: unknown) => {
+          console.error('Failed getLocation:', err);
+        });
+    }
+  };
+
   useEffect(() => {
     getGeoLocation();
     getEvents();
   }, []);
 
+  useEffect(() => {
+    getLocation();
+  }, [location]);
+
   // console.log('Events:', events);
   // console.log('Attending Events:', attendingEvents);
   // console.log('Bailed Events:', bailedEvents);
+  console.log(location);
 
   return (
     <div className="container mx-auto px-4 content-center">
