@@ -107,17 +107,21 @@ function EventDetails({
               return acc;
             }, '')}</p>
           </div>
+          <div>
+            <b>Venue:</b>
+            <p>{Venue?.name}</p>
+          </div>
+          <div>
+            <b>Description:</b>
+            <p>{Venue?.description}</p>
+          </div>
           <div className="col-span-2">
-            <b>Venue Address:</b>
+            <b>Address:</b>
             <p>
               {street_address
                 ? `${street_address}, ${city_name}, ${state_name} ${zip_code}`
                 : event.address}
             </p>
-          </div>
-          <div className="col-span-2">
-            <b>Venue Description:</b>
-            <p>{Venue?.description}</p>
           </div>
           <div className="col-span-2">
             <b>Who is attending?</b>
