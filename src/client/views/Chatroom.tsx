@@ -18,7 +18,7 @@ import MagicCard from '../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
-import whiteCircle from '../assets/images/whiteCircle.png'
+import whiteCircle from '../assets/images/temporaryAImap.png'
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
 // must be passed into extend. Then you can utilize them as components
@@ -217,8 +217,8 @@ function Chatroom() {
             texture={texture}
             x={0}
             y={0}
-            width={20}
-            height={20}
+            width={800}
+            height={700}
             /> }
           </pixiContainer>
           {allPlayers.map((player) => (
@@ -237,8 +237,8 @@ function Chatroom() {
                 texture={Assets.get('bunny')}
                 x={0}
                 y={0}
-                width={20}
-                height={20}
+                width={22}
+                height={22}
                 key={player.id}
               />
             </pixiContainer>
