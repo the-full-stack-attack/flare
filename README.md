@@ -65,3 +65,22 @@ SOCKET=false
    2. _Continue to Step 5_
 
 ---
+### **Features:**
+1. **Events**
+2. **AI Conversation**
+3. **Event Chatrooms**
+4. **Tasks:** Tasks can be used as extra motivation, or a reason, to get out of the house.  Tasks are meant to be completed the day they are assigned.
+Relevant Models: User, Task, & User_Task  
+   1. Tasks have 2 main components, TaskDisplay and ChooseTask, that display on the dashboard
+   2. The components render conditionally based on the user's current_task_id value:  
+      > A null current_task_id will render the ChooseTask component  
+      > A number current_task_id will render the TaskDisplay component
+      * If the current_task_id is not null, the current task is retrieved from the database using the current_task_id (**See in Dashboard view useEffect hook**)
+   3. Users can choose from 5 task categories: Fun, Active, Duo, Normal, and Rejection Therapy
+   4. Tasks can be declared complete on the TaskDisplay component. This causes a number of changes in the database
+      > **See changes on PATCH request in /src/server/routes/task.ts**
+   5. Users can opt-out of tasks (***To be continued***)
+   6. Users can choose a difficulty level for a task (***To be continued***)
+   7. All users' current_task_ids are set to null at *(Determined Time)* using a worker. (***To be continued***)
+   > This is to enforce that tasks are completed the day they are assigned
+   8. Users can generate a custom task, which will send a prompt to the Gemini AI using GoogleGenerativeAI package (***To be continued***)

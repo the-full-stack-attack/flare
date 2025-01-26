@@ -9,6 +9,7 @@ module.exports = {
   entry: path.resolve(SRC_DIR, 'index.tsx'),
   output: {
     path: DIST_DIR,
+    publicPath: '/',
     filename: 'bundle.js',
   },
   module: {

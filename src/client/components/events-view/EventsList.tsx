@@ -25,7 +25,7 @@ type EventsListProps = {
 
 function EventsList({ events, getEvents, category }: EventsListProps) {
   return (
-    <ul className="container content-center">
+    <>
       {events.map((event) => (
         <Event
           key={event.id}
@@ -34,7 +34,7 @@ function EventsList({ events, getEvents, category }: EventsListProps) {
           category={category}
         />
       ))}
-    </ul>
+    </>
   );
 }
 
