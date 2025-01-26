@@ -19,7 +19,7 @@ type GeoPosition = {
   };
 };
 
-type Location = {
+type GeoLocation = {
   latitude: null | number;
   longitude: null | number;
 };
@@ -45,10 +45,12 @@ function Events() {
   const { user } = useContext(UserContext);
 
   // The latitude and longitude of the user will be stored in state on page load
-  const [location, setLocation] = useState<Location>({
+  const [geoLocation, setGeoLocation] = useState<GeoLocation>({
     latitude: 0,
     longitude: 0,
   });
+
+  const [location, setLocation] = useState<any>({});
 
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
@@ -62,7 +64,7 @@ function Events() {
     const success = (position: GeoPosition) => {
       const { latitude, longitude } = position.coords;
 
-      setLocation({ latitude, longitude });
+      setGeoLocation({ latitude, longitude });
     };
 
     const error = () => {
@@ -115,10 +117,35 @@ function Events() {
       });
   };
 
+  const getLocation = () => {
+    if (geoLocation.latitude && geoLocation.longitude) {
+      axios
+        .get(
+          `/api/event/location/${geoLocation.latitude}/${geoLocation.longitude}`
+        )
+        .then(({ data }) => {
+          setLocation(data);
+        })
+        .catch((err: unknown) => {
+          console.error('Failed getLocation:', err);
+        });
+    }
+  };
+
   useEffect(() => {
     getGeoLocation();
     getEvents();
   }, []);
+
+  useEffect(() => {
+    getLocation();
+  }, [geoLocation]);
+
+  // console.log('Events:', events);
+  // console.log('Attending Events:', attendingEvents);
+  // console.log('Bailed Events:', bailedEvents);
+  console.log('GeoLocation:', geoLocation);
+  console.log('Location:', location);
 
   return (
     <div className="container mx-auto px-4 content-center">

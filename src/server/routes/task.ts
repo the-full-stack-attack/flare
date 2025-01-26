@@ -50,7 +50,34 @@ taskRouter.post('/', async (req: any, res: Response) => {
   }
 });
 
-// PATCH requests to /api/task
+// PATCH requests to /api/task/:id
+taskRouter.patch('/:id', async (req: any, res: Response) => {
+  try {
+    // Get user's id from req.params
+    const taskId = req.params.id;
+    // Get taskId from  req.body
+    const { userId }: { userId: number } = req.body;
+    const user: any = await User.findByPk(userId);
+    const userTask: any = await User_Task.findOne({
+      where: { UserId: userId, TaskId: taskId },
+    });
+    if (user && userTask) {
+      user.current_task_id = null;
+      await user.save();
+      userTask.opted_out = true;
+      await userTask.save();
+      res.status(200).send(user);
+    } else {
+      console.error('Could not find user or userTask');
+      res.sendStatus(404);
+    }
+  } catch (err) {
+    console.error('Error in PATCH to /api/task/:id: ', err);
+    res.sendStatus(500);
+  }
+});
+
+// PATCH requests to /api/task, but not to /api/task/:id
 taskRouter.patch('/', async (req: any, res: Response) => {
   try {
     const { userId, taskId } = req.body.ids;
@@ -65,7 +92,7 @@ taskRouter.patch('/', async (req: any, res: Response) => {
       await user.save();
       task.completed_count += 1;
       await task.save();
-      userTask.completed = !userTask.completed;
+      userTask.completed = true;
       const date = dayjs().format('MM/DD/YYYY');
       const newDate = dayjs(date);
       userTask.date_completed = newDate;

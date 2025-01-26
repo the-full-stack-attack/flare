@@ -29,12 +29,30 @@ type EventDetailsProps = {
       user_attending: boolean;
     };
     Users?: {
+      id: number;
       username: string;
       full_name: string;
       User_Event: {
         user_attending: boolean;
       };
     }[];
+    Category?: {
+      id: number;
+      name: string;
+    };
+    Interests?: {
+      id: number;
+      name: string;
+    }[];
+    Venue?: {
+      id: number;
+      name: string;
+      description: string;
+      street_address: string;
+      city_name: string;
+      state_name: string;
+      zip_code: number;
+    };
   };
   postAttendEvent: () => void;
   patchAttendingEvent: () => void;
@@ -47,7 +65,19 @@ function EventDetails({
   postAttendEvent,
   patchAttendingEvent,
 }: EventDetailsProps) {
-  const { title, start_time, end_time, address, description, Users, id } = event;
+  const {
+    title,
+    start_time,
+    end_time,
+    description,
+    Users,
+    Venue,
+    Category,
+    Interests,
+    id
+  } = event;
+
+  const { street_address, city_name, state_name, zip_code } = Venue;
 
   return (
     <div className="mx-auto w-full max-w-sm">
@@ -65,9 +95,35 @@ function EventDetails({
             <b>Time:</b>
             <p>{`${dayjs(start_time).format('h:mm A')} - ${dayjs(end_time).format('h:mm A')}`}</p>
           </div>
+          <div>
+            <b>Category:</b>
+            <p>{Category ? Category.name : ''}</p>
+          </div>
+          <div>
+            <b>Interests:</b>
+            <p>{Interests?.reduce((acc, curr, i, arr) => {
+              acc += `${curr.name}, `;
+              if (i === arr.length - 1) {
+                return acc.slice(0, acc.length - 2);
+              }
+              return acc;
+            }, '')}</p>
+          </div>
+          <div>
+            <b>Venue:</b>
+            <p>{Venue?.name}</p>
+          </div>
+          <div>
+            <b>Description:</b>
+            <p>{Venue?.description}</p>
+          </div>
           <div className="col-span-2">
             <b>Address:</b>
-            <p>{address}</p>
+            <p>
+              {street_address
+                ? `${street_address}, ${city_name}, ${state_name} ${zip_code}`
+                : event.address}
+            </p>
           </div>
           <div className="col-span-2">
             <b>Who is attending?</b>
