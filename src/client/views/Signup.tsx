@@ -13,6 +13,8 @@ import { RainbowButton } from '../../components/ui/rainbowbutton';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
+import { AvatarSelection } from '../components/signup/avatarSelection'
+
 
 function Signup() {
   const navigate = useNavigate();
@@ -169,6 +171,8 @@ function Signup() {
                       </div>
                     </CardFooter>
                   </CardHeader>
+                  
+                        <AvatarSelection/>
                   <RainbowButton type="submit" value="Submit">
                     {' '}
                     Complete{' '}
