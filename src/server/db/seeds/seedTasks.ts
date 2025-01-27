@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 // import GoogleGenerativeAI from 'google/generative-ai'
 dotenv.config();
 const { GEMINI_KEY } = process.env;
-const genAI = new GoogleGenerativeAI(GEMINI_KEY || '');
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 // Helper to parse date strings and convert them to dates using dayjs
