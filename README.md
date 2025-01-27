@@ -84,6 +84,8 @@ Relevant Models: User, Task, & User_Task
    5. Users can opt-out of tasks
       > **See changes on PATCH to /api/task/:id request in src/server/routes/task.ts**
    6. Users can choose a difficulty level for a task on the ChooseTask component
-   7. All users' current_task_ids are set to null at *(Determined Time)* using a worker. (***To be continued***)
-   > This is to enforce that tasks are completed the day they are assigned
+   7. There is a task worker in **src/server/workers/tasks.ts** that runs 2 functions everyday it midnight  
+      > resetTasks function sets every user's current_task_id to null  
+      > createTasks function generates 5 new tasks for each task type for the day
+      > This is to enforce that tasks are completed the day they are assigned
    8. Users can generate a custom task, which will send a prompt to the Gemini AI using GoogleGenerativeAI package (***To be continued***)
