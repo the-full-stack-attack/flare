@@ -215,7 +215,7 @@ function Events() {
     <div className="container mx-auto px-4 content-center">
       <div className="container mx-auto px-4 p-4">
         <p>
-          Events from
+          Upcoming Events from
           <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
         </p>
         {!changeLocFilter ? (
