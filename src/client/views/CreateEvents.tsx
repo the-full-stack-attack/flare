@@ -1,38 +1,10 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-import { Separator } from '../../components/ui/seperator';
-import {Container} from '../../components/ui/container';
-import MultiStep from '../components/multistep'
-import { Textarea } from '../../components/ui/textarea';
-
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselPrevious,
-    CarouselNext,
-    useCarousel
-} from '../../components/ui/carousel';
-
-import {
-    Card,
-    CardHeader,
-    CardFooter,
-    CardTitle,
-    CardDescription,
-    CardContent,
-} from '../../components/ui/card';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '../../components/ui/select';
+import {Textarea} from '../../components/ui/textarea';
 import {Input} from '../../components/ui/input';
 import {Button} from "../../components/ui/button";
-
+import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem,} from '../../components/ui/select';
 
 type EventData = {
     title: string;
@@ -68,19 +40,70 @@ function CreateEvents() {
         interests: [],
         category: '',
     });
+    const [venues, setVenues] = useState<Array<{
+        name: string;
+        description: string;
+        street_address: string;
+        zip_code: number;
+        city_name: string;
+        state_name: string;
+    }>>([]);
+
     const [categories, setCategories] = useState([]); // Categories from DB
     const [interests, setInterests] = useState([]); // Interests from DB
-    const [venues, setVenues] = useState(); // Venues from DB
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]); // User selected Interests
+    const [isNewVenue, setIsNewVenue] = useState(false);
+    const [venueSearch, setVenueSearch] = useState('');
+    const [filteredVenues, setFilteredVenues] = useState([]);
+    const [step, setStep] = useState(1);
+
+    // Venue search handling - filers based on user search input
+    const handleVenueSearch = (searchTerm: string) => {
+        setVenueSearch(searchTerm);
+        const filtered = venues.filter(venue =>
+            venue.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredVenues(filtered);
+    };
+
+    // handle venue selection from user serach input
+    const handleVenueSelect = (venue) => {
+        // update form info
+        setFormInfo(prev => ({
+            ...prev,
+            venue: venue.name,
+            venueDescription: venue.description,
+            streetAddress: venue.street_address,
+            zipCode: venue.zip_code,
+            cityName: venue.city_name,
+            stateName: venue.state_name
+        }));
+        // clear states
+        setVenueSearch('');
+        setFilteredVenues([]);
+    };
 
 
+    // navigation handling
+    function handlePrev() {
+        if (step > 1) setStep((step) => step - 1);
+    }
+
+    function handleNext() {
+        if (step < 4) setStep((step) => step + 1);
+    }
+
+
+    // handling toggle selection for interests
     const toggleInterest = (interest: string) => {
+        // filter through interests to see which one is checked
         setSelectedInterests(prev =>
             prev.includes(interest)
                 ? prev.filter(i => i !== interest)
                 : [...prev, interest]
         );
 
+        // update form data with mew interests
         setFormInfo(prev => ({
             ...prev,
             interests: formInfo.interests.includes(interest)
@@ -89,13 +112,16 @@ function CreateEvents() {
         }));
     };
 
+    // handle category selection
     const selectCategory = (value: string) => {
+        // update form info
         setFormInfo(prev => ({
             ...prev, category: value
         }));
     }
 
 
+    // generic handle change for zip code
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormInfo((prevState) => ({
@@ -104,28 +130,38 @@ function CreateEvents() {
         }));
     };
 
-    const [api, setApi] = React.useState<CarouselApi>();
-    const [current, setCurrent] = React.useState(0);
 
-    React.useEffect(() => {
-        if (!api) return;
-
-        api.on("select", () => {
-            setCurrent(api.selectedScrollSnap());
-        });
-    }, [api]);
-
-
+    // form submission handling
     const onSubmit = async (e: any) => {
         e.preventDefault();
+
         try {
-            await axios.post('/api/event', formInfo);
+            const formattedData = {
+                title: formInfo.title,
+                description: formInfo.description,
+                category: formInfo.category,
+                interests: formInfo.interests,
+                startDate: formInfo.startDate,
+                endDate: formInfo.endDate,
+                startTime: formInfo.startTime,
+                endTime: formInfo.endTime,
+                venue: formInfo.venue,
+                venueDescription: formInfo.venueDescription,
+                streetAddress: formInfo.streetAddress,
+                zipCode: Number(formInfo.zipCode),
+                cityName: formInfo.cityName,
+                stateName: formInfo.stateName.toUpperCase()
+            };
+
+            const response = await axios.post('/api/event', formattedData);
+            console.log('Response:', response.data);
         } catch (error) {
-            console.error('Error creating event', error);
+            console.error('Error creating event:', error.response?.data || error);
         }
     };
 
 
+    // get list of venues from db
     const getVenues = async () => {
         try {
             const allVenues = await axios.get('/api/event/venues');
@@ -136,6 +172,7 @@ function CreateEvents() {
     };
 
 
+    // get interests from db
     const getInterests = async () => {
         try {
             const allInterests = await axios.get('/api/signup/interests');
@@ -146,6 +183,7 @@ function CreateEvents() {
     };
 
 
+    // get categories from db
     const getCategories = async () => {
         try {
             const allCategories = await axios.get('/api/event/categories');
@@ -169,448 +207,274 @@ function CreateEvents() {
     return (
         <>
 
-            <MultiStep />
-            <div>
-                Your next favorite memory starts with this moment.
-            </div>
-            <div>
-                Remember, everyone here started exactly where you are.
-            </div>
 
-            <div>
-                Shared passions are the seeds of real connection - let's grow yours.
-            </div>
-
-            <div>
-                Set the stage for connection - your moment, your pace, your Flare. 'your Flare' addition seems weird but I like this just needs more work.
-            </div>
-
-            <div>
-                Find your tribe before you arrive - we'll handle the matchmaking. GROSSSS
-            </div>
-
-            <div>
-                A picture paints safe pace - show them what comfort looks like. This puts so much pressure on the user NO
-            </div>
-
-            <div>
-                Hit 'Create' - the first hello is easier than you think. This is okay.
-            </div>
-
-            <div>
-                You've just built a bridge. Watch how kindly the world walks across it. SO encouraging! Acknowledges user did something outstanding, communicates that the poeple on the other side of the screen are kind, and sets the tone that the event creator is THE show.
-            </div>
-
-            <div>
-                Pssst...73% of first-time creators say this felt safer than a text message. You've got this. NO - CREEPY.
-            </div>
-
-            <div>
-                This isn't just an event - it's the universe conspiraring to meet you halfway. EW the universe? What a weird thing to say and 'Thisisn't just an event' is SUCH a cliche!
-            </div>
-
-            <div>
-                Your next favorite memory starts with this moment. Sets the stage really well I like this.
-            </div>
-
-            <div>
-                Small steps lead to big connections. This is okay good for maybe some accent text somewhere.
-            </div>
-
-            <div>
-                Plant the seed for something extraordinary. THIS IS SO BAD. Puts too much pressure on the user.
-            </div>
-
-            <div>
-                Every event starts with someone just like you
-            </div>
-
-            <div>
-                Where your passions meet your people. This is good, simple and cute.
-            </div>
-
-            <div>
-                The things you love, shared. This is nice too very cute and simple.
-            </div>
-
-            <div>
-                Shared passions are the seeds of real connection
-            </div>
-            <div>
-                The community you're looking for is looking for you too. Kind of creepy? Is it? Not sure but maybe coule be improved.
-            </div>
-
-            <div>
-                Write the first line of your next chapter.
-            </div>
-
-            <div>
-                Pick your perfect moment to connect
-            </div>
-
-            <div>
-                Choose when your story unfolds
-            </div>
-
-            <div>
-                Where shared interests become shared moments
-            </div>
-
-            <div>
-                Connect through what you love most
-            </div>
-
-            <div>
-                Add your colors to the community canvas
-            </div>
-
-            <div>
-                Every interest has its gathering
-            </div>
-
-            <div>
-                Give your event its Flare
-            </div>
-
-            <div>
-                The things you love, shared
-            </div>
-
-            <div>
-                Where your passions meet your people
-            </div>
-
-            <div>
-                Small steps lead to big connections
-            </div>
+            <div className="w-[550px] mx-auto bg-white p-4 px-8 rounded-lg">
 
 
+                <div className="flex justify-between my-4 relative">
+                    <div className="bg-[#630cf1] absolute top-1/2 left-0 h-1 -translate-y-1/2 z-10"></div>
+                    {[1, 2, 3, 4].map((num) => (
+                        <div key={num}
+                             className={`bg-gray-300 h-[30px] w-[30px] flex justify-center items-center rounded-full z-10 ${
+                                 step >= num ? 'bg-[#43766c] text-white' : ''
+                             }`}>
+                            {num}
+                        </div>
+                    ))}
+                </div>
 
 
-
-
-            <div className='mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32 mt-32 mb-32'>
-                <Carousel
-                    setApi={setApi}
-                    className="w-full"
-                >
-                    <CarouselContent>
-                        <CarouselItem>
-                            <Card
-                            className='h-[300px] bg-blue-400'>
-                                <CardContent className="p-6">
-                                    <div className="space-y-4">
-                                        <div
-                                        className='text-4xl font-bold text-gray-900 mb-4'>General Info</div>
-                                        <Separator/>
-                                        <Input
-                                            className='bg-color-white'
-                                            name="title"
-                                            placeholder="Event Title"
-                                            value={formInfo.title}
-                                            onChange={handleChange}
-                                        />
-                                        <Textarea
-                                            className='bg-color-white text-black'
-                                            name="description"
-                                            placeholder="Description"
-                                            value={formInfo.description}
-                                            onChange={handleChange}
-                                        >
-
-                                        </Textarea>
-                                        {/*<Input*/}
-                                        {/*    name="description"*/}
-                                        {/*    placeholder="Description"*/}
-                                        {/*    value={formInfo.description}*/}
-                                        {/*    onChange={handleChange}*/}
-                                        {/*    className='h-56'*/}
-                                        {/*/>*/}
-
-                                        <div className="flex justify-end">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() => api?.scrollNext()}
-                                            >
-                                                Next
-                                            </Button>
-                                        </div>
+                <div className="space-y-4">
+                    {step === 1 && (
+                        <>
+                            <Input
+                                name="title"
+                                placeholder="Event Title"
+                                value={formInfo.title}
+                                onChange={handleChange}
+                            />
+                            <Textarea
+                                name="description"
+                                placeholder="Description"
+                                value={formInfo.description}
+                                onChange={handleChange}
+                            />
+                            <Select
+                                value={formInfo.category}
+                                onValueChange={selectCategory}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select A Category"/>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {categories.map((category) => (
+                                        <SelectItem key={category.id} value={category.name}>
+                                            {category.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+                                {interests.map((interest, index) => (
+                                    <div
+                                        key={index}
+                                        onClick={() => toggleInterest(interest)}
+                                        className={`p-2 rounded cursor-pointer ${
+                                            selectedInterests.includes(interest)
+                                                ? 'bg-[#43766c] text-white'
+                                                : 'bg-gray-100'
+                                        }`}
+                                    >
+                                        {interest}
                                     </div>
-                                </CardContent>
-                            </Card>
-                        </CarouselItem>
+                                ))}
+                            </div>
+                        </>
+                    )}
 
-                        <CarouselItem>
-                            <Card
-                                className='h-[300px] bg-blue-400'>
-                                <CardContent className="p-6">
-                                    <div className="space-y-4">
-                                        <div
-                                        className='text-4xl font-bold text-gray-900 mb-4'>When should people arrive?</div>
-                                        <Separator/>
-                                        <Input
-                                            className='bg-color-white'
-                                            name="startDate"
-                                            type="date"
-                                            value={formInfo.startDate}
-                                            onChange={handleChange}
-                                        />
-                                        <Input
-                                            className='bg-color-white'
-                                            name="startTime"
-                                            type="time"
-                                            value={formInfo.startTime}
-                                            onChange={handleChange}
-                                        />
-                                        <div className="flex justify-between">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() => api?.scrollPrev()}
-                                            >
-                                                Previous
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                onClick={() => api?.scrollNext()}
-                                            >
-                                                Next
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </CarouselItem>
+                    {step === 2 && (
+                        <>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">Start Date & Time</label>
+                                    <Input
+                                        name="startDate"
+                                        type="date"
+                                        value={formInfo.startDate}
+                                        onChange={handleChange}
+                                    />
+                                    <Input
+                                        name="startTime"
+                                        type="time"
+                                        value={formInfo.startTime}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">End Date & Time</label>
+                                    <Input
+                                        name="endDate"
+                                        type="date"
+                                        value={formInfo.endDate}
+                                        onChange={handleChange}
+                                    />
+                                    <Input
+                                        name="endTime"
+                                        type="time"
+                                        value={formInfo.endTime}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
 
-                        <CarouselItem>
-                            <Card
-                                className='h-[300px] bg-blue-400'>
-                                <CardContent className="p-6">
-                                    <div className="space-y-4">
-                                        <Input
-                                            className='bg-color-white'
-                                            name="venue"
-                                            placeholder="Venue Name"
-                                            value={formInfo.venue}
-                                            onChange={handleChange}
-                                        />
-                                        <Input
-                                            className='bg-color-white'
-                                            name="streetAddress"
-                                            placeholder="Address"
-                                            value={formInfo.streetAddress}
-                                            onChange={handleChange}
-                                        />
-                                        <div className="flex justify-between">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() => api?.scrollPrev()}
-                                            >
-                                                Previous
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                onClick={onSubmit}
-                                            >
-                                                Submit
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </CarouselItem>
-                    </CarouselContent>
-                </Carousel>
-            </div>
+                    {step === 3 && (
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center">
+                                <Button
+                                    onClick={() => setIsNewVenue(false)}
+                                    variant={!isNewVenue ? "default" : "outline"}
+                                >
+                                    Search Venue
+                                </Button>
+                                <Button
+                                    onClick={() => setIsNewVenue(true)}
+                                    variant={isNewVenue ? "default" : "outline"}
+                                >
+                                    Create New Venue
+                                </Button>
+                            </div>
 
-
-            <div className='mx-6 sm:mx-12 md:mx-16 lg:mx-24 xl:mx-32'>
-                <Card
-                    className='h-[300px]'>
-                    <CardHeader>
-                        <CardTitle className="text-lg text-center">
-                            Create Your Event
-                        </CardTitle>
-                        <CardDescription>
-                            <form onSubmit={onSubmit} className="max-w-sm mx-auto">
-                                <div className="mb-5">
-                                    <label>
-                                        Title
+                            {!isNewVenue ? (
+                                <div className="space-y-4">
+                                    <div className="relative">
                                         <Input
-                                            name="title"
-                                            value={formInfo.title}
-                                            onChange={handleChange}
+                                            placeholder="Search for a venue..."
+                                            value={venueSearch}
+                                            onChange={(e) => handleVenueSearch(e.target.value)}
+                                            className="w-full"
                                         />
-                                    </label>
-                                    <label>
-                                        Description
-                                        <Input
-                                            name="description"
-                                            value={formInfo.description}
-                                            onChange={handleChange}
-                                            className='align-text-top'
-                                        />
-                                    </label>
-
-                                    <label>
-                                        Start Date
-                                        <Input
-                                            name="startDate"
-                                            value={formInfo.startDate}
-                                            onChange={handleChange}
-                                            type="date"
-                                        />
-                                    </label>
-                                    <label>
-                                        End Date
-                                        <Input
-                                            name="endDate"
-                                            value={formInfo.endDate}
-                                            onChange={handleChange}
-                                            type="date"
-                                        />
-                                    </label>
-                                    <label>
-                                        Start Time
-                                        <Input
-                                            name="startTime"
-                                            value={formInfo.startTime}
-                                            onChange={handleChange}
-                                            type="time"
-                                        />
-                                    </label>
-                                    <label>
-                                        End Time
-                                        <Input
-                                            name="endTime"
-                                            value={formInfo.endTime}
-                                            onChange={handleChange}
-                                            type="time"
-                                        />
-                                    </label>
-
-                                    <label>
-                                        Venue Name
-                                        <Input
-                                            name="venue"
-                                            value={formInfo.venue}
-                                            onChange={handleChange}
-                                        />
-                                    </label>
-
-                                    <label>
-                                        Venue Description
-                                        <Input
-                                            name="venueDescription"
-                                            value={formInfo.venueDescription}
-                                            onChange={handleChange}
-                                        />
-                                    </label>
-
-                                    <label>
-                                        Venue Address
-                                        <Input
-                                            name="streetAddress"
-                                            value={formInfo.streetAddress}
-                                            onChange={handleChange}
-                                        />
-                                    </label>
-
-                                    <label>
-                                        Venue Zip Code
-                                        <Input
-                                            name="zipCode"
-                                            value={formInfo.zipCode}
-                                            onChange={handleChange}
-                                        />
-                                    </label>
-
-                                    <label>
-                                        Venue City Location
-                                        <Input
-                                            name="cityName"
-                                            value={formInfo.cityName}
-                                            onChange={handleChange}
-                                        />
-                                    </label>
-
-                                    <label>
-                                        Venue State Location
-                                        <Input
-                                            name="stateName"
-                                            value={formInfo.stateName}
-                                            onChange={handleChange}
-                                        />
-                                    </label>
-
-                                    <div>
-                                        <Select
-                                            value={formInfo.category}
-                                            onValueChange={selectCategory}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select A Category"/>
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {categories.map((category) => (
-                                                    <SelectItem key={category.id} value={category.name}>
-                                                        {category.name}
-                                                    </SelectItem>
+                                        {venueSearch && filteredVenues.length > 0 && (
+                                            <div
+                                                className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto">
+                                                {filteredVenues.map((venue, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="p-3 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
+                                                        onClick={() => handleVenueSelect(venue)}
+                                                    >
+                                                        <div className="font-medium">{venue.name}</div>
+                                                        <div className="text-sm text-gray-600">
+                                                            {venue.street_address}, {venue.city_name}, {venue.state_name}
+                                                        </div>
+                                                    </div>
                                                 ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div>Interest</div>
-
-                                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-                                        {interests.map((interest, index) => (
-                                            <Card
-                                                key={index}
-                                                role="button"
-                                                onClick={() => toggleInterest(interest)}
-                                                className={
-                                                    selectedInterests.includes(interest)
-                                                        ? 'text-white bg-green-600'
-                                                        : 'text-white bg-black'
-                                                }
-                                            >
-                                                <CardContent>{interest}</CardContent>
-                                            </Card>
-                                        ))}
+                                            </div>
+                                        )}
+                                        {venueSearch && filteredVenues.length === 0 && (
+                                            <div
+                                                className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg p-3 text-gray-500">
+                                                No venues found. Would you like to create a new venue?
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
-
-                                <button
-                                    type="submit"
-                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                >
-                                    Submit
-                                </button>
-                            </form>
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
-
-
-                <div className='mx-4 sm:mx-8 md:mx-12 lg:mx-16'>
+                            ) : (
+                                <div className="space-y-4">
+                                    <Input
+                                        name="venue"
+                                        placeholder="Venue Name"
+                                        value={formInfo.venue}
+                                        onChange={handleChange}
+                                    />
+                                    <Textarea
+                                        name="venueDescription"
+                                        placeholder="Venue Description"
+                                        value={formInfo.venueDescription}
+                                        onChange={handleChange}
+                                    />
+                                    <Input
+                                        name="streetAddress"
+                                        placeholder="Street Address"
+                                        value={formInfo.streetAddress}
+                                        onChange={handleChange}
+                                    />
+                                    <Input
+                                        name="zipCode"
+                                        type="number"
+                                        placeholder="Zip Code"
+                                        value={formInfo.zipCode || ''}
+                                        onChange={handleChange}
+                                    />
+                                    <Input
+                                        name="cityName"
+                                        placeholder="City"
+                                        value={formInfo.cityName}
+                                        onChange={handleChange}
+                                    />
+                                    <Input
+                                        name="stateName"
+                                        placeholder="State (e.g., LA)"
+                                        value={formInfo.stateName}
+                                        onChange={handleChange}
+                                        maxLength={2}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    )}
 
 
                 </div>
 
-            </div>
 
+                {step === 4 && (
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-semibold">Confirm Your Event Details</h2>
+                        <div className="space-y-4">
+                            <div className="border rounded-lg p-4">
+                                <h3 className="font-semibold mb-2">Event Information</h3>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <p className="text-gray-600">Title:</p>
+                                    <p>{formInfo.title}</p>
+                                    <p className="text-gray-600">Description:</p>
+                                    <p>{formInfo.description}</p>
+                                    <p className="text-gray-600">Category:</p>
+                                    <p>{formInfo.category}</p>
+                                    <p className="text-gray-600">Interests:</p>
+                                    <p>{formInfo.interests.join(', ')}</p>
+                                    <p className="text-gray-600">Start Date:</p>
+                                    <p>{new Date(formInfo.startDate).toLocaleDateString()}</p>
+                                    <p className="text-gray-600">Start Time:</p>
+                                    <p>{new Date(formInfo.startTime).toLocaleTimeString()}</p>
+                                    <p className="text-gray-600">End Date:</p>
+                                    <p>{new Date(formInfo.endDate).toLocaleDateString()}</p>
+                                    <p className="text-gray-600">End Time:</p>
+                                    <p>{new Date(formInfo.endTime).toLocaleTimeString()}</p>
+                                </div>
+                            </div>
 
-            <div className="mt-4 text-center">
-                <button
-                    type="submit"
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                    onClick={onSubmit}
-                >
-                    Create Event
-                </button>
-            </div>
+                            <div className="border rounded-lg p-4">
+                                <h3 className="font-semibold mb-2">Venue Information</h3>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <p className="text-gray-600">Venue Name:</p>
+                                    <p>{formInfo.venue}</p>
+                                    {isNewVenue && (
+                                        <>
+                                            <p className="text-gray-600">Description:</p>
+                                            <p>{formInfo.venueDescription}</p>
+                                            <p className="text-gray-600">Address:</p>
+                                            <p>{formInfo.streetAddress}</p>
+                                            <p className="text-gray-600">City:</p>
+                                            <p>{formInfo.cityName}</p>
+                                            <p className="text-gray-600">State:</p>
+                                            <p>{formInfo.stateName}</p>
+                                            <p className="text-gray-600">Zip Code:</p>
+                                            <p>{formInfo.zipCode}</p>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
+                <div className="flex justify-between mt-6">
+                    <Button onClick={handlePrev} disabled={step === 1}>
+                        Prev
+                    </Button>
+                    {step === 4 ? (
+                        <Button onClick={onSubmit} variant="default">
+                            Submit Event
+                        </Button>
+                    ) : (
+                        <Button onClick={handleNext}>
+                            {step === 3 ? "Review" : "Next"}
+                        </Button>
+                    )}
+                </div>
 
-            <div className='mx-6 sm:mx-12 md:mx-16 lg:mx-24 xl:mx-32'>
 
             </div>
 
