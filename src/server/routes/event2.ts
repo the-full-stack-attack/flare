@@ -174,7 +174,7 @@ event2Router.get('/location/:lat/:lng', (req: Request, res: Response) => {
             };
           }
           if (comp.types.includes('locality')) {
-            location.locality = {
+            location.city = {
               long_name: comp.long_name,
               short_name: comp.short_name,
             };
@@ -210,7 +210,6 @@ event2Router.get('/location/:lat/:lng', (req: Request, res: Response) => {
             };
           }
         });
-        console.group(location);
         res.status(200).send(location);
       }
     })
