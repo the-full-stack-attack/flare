@@ -102,6 +102,13 @@ function NavBar(): JSX.Element {
           >
             Dashboard
           </a>
+          <a
+              href="/logout"
+              aria-label="Logout"
+              className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
+          >
+            Logout
+          </a>
         </div>
 
         <button
