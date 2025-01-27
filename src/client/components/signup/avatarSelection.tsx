@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Card, CardContent } from '../../../components/ui/card';
 import {
@@ -9,6 +9,7 @@ import {
   CarouselPrevious,
 } from '../../../components/ui/carousel';
 
+import Avatar from './avatar'
 import aristocrat_01 from '../../assets/images/aristocrat_01_1.png';
 import aristocrat_02 from '../../assets/images/aristocrat_02_1.png';
 import dude from '../../assets/images/Dude_Monster.png';
@@ -20,7 +21,9 @@ import guy2 from '../../assets/images/MaleWalkFront03.gif';
 import owl from '../../assets/images/Owlet_Monster.png';
 import pink from '../../assets/images/Pink_Monster.png';
 
-export function AvatarSelection() {
+function AvatarSelection() {
+
+
   const allCharacters = [
     aristocrat_01,
     aristocrat_02,
@@ -34,24 +37,26 @@ export function AvatarSelection() {
     dude,
   ];
 
+
   return (
-    <Carousel className="w-full max-w-xs">
-      <CarouselContent>
-        {allCharacters.map((_, index) => (
-          <CarouselItem key={index}>
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <text>"Choose an Avatar"</text>
-                  <span className="text-4xl font-semibold"><img src={_} width={150} height={150}/></span>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: '20px',
+      }}
+    >
+      <Carousel className="w-full max-w-xs">
+        <CarouselContent>
+          {allCharacters.map((pic, index) => (
+           <Avatar picture={pic} key={pic}/>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </div>
   );
 }
+
+export default AvatarSelection;

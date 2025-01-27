@@ -3,6 +3,7 @@ import axios from 'axios';
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import ChooseTask from '../components/tasks/ChooseTask';
 import { UserContext } from '../contexts/UserContext';
+import AvatarSelection from '../components/signup/avatarSelection'
 
 function Dashboard() {
   const { user } = useContext(UserContext);
@@ -30,6 +31,7 @@ function Dashboard() {
       ) : (
         <ChooseTask setTask={setTask} />
       )}
+      <AvatarSelection />
     </>
   );
 }
