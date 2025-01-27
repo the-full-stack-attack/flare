@@ -96,13 +96,6 @@ function NavBar(): JSX.Element {
             Chat
           </a>
           <a
-            href="/Signup"
-            aria-label="Go to Signup page"
-            className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
-          >
-            Signup
-          </a>
-          <a
             href="/Dashboard"
             aria-label="Go to Dashboard page"
             className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
