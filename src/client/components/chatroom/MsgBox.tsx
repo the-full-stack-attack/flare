@@ -1,7 +1,7 @@
 import React from 'react';
 import cn from './../../../../lib/utils';
 
-const MsgBox = ({ msg }) => {
+const MsgBox = ({ msg, user }) => {
   return (
     <figure
       className={cn(

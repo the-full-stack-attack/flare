@@ -24,8 +24,10 @@ const SOCKET_LIST: SocketList = {};
 const PLAYER_LIST: PlayerList = {};
 
 // Creates a player object with their own state... (replace with keyword 'this'?)
-const Player = function (id: any) {
+const Player = function (id: any, user: any) {
+  console.log(user.username)
   const self = {
+    username: user.username,
     name: id,
     data: {
       // positions
@@ -74,11 +76,12 @@ if (process.env.DEVELOPMENT === 'true') {
         io.on('connection', (socket) => {
           console.log('a user connected', socket.id);
           // when client joins chat, create a player, add them to the lists
-          socket.on('joinChat', () => {
+          socket.on('joinChat', (user) => {
+            console.log('join chat', user)
             socket.data.name = socket.id;
             const stringName = socket.data.name;
             SOCKET_LIST[stringName] = socket;
-            const player = Player(socket.id);
+            const player = Player(socket.id, user);
             PLAYER_LIST[socket.id] = player;
           });
           // On disconnect, delete them from the lists
@@ -147,11 +150,12 @@ if (process.env.DEVELOPMENT === 'true') {
     io.on('connection', (socket) => {
       console.log('a user connected', socket.id);
       // when client joins chat, create a player, add them to the lists
-      socket.on('joinChat', () => {
+      socket.on('joinChat', (user) => {
+        console.log('join chat', user)
         socket.data.name = socket.id;
         const stringName = socket.data.name;
         SOCKET_LIST[stringName] = socket;
-        const player = Player(socket.id);
+        const player = Player(socket.id, user);
         PLAYER_LIST[socket.id] = player;
       });
       // On disconnect, delete them from the lists
@@ -202,6 +206,7 @@ setInterval(() => {
       id: player.name,
       x: player.data.x,
       y: player.data.y,
+      username: player.username,
       sentMessage: player.sentMessage,
       currentMessage: player.currentMessage,
     });
