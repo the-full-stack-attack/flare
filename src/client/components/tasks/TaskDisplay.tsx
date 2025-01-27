@@ -64,10 +64,18 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       <CardHeader>
         <CardTitle>Current Task:</CardTitle>
       </CardHeader>
-      <CardContent>{task.description}</CardContent>
+      <CardContent>
+        {`Level ${task.difficulty} ${task.type} task`}
+        <br />
+        {task.description}
+      </CardContent>
       <CardFooter>
-        <Button onClick={completeTask}>Complete</Button>
-        <Button onClick={optOut}>Opt-Out</Button>
+        <Button onClick={completeTask} variant="secondary">
+          Complete
+        </Button>
+        <Button onClick={optOut} variant="secondary">
+          Opt-Out
+        </Button>
       </CardFooter>
     </Card>
   );
