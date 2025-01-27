@@ -133,8 +133,11 @@ if (process.env.DEVELOPMENT === 'true') {
   if (process.env.SOCKET !== 'true') {
 
     // START SERVER AS NORMAL
-    
-    https.createServer(options, app).listen(443);
+    database
+      .sync({ alter: true })
+      .then(() => {
+        https.createServer(options, app).listen(443);
+      });
 
 
   } else { // OTHERWISE
@@ -185,7 +188,11 @@ if (process.env.DEVELOPMENT === 'true') {
       });
     });
 
-    https.createServer(options, app).listen(443);
+    database
+    .sync({ alter: true })
+    .then(() => {
+      https.createServer(options, app).listen(443);
+    });
   }
 }
 
