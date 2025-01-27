@@ -116,7 +116,7 @@ if (process.env.DEVELOPMENT === 'true') {
         });
 
         server.listen(4000, () => {
-          console.log('listening on *:4000');
+          console.log(`Listening on http://localhost:${PORT}`);
         });
       }
     })
