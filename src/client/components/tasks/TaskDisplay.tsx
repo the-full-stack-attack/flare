@@ -65,18 +65,22 @@ function TaskDisplay({ task }: TaskDisplayProps) {
         <CardTitle>Current Task:</CardTitle>
       </CardHeader>
       <CardContent>
-        {`Level ${task.difficulty} ${task.type} task`}
+        {user.current_task_id
+          ? `Level ${task.difficulty} ${task.type} task`
+          : 'You are not assigned a task. Go to the Task page to choose your task.'}
         <br />
         {task.description}
       </CardContent>
-      <CardFooter>
-        <Button onClick={completeTask} variant="secondary">
-          Complete
-        </Button>
-        <Button onClick={optOut} variant="secondary">
-          Opt-Out
-        </Button>
-      </CardFooter>
+      {user.current_task_id ? (
+        <CardFooter>
+          <Button onClick={completeTask} variant="secondary">
+            Complete
+          </Button>
+          <Button onClick={optOut} variant="secondary">
+            Opt-Out
+          </Button>
+        </CardFooter>
+      ) : null}
     </Card>
   );
 }
