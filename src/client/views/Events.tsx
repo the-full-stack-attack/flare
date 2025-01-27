@@ -56,7 +56,10 @@ function Events() {
 
   const [location, setLocation] = useState<any>({});
 
-  const [locationFilter, setLocationFilter] = useState<any>({});
+  const [locationFilter, setLocationFilter] = useState<any>({
+    city: '',
+    state: '',
+  });
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
 
@@ -116,7 +119,11 @@ function Events() {
 
   const getEvents = () => {
     axios
-      .get('/api/event')
+      .get('/api/event', {
+        params: {
+          locationFilter,
+        },
+      })
       .then(({ data }) => {
         setEvents(data);
       })
@@ -172,7 +179,7 @@ function Events() {
   };
 
   const handleClearLocFilter = () => {
-    setLocationFilter({});
+    setLocationFilter({ city: '', state: '' });
     setChangeLocFilter(false);
   };
 
@@ -192,6 +199,10 @@ function Events() {
   useEffect(() => {
     getLocation();
   }, [geoLocation]);
+
+  useEffect(() => {
+    getEvents();
+  }, [locationFilter]);
 
   // console.log('Events:', events);
   // console.log('Attending Events:', attendingEvents);

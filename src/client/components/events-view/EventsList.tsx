@@ -18,6 +18,15 @@ type EventsListProps = {
     User_Event?: {
       user_attending: boolean;
     };
+    Venue?: {
+      id: number;
+      name: string;
+      description: string;
+      street_address: string;
+      city_name: string;
+      state_name: string;
+      zip_code: number;
+    };
   }[];
   getEvents: () => void;
   locationFilter: {
