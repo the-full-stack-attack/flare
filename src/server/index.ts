@@ -7,8 +7,7 @@ import app from './app';
 import database from './db/index';
 import './db/models/index';
 import { data } from 'react-router';
-
-import('./db/index');
+import './workers/tasks';
 
 const PORT = 4000;
 
