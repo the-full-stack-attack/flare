@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
 import {
   Card,
   CardHeader,
@@ -7,8 +8,10 @@ import {
   CardFooter,
 } from '../../../components/ui/card';
 import dayjs from 'dayjs';
+import { Button } from '../../../components/ui/button';
 import TypeButton from './TypeButton';
 import DifficultyButton from './DifficultyButton';
+import { UserContext } from '../../contexts/UserContext';
 
 type ChooseTaskProps = {
   setTask: React.Dispatch<React.SetStateAction<object>>;
@@ -27,6 +30,30 @@ function ChooseTask({ setTask }: ChooseTaskProps) {
     difficulty: 3,
     date: dayjs(),
   });
+  const { user, getUser } = useContext(UserContext);
+  // Function to assign the chosen task category to the user
+  const chooseTask = () => {
+    const userId = user.id;
+    const copyTask = { ...taskInfo };
+    const formattedDate = taskInfo.date.format('MM/DD/YYYY');
+    copyTask.date = dayjs(formattedDate);
+    const config = {
+      taskInfo: copyTask,
+    };
+    config.taskInfo.userId = userId;
+    // Make axios request: UPDATE the users current task AND create a user_task row
+    axios
+      .post('/api/task', config)
+      .then(({ data }) => {
+        setTask(data);
+      })
+      .then(() => {
+        getUser();
+      })
+      .catch((err) => {
+        console.error('Error posting task: ', err);
+      });
+  };
   return (
     <Card>
       <CardHeader>
@@ -47,11 +74,16 @@ function ChooseTask({ setTask }: ChooseTaskProps) {
           <TypeButton
             key={type}
             type={type}
-            setTask={setTask}
+            setTaskInfo={setTaskInfo}
             taskInfo={taskInfo}
           />
         ))}
       </CardContent>
+      <CardFooter>
+        <Button onClick={chooseTask} variant="secondary">
+          Choose Task
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

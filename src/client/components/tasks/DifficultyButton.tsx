@@ -28,7 +28,7 @@ function DifficultyButton({
   };
   return (
     <Button
-      variant={taskInfo.difficulty === difficulty ? 'secondary' : 'outline'}
+      variant={taskInfo.difficulty === difficulty ? '' : 'ghost'}
       onClick={chooseDifficulty}
     >
       {difficulty}
