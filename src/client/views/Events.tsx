@@ -3,6 +3,10 @@ import axios from 'axios';
 
 import { UserContext } from '../contexts/UserContext';
 
+import { Button } from '../../components/ui/button';
+
+import { Input } from '../../components/ui/input';
+
 import {
   Tabs,
   TabsContent,
@@ -11,6 +15,7 @@ import {
 } from '../../components/ui/tabs';
 
 import EventsList from '../components/events-view/EventsList';
+import { StatementSync } from 'node:sqlite';
 
 type GeoPosition = {
   coords: {
@@ -52,6 +57,10 @@ function Events() {
 
   const [location, setLocation] = useState<any>({});
 
+  const [locationFilter, setLocationFilter] = useState<any>({});
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
 
@@ -59,6 +68,8 @@ function Events() {
   const [attendingEvents, setAttendingEvents] = useState<EventData[]>([]);
 
   const [bailedEvents, setBailedEvents] = useState<EventData[]>([]);
+
+  const [changeLocFilter, setChangeLocFilter] = useState(false);
 
   const getGeoLocation = () => {
     const success = (position: GeoPosition) => {
@@ -124,12 +135,46 @@ function Events() {
           `/api/event/location/${geoLocation.latitude}/${geoLocation.longitude}`
         )
         .then(({ data }) => {
-          setLocation(data);
+          setLocation({
+            city: data.city.long_name,
+            state: data.state.short_name,
+          });
+          setLocationFilter({
+            city: data.city.long_name,
+            state: data.state.short_name,
+          });
         })
         .catch((err: unknown) => {
           console.error('Failed getLocation:', err);
         });
     }
+  };
+
+  const toggleChangeLocFilter = () => {
+    setChangeLocFilter(!changeLocFilter);
+  };
+
+  const handleCityInput = ({ target }: any) => {
+    setCity(target.value);
+  };
+
+  const handleStateInput = ({ target }: any) => {
+    setState(target.value);
+  };
+
+  const handleSubmitLocFilter = () => {
+    if (state.length !== 2) {
+      return;
+    }
+    setLocationFilter({ city, state: state.toUpperCase() });
+    setChangeLocFilter(false);
+    setCity('');
+    setState('');
+  };
+
+  const handleClearLocFilter = () => {
+    setLocationFilter({});
+    setChangeLocFilter(false);
   };
 
   useEffect(() => {
@@ -144,11 +189,64 @@ function Events() {
   // console.log('Events:', events);
   // console.log('Attending Events:', attendingEvents);
   // console.log('Bailed Events:', bailedEvents);
-  console.log('GeoLocation:', geoLocation);
-  console.log('Location:', location);
+  // console.log('GeoLocation:', geoLocation);
+  // console.log('Location:', location);
+  // console.log('Location Filter:', locationFilter);
 
   return (
     <div className="container mx-auto px-4 content-center">
+      <div className="container mx-auto px-4 p-4">
+        <p>
+          Events from
+          <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
+        </p>
+        {!changeLocFilter ? (
+          <Button className="mt-2" onClick={toggleChangeLocFilter}>
+            Change Location
+          </Button>
+        ) : (
+          <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 gap-4">
+            <Button className="col-span-1" onClick={toggleChangeLocFilter}>
+              Cancel
+            </Button>
+            <Input
+              className="col-span-2"
+              value={city}
+              placeholder="City Name"
+              onChange={handleCityInput}
+              onKeyUp={({ key }) => {
+                if (key === 'Enter') {
+                  handleSubmitLocFilter();
+                }
+              }}
+            />
+            <Input
+              className="col-span-2"
+              value={state}
+              placeholder="State Initials, XX"
+              onChange={handleStateInput}
+              onKeyUp={({ key }) => {
+                if (key === 'Enter') {
+                  handleSubmitLocFilter();
+                }
+              }}
+            />
+            <Button
+              className="col-span-1"
+              onClick={({ target }: any) => {
+                if (target.innerText === 'Remove Filter') {
+                  handleClearLocFilter();
+                }
+                if (target.innerText === 'Set Filter') {
+                  handleSubmitLocFilter();
+                }
+              }}
+            >
+              {city === '' || state === '' ? 'Remove Filter' : 'Set Filter'}
+            </Button>
+          </div>
+        )}
+      </div>
       <Tabs
         defaultValue="upcoming"
         className="container mx-auto px-4 content-center"
