@@ -26,11 +26,8 @@ function Dashboard() {
   return (
     <>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
-      {user.current_task_id ? (
-        <TaskDisplay task={task} />
-      ) : (
-        <ChooseTask setTask={setTask} />
-      )}
+      <TaskDisplay task={task} />
+      <ChooseTask setTask={setTask} />
       <AvatarSelection />
     </>
   );
