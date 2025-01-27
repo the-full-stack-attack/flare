@@ -83,7 +83,7 @@ function Chatroom() {
   const displayMessage = (msg: string) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
-  
+
   // useCallback works for drawing circle
   const drawCallback = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
@@ -136,9 +136,9 @@ function Chatroom() {
     // Player has joined chat
     console.log(eventId)
     axios.get(`api/chatroom/${eventId}`)
-    .then((chatroomId) => {
-      console.log(chatroomId, 'ayyye')
-    })
+      .then((chatroomId) => {
+        console.log(chatroomId, 'ayyye')
+      })
     // Set the current endpoint to the 'room' for the sockets
     // vs
     // Pass the current endpoint's path of 'chatroom_id' in as data for this socket
@@ -190,7 +190,7 @@ function Chatroom() {
       document.removeEventListener('keydown', keyPress);
       document.removeEventListener('keyup', keyUp);
     };
-  }, [ isTyping ]);
+  }, [isTyping]);
 
   const sendMessage = () => {
     socket.emit('message', message);
@@ -209,100 +209,103 @@ function Chatroom() {
   };
 
   return (
-        <div>
-          <div
-    style={{
-      display: 'flex',
-      justifyContent: 'center',
-      marginTop: '20px',
-    }}
-  >
-      <div style={{ width: { gameWidth }, height: { gameHeight } }}>
-        <Application>
-          <pixiContainer x={100} y={200}>
-            <pixiGraphics draw={drawCircle} />
-          </pixiContainer>
-          <pixiContainer>
-            {isSuccess && (
-              <pixiSprite
-                texture={texture}
-                x={0}
-                y={0}
-                width={800}
-                height={700}
-              />
-            )}
-          </pixiContainer>
-          {allPlayers.map((player) => (
-            <pixiContainer x={player.x} y={player.y} key={player.id}>
-              {player.sentMessage && <pixiGraphics draw={drawCallback} />}
-              {player.sentMessage && (
-                <pixiText
-                  text={player.currentMessage}
-                  anchor={0.5}
-                  x={70}
-                  y={-50}
-                  style={style}
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '20px',
+        }}
+      >
+        <div style={{ width: { gameWidth }, height: { gameHeight } }}>
+          <Application>
+            <pixiContainer x={100} y={200}>
+              <pixiGraphics draw={drawCircle} />
+            </pixiContainer>
+            <pixiContainer>
+              {isSuccess && (
+                <pixiSprite
+                  texture={texture}
+                  x={0}
+                  y={0}
+                  width={800}
+                  height={700}
                 />
               )}
-              <pixiSprite
-                texture={Assets.get('bunny')}
-                x={0}
-                y={0}
-                width={22}
-                height={22}
-                key={player.id}
-              />
-               <pixiText
+            </pixiContainer>
+            {allPlayers.map((player) => (
+              <pixiContainer x={player.x} y={player.y} key={player.id}>
+                {player.sentMessage && <pixiGraphics draw={drawCallback} />}
+                {player.sentMessage && (
+                  <pixiText
+                    text={player.currentMessage}
+                    anchor={0.5}
+                    x={70}
+                    y={-50}
+                    style={style}
+                  />
+                )}
+                <pixiSprite
+                  texture={Assets.get('bunny')}
+                  x={0}
+                  y={0}
+                  width={22}
+                  height={22}
+                  key={player.id}
+                />
+                <pixiText
                   text={player.username}
                   anchor={0.5}
                   x={0}
                   y={50}
                   style={style}
                 />
-            </pixiContainer>
-          ))}
-        </Application>
+              </pixiContainer>
+            ))}
+          </Application>
         </div>
       </div>
       <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: '20px',}}>
-      <div onClick={typing}>
-        <Label> Send A Chat To the Chatroom! ayyye!</Label>
-        <Input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-         <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: '20px',}}>
-        <InteractiveHoverButton onClick={sendMessage}>
-          Send
-        </InteractiveHoverButton>
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '20px',
+        }}>
+        <div onClick={typing}>
+          <Label> Send A Chat To the Chatroom! ayyye!</Label>
+          <Input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '20px',
+            }}>
+            <InteractiveHoverButton onClick={sendMessage}>
+              Send
+            </InteractiveHoverButton>
+          </div>
         </div>
       </div>
-      </div>
       <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: '20px',}}>
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '20px',
+        }}>
         <MagicCard>
-          
+
           <AnimatedList>
             {allMessages.map((msg) => (
-              <MsgBox msg={msg} user={user}/>
+              <MsgBox msg={msg} user={user} />
             ))}
           </AnimatedList>
         </MagicCard>
       </div>
-      
+
     </div>
   );
 }

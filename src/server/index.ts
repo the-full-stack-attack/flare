@@ -25,7 +25,6 @@ const PLAYER_LIST: PlayerList = {};
 
 // Creates a player object with their own state... (replace with keyword 'this'?)
 const Player = function (id: any, user: any) {
-  console.log(user.username)
   const self = {
     username: user.username,
     name: id,
@@ -74,10 +73,8 @@ if (process.env.DEVELOPMENT === 'true') {
         const io = new Server(server);
         // Register event listeners for Socket.IO
         io.on('connection', (socket) => {
-          console.log('a user connected', socket.id);
           // when client joins chat, create a player, add them to the lists
           socket.on('joinChat', (user) => {
-            console.log('join chat', user)
             socket.data.name = socket.id;
             const stringName = socket.data.name;
             SOCKET_LIST[stringName] = socket;
@@ -86,7 +83,6 @@ if (process.env.DEVELOPMENT === 'true') {
           });
           // On disconnect, delete them from the lists
           socket.on('disconnect', () => {
-            console.log('user disconnected');
             delete SOCKET_LIST[socket.id];
             delete PLAYER_LIST[socket.id];
           });
@@ -148,10 +144,8 @@ if (process.env.DEVELOPMENT === 'true') {
     const io = new Server(https.createServer(options, app));
     // SOCKET ROUTING
     io.on('connection', (socket) => {
-      console.log('a user connected', socket.id);
       // when client joins chat, create a player, add them to the lists
       socket.on('joinChat', (user) => {
-        console.log('join chat', user)
         socket.data.name = socket.id;
         const stringName = socket.data.name;
         SOCKET_LIST[stringName] = socket;
@@ -160,7 +154,6 @@ if (process.env.DEVELOPMENT === 'true') {
       });
       // On disconnect, delete them from the lists
       socket.on('disconnect', () => {
-        console.log('user disconnected');
         delete SOCKET_LIST[socket.id];
         delete PLAYER_LIST[socket.id];
       });

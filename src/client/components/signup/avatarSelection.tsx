@@ -49,7 +49,7 @@ function AvatarSelection() {
       <Carousel className="w-full max-w-xs">
         <CarouselContent>
           {allCharacters.map((pic, index) => (
-           <Avatar picture={pic} key={pic}/>
+            <Avatar picture={pic} key={pic} />
           ))}
         </CarouselContent>
         <CarouselPrevious />
