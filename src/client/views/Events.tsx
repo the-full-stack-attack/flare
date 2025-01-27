@@ -177,6 +177,14 @@ function Events() {
     setChangeLocFilter(false);
   };
 
+  const handleResetLocFilter = () => {
+    setLocationFilter({
+      city: location.city,
+      state: location.state,
+    });
+    setChangeLocFilter(false);
+  };
+
   useEffect(() => {
     getGeoLocation();
     getEvents();
@@ -206,8 +214,18 @@ function Events() {
           </Button>
         ) : (
           <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 gap-4">
-            <Button className="col-span-1" onClick={toggleChangeLocFilter}>
-              Cancel
+            <Button
+              className="col-span-1"
+              onClick={({ target }: any) => {
+                if (target.innerText === 'Cancel') {
+                  toggleChangeLocFilter();
+                }
+                if (target.innerText === 'Current Location') {
+                  handleResetLocFilter();
+                }
+              }}
+            >
+              {locationFilter.city === location.city && locationFilter.state === location.state ? 'Cancel' : 'Current Location'}
             </Button>
             <Input
               className="col-span-2"
