@@ -1,8 +1,10 @@
 import { Op } from 'sequelize';
 import { Router, Request, Response } from 'express';
+import axios from 'axios';
 import Event from '../db/models/events';
 import User_Event from '../db/models/users_events';
 import User from '../db/models/users';
+import Venue from '../db/models/venues';
 
 const event2Router = Router();
 
@@ -13,8 +15,25 @@ event2Router.get('/', (req: any, res: Response) => {
   // Query DB for all event objects & send them back to the user
   Event.findAll({
     where: {
-      [Op.and]: [{ start_time: { [Op.gt]: new Date(Date.now()) } }],
+      start_time: { [Op.gt]: new Date(Date.now()) },
     },
+    include: [
+      {
+        model: User,
+      },
+      {
+        model: Venue,
+      },
+      {
+        association: 'Category',
+      },
+      {
+        association: 'Interests',
+      },
+      {
+        association: 'Users',
+      },
+    ],
   })
     .then((events: object[]) => {
       res.status(200);
@@ -71,6 +90,23 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     include: {
       model: Event,
       where: { start_time: { [Op.gt]: new Date(Date.now()) } },
+      include: [
+        {
+          model: User,
+        },
+        {
+          model: Venue,
+        },
+        {
+          association: 'Category',
+        },
+        {
+          association: 'Interests',
+        },
+        {
+          association: 'Users',
+        },
+      ],
     },
   })
     .then((data) => {
@@ -105,4 +141,82 @@ event2Router.patch('/attending/:id', async (req: any, res: Response) => {
     console.error('Failed to PATCH /api/event/attend/:id', err);
   }
 });
+
+event2Router.get('/location/:lat/:lng', (req: Request, res: Response) => {
+  // Get location from user
+  const { lat, lng } = req.params;
+  axios
+    .get(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    )
+    .then(({ data }) => {
+      if (data.results.length) {
+        const location: any = {
+          formatted_address: data.results[0].formatted_address,
+        };
+        data.results[0].address_components.forEach((comp: any) => {
+          if (comp.types.includes('street_number')) {
+            location.street_number = {
+              long_name: comp.long_name,
+              short_name: comp.short_name,
+            };
+          }
+          if (comp.types.includes('route')) {
+            location.route = {
+              long_name: comp.long_name,
+              short_name: comp.short_name,
+            };
+          }
+          if (comp.types.includes('neighborhood')) {
+            location.neighborhood = {
+              long_name: comp.long_name,
+              short_name: comp.short_name,
+            };
+          }
+          if (comp.types.includes('locality')) {
+            location.locality = {
+              long_name: comp.long_name,
+              short_name: comp.short_name,
+            };
+          }
+          if (comp.types.includes('administrative_area_level_2')) {
+            location.parish = {
+              long_name: comp.long_name,
+              short_name: comp.short_name,
+            };
+          }
+          if (comp.types.includes('administrative_area_level_1')) {
+            location.state = {
+              long_name: comp.long_name,
+              short_name: comp.short_name,
+            };
+          }
+          if (comp.types.includes('country')) {
+            location.country = {
+              long_name: comp.long_name,
+              short_name: comp.short_name,
+            };
+          }
+          if (comp.types.includes('postal_code')) {
+            location.postal_code = {
+              long_name: comp.long_name,
+              short_name: comp.short_name,
+            };
+          }
+          if (comp.types.includes('postal_code_suffix')) {
+            location.postal_code_suffix = {
+              long_name: comp.long_name,
+              short_name: comp.short_name,
+            };
+          }
+        });
+        console.group(location);
+        res.status(200).send(location);
+      }
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to GET /api/event/location/:lat/:lng', err);
+    });
+});
+
 export default event2Router;

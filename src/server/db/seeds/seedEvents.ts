@@ -2,7 +2,7 @@ import database from '../index';
 import Event from '../models/events';
 import Venue from '../models/venues';
 import User from '../models/users';
-import { AnyMxRecord } from 'dns';
+import Category from '../models/categories';
 
 // EventData type to store events in DB
 type EventData = {
@@ -12,6 +12,7 @@ type EventData = {
   address: string;
   description: string;
   venue_id?: number;
+  category_id?: number;
   created_by?: number;
   chatroom_id: number;
 };
@@ -95,14 +96,23 @@ const seedEvents = async () => {
       await event.destroy();
     });
 
+    await User.findOrCreate({
+      where: {
+        username: 'admin',
+      },
+      defaults: adminUser,
+    });
+
     // Find users and venues
     const users: any = await User.findAll();
     const venues: any = await Venue.findAll();
+    const categories: any = await Category.findAll();
 
     // Assign the new user and venue to each event object
     sampleEvents.forEach((event: EventData) => {
       event.venue_id = venues[Math.floor(Math.random() * venues.length)].id;
       event.created_by = users[Math.floor(Math.random() * users.length)].id;
+      event.category_id = categories[Math.floor(Math.random() * categories.length)].id;
     });
 
     // Create the events for the database
