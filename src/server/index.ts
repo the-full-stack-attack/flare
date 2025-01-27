@@ -24,8 +24,9 @@ const SOCKET_LIST: SocketList = {};
 const PLAYER_LIST: PlayerList = {};
 
 // Creates a player object with their own state... (replace with keyword 'this'?)
-const Player = function (id: any) {
+const Player = function (id: any, user: any) {
   const self = {
+    username: user.username,
     name: id,
     data: {
       // positions
@@ -72,18 +73,16 @@ if (process.env.DEVELOPMENT === 'true') {
         const io = new Server(server);
         // Register event listeners for Socket.IO
         io.on('connection', (socket) => {
-          console.log('a user connected', socket.id);
           // when client joins chat, create a player, add them to the lists
-          socket.on('joinChat', () => {
+          socket.on('joinChat', (user) => {
             socket.data.name = socket.id;
             const stringName = socket.data.name;
             SOCKET_LIST[stringName] = socket;
-            const player = Player(socket.id);
+            const player = Player(socket.id, user);
             PLAYER_LIST[socket.id] = player;
           });
           // On disconnect, delete them from the lists
           socket.on('disconnect', () => {
-            console.log('user disconnected');
             delete SOCKET_LIST[socket.id];
             delete PLAYER_LIST[socket.id];
           });
@@ -145,18 +144,16 @@ if (process.env.DEVELOPMENT === 'true') {
     const io = new Server(https.createServer(options, app));
     // SOCKET ROUTING
     io.on('connection', (socket) => {
-      console.log('a user connected', socket.id);
       // when client joins chat, create a player, add them to the lists
-      socket.on('joinChat', () => {
+      socket.on('joinChat', (user) => {
         socket.data.name = socket.id;
         const stringName = socket.data.name;
         SOCKET_LIST[stringName] = socket;
-        const player = Player(socket.id);
+        const player = Player(socket.id, user);
         PLAYER_LIST[socket.id] = player;
       });
       // On disconnect, delete them from the lists
       socket.on('disconnect', () => {
-        console.log('user disconnected');
         delete SOCKET_LIST[socket.id];
         delete PLAYER_LIST[socket.id];
       });
@@ -202,6 +199,7 @@ setInterval(() => {
       id: player.name,
       x: player.data.x,
       y: player.data.y,
+      username: player.username,
       sentMessage: player.sentMessage,
       currentMessage: player.currentMessage,
     });
