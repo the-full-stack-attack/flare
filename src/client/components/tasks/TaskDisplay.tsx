@@ -66,10 +66,8 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       </CardHeader>
       <CardContent>
         {user.current_task_id
-          ? `Level ${task.difficulty} ${task.type} task`
+          ? `Level ${task.difficulty} ${task.type} task  ${task.description}`
           : 'You are not assigned a task. Go to the Task page to choose your task.'}
-        <br />
-        {task.description}
       </CardContent>
       {user.current_task_id ? (
         <CardFooter>

@@ -27,8 +27,6 @@ function Dashboard() {
     <>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
       <TaskDisplay task={task} />
-      <ChooseTask setTask={setTask} />
-      <AvatarSelection />
     </>
   );
 }
