@@ -15,7 +15,6 @@ import {
 } from '../../components/ui/tabs';
 
 import EventsList from '../components/events-view/EventsList';
-import { StatementSync } from 'node:sqlite';
 
 type GeoPosition = {
   coords: {
@@ -281,6 +280,7 @@ function Events() {
           <EventsList
             events={events}
             getEvents={getEvents}
+            locationFilter={locationFilter}
             category="upcoming"
           />
         </TabsContent>
@@ -291,6 +291,7 @@ function Events() {
           <EventsList
             events={attendingEvents}
             getEvents={getEvents}
+            locationFilter={locationFilter}
             category="attending"
           />
         </TabsContent>
@@ -301,6 +302,7 @@ function Events() {
           <EventsList
             events={bailedEvents}
             getEvents={getEvents}
+            locationFilter={locationFilter}
             category="bailed"
           />
         </TabsContent>
