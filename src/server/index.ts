@@ -7,6 +7,7 @@ import app from './app';
 import database from './db/index';
 import './db/models/index';
 import { data } from 'react-router';
+import './workers/tasks';
 import { type SocketList, PlayerList } from '../types/Players'
 import initializeSocket from './socket'
 

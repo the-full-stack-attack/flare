@@ -12,7 +12,8 @@
     "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts",
     "seedInterests": "ts-node ./src/server/db/seeds/seedInterests.ts",
     "seedCategories": "ts-node ./src/server/db/seeds/seedCategories.ts",
-    "seedVenues": "ts-node ./src/server/db/seeds/seedVenues.ts"
+    "seedVenues": "ts-node ./src/server/db/seeds/seedVenues.ts",
+    "resetTasks": "ts-node ./src/server/workers/tasks.ts"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.18.1",
     "@types/node": "^22.10.7",
+    "@types/node-cron": "^3.0.11",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/react": "^19.0.7",
@@ -91,6 +93,7 @@
     "lucide-react": "^0.473.0",
     "motion": "^12.0.5",
     "mysql2": "^3.12.0",
+    "node-cron": "^3.0.3",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pixi.js": "^8.7.2",
