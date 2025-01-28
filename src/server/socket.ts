@@ -1,7 +1,8 @@
 import { Server, Socket } from 'socket.io';
+import Player from '../client/assets/chatroom/chatAssets'
 
 const initializeSocket = (
-  httpServer: any,
+  server: any,
   PLAYER_LIST: any,
   SOCKET_LIST: any
 ) => {

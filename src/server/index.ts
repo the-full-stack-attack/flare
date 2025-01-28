@@ -9,6 +9,8 @@ import './db/models/index';
 import { data } from 'react-router';
 import { type SocketList, PlayerList } from '../types/Players'
 import Player from '../client/assets/chatroom/chatAssets'
+import initializeSocket from './socket'
+import { Http2ServerRequest } from 'http2';
 
 const PORT = 4000;
 
@@ -26,50 +28,7 @@ if (process.env.DEVELOPMENT === 'true') {
         });
       } else {
         const server = http.createServer(app);
-        const io = new Server(server);
-        // Register event listeners for Socket.IO
-        io.on('connection', (socket) => {
-          // when client joins chat, create a player, add them to the lists
-          socket.on('joinChat', (user) => {
-            socket.data.name = socket.id;
-            const stringName = socket.data.name;
-            SOCKET_LIST[stringName] = socket;
-            const player = Player(socket.id, user);
-            PLAYER_LIST[socket.id] = player;
-          });
-          // On disconnect, delete them from the lists
-          socket.on('disconnect', () => {
-            delete SOCKET_LIST[socket.id];
-            delete PLAYER_LIST[socket.id];
-          });
-
-          // Controls movement. Update their respective state via socket.id
-          socket.on('keyPress', ({ inputId, state }) => {
-            if (inputId === 'Up') {
-              PLAYER_LIST[socket.id].pressingUp = state;
-            }
-            if (inputId === 'Left') {
-              PLAYER_LIST[socket.id].pressingLeft = state;
-            }
-            if (inputId === 'Right') {
-              PLAYER_LIST[socket.id].pressingRight = state;
-            }
-            if (inputId === 'Down') {
-              PLAYER_LIST[socket.id].pressingDown = state;
-            }
-          });
-
-          socket.on('message', (msg) => {
-            PLAYER_LIST[socket.id].sentMessage = true;
-            PLAYER_LIST[socket.id].currentMessage = msg;
-            socket.broadcast.emit('message', msg);
-            // Remove message after a few seconds
-            setTimeout(() => {
-              PLAYER_LIST[socket.id].sentMessage = false;
-            }, 2000);
-          });
-        });
-
+        const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST )
         server.listen(4000, () => {
           console.log('listening on *:4000');
         });
@@ -83,71 +42,19 @@ if (process.env.DEVELOPMENT === 'true') {
     cert: fs.readFileSync('/etc/letsencrypt/live/slayer.events/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/slayer.events/privkey.pem'),
   };
-
-  // IF NOT USING SOCKETS
-
   if (process.env.SOCKET !== 'true') {
-
-    // START SERVER AS NORMAL
     database
       .sync({ alter: true })
       .then(() => {
         https.createServer(options, app).listen(443);
       });
-
-
-  } else { // OTHERWISE
-
-    // START THE SERVER WITH SOCKETS
-
-    const io = new Server(https.createServer(options, app));
-    // SOCKET ROUTING
-    io.on('connection', (socket) => {
-      // when client joins chat, create a player, add them to the lists
-      socket.on('joinChat', (user) => {
-        socket.data.name = socket.id;
-        const stringName = socket.data.name;
-        SOCKET_LIST[stringName] = socket;
-        const player = Player(socket.id, user);
-        PLAYER_LIST[socket.id] = player;
-      });
-      // On disconnect, delete them from the lists
-      socket.on('disconnect', () => {
-        delete SOCKET_LIST[socket.id];
-        delete PLAYER_LIST[socket.id];
-      });
-
-      // Controls movement. Update their respective state via socket.id
-      socket.on('keyPress', ({ inputId, state }) => {
-        if (inputId === 'Up') {
-          PLAYER_LIST[socket.id].pressingUp = state;
-        }
-        if (inputId === 'Left') {
-          PLAYER_LIST[socket.id].pressingLeft = state;
-        }
-        if (inputId === 'Right') {
-          PLAYER_LIST[socket.id].pressingRight = state;
-        }
-        if (inputId === 'Down') {
-          PLAYER_LIST[socket.id].pressingDown = state;
-        }
-      });
-
-      socket.on('message', (msg) => {
-        PLAYER_LIST[socket.id].sentMessage = true;
-        PLAYER_LIST[socket.id].currentMessage = msg;
-        socket.broadcast.emit('message', msg);
-        // Remove message after a few seconds
-        setTimeout(() => {
-          PLAYER_LIST[socket.id].sentMessage = false;
-        }, 2000);
-      });
-    });
-
+  } else { 
     database
     .sync({ alter: true })
     .then(() => {
-      https.createServer(options, app).listen(443);
+      let httpsServer = https.createServer(options, app)
+      const io = initializeSocket(httpsServer, PLAYER_LIST, SOCKET_LIST )
+      httpsServer.listen(443);
     });
   }
 }
