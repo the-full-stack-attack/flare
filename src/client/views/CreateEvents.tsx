@@ -58,12 +58,25 @@ function CreateEvents() {
     const [step, setStep] = useState(1);
 
     // Venue search handling - filers based on user search input
-    const handleVenueSearch = (searchTerm: string) => {
-        setVenueSearch(searchTerm);
-        const filtered = venues.filter(venue =>
-            venue.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredVenues(filtered);
+    const handleVenueSearch = async (searchTerm: string) => {
+
+        try {
+            setVenueSearch(searchTerm);
+            const response = await axios.get('/api/event/search', {
+                params: {
+                    searchInput: searchTerm,
+                }
+            });
+            console.log('searching for...', searchTerm);
+            console.log('just made a requst: ', response.data);
+            const venues = response.data.results;
+            // const filtered = venues.filter(venue =>
+            //     venue.name.toLowerCase().includes(searchTerm.toLowerCase())
+            // );
+            setFilteredVenues(venues);
+        } catch (error) {
+            console.error('oops', error);
+        }
     };
 
     // handle venue selection from user serach input

@@ -9,6 +9,37 @@ import dayjs from 'dayjs';
 const eventRouter = Router();
 
 
+eventRouter.get('/search', async (req: any, res: Response) => {
+    try {
+
+
+        const { searchInput } = req.query;
+        const searchParams = new URLSearchParams({
+            query: searchInput,
+            limit: '10',
+            types: 'place',
+        });
+
+        const response = await fetch(
+            `https://api.foursquare.com/v3/autocomplete?${searchParams}`,
+            {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `${process.env.FOURSQUARE_API_KEY}`,
+                },
+            }
+        );
+        console.log('what the resonse is: ', response);
+
+        const data = await response.json();
+        res.json(data);
+
+    } catch (error) {
+        console.error('Error getting venue data from FSQ API')
+        res.sendStatus(500);
+    }
+})
+
 eventRouter.post('/', async (req: any, res: Response) => {
     try {
 
