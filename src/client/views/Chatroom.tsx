@@ -71,7 +71,7 @@ function Chatroom() {
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
-  const [eventId, setEventId] = useState(document.location.pathname);
+  const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   // An array of every player connected to the chatroom
   const [allPlayers, setAllPlayers] = useState([]);
   const [message, setMessage] = useState('');
@@ -134,7 +134,7 @@ function Chatroom() {
   useEffect(() => {
     console.log(user, 'im the user')
     // Player has joined chat
-    console.log(eventId)
+    console.log(eventId, 'the room id');
     axios.get(`api/chatroom/${eventId}`)
       .then((chatroomId) => {
         console.log(chatroomId, 'ayyye')
