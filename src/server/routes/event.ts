@@ -46,6 +46,7 @@ eventRouter.get('/search', async (req: any, res: Response) => {
         // api response data
         const data = await response.json();
 
+
         // map response obj to venue model / what front end expects
         const mappedData = data.results.map((result: any) => ({
             name: result.place.name,
@@ -54,6 +55,7 @@ eventRouter.get('/search', async (req: any, res: Response) => {
             zip_code: parseInt(result.place.location.postcode),
             city_name: result.place.location.dma,
             state_name: result.place.location.region,
+            fsq_id: result.place.fsq_id,
         }));
 
         // combine both venue results
@@ -174,6 +176,51 @@ eventRouter.post('/', async (req: any, res: Response) => {
     }
 });
 
+
+eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
+    try {
+        const { fsqId } = req.params;
+
+        const response = await fetch(
+            `https://api.foursquare.com/v3/places/${fsqId}?fields=fsq_id,name,description,location,tel,website,tips,rating,hours,features,stats,price,photos,tastes,popularity,hours_popular,social_media,categories`, {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `${process.env.FOURSQUARE_API_KEY}`,
+                },
+            }
+        );
+
+        const venueData = await response.json();
+
+
+
+        console.log('Complete venue data:', JSON.stringify(venueData, null, 2));
+
+        if (venueData.categories) {
+            let category = venueData.categories.name;
+        }
+        console.log('Category is: ', category);
+
+        if (venueData.features.payment.credit_cards) {
+            for (const card in venueData.features.payment.credit_cards) {
+
+            }
+        }
+
+        res.json({
+            name: venueData.name,
+            description: venueData.description || 'test',
+            street_address: venueData.location.address,
+            zip_code: parseInt(venueData.location.postcode),
+            city_name: venueData.location.dma,
+            state_name: venueData.location.region,
+        });
+
+    } catch (error) {
+        console.error('Error fetching venue details', error);
+        res.sendStatus(500);
+    }
+})
 
 
 // get all categories in db to populate form category options
