@@ -8,9 +8,7 @@ import database from './db/index';
 import './db/models/index';
 import { data } from 'react-router';
 import { type SocketList, PlayerList } from '../types/Players'
-import Player from '../client/assets/chatroom/chatAssets'
 import initializeSocket from './socket'
-import { Http2ServerRequest } from 'http2';
 
 const PORT = 4000;
 
