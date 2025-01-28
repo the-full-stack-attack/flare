@@ -142,7 +142,7 @@ function Chatroom() {
     // Set the current endpoint to the 'room' for the sockets
     // vs
     // Pass the current endpoint's path of 'chatroom_id' in as data for this socket
-    socket.emit('joinChat', user);
+    socket.emit('joinChat', { user, eventId });
     /**
      * When you join the chat, you need to be assigned a room.
      *

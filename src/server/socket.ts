@@ -10,7 +10,8 @@ const initializeSocket = (
   // Register event listeners for Socket.IO
   io.on('connection', (socket) => {
     // when client joins chat, create a player, add them to the lists
-    socket.on('joinChat', (user) => {
+    socket.on('joinChat', ({ user, eventId }) => {
+      console.log(eventId, 'the room')
       socket.data.name = socket.id;
       const stringName = socket.data.name;
       SOCKET_LIST[stringName] = socket;
