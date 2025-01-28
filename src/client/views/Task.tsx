@@ -25,11 +25,7 @@ function Task() {
   return (
     <>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
-      {user.current_task_id ? (
-        <TaskDisplay task={task} />
-      ) : (
-        <ChooseTask setTask={setTask} />
-      )}
+      {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
     </>
   );
 }

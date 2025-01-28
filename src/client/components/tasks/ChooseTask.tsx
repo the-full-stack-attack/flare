@@ -24,7 +24,7 @@ type TaskInfo = {
 };
 const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection Therapy'];
 const difficulties: number[] = [1, 2, 3, 4, 5];
-function ChooseTask({ setTask }: ChooseTaskProps) {
+function ChooseTask({}: ChooseTaskProps) {
   const [taskInfo, setTaskInfo] = useState<TaskInfo>({
     type: '',
     difficulty: 3,
@@ -44,9 +44,6 @@ function ChooseTask({ setTask }: ChooseTaskProps) {
     // Make axios request: UPDATE the users current task AND create a user_task row
     axios
       .post('/api/task', config)
-      .then(({ data }) => {
-        setTask(data);
-      })
       .then(() => {
         getUser();
       })
