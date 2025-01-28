@@ -196,16 +196,18 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
         console.log('Complete venue data:', JSON.stringify(venueData, null, 2));
 
-        if (venueData.categories) {
-            let category = venueData.categories.name;
-        }
-        console.log('Category is: ', category);
+        // if (venueData.categories) {
+        //     let category = venueData.categories.name;
+        // }
+        // console.log('Category is: ', category);
 
-        if (venueData.features.payment.credit_cards) {
-            for (const card in venueData.features.payment.credit_cards) {
-
-            }
-        }
+        // if (venueData.features.payment.credit_cards) {
+        //     for (const card in venueData.features.payment.credit_cards) {
+        //         if (card[key] === true) {
+        //
+        //         }
+        //     }
+        // }
 
         res.json({
             name: venueData.name,
