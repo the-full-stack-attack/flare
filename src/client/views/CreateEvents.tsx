@@ -59,7 +59,6 @@ function CreateEvents() {
 
     // Venue search handling - filers based on user search input
     const handleVenueSearch = async (searchTerm: string) => {
-
         try {
             setVenueSearch(searchTerm);
             const response = await axios.get('/api/event/search', {
@@ -78,18 +77,40 @@ function CreateEvents() {
         }
     };
 
-    // handle venue selection from user serach input
-    const handleVenueSelect = (venue) => {
-        // update form info
-        setFormInfo(prev => ({
-            ...prev,
-            venue: venue.name,
-            venueDescription: venue.description,
-            streetAddress: venue.street_address,
-            zipCode: venue.zip_code,
-            cityName: venue.city_name,
-            stateName: venue.state_name
-        }));
+
+    // handle venue selection from user search input
+    const handleVenueSelect = async (venue) => {
+        // if venue is from foursquare api
+        if (venue.fsq_id) {
+            try {
+                // request venue details from foursquare api
+                const response = await axios.get(`/api/event/venue/${venue.fsq_id}`);
+                // update venue form info state
+                setFormInfo(prev => ({
+                    ...prev,
+                    venue: venue.name,
+                    venueDescription: response.data.description || '',
+                    streetAddress: venue.street_address,
+                    zipCode: venue.zip_code,
+                    cityName: venue.city_name,
+                    stateName: venue.state_name
+                }));
+            } catch (error) {
+                console.error('Error fetching venue details:', error);
+            }
+        } else {
+            // for user input venue update form state
+            setFormInfo(prev => ({
+                ...prev,
+                venue: venue.name,
+                venueDescription: venue.description,
+                streetAddress: venue.street_address,
+                zipCode: venue.zip_code,
+                cityName: venue.city_name,
+                stateName: venue.state_name
+            }));
+        }
+
         // clear states
         setVenueSearch('');
         setFilteredVenues([]);
@@ -460,7 +481,7 @@ function CreateEvents() {
                                 <div className="grid grid-cols-2 gap-2">
                                     <p className="text-gray-600">Venue Name:</p>
                                     <p>{formInfo.venue}</p>
-                                    {isNewVenue && (
+
                                         <>
                                             <p className="text-gray-600">Description:</p>
                                             <p>{formInfo.venueDescription}</p>
@@ -473,7 +494,7 @@ function CreateEvents() {
                                             <p className="text-gray-600">Zip Code:</p>
                                             <p>{formInfo.zipCode}</p>
                                         </>
-                                    )}
+
                                 </div>
                             </div>
                         </div>
