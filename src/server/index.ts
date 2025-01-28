@@ -7,58 +7,14 @@ import app from './app';
 import database from './db/index';
 import './db/models/index';
 import { data } from 'react-router';
-
-import('./db/index');
+import { type SocketList, PlayerList } from '../types/Players'
+import Player from '../client/assets/chatroom/chatAssets'
 
 const PORT = 4000;
 
-// Lists of Sockets and Players, key will be socket.id
-type SocketList = {
-  [key: string]: any;
-}
-type PlayerList = {
-  [key: string]: any;
-}
 
 const SOCKET_LIST: SocketList = {};
 const PLAYER_LIST: PlayerList = {};
-
-// Creates a player object with their own state... (replace with keyword 'this'?)
-const Player = function (id: any, user: any) {
-  const self = {
-    username: user.username,
-    name: id,
-    data: {
-      // positions
-      x: 25,
-      y: 25,
-    },
-    number: Math.floor(10 * Math.random()),
-    pressingRight: false, // states of movement
-    pressingLeft: false,
-    pressingUp: false,
-    pressingDown: false,
-    maxSpd: 10,
-    sentMessage: false,
-    currentMessage: '',
-    updatePosition() {
-      // method for updating state of movement
-      if (self.pressingRight) {
-        self.data.x += self.maxSpd;
-      }
-      if (self.pressingLeft) {
-        self.data.x -= self.maxSpd;
-      }
-      if (self.pressingUp) {
-        self.data.y -= self.maxSpd;
-      }
-      if (self.pressingDown) {
-        self.data.y += self.maxSpd;
-      }
-    },
-  };
-  return self;
-};
 
 if (process.env.DEVELOPMENT === 'true') {
   database
