@@ -13,10 +13,10 @@ import('./db/index');
 const PORT = 4000;
 
 // Lists of Sockets and Players, key will be socket.id
-interface SocketList {
+type SocketList = {
   [key: string]: any;
 }
-interface PlayerList {
+type PlayerList = {
   [key: string]: any;
 }
 
