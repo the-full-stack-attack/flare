@@ -9,6 +9,14 @@ import dayjs from 'dayjs';
 const eventRouter = Router();
 
 
+
+// Okay so we get back a ton of nested data
+// I neeed to send back the first 10 results
+// I need to map those first 10 results to what the front end venue data is expecting
+// I should also query our DB here for venues and if we have an identical match, show the db version and omit the api venue
+
+
+
 eventRouter.get('/search', async (req: any, res: Response) => {
     try {
 
@@ -32,7 +40,16 @@ eventRouter.get('/search', async (req: any, res: Response) => {
         console.log('what the resonse is: ', response);
 
         const data = await response.json();
-        res.json(data);
+        console.log('this is data', data);
+        const mappedData = data.results.map((result: any) => ({
+            name: result.place.name,
+            description: '',
+            street_address: result.place.location.address,
+            zip_code: parseInt(result.place.location.postcode),
+            city_name: result.place.location.dma,
+            state_name: result.place.location.region,
+        }));
+        res.json(mappedData);
 
     } catch (error) {
         console.error('Error getting venue data from FSQ API')

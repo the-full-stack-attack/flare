@@ -69,11 +69,10 @@ function CreateEvents() {
             });
             console.log('searching for...', searchTerm);
             console.log('just made a requst: ', response.data);
-            const venues = response.data.results;
-            // const filtered = venues.filter(venue =>
-            //     venue.name.toLowerCase().includes(searchTerm.toLowerCase())
-            // );
-            setFilteredVenues(venues);
+
+
+            console.log('do we set this? ', venues);
+            setFilteredVenues(response.data);
         } catch (error) {
             console.error('oops', error);
         }
@@ -95,6 +94,14 @@ function CreateEvents() {
         setVenueSearch('');
         setFilteredVenues([]);
     };
+
+
+    /**
+     * // const filtered = venues.filter(venue =>
+     *             //     venue.name.toLowerCase().includes(searchTerm.toLowerCase())
+     *             // );
+     *
+     */
 
 
     // navigation handling
