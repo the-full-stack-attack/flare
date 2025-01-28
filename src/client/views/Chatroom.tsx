@@ -168,6 +168,7 @@ function Chatroom() {
           username: data[i].username,
           sentMessage: data[i].sentMessage,
           currentMessage: data[i].currentMessage,
+          room: data[i].room,
         });
       }
       setAllPlayers(allPlayerInfo);
@@ -193,7 +194,8 @@ function Chatroom() {
   }, [isTyping]);
 
   const sendMessage = () => {
-    socket.emit('message', message);
+    console.log(message);
+    socket.emit('message', { message, eventId });
     displayMessage(message);
     setMessage('');
   };

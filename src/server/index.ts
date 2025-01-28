@@ -71,11 +71,12 @@ setInterval(() => {
       username: player.username,
       sentMessage: player.sentMessage,
       currentMessage: player.currentMessage,
+      room: player.eventId,
     });
   }
   // loop through the sockets and send the package to each of them
   for (let key in SOCKET_LIST) {
     let socket = SOCKET_LIST[key];
-    socket.emit('newPositions', pack);
+    socket.to(socket.data.room).emit('newPositions', pack);
   }
 }, 1000 / 25);

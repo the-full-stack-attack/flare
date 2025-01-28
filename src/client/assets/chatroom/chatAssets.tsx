@@ -1,5 +1,5 @@
 // Creates a player object with their own state... (replace with keyword 'this'?)
-const Player = function (id: any, user: any): any {
+const Player = function (id: any, user: any, eventId: any): any {
   const self = {
     username: user.username,
     name: id,
@@ -16,6 +16,7 @@ const Player = function (id: any, user: any): any {
     maxSpd: 10,
     sentMessage: false,
     currentMessage: '',
+    eventId,
     updatePosition() {
       // method for updating state of movement
       if (self.pressingRight) {

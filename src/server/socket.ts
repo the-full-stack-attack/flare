@@ -11,15 +11,18 @@ const initializeSocket = (
   io.on('connection', (socket) => {
     // when client joins chat, create a player, add them to the lists
     socket.on('joinChat', ({ user, eventId }) => {
-      console.log(eventId, 'the room')
+      console.log( typeof eventId, eventId)
       socket.data.name = socket.id;
+      socket.data.eventId = eventId;
+      socket.join(eventId);
       const stringName = socket.data.name;
       SOCKET_LIST[stringName] = socket;
-      const player = Player(socket.id, user);
+      const player = Player(socket.id, user, eventId);
       PLAYER_LIST[socket.id] = player;
     });
     // On disconnect, delete them from the lists
     socket.on('disconnect', () => {
+      socket.leave(socket.data.eventId);
       delete SOCKET_LIST[socket.id];
       delete PLAYER_LIST[socket.id];
     });
@@ -40,10 +43,12 @@ const initializeSocket = (
       }
     });
 
-    socket.on('message', (msg) => {
+    socket.on('message', ({ message, eventId }) => {
+      console.log(eventId, 'message id')
+      console.log( message, 'the message')
       PLAYER_LIST[socket.id].sentMessage = true;
-      PLAYER_LIST[socket.id].currentMessage = msg;
-      socket.broadcast.emit('message', msg);
+      PLAYER_LIST[socket.id].currentMessage = message;
+      socket.to(eventId).emit('message', message);
       // Remove message after a few seconds
       setTimeout(() => {
         PLAYER_LIST[socket.id].sentMessage = false;
