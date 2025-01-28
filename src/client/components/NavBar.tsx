@@ -64,6 +64,16 @@ function NavBar(): JSX.Element {
           >
             Events
           </a>
+
+          <a
+              href="/CreateEvents"
+              aria-label="Create your Event"
+              className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
+          >
+            Create Your Event
+          </a>
+
+
           <a
             href="/AiConversations"
             aria-label="Go to AI Conversations page"
@@ -79,25 +89,18 @@ function NavBar(): JSX.Element {
             Task
           </a>
           <a
-            href="/Chatroom"
-            aria-label="Go to Chatroom page"
-            className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
-          >
-            Chat
-          </a>
-          <a
-            href="/Signup"
-            aria-label="Go to Signup page"
-            className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
-          >
-            Signup
-          </a>
-          <a
             href="/Dashboard"
             aria-label="Go to Dashboard page"
             className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
           >
             Dashboard
+          </a>
+          <a
+              href="/logout"
+              aria-label="Logout"
+              className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
+          >
+            Logout
           </a>
         </div>
 
@@ -130,56 +133,65 @@ function NavBar(): JSX.Element {
       </div>
 
       <motion.div
-        className="flex flex-col origin-top bg-secondary text-secondary-foreground md:hidden"
-        initial="closed"
-        animate={isOpen ? 'open' : 'closed'}
-        variants={menuVariants}
+          className="flex flex-col origin-top bg-secondary text-secondary-foreground md:hidden"
+          initial="closed"
+          animate={isOpen ? 'open' : 'closed'}
+          variants={menuVariants}
       >
         <a
-          href="/Events"
-          aria-label="Go to Events page"
-          className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-          onClick={handleMenuToggle}
+            href="/Events"
+            aria-label="Go to Events page"
+            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
+            onClick={handleMenuToggle}
         >
           Events
         </a>
+
         <a
-          href="/AiConversations"
-          aria-label="Go to AI page"
-          className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-          onClick={handleMenuToggle}
+            href="/CreateEvents"
+            aria-label="Create your Event"
+            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
+            onClick={handleMenuToggle}
+        >
+          Create Event
+        </a>
+        <a
+            href="/AiConversations"
+            aria-label="Go to AI page"
+            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
+            onClick={handleMenuToggle}
         >
           AI
         </a>
         <a
-          href="/Task"
-          aria-label="Go to Task page"
-          className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-          onClick={handleMenuToggle}
+            href="/Task"
+            aria-label="Go to Task page"
+            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
+            onClick={handleMenuToggle}
         >
           Task
         </a>
         <a
-          href="/Chatroom"
-          aria-label="Go to Chatroom page"
-          className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-          onClick={handleMenuToggle}
+            href="/Chatroom"
+            aria-label="Go to Chatroom page"
+            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
+            onClick={handleMenuToggle}
         >
           Chat
         </a>
         <a
-          href="/Signup"
-          aria-label="Go to Signup page"
-          className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-          onClick={handleMenuToggle}
+            href="/Signup"
+            aria-label="Go to Signup page"
+            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
+            onClick={handleMenuToggle}
         >
           Signup
         </a>
         <a
-          href="/Dashboard"
-          aria-label="Go to Dashboard page"
-          className="border-y border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-          onClick={handleMenuToggle}
+            href="/Dashboard"
+            aria-label="Go to Dashboard page"
+            className="border-y border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
+            onClick={handleMenuToggle}
         >
           Dashboard
         </a>

@@ -13,7 +13,6 @@ import { RainbowButton } from '../../components/ui/rainbowbutton';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
-import { AvatarSelection } from '../components/signup/avatarSelection'
 
 
 function Signup() {
@@ -77,6 +76,11 @@ function Signup() {
         console.error('error', err);
       });
   }, []);
+
+  
+  const chosenAlias = (x) => {
+    console.log(x)
+  }
 
   // return the signup template
   return (
@@ -172,7 +176,6 @@ function Signup() {
                     </CardFooter>
                   </CardHeader>
                   
-                        <AvatarSelection/>
                   <RainbowButton type="submit" value="Submit">
                     {' '}
                     Complete{' '}

@@ -71,16 +71,21 @@ SOCKET=false
 3. **Event Chatrooms**
 4. **Tasks:** Tasks can be used as extra motivation, or a reason, to get out of the house.  Tasks are meant to be completed the day they are assigned.
 Relevant Models: User, Task, & User_Task  
-   1. Tasks have 2 main components, TaskDisplay and ChooseTask, that display on the dashboard
-   2. The components render conditionally based on the user's current_task_id value:  
+   1. Tasks have 2 main components, TaskDisplay and ChooseTask
+      > TaskDisplay displays on the Dashboard and Task views  
+      > ChooseTask displays on the Task view
+   2. The components render conditionally on the Task view based on the user's current_task_id value:  
       > A null current_task_id will render the ChooseTask component  
       > A number current_task_id will render the TaskDisplay component
       * If the current_task_id is not null, the current task is retrieved from the database using the current_task_id (**See in Dashboard view useEffect hook**)
    3. Users can choose from 5 task categories: Fun, Active, Duo, Normal, and Rejection Therapy
    4. Tasks can be declared complete on the TaskDisplay component. This causes a number of changes in the database
-      > **See changes on PATCH request in /src/server/routes/task.ts**
-   5. Users can opt-out of tasks (***To be continued***)
-   6. Users can choose a difficulty level for a task (***To be continued***)
-   7. All users' current_task_ids are set to null at *(Determined Time)* using a worker. (***To be continued***)
-   > This is to enforce that tasks are completed the day they are assigned
+      > **See changes on PATCH request to /api/task in /src/server/routes/task.ts**
+   5. Users can opt-out of tasks
+      > **See changes on PATCH to /api/task/:id request in src/server/routes/task.ts**
+   6. Users can choose a difficulty level for a task on the ChooseTask component
+   7. There is a task worker in **src/server/workers/tasks.ts** that runs 2 functions everyday it midnight  
+      > resetTasks function sets every user's current_task_id to null  
+      > createTasks function generates 5 new tasks for each task type for the day
+      > This is to enforce that tasks are completed the day they are assigned
    8. Users can generate a custom task, which will send a prompt to the Gemini AI using GoogleGenerativeAI package (***To be continued***)

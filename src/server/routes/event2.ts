@@ -12,37 +12,73 @@ const event2Router = Router();
   GET /api/event => Retrieve all events from the database (filter for events near user in future)
 */
 event2Router.get('/', (req: any, res: Response) => {
+  const { city, state } = req.query.locationFilter;
   // Query DB for all event objects & send them back to the user
-  Event.findAll({
-    where: {
-      start_time: { [Op.gt]: new Date(Date.now()) },
-    },
-    include: [
-      {
-        model: User,
+  if (city && state) {
+    Event.findAll({
+      where: {
+        start_time: { [Op.gt]: new Date(Date.now()) },
+        '$Venue.city_name$': city,
+        '$Venue.state_name$': state,
       },
-      {
-        model: Venue,
-      },
-      {
-        association: 'Category',
-      },
-      {
-        association: 'Interests',
-      },
-      {
-        association: 'Users',
-      },
-    ],
-  })
-    .then((events: object[]) => {
-      res.status(200);
-      res.send(events);
+      include: [
+        {
+          model: User,
+        },
+        {
+          model: Venue,
+        },
+        {
+          association: 'Category',
+        },
+        {
+          association: 'Interests',
+        },
+        {
+          association: 'Users',
+        },
+      ],
     })
-    .catch((err: Error) => {
-      console.error('Failed to GET /events:', err);
-      res.sendStatus(500);
-    });
+      .then((events: object[]) => {
+        res.status(200);
+        res.send(events);
+      })
+      .catch((err: Error) => {
+        console.error('Failed to GET /events:', err);
+        res.sendStatus(500);
+      });
+  } else {
+    Event.findAll({
+      where: {
+        start_time: { [Op.gt]: new Date(Date.now()) },
+      },
+      include: [
+        {
+          model: User,
+        },
+        {
+          model: Venue,
+        },
+        {
+          association: 'Category',
+        },
+        {
+          association: 'Interests',
+        },
+        {
+          association: 'Users',
+        },
+      ],
+    })
+      .then((events: object[]) => {
+        res.status(200);
+        res.send(events);
+      })
+      .catch((err: Error) => {
+        console.error('Failed to GET /events:', err);
+        res.sendStatus(500);
+      });
+  }
 });
 
 /*
@@ -174,7 +210,7 @@ event2Router.get('/location/:lat/:lng', (req: Request, res: Response) => {
             };
           }
           if (comp.types.includes('locality')) {
-            location.locality = {
+            location.city = {
               long_name: comp.long_name,
               short_name: comp.short_name,
             };
@@ -210,7 +246,6 @@ event2Router.get('/location/:lat/:lng', (req: Request, res: Response) => {
             };
           }
         });
-        console.group(location);
         res.status(200).send(location);
       }
     })

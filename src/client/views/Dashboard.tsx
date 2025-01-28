@@ -3,6 +3,7 @@ import axios from 'axios';
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import ChooseTask from '../components/tasks/ChooseTask';
 import { UserContext } from '../contexts/UserContext';
+import AvatarSelection from '../components/signup/avatarSelection'
 
 function Dashboard() {
   const { user } = useContext(UserContext);
@@ -25,11 +26,7 @@ function Dashboard() {
   return (
     <>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
-      {user.current_task_id ? (
-        <TaskDisplay task={task} />
-      ) : (
-        <ChooseTask setTask={setTask} />
-      )}
+      <TaskDisplay task={task} />
     </>
   );
 }

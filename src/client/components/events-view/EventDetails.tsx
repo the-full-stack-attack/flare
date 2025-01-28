@@ -101,13 +101,15 @@ function EventDetails({
           </div>
           <div>
             <b>Interests:</b>
-            <p>{Interests?.reduce((acc, curr, i, arr) => {
-              acc += `${curr.name}, `;
-              if (i === arr.length - 1) {
-                return acc.slice(0, acc.length - 2);
-              }
-              return acc;
-            }, '')}</p>
+            <p>
+              {Interests?.reduce((acc, curr, i, arr) => {
+                acc += `${curr.name}, `;
+                if (i === arr.length - 1) {
+                  return acc.slice(0, acc.length - 2);
+                }
+                return acc;
+              }, '')}
+            </p>
           </div>
           <div>
             <b>Venue:</b>
@@ -150,7 +152,7 @@ function EventDetails({
         {category === 'bailed' ? (
           <Button onClick={patchAttendingEvent}>Re-attend</Button>
         ) : null}
-        {category === 'attending' ?   <Button><Link style={{flex: 1}} to={`/chatroom/${id}`}>Enter Chatroom</Link></Button> : null}
+        {category === 'attending' ? <Button><Link style={{flex: 1}} to={`/chatroom/${id}`}>Enter Chatroom</Link></Button> : null}
         <DrawerClose asChild>
           <Button>Close</Button>
         </DrawerClose>

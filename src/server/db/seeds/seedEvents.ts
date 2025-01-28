@@ -3,6 +3,8 @@ import Event from '../models/events';
 import Venue from '../models/venues';
 import User from '../models/users';
 import Category from '../models/categories';
+import Interest from '../models/interests';
+import Event_Interest from '../models/events_interests';
 
 // EventData type to store events in DB
 type EventData = {
@@ -64,24 +66,24 @@ const adminUser: UserData = {
 const sampleEvents: EventData[] = [
   {
     title: 'Darts Night',
-    start_time: new Date(now + 60000 * 60 * 1),
-    end_time: new Date(now + 60000 * 60 * 2),
+    start_time: new Date(2025, 0, 31, 18),
+    end_time: new Date(2025, 0, 31, 21),
     address: '123 Have Fun Blvd',
     description: "We're playing darts.",
     chatroom_id: 1,
   },
   {
     title: 'Movie Night',
-    start_time: new Date(now + 60000 * 60 * 3),
-    end_time: new Date(now + 60000 * 60 * 4),
+    start_time: new Date(2025, 0, 31, 19),
+    end_time: new Date(2025, 0, 31, 22),
     address: '456 Laughing St',
     description: "We're watching The Jerk.",
     chatroom_id: 1,
   },
   {
     title: 'Watching the Game',
-    start_time: new Date(now + 60000 * 60 * 5),
-    end_time: new Date(now + 60000 * 60 * 6),
+    start_time: new Date(2025, 1, 1, 18, 30),
+    end_time: new Date(2025, 1, 1, 23),
     address: '789 Game Ave',
     description: "We're watching The Saints game.",
     chatroom_id: 1,
@@ -96,6 +98,11 @@ const seedEvents = async () => {
       await event.destroy();
     });
 
+    const eventInterests = await Event_Interest.findAll();
+    eventInterests.forEach(async (eventInterest: any) => {
+      await eventInterest.destroy();
+    });
+
     await User.findOrCreate({
       where: {
         username: 'admin',
@@ -107,6 +114,7 @@ const seedEvents = async () => {
     const users: any = await User.findAll();
     const venues: any = await Venue.findAll();
     const categories: any = await Category.findAll();
+    const interests: any = await Interest.findAll();
 
     // Assign the new user and venue to each event object
     sampleEvents.forEach((event: EventData) => {
@@ -116,7 +124,49 @@ const seedEvents = async () => {
     });
 
     // Create the events for the database
-    await Event.bulkCreate(sampleEvents);
+    const newEvents: any = await Event.bulkCreate(sampleEvents);
+
+    newEvents.forEach(async (event: any) => {
+      const EventId = event.dataValues.id;
+
+      await Event_Interest.findOrCreate({
+        where: {
+          EventId,
+          InterestId:
+            interests[Math.floor(Math.random() * interests.length)].id,
+        },
+        defaults: {
+          EventId,
+          InterestId:
+            interests[Math.floor(Math.random() * interests.length)].id,
+        },
+      });
+      await Event_Interest.findOrCreate({
+        where: {
+          EventId,
+          InterestId:
+            interests[Math.floor(Math.random() * interests.length)].id,
+        },
+        defaults: {
+          EventId,
+          InterestId:
+            interests[Math.floor(Math.random() * interests.length)].id,
+        },
+      });
+      await Event_Interest.findOrCreate({
+        where: {
+          EventId,
+          InterestId:
+            interests[Math.floor(Math.random() * interests.length)].id,
+        },
+        defaults: {
+          EventId,
+          InterestId:
+            interests[Math.floor(Math.random() * interests.length)].id,
+        },
+      });
+    });
+
     console.log('Created events');
   } catch (err: unknown) {
     console.error('Failed to seedEvents:', err);
