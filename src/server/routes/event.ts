@@ -193,45 +193,140 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         const venueData = await response.json();
 
 
-        if (venueData.categories[0].name) {
-            console.log(`${venueData.name} Category is ${venueData.categories[0].name}`);
+        if (venueData.categories[0]?.name) {
+            console.log(`${venueData.name} Category is something like a... ${venueData.categories[0].name} ?`);
         }
 
-        if (venueData.features.food_and_drink.alcohol.cocktails || venueData.features.food_and_drink.alcohol.cocktails.full_bar) {
+        if (venueData.features?.food_and_drink?.alcohol?.cocktails || venueData.features?.food_and_drink?.alcohol?.cocktails?.full_bar) {
             console.log(`${venueData.name} alcohol looks like Cocktails: ${venueData.features.food_and_drink.alcohol.cocktails} \n AND Full Bar: ${venueData.features.food_and_drink.alcohol.full_bar}`);
         }
 
 
 
-        if (venueData.rating) {
+
+        if (venueData?.rating) {
             console.log(`${venueData.name} Rating: ${venueData.rating}`);
         }
 
-        if (venueData.social_media) {
-            console.log(`${venueData.name} Social Media: ${venueData.social_media}`);
+        if (venueData?.social_media?.facebook_id) {
+            console.log(`${venueData.name} Facebook ID: ${venueData.social_media.facebook_id}`);
         }
 
-        if (venueData.stats.total_ratings) {
+        if (venueData?.social_media?.instagram) {
+            console.log(`${venueData.name} has Instagram: @${venueData.social_media.instagram}`)
+        }
+
+
+        if (venueData?.stats?.total_ratings) {
             console.log(`${venueData.name} has ${venueData.stats.total_ratings} reviews`);
         }
 
-        if (venueData.tel) {
+        if (venueData?.tel) {
             console.log(`${venueData.name} can be called at ${venueData.tel}`);
         }
 
-        if (venueData.tastes) {
+        if (venueData?.tastes) {
             console.log(`${venueData.name} is known for ${venueData.tastes}`);
         }
 
-        if (venueData.tips) {
-            console.log(`${venueData.name} has tips: ${venueData.tips}`);
+        if (venueData?.tips) {
+            venueData.tips.forEach((tip: any) => {
+                console.log(`${venueData.name} has a ${tip.text}`)
+            })
         }
 
-        if (venueData.website) {
+        if (venueData?.website) {
             console.log(`${venueData.name} visit their website at ${venueData.website}`);
         }
 
+        if (venueData?.hours_popular) {
+            console.log(`${venueData.name} is popular at specific times`);
+        }
 
+        if (venueData?.stats?.total_ratings) {
+            console.log(`${venueData.name} has ${venueData.stats.total_ratings} reviews`);
+        }
+
+
+
+        if (venueData?.price) {
+            console.log(`${venueData.name} has pricing rated at ${venueData.price}`);
+        }
+
+        if (venueData?.features?.payment) {
+            Object.entries(venueData.features.payment).forEach(([category, values]: any) => {
+                Object.entries(values).forEach(([key, value]) => {
+                    console.log(`${venueData.name} accepts specific payments: ${category}.${key}:`, value);
+                });
+            });
+        }
+
+
+        if (venueData?.features?.attributes?.clean) {
+            console.log(`${venueData.name} cleanliness is...${venueData.features.attributes.clean}`);
+        }
+
+        if (venueData?.features?.attributes?.noise) {
+            console.log(`${venueData.name} has a noisy rating of...${venueData.features.attributes.noisy}`);
+        };
+
+        if (venueData?.features?.attributes?.crowded) {
+            console.log(`${venueData.name} has a crowdy rating of...${venueData.features.attributes.crowded}`);
+        }
+
+        if (venueData?.features?.attributes?.dressy) {
+            console.log(`${venueData.name} has an attire scale of...${venueData.features.attributes.dressy}`);
+        }
+
+
+        if (venueData?.features?.amenities?.atm) {
+            console.log(`{venueData.name} does it have an ATM...? ${venueData.features.amenities.atm}`);
+        }
+
+        if (venueData?.features?.amenities?.wheelchair_accessible) {
+            console.log(`{venueData.name} is it wheelchair accessible...? ${venueData.features.amenities.wheelchair_accessible}`);
+        }
+
+        if (venueData?.features?.amenities?.parking?.parking) {
+            console.log(`${venueData.name} has regular parking: ${venueData.features.amenities.parking.parking}`);
+        }
+
+        if (venueData?.features?.amenities?.parking?.street_parking) {
+            console.log(` ${venueData.name} has street parking: ${venueData.features.amenities.parking.street_parking}`)
+        }
+
+        if (venueData?.features?.amenities?.restroom) {
+            console.log(`${venueData.name} has restroom? ${venueData.features.amenities.restroom}`);
+        }
+
+        if (venueData?.features?.amenities?.outdoor_seating) {
+            console.log(`${venueData.name} has outdoor seating? ${venueData.features.amenities.outdoor_seating}`);
+        }
+
+
+
+
+
+
+        // const Venue = database.define('Venue', {
+        //
+        //     accepted_payments: { type: Sequelize.STRING }, DONE
+        //     price_level: { type: Sequelize.INTEGER }, DONE
+        //     outdoor_seating: { type: Sequelize.BOOLEAN } DONE,
+        //     wheelchair_accessible: { type: Sequelize.BOOLEAN }, DONE
+        //     classification: { type: Sequelize.STRING }, DONE
+        //     cleanliness: { type: Sequelize.STRING }, DONE
+        //     private_parking: { type: Sequelize.BOOLEAN }, DONE
+        //     street_parking: { type: Sequelize.BOOLEAN }, DONE
+        //     restroom: { type: Sequelize.BOOLEAN }, DONE
+        //     atm: { type: Sequelize.BOOLEAN }, DONE
+        //     crowded: { type: Sequelize.STRING }, DONE
+        //     attire: { type: Sequelize.STRING }, DONE
+        //     noisy: { type: Sequelize.STRING }, DONE
+        //     facebook_id: { type: Sequelize.STRING },
+        //     instagram: { type: Sequelize.STRING },
+        //     tips: { type: Sequelize.STRING }, DONE
+        // });
 
 
         console.log('Complete venue data:', JSON.stringify(venueData, null, 2));
@@ -245,6 +340,11 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             zip_code: parseInt(venueData.location.postcode),
             city_name: venueData.location.dma,
             state_name: venueData.location.region,
+            phone: venueData.tel || 'none found',
+            website: venueData.website || 'none found',
+            rating: venueData.rating || 'none found',
+            reviewCount: venueData.stats.total_ratings || 'none found',
+            // acceptedPayments:
         });
 
     } catch (error) {
