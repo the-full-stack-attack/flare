@@ -193,21 +193,50 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         const venueData = await response.json();
 
 
+        if (venueData.categories[0].name) {
+            console.log(`${venueData.name} Category is ${venueData.categories[0].name}`);
+        }
+
+        if (venueData.features.food_and_drink.alcohol.cocktails || venueData.features.food_and_drink.alcohol.cocktails.full_bar) {
+            console.log(`${venueData.name} alcohol looks like Cocktails: ${venueData.features.food_and_drink.alcohol.cocktails} \n AND Full Bar: ${venueData.features.food_and_drink.alcohol.full_bar}`);
+        }
+
+
+
+        if (venueData.rating) {
+            console.log(`${venueData.name} Rating: ${venueData.rating}`);
+        }
+
+        if (venueData.social_media) {
+            console.log(`${venueData.name} Social Media: ${venueData.social_media}`);
+        }
+
+        if (venueData.stats.total_ratings) {
+            console.log(`${venueData.name} has ${venueData.stats.total_ratings} reviews`);
+        }
+
+        if (venueData.tel) {
+            console.log(`${venueData.name} can be called at ${venueData.tel}`);
+        }
+
+        if (venueData.tastes) {
+            console.log(`${venueData.name} is known for ${venueData.tastes}`);
+        }
+
+        if (venueData.tips) {
+            console.log(`${venueData.name} has tips: ${venueData.tips}`);
+        }
+
+        if (venueData.website) {
+            console.log(`${venueData.name} visit their website at ${venueData.website}`);
+        }
+
+
+
 
         console.log('Complete venue data:', JSON.stringify(venueData, null, 2));
 
-        // if (venueData.categories) {
-        //     let category = venueData.categories.name;
-        // }
-        // console.log('Category is: ', category);
 
-        // if (venueData.features.payment.credit_cards) {
-        //     for (const card in venueData.features.payment.credit_cards) {
-        //         if (card[key] === true) {
-        //
-        //         }
-        //     }
-        // }
 
         res.json({
             name: venueData.name,
