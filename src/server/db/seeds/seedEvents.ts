@@ -7,6 +7,7 @@ import Category from '../models/categories';
 import Interest from '../models/interests';
 import Event_Interest from '../models/events_interests';
 import Notification from '../models/notifications';
+import clearNotifications from './clearNotifications';
 
 // EventData type to store events in DB
 type EventData = {
@@ -69,24 +70,24 @@ const adminUser: UserData = {
 const sampleEvents: EventData[] = [
   {
     title: 'Darts Night',
-    start_time: new Date(now + 1000 * 60 * 60 * 3),
-    end_time: new Date(now + 1000 * 60 * 60 * 4),
+    start_time: new Date(now + 1000 * 60 * 60 * 1),
+    end_time: new Date(now + 1000 * 60 * 60 * 2),
     address: '123 Have Fun Blvd',
     description: "We're playing darts.",
     chatroom_id: 1,
   },
   {
     title: 'Movie Night',
-    start_time: new Date(now + 1000 * 60 * 60 * 5),
-    end_time: new Date(now + 1000 * 60 * 60 * 6),
+    start_time: new Date(now + 1000 * 60 * 60 * 3),
+    end_time: new Date(now + 1000 * 60 * 60 * 4),
     address: '456 Laughing St',
     description: "We're watching The Jerk.",
     chatroom_id: 1,
   },
   {
     title: 'Watching the Game',
-    start_time: new Date(now + 1000 * 60 * 60 * 7),
-    end_time: new Date(now + 1000 * 60 * 60 * 8),
+    start_time: new Date(now + 1000 * 60 * 60 * 5),
+    end_time: new Date(now + 1000 * 60 * 60 * 6),
     address: '789 Game Ave',
     description: "We're watching The Saints game.",
     chatroom_id: 1,
@@ -97,14 +98,26 @@ const seedEvents = async () => {
   try {
     // Delete all Event data
     const events = await Event.findAll();
-    events.forEach(async (event: any) => {
-      await event.destroy();
-    });
+    // events.forEach(async (event: any) => {
+    //   await event.destroy();
+    // });
 
     const eventInterests = await Event_Interest.findAll();
-    eventInterests.forEach(async (eventInterest: any) => {
-      await eventInterest.destroy();
-    });
+    // eventInterests.forEach(async (eventInterest: any) => {
+    //   await eventInterest.destroy();
+    // });
+
+    const clearEvents = async () => {
+      for (let event of events) {
+        await event.destroy();
+      }
+      for (let interest of eventInterests) {
+        await interest.destroy();
+      }
+    };
+
+    await clearEvents();
+    await clearNotifications();
 
     await User.findOrCreate({
       where: {
@@ -137,8 +150,6 @@ const seedEvents = async () => {
     };
 
     await addNotifications(sampleEvents);
-
-    console.log(sampleEvents);
 
     // Create the events for the database
     const newEvents: any = await Event.bulkCreate(sampleEvents);
