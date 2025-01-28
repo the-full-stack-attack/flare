@@ -5,29 +5,34 @@ import Venue from '../db/models/venues';
 import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
 import dayjs from 'dayjs';
+import { Op } from 'sequelize';
+
 
 const eventRouter = Router();
-
-
-
-// Okay so we get back a ton of nested data
-// I neeed to send back the first 10 results
-// I need to map those first 10 results to what the front end venue data is expecting
-// I should also query our DB here for venues and if we have an identical match, show the db version and omit the api venue
 
 
 
 eventRouter.get('/search', async (req: any, res: Response) => {
     try {
 
-
+        // user search input
         const { searchInput } = req.query;
+
+        // find venues in db that match search input
+        const dbVenues = await Venue.findAll({
+            where: {
+                name: {
+                    [Op.like]: `%${searchInput}%` // case insensitive
+                }
+            }
+        });
+
+        // FSQ API CALL
         const searchParams = new URLSearchParams({
             query: searchInput,
             limit: '10',
             types: 'place',
         });
-
         const response = await fetch(
             `https://api.foursquare.com/v3/autocomplete?${searchParams}`,
             {
@@ -37,29 +42,55 @@ eventRouter.get('/search', async (req: any, res: Response) => {
                 },
             }
         );
-        console.log('what the resonse is: ', response);
 
+        // api response data
         const data = await response.json();
-        console.log('this is data', data);
+
+        // map response obj to venue model / what front end expects
         const mappedData = data.results.map((result: any) => ({
             name: result.place.name,
-            description: '',
+            description: '', // need to populate this
             street_address: result.place.location.address,
             zip_code: parseInt(result.place.location.postcode),
             city_name: result.place.location.dma,
             state_name: result.place.location.region,
         }));
-        res.json(mappedData);
 
-    } catch (error) {
+        // combine both venue results
+        const combinedResults = [...dbVenues, ...mappedData ]
+        // de-duplicate
+        const uniqueResults = removeDuplicateVenues(combinedResults);
+        res.json(uniqueResults);
+    } catch (error: any) {
         console.error('Error getting venue data from FSQ API')
         res.sendStatus(500);
     }
 })
 
+// remove duplicate venues helper function - used to remove duplicates from user venue autocomplete search
+const removeDuplicateVenues = (venues: any) => {
+    // object to track venues using name and street address keys
+    const seen: any = {};
+    // return filtered array without duplicate venues
+    return venues.filter((venue: { name: any; street_address: any; }) => {
+        // check for duplicates by creating keys (name and street address of venue)
+        const key: any = `${venue.name} - ${venue.street_address}`;
+        // check if key has been added to our seen object
+        if (seen.hasOwnProperty(key)) {
+            // if seen object has venue key, return false - do not add to array
+            return false;
+        // if key is not found in seen, add it and set value to true
+        } else {
+            seen[key] = true;
+            return true;
+        }
+    })
+}
+
+
+
 eventRouter.post('/', async (req: any, res: Response) => {
     try {
-
         const {
             title,
             description,
