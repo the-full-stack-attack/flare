@@ -8,7 +8,19 @@ userRouter.get('/', (req: any, res: Response) => {
   if (!req.user) {
     res.status(200).send({ id: 0 });
   } else {
-    User.findByPk(req.user.id)
+    User.findOne({
+      where: {
+        id: req.user.id,
+      },
+      include: [
+        {
+          association: 'Interests',
+        },
+        {
+          association: 'Notifications',
+        },
+      ],
+    })
       .then((userData) => {
         if (!userData) {
           res.sendStatus(404);
