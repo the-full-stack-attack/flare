@@ -11,6 +11,7 @@ const Venue = database.define('Venue', {
     phone: { type: Sequelize.STRING },
     website: { type: Sequelize.STRING },
     rating: { type: Sequelize.INTEGER },
+    reviewCount: { type: Sequelize.INTEGER },
     accepted_payments: { type: Sequelize.STRING },
     price_level: { type: Sequelize.INTEGER },
     outdoor_seating: { type: Sequelize.BOOLEAN },
