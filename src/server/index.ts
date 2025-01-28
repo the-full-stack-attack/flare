@@ -29,7 +29,7 @@ if (process.env.DEVELOPMENT === 'true') {
         const server = http.createServer(app);
         const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST )
         server.listen(4000, () => {
-          console.log('listening on *:4000');
+          console.log(`Listening on http://localhost:${PORT}`);
         });
       }
     })
