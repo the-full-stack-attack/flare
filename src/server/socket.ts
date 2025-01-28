@@ -54,7 +54,31 @@ const initializeSocket = (
         PLAYER_LIST[socket.id].sentMessage = false;
       }, 2000);
     });
+
+    
   });
+
+  setInterval(() => {
+    let pack = []; // package to store players
+    for (let key in PLAYER_LIST) {
+      let player = PLAYER_LIST[key];
+      player.updatePosition();
+      pack.push({
+        id: player.name,
+        x: player.data.x,
+        y: player.data.y,
+        username: player.username,
+        sentMessage: player.sentMessage,
+        currentMessage: player.currentMessage,
+        room: player.eventId,
+      });
+    }
+    // loop through the sockets and send the package to each of them
+    for (let key in SOCKET_LIST) {
+      let socket = SOCKET_LIST[key];
+      socket.emit('newPositions', pack);
+    }
+  }, 1000 / 25);
 };
 
 export default initializeSocket;

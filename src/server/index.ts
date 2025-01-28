@@ -59,24 +59,4 @@ if (process.env.DEVELOPMENT === 'true') {
 }
 
 // Async function, updates chatroom state based on all player positions in list
-setInterval(() => {
-  let pack = []; // package to store players
-  for (let key in PLAYER_LIST) {
-    let player = PLAYER_LIST[key];
-    player.updatePosition();
-    pack.push({
-      id: player.name,
-      x: player.data.x,
-      y: player.data.y,
-      username: player.username,
-      sentMessage: player.sentMessage,
-      currentMessage: player.currentMessage,
-      room: player.eventId,
-    });
-  }
-  // loop through the sockets and send the package to each of them
-  for (let key in SOCKET_LIST) {
-    let socket = SOCKET_LIST[key];
-    socket.to(socket.data.room).emit('newPositions', pack);
-  }
-}, 1000 / 25);
+

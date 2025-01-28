@@ -161,6 +161,7 @@ function Chatroom() {
     socket.on('newPositions', (data) => {
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
+        if(data[i].room === eventId){
         allPlayerInfo.push({
           id: data[i].id,
           x: data[i].x,
@@ -170,6 +171,7 @@ function Chatroom() {
           currentMessage: data[i].currentMessage,
           room: data[i].room,
         });
+      }
       }
       setAllPlayers(allPlayerInfo);
     });
