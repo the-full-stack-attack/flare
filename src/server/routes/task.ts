@@ -6,6 +6,17 @@ import User_Task from '../db/models/users_tasks';
 
 const taskRouter = Router();
 
+type UserType = {
+  id: number;
+  username?: string;
+  google_id?: string;
+  email?: string;
+  full_name?: string;
+  phone_number?: string;
+  tasks_complete?: number;
+  current_task_id?: number;
+};
+
 /* GET requests to /api/task/:id
  * Comes from the Dashboard view and Task view
  */
@@ -119,6 +130,27 @@ taskRouter.patch('/complete', async (req: any, res: Response) => {
     }
   } catch (err) {
     console.error('Error in PATCH to /api/task: ', err);
+    res.sendStatus(500);
+  }
+});
+
+/** PATCH requests to /api/task/retry
+ * Comes from the OptOutTask component 'retry' button click
+ */
+taskRouter.patch('/retry', async (req: any, res: Response) => {
+  try {
+    // Grab UserId and TaskId fro req.body
+    const { UserId, TaskId } = req.body.ids;
+    const user: any = await User.findByPk(UserId);
+    if (user) {
+      user.current_task_id = TaskId;
+      user.save();
+      res.status(200).send(user);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (err) {
+    console.error('Error in findByPk in PATCH to /api/task/retry', err);
     res.sendStatus(500);
   }
 });
