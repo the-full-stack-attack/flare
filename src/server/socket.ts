@@ -1,6 +1,10 @@
 import { Server, Socket } from 'socket.io';
-import { Player, QuipLashPlayer } from '../client/assets/chatroom/chatAssets'
+import { Player, QuipLashPlayer } from '../client/assets/chatroom/chatAssets';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Console } from 'console';
+import dotenv from 'dotenv';
+const googleGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const bartenderAI = googleGenAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 const initializeSocket = (
   server: any,
@@ -47,6 +51,15 @@ const initializeSocket = (
       delete SOCKET_LIST[socket.id];
       delete PLAYER_LIST[socket.id];
     });
+
+    socket.on('readyForQuiplash', async (data) => {
+      console.log(data)
+      const prompt = `Generate a random quiplash question that has a high potential for funny answers`;
+      const result = await bartenderAI.generateContent(prompt);
+      console.log(result)
+      socket.emit('askNextQuiplash', result)
+
+    })
 
     // Controls movement. Update their respective state via socket.id
     socket.on('keyPress', ({ inputId, state }) => {

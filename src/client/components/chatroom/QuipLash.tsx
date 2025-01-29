@@ -94,9 +94,9 @@ const {
      socket.emit('joinQuiplash', { user, eventId });
     // socket.on('message', (msg) => {
     //   displayMessage(msg);
-    socket.on('askNextQuiplash', (data) => {
+    socket.on('askNextQuiplash', ({ response: { candidates: [ { content: { parts: [{ text } ] } } ] } } ) => {
       console.log('next question has arrived!')
-      console.log(data);
+      console.log(text);
     })
     //   // Update UI with the new message
     // });
