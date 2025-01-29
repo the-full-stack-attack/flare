@@ -173,7 +173,9 @@ event2Router.patch('/attending/:id', async (req: any, res: Response) => {
       },
     });
     userEvent.user_attending = !userEvent.user_attending;
+
     if (userEvent.user_attending) {
+      // If user choose to re-attend, assign them a notification
       await User_Notification.findOrCreate({
         where: {
           UserId: req.user.id,
@@ -185,6 +187,7 @@ event2Router.patch('/attending/:id', async (req: any, res: Response) => {
         },
       });
     } else {
+      // If a user bails on an event, destroy the notification.
       const hourBeforeNotif: any = await User_Notification.findOne({
         where: {
           UserId: req.user.id,
@@ -193,6 +196,7 @@ event2Router.patch('/attending/:id', async (req: any, res: Response) => {
       });
       await hourBeforeNotif.destroy();
     }
+
     await userEvent.save();
     res.sendStatus(200);
   } catch (err: unknown) {
