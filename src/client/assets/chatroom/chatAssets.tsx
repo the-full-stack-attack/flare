@@ -17,6 +17,7 @@ const Player = function (id: any, user: any, eventId: any): any {
     sentMessage: false,
     currentMessage: '',
     eventId,
+    playingQuiplash: false,
     updatePosition() {
       // method for updating state of movement
       if (self.pressingRight) {

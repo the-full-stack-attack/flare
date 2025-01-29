@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext, useRef, ref } from 'react';
+import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
 import {
   Container,
@@ -20,10 +21,7 @@ import { InteractiveHoverButton } from '../../../components/ui/interactive-hover
 import bartender from '../../assets/images/bartender.jpg';
 import { UserContext } from '../../contexts/UserContext';
 
-// 'extend' is unique to the beta version of pixi.js
-// With this beta version, everything you import from pixijs
-// must be passed into extend. Then you can utilize them as components
-// prefixed with pixi ex. <pixiContainer/> <pixiGraphics/>
+const socket = io('http://localhost:4000');
 
 extend({
   Container,
@@ -93,7 +91,7 @@ const {
   useEffect(() => {
     console.log(user, 'quiplash user')
     // axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
-     // socket.emit('joinQuiplash', { user, eventId });
+     socket.emit('joinQuiplash', { user, eventId });
     // socket.on('message', (msg) => {
     //   displayMessage(msg);
     //   // Update UI with the new message

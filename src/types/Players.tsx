@@ -5,5 +5,8 @@ type SocketList = {
 type PlayerList = {
   [key: string]: any;
 }
+type QuiplashList = {
+  [key: string]: any;
+}
 
-export { type SocketList, PlayerList }
+export { type SocketList, PlayerList, QuiplashList }
