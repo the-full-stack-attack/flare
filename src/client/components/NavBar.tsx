@@ -1,201 +1,133 @@
-import React, { JSX, useState } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Transition } from '@headlessui/react';
 import cn from '../../../lib/utils';
+// Import icons
+import { 
+  FaCalendarAlt, // Events
+  FaCalendarPlus, // Create Event
+  FaRobot, // AI
+  FaTasks, // Task
+  FaChartLine, // Dashboard
+  FaSignOutAlt // Logout
+} from 'react-icons/fa';
 
 function NavBar(): JSX.Element {
-  /*
-  Tracks whether the mobile menu (hamburger) is open or closed
-  By default, the menu is closed: false.
-  */
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Handler function that toggles the 'isOpen' state.
-  const handleMenuToggle = () => {
-    // Debugging to make sure toggle is firing
-    console.log('Toggling mobile menu. Current state:', isOpen);
-    setIsOpen((prev) => !prev);
-  };
+  // Navigation items with icons
+  const navItems = [
+    { title: 'Events', url: '/Events', icon: FaCalendarAlt },
+    { title: 'Create Event', url: '/CreateEvents', icon: FaCalendarPlus },
+    { title: 'AI', url: '/AiConversations', icon: FaRobot },
+    { title: 'Task', url: '/Task', icon: FaTasks },
+    { title: 'Dashboard', url: '/Dashboard', icon: FaChartLine },
+    { title: 'Logout', url: '/logout', icon: FaSignOutAlt }
+  ];
 
-  /**
-   * 'menuVariants' is an object used by Motion for animating the mobile nav
-   *  - 'closed' => The menu is hidden at scaleY(0)
-   *  - 'open' => The menu is fully visible scaleY(1)
-   */
-
-  const menuVariants = {
-    closed: {
-      opacity: 0,
-      scaleY: 0,
-      originY: 0,
-      transition: { duration: 0.2 },
-    },
-    open: {
-      opacity: 1,
-      scaleY: 1,
-      originY: 0,
-      transition: { duration: 0.3 },
-    },
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="w-full bg-secondary text-secondary-foreground shadow-sm">
-      <div
-        className={cn(
-          'mx-auto flex max-w-7xl items-center justify-between p-4',
-          // Example: Change background color when menu is open
-          isOpen && 'bg-primary'
-        )}
-      >
-        <div className="flex items-center">
-          <a
-            className="text-xl font-bold tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2"
-            href="/"
-            aria-label="Flare Home"
-          >
-            Flare
-          </a>
+    <nav
+      className={cn(
+        'fixed w-full z-50 transition-all duration-300',
+        scrolled ? 'bg-black/50 backdrop-blur-lg border-b border-white/10' : 'bg-transparent'
+      )}
+    >
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-between h-16">
+          {/* Logo */}
+          <motion.div className="flex items-center" whileHover={{ scale: 1.05 }}>
+            <a
+              href="/"
+              className="text-2xl font-bold bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 text-transparent bg-clip-text"
+            >
+              Flare
+            </a>
+          </motion.div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map(({ title, url, icon: Icon }) => (
+              <motion.a
+                key={title}
+                href={url}
+                className="text-gray-300 hover:text-white transition-colors flex items-center gap-2 group"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Icon className="text-orange-500 group-hover:text-pink-500 transition-colors" />
+                {title}
+              </motion.a>
+            ))}
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none"
+            >
+              <span className="sr-only">Open main menu</span>
+              <div className="w-6 h-6 relative">
+                <motion.span
+                  className={cn(
+                    "absolute h-0.5 w-6 bg-current transform transition-all duration-300",
+                    isOpen ? "rotate-45 translate-y-0" : "-translate-y-2"
+                  )}
+                />
+                <motion.span
+                  className={cn(
+                    "absolute h-0.5 w-6 bg-current transform transition-all duration-300",
+                    isOpen ? "opacity-0" : "opacity-100"
+                  )}
+                />
+                <motion.span
+                  className={cn(
+                    "absolute h-0.5 w-6 bg-current transform transition-all duration-300",
+                    isOpen ? "-rotate-45 translate-y-0" : "translate-y-2"
+                  )}
+                />
+              </div>
+            </button>
+          </div>
         </div>
-
-        <div className="hidden md:flex gap-4">
-          <a
-            href="/Events"
-            aria-label="Go to Events page"
-            className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
-          >
-            Events
-          </a>
-
-          <a
-              href="/CreateEvents"
-              aria-label="Create your Event"
-              className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
-          >
-            Create Your Event
-          </a>
-
-
-          <a
-            href="/AiConversations"
-            aria-label="Go to AI Conversations page"
-            className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
-          >
-            AI
-          </a>
-          <a
-            href="/Task"
-            aria-label="Go to Task page"
-            className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
-          >
-            Task
-          </a>
-          <a
-            href="/Dashboard"
-            aria-label="Go to Dashboard page"
-            className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
-          >
-            Dashboard
-          </a>
-          <a
-              href="/logout"
-              aria-label="Logout"
-              className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
-          >
-            Logout
-          </a>
-        </div>
-
-        <button
-          type="button"
-          aria-label="Toggle Mobile Menu"
-          className="md:hidden flex items-center rounded-sm p-2 focus:outline-none focus:ring-2 focus:ring-ring"
-          onClick={handleMenuToggle}
-        >
-          <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24">
-            {isOpen ? (
-              <path
-                // 'X' icon
-                d="M6 18L18 6M6 6l12 12"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            ) : (
-              <path
-                // 'Hamburger' lines
-                d="M4 5h16M4 12h16M4 19h16"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            )}
-          </svg>
-        </button>
       </div>
 
-      <motion.div
-          className="flex flex-col origin-top bg-secondary text-secondary-foreground md:hidden"
-          initial="closed"
-          animate={isOpen ? 'open' : 'closed'}
-          variants={menuVariants}
+      {/* Mobile menu */}
+      <Transition
+        show={isOpen}
+        enter="transition duration-300 ease-out"
+        enterFrom="transform scale-95 opacity-0"
+        enterTo="transform scale-100 opacity-100"
+        leave="transition duration-200 ease-in"
+        leaveFrom="transform scale-100 opacity-100"
+        leaveTo="transform scale-95 opacity-0"
       >
-        <a
-            href="/Events"
-            aria-label="Go to Events page"
-            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-            onClick={handleMenuToggle}
-        >
-          Events
-        </a>
-
-        <a
-            href="/CreateEvents"
-            aria-label="Create your Event"
-            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-            onClick={handleMenuToggle}
-        >
-          Create Event
-        </a>
-        <a
-            href="/AiConversations"
-            aria-label="Go to AI page"
-            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-            onClick={handleMenuToggle}
-        >
-          AI
-        </a>
-        <a
-            href="/Task"
-            aria-label="Go to Task page"
-            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-            onClick={handleMenuToggle}
-        >
-          Task
-        </a>
-        <a
-            href="/Chatroom"
-            aria-label="Go to Chatroom page"
-            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-            onClick={handleMenuToggle}
-        >
-          Chat
-        </a>
-        <a
-            href="/Signup"
-            aria-label="Go to Signup page"
-            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-            onClick={handleMenuToggle}
-        >
-          Signup
-        </a>
-        <a
-            href="/Dashboard"
-            aria-label="Go to Dashboard page"
-            className="border-y border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-            onClick={handleMenuToggle}
-        >
-          Dashboard
-        </a>
-      </motion.div>
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 bg-black/80 backdrop-blur-lg">
+            {navItems.map(({ title, url, icon: Icon }) => (
+              <motion.a
+                key={title}
+                href={url}
+                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-md flex items-center gap-3"
+                whileHover={{ x: 10 }}
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon className="text-orange-500" />
+                {title}
+              </motion.a>
+            ))}
+          </div>
+        </div>
+      </Transition>
     </nav>
   );
 }
