@@ -6,7 +6,9 @@ import User_Task from '../db/models/users_tasks';
 
 const taskRouter = Router();
 
-// GET requests to /api/task/:id
+/* GET requests to /api/task/:id
+ * Comes from the Dashboard view and Task view
+ */
 taskRouter.get('/:id', (req: any, res: Response) => {
   const { id } = req.params;
   Task.findByPk(id)
@@ -23,7 +25,10 @@ taskRouter.get('/:id', (req: any, res: Response) => {
     });
 });
 
-// POST requests to /api/task
+/* POST requests to /api/task
+ * Comes from ChooseTask component on the 'choose task' button click
+ * Creates a user_task row for the specified user with the specified task
+ */
 taskRouter.post('/', async (req: any, res: Response) => {
   try {
     const { type, difficulty, date, userId } = req.body.taskInfo;
@@ -50,8 +55,12 @@ taskRouter.post('/', async (req: any, res: Response) => {
   }
 });
 
-// PATCH requests to /api/task/:id
-taskRouter.patch('/:id', async (req: any, res: Response) => {
+/* PATCH requests to /api/task/optOut/:id
+ * Comes from TaskDisplay component 'opt out' button click
+ * Sets user's current_task id to null
+ * Sets the corresponding use _task opted_out column to true
+ */
+taskRouter.patch('/optOut/:id', async (req: any, res: Response) => {
   try {
     // Get user's id from req.params
     const taskId = req.params.id;
@@ -77,8 +86,14 @@ taskRouter.patch('/:id', async (req: any, res: Response) => {
   }
 });
 
-// PATCH requests to /api/task, but not to /api/task/:id
-taskRouter.patch('/', async (req: any, res: Response) => {
+/* PATCH requests to /api/task/complete
+ * Comes from TaskDisplay component 'complete' button click
+ * Sets user's current_task id to null
+ * Sets the corresponding use _task complete column to true
+ * User's task_completed and task's completed_count are incremented
+ * User_task date_completed is updated
+ */
+taskRouter.patch('/complete', async (req: any, res: Response) => {
   try {
     const { userId, taskId } = req.body.ids;
     const user: any = await User.findByPk(userId);
