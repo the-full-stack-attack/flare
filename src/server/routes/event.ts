@@ -191,10 +191,12 @@ const runApifyActor = async (googlePlaceId: any) => {
         });
 
         const { items } = await client.dataset(run.defaultDatasetId).listItems();
-        console.log('LOOK HERE', items);
+        return items;
+        // console.log('LOOK HERE', items);
 
     } catch (error) {
         console.error('Error running Apify Actor', error);
+        return error;
     }
 }
 
@@ -209,7 +211,8 @@ const getGooglePlaceId = async (venueData: any) => {
             console.log('google places id: ', googlePlaceId);
             return googlePlaceId;
         } catch (error) {
-            console.error('Error getting Google Place Id for Venue');
+            console.error('Error getting Google Place Id for Venue', error);
+
         }
     }
 }
@@ -223,7 +226,11 @@ const getFallbackData = async (venueData: any) => {
         const test = await getGooglePlaceId(venueData);
         console.log('CHECK HERE', test);
         const test2 = await runApifyActor(test);
-        console.log('LETS CHECK: ', test2);
+        console.log(
+            '*-----------------* \n' +
+            'GOOGLE BUSINESS SCRAPE DATA: \n' +
+            JSON.stringify(test2, null, 2)
+        );
 
 
 
@@ -233,11 +240,7 @@ const getFallbackData = async (venueData: any) => {
 }
 
 
-// when venue is created...
-// run foursquare search
-// get google places id
-// run google places search
-// scrape google business page
+
 
 
 eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
@@ -263,15 +266,15 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
 
 
-        if (venueData?.features?.amenities) {
-            const amenities = venueData.features.amenities;
+        if (venueData) {
+            const amenities = venueData?.features?.amenities;
 
             const outdoorSeating = amenities?.outdoor_seating || 'OUTDOOR SEATING INFO NOT FOUND';
             const restroom = amenities?.restroom || 'RESTROOM INFO NOT FOUND';
             const parking = amenities?.parking?.parking || 'NO PARKING INFO FOUND';
             const streetParking = amenities?.parking?.street_parking || 'STREET PARKING INFO NOT FOUND';
             const wheelChairAccess = amenities?.wheelchair_accessible || 'WHEELCHAIR ACCESS INFO NOT FOUND';
-            const atm = amenities.atm || 'ATM INFO NOT FOUND';
+            const atm = amenities?.atm || 'ATM INFO NOT FOUND';
 
 
             console.log(`
@@ -300,9 +303,9 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
 
 
-        if (venueData?.features?.attributes) {
-            const attributes = venueData.features.attributes;
-            const features = venueData.features;
+        if (venueData) {
+            const attributes = venueData?.features?.attributes;
+            const features = venueData?.features;
 
             const cleanliness = attributes?.clean || 'CLEANLINESS NOT FOUND';
             const noise = attributes?.noise || 'NOISE NOT FOUND';
@@ -315,9 +318,9 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             const serviceQuality = attributes?.service_quality || 'SERVICE QUALITY NOT FOUND';
 
             const foodAndBevInfo = features?.food_and_drink || 'FOOD AND BEV INFO NOT FOUND';
-            const alcohol = features?.food_and_drink.alcohol || 'ALCOHOL INFO NOT FOUND';
-            const cocktails = features?.food_and_drink.alcohol.cocktails || 'COCKTAILS NOT FOUND';
-            const fullBar = features?.food_and_drink.alcohol.cocktails.full_bar || 'FULL BAR NOT FOUND';
+            const alcohol = features?.food_and_drink?.alcohol || 'ALCOHOL INFO NOT FOUND';
+            const cocktails = features?.food_and_drink?.alcohol?.cocktails || 'COCKTAILS NOT FOUND';
+            const fullBar = features?.food_and_drink?.alcohol?.cocktails?.full_bar || 'FULL BAR NOT FOUND';
             const paymentType = features?.payment || 'NO PAYMENT TYPE INFO FOUND';
 
             console.log(`
@@ -388,7 +391,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             console.log(`${venueData.name} has a description of...${venueData.description}`);
         } else if (!venueData.description) {
             const test = await getFallbackData(venueData);
-            console.log('Wcheck!!! ', test);
+            console.log('Look Here', test);
         }
 
 
