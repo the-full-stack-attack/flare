@@ -13,6 +13,7 @@ const {
   event2Router,
   userRouter,
   taskRouter,
+  userTaskRouter,
   signUpRouter,
 } = routes;
 
@@ -29,6 +30,7 @@ apiRouter.use('/event', eventRouter);
 apiRouter.use('/event', event2Router);
 apiRouter.use('/task', taskRouter);
 apiRouter.use('/user', userRouter);
+apiRouter.use('/user_task', userTaskRouter);
 apiRouter.use('/signup', signUpRouter);
 
 export default apiRouter;

@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { Op } from 'sequelize';
 
 import User from '../db/models/users';
 
@@ -18,6 +19,10 @@ userRouter.get('/', (req: any, res: Response) => {
         },
         {
           association: 'Notifications',
+          where: {
+            send_time: { [Op.lt]: new Date(Date.now()) },
+          },
+          required: false,
         },
       ],
     })

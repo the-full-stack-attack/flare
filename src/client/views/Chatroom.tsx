@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
+import React, { useEffect, useState, useCallback, useContext, useRef, ref } from 'react';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
 import {
@@ -7,9 +7,11 @@ import {
   Sprite,
   Texture,
   Assets,
-  NineSliceSprite,
+  NineSliceSprite, // failing
   Text,
   TextStyle,
+  Spritesheet, // failing
+  AnimatedSprite,
 } from 'pixi.js';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -18,8 +20,12 @@ import MagicCard from '../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
-import whiteCircle from '../assets/images/temporaryAImap.png'
+import temporaryMap from '../assets/images/temporaryAImap.png' // test circle
 import { UserContext } from '../contexts/UserContext';
+import {
+  testJumper,
+  spritesheet,
+} from '../assets/chatroom/spritesheets/sprites';
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
 // must be passed into extend. Then you can utilize them as components
@@ -33,9 +39,12 @@ extend({
   NineSliceSprite,
   Text,
   TextStyle,
+  AnimatedSprite,
+  Texture, // not worth it w/ useAssets...?
 });
 
 const socket = io('http://localhost:4000');
+
 const style = new TextStyle({
   align: 'center',
   fontFamily: 'sans-serif',
@@ -49,7 +58,9 @@ const style = new TextStyle({
 });
 
 function Chatroom() {
-  // useAssets is how images are loaded into Application via PIXI API requests
+
+
+  // LOAD ASSETS
   useAssets([
     {
       alias: 'bunny',
@@ -60,37 +71,53 @@ function Chatroom() {
       src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
     },
   ]);
-  const { user } = useContext(UserContext);
+
   const {
     assets: [texture],
     isSuccess,
-  } = useAssets<Texture>([
-    whiteCircle,
-  ]);
-  // Temporary variables for collision detection testing
+  } = useAssets<Texture>([temporaryMap]);
+
+  // Collision Detection testing *relies on tilemaps, NOT READY
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
-  const [eventId, setEventId] = useState(document.location.pathname);
-  // An array of every player connected to the chatroom
+
+  // LOGIC
+  const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
+  const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [allMessages, setAllMessages] = useState([]);
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
-  const [chatRoom, setChatRoom] = useState('');
   const displayMessage = (msg: string) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
 
-  // useCallback works for drawing circle
-  const drawCallback = useCallback((graphics: unknown) => {
+  // TESTING //
+  let anim = useRef(false);
+
+  useEffect(() => {
+
+    (async () => {
+      try {
+        anim.current = new AnimatedSprite(spritesheet.animations.enemy); // failing
+        await anim.current.parse();
+      } catch (err) {
+        console.error('No parse of spritesheet', err);
+      }
+    })();
+  }, [anim]);
+  // TESTING //
+
+  // EXAMPLES
+  const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
     graphics?.scale.set(1.5, 0.5);
   }, []);
 
-  // Controls movement by updating the state on the server
+  // CONTROLS
   const keyPress = ({ key }: Element) => {
     if (isTyping === false) {
       if (key === 'ArrowUp' || key === 'w') {
@@ -121,6 +148,7 @@ function Chatroom() {
     }
   };
 
+  // WINDOW SIZING
   useEffect(() => {
     const handleResize = () => {
       setGameWidth(window.innerWidth);
@@ -131,26 +159,18 @@ function Chatroom() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
-    console.log(user, 'im the user')
-    // Player has joined chat
-    console.log(eventId)
-    axios.get(`api/chatroom/${eventId}`)
-      .then((chatroomId) => {
-        console.log(chatroomId, 'ayyye')
-      })
-    // Set the current endpoint to the 'room' for the sockets
-    // vs
-    // Pass the current endpoint's path of 'chatroom_id' in as data for this socket
-    socket.emit('joinChat', user);
+    axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
+    socket.emit('joinChat', { user, eventId });
     /**
-     * When you join the chat, you need to be assigned a room.
+     *  When client joins the chat, be assigned a room.
      *
      *  Send a get request to 'chatroom' along with the current path endpoint as a param
      *
      *  The get request will return a chatroom map. set the state to the current room map
      *
-     *
+     * 
      *
      * */
     socket.on('message', (msg) => {
@@ -161,24 +181,24 @@ function Chatroom() {
     socket.on('newPositions', (data) => {
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
-        allPlayerInfo.push({
-          id: data[i].id,
-          x: data[i].x,
-          y: data[i].y,
-          username: data[i].username,
-          sentMessage: data[i].sentMessage,
-          currentMessage: data[i].currentMessage,
-        });
+        if (data[i].room === eventId) {
+          allPlayerInfo.push({
+            id: data[i].id,
+            x: data[i].x,
+            y: data[i].y,
+            username: data[i].username,
+            sentMessage: data[i].sentMessage,
+            currentMessage: data[i].currentMessage,
+            room: data[i].room,
+          });
+        }
       }
       setAllPlayers(allPlayerInfo);
     });
   }, []);
 
-  // When the player is typing, remove event listeners for movement
+  // EVENT LISTENERS FOR TYPING
   useEffect(() => {
-    const handleInputChange = (event) => {
-      console.log('Input changed:', event.target.value);
-    };
     if (isTyping === false) {
       document.addEventListener('keydown', keyPress);
       document.addEventListener('keyup', keyUp);
@@ -192,16 +212,18 @@ function Chatroom() {
     };
   }, [isTyping]);
 
-  const sendMessage = () => {
-    socket.emit('message', message);
-    displayMessage(message);
-    setMessage('');
-  };
-  // Changes when div containing typing is clicked
   const typing = async () => {
     await setIsTyping(!isTyping);
   };
 
+  const sendMessage = () => {
+    console.log(message);
+    socket.emit('message', { message, eventId });
+    displayMessage(message);
+    setMessage('');
+  };
+
+  // test circle
   const drawCircle = (graphics: unknown) => {
     graphics?.clear();
     graphics?.circle(100, 100, 50);
@@ -235,7 +257,7 @@ function Chatroom() {
             </pixiContainer>
             {allPlayers.map((player) => (
               <pixiContainer x={player.x} y={player.y} key={player.id}>
-                {player.sentMessage && <pixiGraphics draw={drawCallback} />}
+                {player.sentMessage && <pixiGraphics draw={speechBubble} />}
                 {player.sentMessage && (
                   <pixiText
                     text={player.currentMessage}
@@ -260,8 +282,20 @@ function Chatroom() {
                   y={50}
                   style={style}
                 />
+
               </pixiContainer>
             ))}
+            {/* <pixiAnimatedSprite
+
+              anchor={0.5}
+              textures={anim}
+              isPlaying={true}
+              initialFrame={0}
+              animationSpeed={0.1666}
+              x={35}
+              y={50}
+              loop={true}
+            /> */}
           </Application>
         </div>
       </div>

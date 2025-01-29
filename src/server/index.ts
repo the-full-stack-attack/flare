@@ -8,8 +8,8 @@ import database from './db/index';
 import './db/models/index';
 import { data } from 'react-router';
 import './workers/tasks';
-import { type SocketList, PlayerList } from '../types/Players'
-import initializeSocket from './socket'
+import { type SocketList, PlayerList } from '../types/Players';
+import initializeSocket from './socket';
 
 const PORT = 4000;
 
@@ -27,7 +27,7 @@ if (process.env.DEVELOPMENT === 'true') {
         });
       } else {
         const server = http.createServer(app);
-        const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST )
+        const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST)
         server.listen(4000, () => {
           console.log(`Listening on http://localhost:${PORT}`);
         });
@@ -42,6 +42,8 @@ if (process.env.DEVELOPMENT === 'true') {
     key: fs.readFileSync('/etc/letsencrypt/live/slayer.events/privkey.pem'),
   };
   if (process.env.SOCKET !== 'true') {
+
+    // START SERVER AS NORMAL
     database
       .sync({ alter: true })
       .then(() => {
@@ -59,23 +61,4 @@ if (process.env.DEVELOPMENT === 'true') {
 }
 
 // Async function, updates chatroom state based on all player positions in list
-setInterval(() => {
-  let pack = []; // package to store players
-  for (let key in PLAYER_LIST) {
-    let player = PLAYER_LIST[key];
-    player.updatePosition();
-    pack.push({
-      id: player.name,
-      x: player.data.x,
-      y: player.data.y,
-      username: player.username,
-      sentMessage: player.sentMessage,
-      currentMessage: player.currentMessage,
-    });
-  }
-  // loop through the sockets and send the package to each of them
-  for (let key in SOCKET_LIST) {
-    let socket = SOCKET_LIST[key];
-    socket.emit('newPositions', pack);
-  }
-}, 1000 / 25);
+

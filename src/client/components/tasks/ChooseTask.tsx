@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import dayjs from 'dayjs';
 import axios from 'axios';
 import {
   Card,
@@ -7,15 +8,11 @@ import {
   CardContent,
   CardFooter,
 } from '../../../components/ui/card';
-import dayjs from 'dayjs';
 import { Button } from '../../../components/ui/button';
 import TypeButton from './TypeButton';
 import DifficultyButton from './DifficultyButton';
 import { UserContext } from '../../contexts/UserContext';
 
-type ChooseTaskProps = {
-  setTask: React.Dispatch<React.SetStateAction<object>>;
-};
 type TaskInfo = {
   type: string;
   difficulty: number;
@@ -24,7 +21,7 @@ type TaskInfo = {
 };
 const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection Therapy'];
 const difficulties: number[] = [1, 2, 3, 4, 5];
-function ChooseTask({ setTask }: ChooseTaskProps) {
+function ChooseTask() {
   const [taskInfo, setTaskInfo] = useState<TaskInfo>({
     type: '',
     difficulty: 3,
@@ -44,9 +41,6 @@ function ChooseTask({ setTask }: ChooseTaskProps) {
     // Make axios request: UPDATE the users current task AND create a user_task row
     axios
       .post('/api/task', config)
-      .then(({ data }) => {
-        setTask(data);
-      })
       .then(() => {
         getUser();
       })
