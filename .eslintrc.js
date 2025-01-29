@@ -8,10 +8,10 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
-    'plugin:prettier/recommended',
     'airbnb',
     'airbnb/hooks',
     'airbnb-typescript',
+    'plugin:prettier/recommended',
   ],
   // Specify parser to use for typescript code
   parser: '@typescript-eslint/parser',
