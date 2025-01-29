@@ -21,13 +21,9 @@ type Task = {
   date: dayjs.Dayjs | '';
   difficulty: number;
 };
-function CompletedTask({ userTask }: CompletedTaskProps) {
+function OptOutTask({ userTask }: CompletedTaskProps) {
   const { type, description, difficulty } = userTask.Task;
-  // date_completed needs to be converted to string to be rendered to the page
-  const dateString: string = dayjs(userTask.date_completed).format(
-    'MM/DD/YYYY'
-  );
-  return <li>{`Level ${difficulty} ${type} ${description} ${dateString}`}</li>;
+  return <li>{`Opted out Level ${difficulty} ${type} ${description}`}</li>;
 }
 
-export default CompletedTask;
+export default OptOutTask;

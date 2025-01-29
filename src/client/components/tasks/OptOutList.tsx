@@ -2,9 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { UserContext } from '../../contexts/UserContext';
-import CompletedTask from './CompletedTask';
+import OptOutTask from './OptOutTask';
 
-type CompletedTasks = UserTask[];
+type OptedOutTasks = UserTask[];
 type UserTask = {
   completed?: boolean;
   overall_rating: number;
@@ -22,28 +22,27 @@ type Task = {
   date: dayjs.Dayjs | '';
   difficulty: number;
 };
-function CompletedTaskList() {
+function OptOutList() {
   const { user } = useContext(UserContext);
-  const [completedTasks, setCompletedTasks] = useState<CompletedTasks>([]);
-
+  const [optedOutTasks, setOptedOutTasks] = useState<OptedOutTasks>([]);
   useEffect(() => {
     const { id } = user;
     axios
-      .get(`/api/user_task/complete/${id}`)
+      .get(`/api/user_task/optOut/${id}`)
       .then(({ data }) => {
-        setCompletedTasks(data);
+        setOptedOutTasks(data);
       })
       .catch((err) => {
-        console.error('Error fetching user_tasks: ', err);
+        console.error('Error getting optedOut tasks from the server: ', err);
       });
   }, [user]);
   return (
     <ul>
-      {completedTasks.map((userTask) => (
-        <CompletedTask key={userTask.TaskId} userTask={userTask} />
+      {optedOutTasks.map((userTask) => (
+        <OptOutTask key={userTask.TaskId} userTask={userTask} />
       ))}
     </ul>
   );
 }
 
-export default CompletedTaskList;
+export default OptOutList;

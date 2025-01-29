@@ -42,6 +42,9 @@ if (process.env.DEVELOPMENT === 'true') {
     key: fs.readFileSync('/etc/letsencrypt/live/slayer.events/privkey.pem'),
   };
   if (process.env.SOCKET !== 'true') {
+
+
+    // START SERVER AS NORMAL
     database
       .sync({ alter: true })
       .then(() => {
