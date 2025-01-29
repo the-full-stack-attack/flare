@@ -3,6 +3,7 @@ import { Router, Request, Response } from 'express';
 import axios from 'axios';
 import Event from '../db/models/events';
 import User_Event from '../db/models/users_events';
+import User_Notification from '../db/models/users_notifications';
 import User from '../db/models/users';
 import Venue from '../db/models/venues';
 
@@ -87,26 +88,25 @@ event2Router.get('/', (req: any, res: Response) => {
     - req.user => { id } (user_id)
     - req.params => { id } (event_id)
 */
-event2Router.post('/attend/:id', (req: any, res: Response) => {
-  // UserId and EventId are needed to create new entry ing User_Tasks table
-  const UserId = req.user.id;
-  const EventId = req.params.id;
-
-  /*
-    Query the User_Events table and insert the new Attended Event
-      - findOrCreate is being used to avoid duplicate entries.
-  */
-  User_Event.findOrCreate({
-    where: { UserId, EventId },
-    defaults: { UserId, EventId },
-  })
-    .then(() => {
-      res.sendStatus(201);
-    })
-    .catch((err: unknown) => {
-      console.error('Failed to findOrCreate User_Event:', err);
-      res.sendStatus(500);
+event2Router.post('/attend/:id', async (req: any, res: Response) => {
+  try {
+    const UserId = req.user.id;
+    const EventId = req.params.id;
+    const NotificationId = req.body.event.notificationId;
+    await User_Event.findOrCreate({
+      where: { UserId, EventId },
+      defaults: { UserId, EventId },
     });
+    await User_Notification.findOrCreate({
+      where: { UserId, NotificationId },
+      defaults: { UserId, NotificationId },
+    });
+
+    res.sendStatus(201);
+  } catch (err: unknown) {
+    console.error('Failed to findOrCreate User_Event:', err);
+    res.sendStatus(500);
+  }
 });
 
 /*
@@ -164,6 +164,8 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
 */
 event2Router.patch('/attending/:id', async (req: any, res: Response) => {
   try {
+    const { event } = req.body;
+
     const userEvent: any = await User_Event.findOne({
       where: {
         UserId: req.user.id,
@@ -171,6 +173,30 @@ event2Router.patch('/attending/:id', async (req: any, res: Response) => {
       },
     });
     userEvent.user_attending = !userEvent.user_attending;
+
+    if (userEvent.user_attending) {
+      // If user choose to re-attend, assign them a notification
+      await User_Notification.findOrCreate({
+        where: {
+          UserId: req.user.id,
+          NotificationId: event.notificationId,
+        },
+        defaults: {
+          UserId: req.user.id,
+          NotificationId: event.notificationId,
+        },
+      });
+    } else {
+      // If a user bails on an event, destroy the notification.
+      const hourBeforeNotif: any = await User_Notification.findOne({
+        where: {
+          UserId: req.user.id,
+          NotificationId: event.notificationId,
+        },
+      });
+      await hourBeforeNotif.destroy();
+    }
+
     await userEvent.save();
     res.sendStatus(200);
   } catch (err: unknown) {

@@ -42,13 +42,19 @@ if (process.env.DEVELOPMENT === 'true') {
     key: fs.readFileSync('/etc/letsencrypt/live/slayer.events/privkey.pem'),
   };
   if (process.env.SOCKET !== 'true') {
-    database.sync({ alter: true }).then(() => {
-      https.createServer(options, app).listen(443);
-    });
-  } else {
-    database.sync({ alter: true }).then(() => {
-      let httpsServer = https.createServer(options, app);
-      const io = initializeSocket(httpsServer, PLAYER_LIST, SOCKET_LIST);
+
+    // START SERVER AS NORMAL
+    database
+      .sync({ alter: true })
+      .then(() => {
+        https.createServer(options, app).listen(443);
+      });
+  } else { 
+    database
+    .sync({ alter: true })
+    .then(() => {
+      let httpsServer = https.createServer(options, app)
+      const io = initializeSocket(httpsServer, PLAYER_LIST, SOCKET_LIST )
       httpsServer.listen(443);
     });
   }
