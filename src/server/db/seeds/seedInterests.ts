@@ -47,4 +47,4 @@ const seedInterests = async () => {
   }
 };
 
-seedInterests();
+export default seedInterests;
