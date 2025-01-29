@@ -10,6 +10,7 @@ import {
   CardFooter,
 } from '../../../components/ui/card';
 import { UserContext } from '../../contexts/UserContext';
+import DialogBox from './DialogBox';
 
 // Define the props interface
 interface TaskDisplayProps {
@@ -66,41 +67,15 @@ function TaskDisplay({ task }: TaskDisplayProps) {
   };
   return (
     <>
-      <Dialog
-        open={openOptOut}
-        as="div"
-        className="relative z-10 focus:outline-none"
-        onClose={() => setOpenOptOut(false)}
-      >
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <DialogPanel
-              transition
-              className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
-            >
-              <DialogTitle
-                as="h3"
-                className="text-base/7 font-medium text-white"
-              >
-                Opt Out of Task
-              </DialogTitle>
-              <p className="mt-2 text-sm/6 text-white/50">
-                Are you sure you want to opt out of your current task?
-              </p>
-              <div className="mt-4">
-                <Button
-                  onClick={() => {
-                    setOpenOptOut(false);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button onClick={optOut}>Yes</Button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
+      <DialogBox
+        isOpen={openOptOut}
+        confirm={optOut}
+        stateSetter={setOpenOptOut}
+        title="Opt out of Task"
+        content="Are you sure you want to opt out of your current task?"
+        cancelText="Cancel"
+        confirmText="Opt Out"
+      />
       <Card>
         <CardHeader>
           <CardTitle>Current Task:</CardTitle>
