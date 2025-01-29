@@ -80,12 +80,16 @@ Relevant Models: User, Task, & User_Task
       * If the current_task_id is not null, the current task is retrieved from the database using the current_task_id (**See in Dashboard view useEffect hook**)
    3. Users can choose from 5 task categories: Fun, Active, Duo, Normal, and Rejection Therapy
    4. Tasks can be declared complete on the TaskDisplay component. This causes a number of changes in the database
-      > **See changes on PATCH request to /api/task in /src/server/routes/task.ts**
+      > **See changes on PATCH request to /api/task/complete in /src/server/routes/task.ts**
    5. Users can opt-out of tasks
-      > **See changes on PATCH to /api/task/:id request in src/server/routes/task.ts**
+      > **See changes on PATCH request to /api/task/optOut/:id in src/server/routes/task.ts**
    6. Users can choose a difficulty level for a task on the ChooseTask component
    7. There is a task worker in **src/server/workers/tasks.ts** that runs 2 functions everyday it midnight  
       > resetTasks function sets every user's current_task_id to null  
       > createTasks function generates 5 new tasks for each task type for the day
       > This is to enforce that tasks are completed the day they are assigned
-   8. Users can generate a custom task, which will send a prompt to the Gemini AI using GoogleGenerativeAI package (***To be continued***)
+   8. Users can retry a task they previously opted out of with a retry button on the Task view
+      > This button sets the user's current_task_id to the desired task  
+      > The corresponding user_task opted_out column is switched to false  
+      > **See PATCH to /api/task/retry in src/server/routes/task.ts**
+   9. Users can generate a custom task, which will send a prompt to the Gemini AI using GoogleGenerativeAI package (***To be continued***)
