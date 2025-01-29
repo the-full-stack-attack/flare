@@ -59,7 +59,19 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // For all router endpoints, start with /api
-app.use('/api', verifySessionApi, apiRouter);
+
+app.use('/api', (req: any, res: any, next: any) => {
+  // Whitelist certain routes that don't need auth
+  const publicPaths = ['/api/auth/check', '/api/auth/logout'];
+  
+  if (publicPaths.includes(req.path)) {
+    return next();
+  }
+  
+  return requireAuth(req, res, next);
+});
+
+app.use('/api', apiRouter);
 
 passport.use(
   new GoogleStrategy(
@@ -130,8 +142,43 @@ app.get(
   })
 );
 
+app.get('/api/auth/check', (req: any, res: any) => {
+  res.json({ 
+    isAuthenticated: req.isAuthenticated(),
+    user: req.user || null
+  });
+});
+
+app.post('/api/auth/logout', async (req: any, res: any) => {
+  try {
+    req.logout(async (error: Error) => {
+      if (error) {
+        console.error('Error logging out user', error);
+        res.status(500).json({ error: 'Logout failed' });
+      } else {
+        await req.session.destroy();
+        await req.sessionStore.clear();
+        res.json({ success: true });
+      }
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ error: 'Logout failed' });
+  }
+});
+
+const requireAuth = (req: any, res: any, next: any) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+};
+
 app.get('/auth/success', (req: any, res: any) => {
-  // Check if the user has a username
+  if (!req.user) {
+    return res.redirect('/');
+  }
+  
   if (req.user.username) {
     res.redirect('/Dashboard');
   } else {
