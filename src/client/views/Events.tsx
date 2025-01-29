@@ -205,13 +205,13 @@ function Events() {
     getEvents();
   }, [locationFilter]);
 
-  console.log('Events:', events);
+  // console.log('Events:', events);
   // console.log('Attending Events:', attendingEvents);
   // console.log('Bailed Events:', bailedEvents);
   // console.log('GeoLocation:', geoLocation);
   // console.log('Location:', location);
   // console.log('Location Filter:', locationFilter);
-  console.log('User:', user);
+  // console.log('User:', user);
 
   return (
     <div className="container mx-auto px-4 pt-20 content-center">
