@@ -179,12 +179,11 @@ function NavBar(): JSX.Element {
           Task
         </a>
         <a
-            href="/Chatroom"
-            aria-label="Go to Chatroom page"
-            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-            onClick={handleMenuToggle}
-        >
-          Chat
+              href="/logout"
+              aria-label="Logout"
+              className="hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-sm px-3 py-2"
+          >
+            Logout
         </a>
         <a
             href="/Notifications"
@@ -193,14 +192,6 @@ function NavBar(): JSX.Element {
             onClick={handleMenuToggle}
         >
           Notifications
-        </a>
-        <a
-            href="/Signup"
-            aria-label="Go to Signup page"
-            className="border-t border-border px-4 py-2 hover:underline focus:outline-none focus:ring-1 focus:ring-ring"
-            onClick={handleMenuToggle}
-        >
-          Signup
         </a>
         <a
             href="/Dashboard"
