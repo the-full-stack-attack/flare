@@ -58,8 +58,8 @@ const style = new TextStyle({
 });
 
 function Chatroom() {
-  
-  
+
+
   // LOAD ASSETS
   useAssets([
     {
@@ -72,25 +72,16 @@ function Chatroom() {
     },
   ]);
 
-  // const {
-  //   assets: [animatedspritetest],
-  //   isSuccessAnimated,
-  // } = useAssets<Texture>({
-  //   alias: 'animatedspritetest',
-  //   src: spritesheet,
-  //   data: testJumper,
-  // })
-
   const {
     assets: [texture],
     isSuccess,
   } = useAssets<Texture>([temporaryMap]);
-  
+
   // Collision Detection testing *relies on tilemaps, NOT READY
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
-  
+
   // LOGIC
   const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
@@ -103,10 +94,10 @@ function Chatroom() {
   const displayMessage = (msg: string) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
-  
+
   // TESTING //
-   let anim = useRef(false);
-  
+  let anim = useRef(false);
+
   useEffect(() => {
 
     (async () => {
@@ -304,7 +295,7 @@ function Chatroom() {
               </pixiContainer>
             ))}
             {/* <pixiAnimatedSprite
-              
+
               anchor={0.5}
               textures={anim}
               isPlaying={true}
