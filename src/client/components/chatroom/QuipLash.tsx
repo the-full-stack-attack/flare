@@ -94,6 +94,10 @@ const {
      socket.emit('joinQuiplash', { user, eventId });
     // socket.on('message', (msg) => {
     //   displayMessage(msg);
+    socket.on('askNextQuiplash', (data) => {
+      console.log('next question has arrived!')
+      console.log(data);
+    })
     //   // Update UI with the new message
     // });
     // // Update state of all players and their respective positions
@@ -120,6 +124,14 @@ const {
     await setIsTyping(!isTyping);
   };
 
+  const quitQuiplash = () => {
+    socket.emit('quitQuiplash');
+    console.log('the player has quit')
+  }
+
+  const readyForQuiplash = () => {
+    socket.emit('readyForQuiplash');
+  }
   const sendMessage = () => {
     console.log(message);
     // socket.emit('message', { message, eventId });
@@ -180,7 +192,8 @@ const {
           </div>
         </div>
       </div>
-
+      <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
+            <Button onClick={quitQuiplash}>QUIT</Button>
     </div>
   );
 }
