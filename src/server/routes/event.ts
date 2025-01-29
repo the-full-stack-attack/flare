@@ -200,12 +200,33 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             // requires a radius parameter - may work around that tho
             // either this https://developers.google.com/maps/documentation/places/web-service/search-text
             // or this https://developers.google.com/maps/documentation/javascript/places?csw=1#find_place_from_query
+            // good testing id = ChIJ1zgkX3-mIIYR8OpwkrvfSik
             const query = `"${venueData.name}" "${venueData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
             const googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${process.env.GOOGLE_PLACES_API_KEY}`
             const response = await fetch(googlePlacesUrl)
             const data = await response.json();
-            const test = data.results[0].place_id;
-            console.log('OHHH LOOKY HERE', test);
+            const googlePlaceId = data.results[0].place_id;
+            console.log('OHHH LOOKY HERE', googlePlaceId);
+            // now that i have the google place id i need to find the description with that id
+            // time for my apify >.<
+
+            let query = {
+                googlePlaceId: googlePlaceId,
+            }
+            const apifyResponse = await fetch(`https://api.apify.com/v2/acts/compass~google-places-api/runs?token=${process.env.APIFY_API_KEY}`, {
+                method: 'POST',
+                body: JSON.stringify({ query }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            const { apifyData } = await apifyResponse.json();
+            console.log('PLSAESE', apifyData);
+            console.log('wtf!!!', apifyData?.description);
+
+
+
         }
 
 
