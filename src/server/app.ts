@@ -6,6 +6,7 @@ import session from 'express-session';
 import passport from 'passport';
 import dotenv from 'dotenv';
 
+import { verifySessionApi, verifySessionView } from './verify';
 import apiRouter from './api';
 import User from './db/models/users';
 
@@ -58,6 +59,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // For all router endpoints, start with /api
+
 app.use('/api', (req: any, res: any, next: any) => {
   // Whitelist certain routes that don't need auth
   const publicPaths = ['/api/auth/check', '/api/auth/logout'];
@@ -190,14 +192,20 @@ app.get('/logout', async (req: any, res: any) => {
       console.error('Error logging out user', error);
       res.sendStatus(500);
     } else {
-      await req.session.destroy();
-      await req.sessionStore.clear();
-      res.redirect('/');
+      req.session.destroy((error: Error) => {
+        if (error) {
+          console.error('Error destroying session:', error);
+          res.sendStatus(500);
+        } else {
+          res.clearCookie('google-auth-session');
+          res.redirect('/');
+        }
+      });
     }
   });
 });
 
-app.all('*', (req: any, res: any) => {
+app.get('*', verifySessionView, (req: any, res: any) => {
   res.sendFile('index.html', {
     root: path.resolve(__dirname, '..', '..', 'dist'),
   });

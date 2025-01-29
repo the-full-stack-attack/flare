@@ -183,10 +183,6 @@ const seedEvents = async () => {
   }
 };
 
-const eventsSeed = () => {
-  setTimeout(() => {
-    seedEvents();
-  }, 2000);
-};
-
-export default eventsSeed;
+setTimeout(() => {
+  seedEvents();
+}, 2000);
