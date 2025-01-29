@@ -7,10 +7,11 @@ import {
   Sprite,
   Texture,
   Assets,
-  NineSliceSprite,
+  NineSliceSprite, // did not work :c
   Text,
   TextStyle,
   Spritesheet,
+  AnimatedSprite,
 } from 'pixi.js';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -19,8 +20,9 @@ import MagicCard from '../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
-import whiteCircle from '../assets/images/temporaryAImap.png'
+import whiteCircle from '../assets/images/temporaryAImap.png' // test circle
 import { UserContext } from '../contexts/UserContext';
+import { testJumper, spritesheet } from '../assets/chatroom/spritesheets/sprites';
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
 // must be passed into extend. Then you can utilize them as components
@@ -34,7 +36,8 @@ extend({
   NineSliceSprite,
   Text,
   TextStyle,
-  Spritesheet
+  AnimatedSprite,
+  Texture,
 });
 
 const socket = io('http://localhost:4000');
@@ -86,6 +89,31 @@ function Chatroom() {
   const displayMessage = (msg: string) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
+  const[anim, setAnim] = useState(false);
+
+  
+  useEffect(() => {
+        // // Generate all the Textures asynchronously
+        ( async () => {
+          try {
+            await spritesheet.parse();
+            setAnim(new AnimatedSprite(spritesheet.animations.enemy))
+            
+            console.log(anim);
+          } catch (err) {
+            console.error('No parse of spritesheet', err)
+          }
+        })();
+    
+  
+        // // spritesheet is ready to use!
+        // const anim = new AnimatedSprite(spritesheet.animations.enemy);
+      
+        // // set the animation speed
+        // anim.animationSpeed = 0.1666;
+        // // play the animation on a loop
+        // anim.play();
+  }, [])
 
   // LOADING
   const drawCallback = useCallback((graphics: unknown) => {
@@ -109,6 +137,7 @@ function Chatroom() {
   };
 
   const keyUp = ({ key }: Element) => {
+    console.log(anim);
     if (key === 'ArrowUp' || key === 'w') {
       // Up
       socket.emit('keyPress', { inputId: 'Up', state: false });
@@ -150,7 +179,7 @@ function Chatroom() {
     // Pass the current endpoint's path of 'chatroom_id' in as data for this socket
     socket.emit('joinChat', { user, eventId });
     /**
-     * When you join the chat, you need to be assigned a room.
+     * When client joins the chat, be assigned a room.
      *
      *  Send a get request to 'chatroom' along with the current path endpoint as a param
      *
@@ -209,6 +238,7 @@ function Chatroom() {
     setMessage('');
   };
 
+  // test circle
   const drawCircle = (graphics: unknown) => {
     graphics?.clear();
     graphics?.circle(100, 100, 50);
@@ -267,8 +297,19 @@ function Chatroom() {
                   y={50}
                   style={style}
                 />
+               
               </pixiContainer>
             ))}
+             <pixiAnimatedSprite
+                    anchor={0.5}
+                    textures={spritesheet.animations.enemy}
+                    isPlaying={true}
+                    initialFrame={0}
+                    animationSpeed={0.1666}
+                    x={35}
+                    y={50}
+                    loop={true}
+      />
           </Application>
         </div>
       </div>
