@@ -23,6 +23,7 @@ type Task = {
 };
 function CompletedTask({ userTask }: CompletedTaskProps) {
   const { type, description, difficulty} = userTask.Task;
+  const dateString: string = dayjs(userTask.date_completed).format('MM/DD/YYYY');
   const [currTask, setCurrTask] = useState<Task>({
     id: 0,
     description: '',
@@ -34,7 +35,7 @@ function CompletedTask({ userTask }: CompletedTaskProps) {
   useEffect(() => {
     const { taskId } = userTask;
   }, [userTask]);
-  return <li>{`Level ${difficulty} ${type} ${description}`}</li>;
+  return <li>{`Level ${difficulty} ${type} ${description} ${dateString}`}</li>;
 }
 
 export default CompletedTask;
