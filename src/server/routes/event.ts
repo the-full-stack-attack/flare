@@ -176,31 +176,121 @@ eventRouter.post('/', async (req: any, res: Response) => {
     }
 });
 
-// helper fn to handle missing api data
-const getFallbackData = async (venueData: any) => {
+
+const runApifyActor = async (googlePlaceId: any) => {
     try {
-        if (!venueData.description) {
-            // need to get the google places id for this venue -- using google text search endpoint for google places api
-            // requires a radius parameter - may work around that tho
-            // either this https://developers.google.com/maps/documentation/places/web-service/search-text
-            // or this https://developers.google.com/maps/documentation/javascript/places?csw=1#find_place_from_query
-            // good testing id = ChIJ1zgkX3-mIIYR8OpwkrvfSik
+
+    } catch (error) {
+        console.error('Error running Apify Actor', error);
+    }
+}
+
+const getGooglePlaceId = async (venueData: any) => {
+    if (!venueData.description) {
+        try {
             const query = `"${venueData.name}" "${venueData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
             const googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${process.env.GOOGLE_PLACES_API_KEY}`
             const response = await fetch(googlePlacesUrl)
             const data = await response.json();
-            const googlePlaceId = data.results[0].place_id;
-            console.log('OHHH LOOKY HERE', googlePlaceId);
-            // now that i have the google place id i need to find the description with that id
-            // time for my apify >.<
-
-
-
+            const googlePlaceId: any = data.results[0].place_id;
+            return googlePlaceId;
+        } catch (error) {
+            console.error('Error getting Google Place Id for Venue');
         }
+    }
+}
+
+
+
+// helper fn to handle missing api data
+const getFallbackData = async (venueData: any) => {
+    try {
+
+        const test = await getGooglePlaceId(venueData);
+        console.log('CHECK HERE', test);
+        // if (!venueData.description) {
+        //     // // need to get the google places id for this venue -- using google text search endpoint for google places api
+        //     // // requires a radius parameter - may work around that tho
+        //     // // either this https://developers.google.com/maps/documentation/places/web-service/search-text
+        //     // // or this https://developers.google.com/maps/documentation/javascript/places?csw=1#find_place_from_query
+        //     // // good testing id = ChIJ1zgkX3-mIIYR8OpwkrvfSik
+        //     // const query = `"${venueData.name}" "${venueData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
+        //     // const googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${process.env.GOOGLE_PLACES_API_KEY}`
+        //     // const response = await fetch(googlePlacesUrl)
+        //     // const data = await response.json();
+        //     // const googlePlaceId = data.results[0].place_id;
+        //     // console.log('OHHH LOOKY HERE', googlePlaceId);
+        //     // // now that i have the google place id i need to find the description with that id
+        //     // // time for my apify >.<
+        //     //
+        //     // const myHeaders = new Headers();
+        //     // myHeaders.append('Content-Type', 'application/json');
+        //     // myHeaders.append('Accept', 'application/json');
+        //     // myHeaders.append('Authorization', `Breaer ${process.env.APIFY_API_KEY}`);
+        //     //
+        //     // const raw = JSON.stringify({})
+        //     //
+        //     // const requestOptions = {
+        //     //     method: 'POST',
+        //     //     headers: myHeaders,
+        //     //     body: raw,
+        //     //     redirect: 'follow'
+        //     // };
+        //     //
+        //     //
+        //     //
+        //     // console.log()
+        //
+        //
+        //     // const input = {
+        //     //     googlePlaceId: venueData.googlePlaceId,
+        //     //     maxCrawledPlaces: 1
+        //     // };
+        //     //
+        //     // const responseApify = await fetch(`https://api.apify.com/v2/acts/compass~google-places-api/runs?token=${process.env.APIFY_API_KEY}`, {
+        //     //     method: 'POST',
+        //     //     body: JSON.stringify({ input }),
+        //     //     headers: { 'Content-Type': 'application/json' }
+        //     // });
+        //     //
+        //     // const apifyData = await responseApify.json(); // contains defaultDataSetId
+        //     //
+        //     // console.log('LOOOOK HERE FOR APIFY DATA!!!', apifyData);
+        //     //
+        //     //
+        //     // const dataSetId = apifyData.data.defaultDataSetId;
+        //     //
+        //     // const datasetUrl = `https://api.apify.com/v2/datasets/${datasetId}/items?token=${process.env.APIFY_API_KEY}`
+        //     // return apifyData;
+        // }
+
+
+
+
+
+
+
+            // // https://docs.apify.com/api/client/js/reference/class/ActorClient
+            // const apifyClient = new ApifyClient({
+            //     token: process.env.APIFY_API_KEY,
+            // });
+
+
+            // don't want to do this - instead want to use call actor (https://docs.apify.com/sdk/js/docs/examples/call-actor)
+            // // runs an actor and immediately returns without waiting for the run to finish
+            // const run = await apifyClient
+            //     .actor('compass/google-places-api')
+            //     // https://docs.apify.com/api/client/js/reference/class/ActorClient#runs
+            //     // starts an actor and immediately returns the Run object
+            //     .start({ googlePlaceId });
+
+            // console.log('WTF APIFY CLIENT THIS MAKES NO SENSE', run);
+
+
+
+
     } catch (error: any) {
         console.error('ERROR IN GETFALLBACKDATA', error);
-        console.error('error stack', error.stack);
-        console.log('error message', error.message);
     }
 }
 
@@ -219,7 +309,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
         const venueData = await response.json();
 
-        console.log('LOOK FOR THE LOCATION: ', venueData);
+        // console.log('LOOK FOR THE LOCATION: ', venueData);
         if (venueData?.description) {
             console.log(`${venueData.name} has a description of...${venueData.description}`);
         } else if (!venueData.description) {
@@ -468,7 +558,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         // });
 
 
-        console.log('Complete venue data:', JSON.stringify(venueData, null, 2));
+        // console.log('Complete venue data:', JSON.stringify(venueData, null, 2));
 
 
 
