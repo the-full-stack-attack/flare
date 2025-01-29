@@ -192,12 +192,20 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
         const venueData = await response.json();
 
+        console.log('LOOK FOR THE LOCATION: ', venueData);
         if (venueData?.description) {
             console.log(`${venueData.name} has a description of...${venueData.description}`);
         } else if (!venueData.description) {
             // need to get the google places id for this venue -- using google text search endpoint for google places api
-
-            
+            // requires a radius parameter - may work around that tho
+            // either this https://developers.google.com/maps/documentation/places/web-service/search-text
+            // or this https://developers.google.com/maps/documentation/javascript/places?csw=1#find_place_from_query
+            const query = `"${venueData.name}" "${venueData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
+            const googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${process.env.GOOGLE_PLACES_API_KEY}`
+            const response = await fetch(googlePlacesUrl)
+            const data = await response.json();
+            const test = data.results[0].place_id;
+            console.log('OHHH LOOKY HERE', test);
         }
 
 
