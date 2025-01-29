@@ -7,58 +7,15 @@ import app from './app';
 import database from './db/index';
 import './db/models/index';
 import { data } from 'react-router';
-
-import('./db/index');
+import './workers/tasks';
+import { type SocketList, PlayerList } from '../types/Players'
+import initializeSocket from './socket'
 
 const PORT = 4000;
 
-// Lists of Sockets and Players, key will be socket.id
-interface SocketList {
-  [key: string]: any;
-}
-interface PlayerList {
-  [key: string]: any;
-}
 
 const SOCKET_LIST: SocketList = {};
 const PLAYER_LIST: PlayerList = {};
-
-// Creates a player object with their own state... (replace with keyword 'this'?)
-const Player = function (id: any, user: any) {
-  const self = {
-    username: user.username,
-    name: id,
-    data: {
-      // positions
-      x: 25,
-      y: 25,
-    },
-    number: Math.floor(10 * Math.random()),
-    pressingRight: false, // states of movement
-    pressingLeft: false,
-    pressingUp: false,
-    pressingDown: false,
-    maxSpd: 10,
-    sentMessage: false,
-    currentMessage: '',
-    updatePosition() {
-      // method for updating state of movement
-      if (self.pressingRight) {
-        self.data.x += self.maxSpd;
-      }
-      if (self.pressingLeft) {
-        self.data.x -= self.maxSpd;
-      }
-      if (self.pressingUp) {
-        self.data.y -= self.maxSpd;
-      }
-      if (self.pressingDown) {
-        self.data.y += self.maxSpd;
-      }
-    },
-  };
-  return self;
-};
 
 if (process.env.DEVELOPMENT === 'true') {
   database
@@ -70,52 +27,9 @@ if (process.env.DEVELOPMENT === 'true') {
         });
       } else {
         const server = http.createServer(app);
-        const io = new Server(server);
-        // Register event listeners for Socket.IO
-        io.on('connection', (socket) => {
-          // when client joins chat, create a player, add them to the lists
-          socket.on('joinChat', (user) => {
-            socket.data.name = socket.id;
-            const stringName = socket.data.name;
-            SOCKET_LIST[stringName] = socket;
-            const player = Player(socket.id, user);
-            PLAYER_LIST[socket.id] = player;
-          });
-          // On disconnect, delete them from the lists
-          socket.on('disconnect', () => {
-            delete SOCKET_LIST[socket.id];
-            delete PLAYER_LIST[socket.id];
-          });
-
-          // Controls movement. Update their respective state via socket.id
-          socket.on('keyPress', ({ inputId, state }) => {
-            if (inputId === 'Up') {
-              PLAYER_LIST[socket.id].pressingUp = state;
-            }
-            if (inputId === 'Left') {
-              PLAYER_LIST[socket.id].pressingLeft = state;
-            }
-            if (inputId === 'Right') {
-              PLAYER_LIST[socket.id].pressingRight = state;
-            }
-            if (inputId === 'Down') {
-              PLAYER_LIST[socket.id].pressingDown = state;
-            }
-          });
-
-          socket.on('message', (msg) => {
-            PLAYER_LIST[socket.id].sentMessage = true;
-            PLAYER_LIST[socket.id].currentMessage = msg;
-            socket.broadcast.emit('message', msg);
-            // Remove message after a few seconds
-            setTimeout(() => {
-              PLAYER_LIST[socket.id].sentMessage = false;
-            }, 2000);
-          });
-        });
-
+        const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST )
         server.listen(4000, () => {
-          console.log('listening on *:4000');
+          console.log(`Listening on http://localhost:${PORT}`);
         });
       }
     })
@@ -127,71 +41,19 @@ if (process.env.DEVELOPMENT === 'true') {
     cert: fs.readFileSync('/etc/letsencrypt/live/slayer.events/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/slayer.events/privkey.pem'),
   };
-
-  // IF NOT USING SOCKETS
-
   if (process.env.SOCKET !== 'true') {
-
-    // START SERVER AS NORMAL
     database
       .sync({ alter: true })
       .then(() => {
         https.createServer(options, app).listen(443);
       });
-
-
-  } else { // OTHERWISE
-
-    // START THE SERVER WITH SOCKETS
-
-    const io = new Server(https.createServer(options, app));
-    // SOCKET ROUTING
-    io.on('connection', (socket) => {
-      // when client joins chat, create a player, add them to the lists
-      socket.on('joinChat', (user) => {
-        socket.data.name = socket.id;
-        const stringName = socket.data.name;
-        SOCKET_LIST[stringName] = socket;
-        const player = Player(socket.id, user);
-        PLAYER_LIST[socket.id] = player;
-      });
-      // On disconnect, delete them from the lists
-      socket.on('disconnect', () => {
-        delete SOCKET_LIST[socket.id];
-        delete PLAYER_LIST[socket.id];
-      });
-
-      // Controls movement. Update their respective state via socket.id
-      socket.on('keyPress', ({ inputId, state }) => {
-        if (inputId === 'Up') {
-          PLAYER_LIST[socket.id].pressingUp = state;
-        }
-        if (inputId === 'Left') {
-          PLAYER_LIST[socket.id].pressingLeft = state;
-        }
-        if (inputId === 'Right') {
-          PLAYER_LIST[socket.id].pressingRight = state;
-        }
-        if (inputId === 'Down') {
-          PLAYER_LIST[socket.id].pressingDown = state;
-        }
-      });
-
-      socket.on('message', (msg) => {
-        PLAYER_LIST[socket.id].sentMessage = true;
-        PLAYER_LIST[socket.id].currentMessage = msg;
-        socket.broadcast.emit('message', msg);
-        // Remove message after a few seconds
-        setTimeout(() => {
-          PLAYER_LIST[socket.id].sentMessage = false;
-        }, 2000);
-      });
-    });
-
+  } else { 
     database
     .sync({ alter: true })
     .then(() => {
-      https.createServer(options, app).listen(443);
+      let httpsServer = https.createServer(options, app)
+      const io = initializeSocket(httpsServer, PLAYER_LIST, SOCKET_LIST )
+      httpsServer.listen(443);
     });
   }
 }
