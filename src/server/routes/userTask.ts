@@ -7,26 +7,19 @@ import User from '../db/models/users';
 const userTaskRouter = Router();
 
 // GET requests to /api/userTask/:id
-userTaskRouter.get('/:id', async (req: any, res: Response) => {
+userTaskRouter.get('/:id', (req: any, res: Response) => {
   // Grab the user's id from the req.params
   const { id } = req.params;
-  const users = await User.findOne({
+  User.findOne({
     where: { id },
-    include: [Task, User_Task],
-  });
-  console.log('Users: ', users);
-
-  // Find all the user's completed tasks in the user_task table
-  User_Task.findAll({
-    where: { UserId: id },
-    include: { model: Task, where: { completed: true } },
+    include: [Task],
   })
-    .then((userTasks) => {
-      if (!userTasks) {
+    .then((user) => {
+      if (!user) {
         res.sendStatus(404);
       } else {
         // console.log('UserTasks found: ', userTasks);
-        res.status(200).send(userTasks);
+        res.status(200).send(user);
       }
     })
     .catch((err: any) => {
