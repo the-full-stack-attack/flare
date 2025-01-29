@@ -7,7 +7,7 @@ import User from '../db/models/users';
 const userTaskRouter = Router();
 
 // GET requests to /api/userTask/:id
-userTaskRouter.get('/:id', async (req: any, res: Response) => {
+userTaskRouter.get('/complete/:id', async (req: any, res: Response) => {
   // Grab the user's id from the req.params
   const { id } = req.params;
   User_Task.findAll({

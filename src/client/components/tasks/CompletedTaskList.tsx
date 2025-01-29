@@ -21,7 +21,7 @@ function CompletedTaskList() {
   useEffect(() => {
     const { id } = user;
     axios
-      .get(`/api/user_task/${id}`)
+      .get(`/api/user_task/complete/${id}`)
       .then(({ data }) => {
         setCompletedTasks(data);
       })
