@@ -27,7 +27,7 @@ const User_Task = database.define('User_Task', {
 User.belongsToMany(Task, { through: User_Task });
 Task.belongsToMany(User, { through: User_Task });
 
-User_Task.sync();
+// User_Task.sync();
 
 // Define the associations on User_Task with user and task
 User_Task.belongsTo(User);
