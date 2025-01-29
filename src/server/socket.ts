@@ -1,5 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import { Player, QuipLashPlayer } from '../client/assets/chatroom/chatAssets'
+import { Console } from 'console';
 
 const initializeSocket = (
   server: any,
@@ -22,14 +23,22 @@ const initializeSocket = (
       PLAYER_LIST[socket.id] = player;
     });
 
+    // QUIPLASH SOCKETS
     socket.on('joinQuiplash', ({ user, eventId}) => {
-      // do what needs to be done to join quiplash
       console.log(user, 'quipl');
       console.log(eventId, 'quipl');
       console.log(PLAYER_LIST);
       console.log(socket.id);
+      socket.data.eventId = eventId;
       const quiplashPlayer = QuipLashPlayer(socket.id, user, eventId);
       QUIPLASH_LIST[socket.id] = quiplashPlayer;
+      console.log(QUIPLASH_LIST);
+    });
+
+    socket.on('quitQuiplash', () => {
+      socket.leave(socket.data.eventId);
+      delete QUIPLASH_LIST[socket.id]
+      console.log(QUIPLASH_LIST)
     })
 
     // On disconnect, delete them from the lists

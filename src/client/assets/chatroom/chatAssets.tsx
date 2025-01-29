@@ -50,4 +50,5 @@ const QuipLashPlayer = function ( id: any, user: any, eventId: any ): any {
   };
   return quip;
 }
+
 export { Player, QuipLashPlayer };
