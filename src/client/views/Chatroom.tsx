@@ -10,6 +10,7 @@ import {
   NineSliceSprite,
   Text,
   TextStyle,
+  Spritesheet,
 } from 'pixi.js';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -33,9 +34,11 @@ extend({
   NineSliceSprite,
   Text,
   TextStyle,
+  Spritesheet
 });
 
 const socket = io('http://localhost:4000');
+
 const style = new TextStyle({
   align: 'center',
   fontFamily: 'sans-serif',
@@ -49,7 +52,7 @@ const style = new TextStyle({
 });
 
 function Chatroom() {
-  // useAssets is how images are loaded into Application via PIXI API requests
+  // LOAD ASSETS
   useAssets([
     {
       alias: 'bunny',
@@ -60,19 +63,19 @@ function Chatroom() {
       src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
     },
   ]);
-  const { user } = useContext(UserContext);
   const {
     assets: [texture],
     isSuccess,
   } = useAssets<Texture>([
     whiteCircle,
   ]);
+
   // Temporary variables for collision detection testing
+  const { user } = useContext(UserContext);
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
   const [eventId, setEventId] = useState(document.location.pathname.slice(10));
-  // An array of every player connected to the chatroom
   const [allPlayers, setAllPlayers] = useState([]);
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -84,13 +87,13 @@ function Chatroom() {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
 
-  // useCallback works for drawing circle
+  // LOADING
   const drawCallback = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
     graphics?.scale.set(1.5, 0.5);
   }, []);
 
-  // Controls movement by updating the state on the server
+  // CONTROLS
   const keyPress = ({ key }: Element) => {
     if (isTyping === false) {
       if (key === 'ArrowUp' || key === 'w') {
@@ -121,7 +124,9 @@ function Chatroom() {
     }
   };
 
+  // WINDOW SIZING
   useEffect(() => {
+    console.log(Spritesheet)
     const handleResize = () => {
       setGameWidth(window.innerWidth);
       setGameHeight(window.innerHeight);
@@ -131,6 +136,7 @@ function Chatroom() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // PLAYER ACTIVITY
   useEffect(() => {
     console.log(user, 'im the user')
     // Player has joined chat
@@ -157,31 +163,28 @@ function Chatroom() {
       displayMessage(msg);
       // Update UI with the new message
     });
-    // Update state of all players and their respective positions
+    // Update state of all players and theirgit  respective positions
     socket.on('newPositions', (data) => {
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
-        if(data[i].room === eventId){
-        allPlayerInfo.push({
-          id: data[i].id,
-          x: data[i].x,
-          y: data[i].y,
-          username: data[i].username,
-          sentMessage: data[i].sentMessage,
-          currentMessage: data[i].currentMessage,
-          room: data[i].room,
-        });
-      }
+        if (data[i].room === eventId) {
+          allPlayerInfo.push({
+            id: data[i].id,
+            x: data[i].x,
+            y: data[i].y,
+            username: data[i].username,
+            sentMessage: data[i].sentMessage,
+            currentMessage: data[i].currentMessage,
+            room: data[i].room,
+          });
+        }
       }
       setAllPlayers(allPlayerInfo);
     });
   }, []);
 
-  // When the player is typing, remove event listeners for movement
+  // EVENT LISTENERS FOR TYPING
   useEffect(() => {
-    const handleInputChange = (event) => {
-      console.log('Input changed:', event.target.value);
-    };
     if (isTyping === false) {
       document.addEventListener('keydown', keyPress);
       document.addEventListener('keyup', keyUp);
@@ -195,15 +198,15 @@ function Chatroom() {
     };
   }, [isTyping]);
 
+  const typing = async () => {
+    await setIsTyping(!isTyping);
+  };
+
   const sendMessage = () => {
     console.log(message);
     socket.emit('message', { message, eventId });
     displayMessage(message);
     setMessage('');
-  };
-  // Changes when div containing typing is clicked
-  const typing = async () => {
-    await setIsTyping(!isTyping);
   };
 
   const drawCircle = (graphics: unknown) => {
