@@ -21,19 +21,21 @@ function CompletedTaskList() {
   useEffect(() => {
     const { id } = user;
     axios
-      .get('/api/user_task/:id')
+      .get(`/api/user_task/${id}`)
       .then(({ data }) => {
         setCompletedTasks(data);
       })
       .catch((err) => {
         console.error('Error fetching user_tasks: ', err);
       });
-  });
+  }, [user]);
   return (
-  <ul>
-    {completedTasks.map((task) => <CompletedTask key={task.createdAt} task={task}/>)}
-  </ul>;
-  )
+    <ul>
+      {completedTasks.map((task) => (
+        <CompletedTask key={task} task={task} />
+      ))}
+    </ul>
+  );
 }
 
 export default CompletedTaskList;
