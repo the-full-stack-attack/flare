@@ -17,6 +17,7 @@ import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
 import MagicCard from '../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
+import bartender from '../../assets/images/bartender.jpg'
 
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
