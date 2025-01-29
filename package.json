@@ -8,12 +8,6 @@
     "build": "webpack --watch",
     "start": "nodemon ./src/server/index.ts",
     "update": "rimraf node_modules && rm package-lock.json && npm install && exit 1",
-    "seedTasks": "ts-node ./src/server/db/seeds/seedTasks.ts",
-    "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts",
-    "seedInterests": "ts-node ./src/server/db/seeds/seedInterests.ts",
-    "seedCategories": "ts-node ./src/server/db/seeds/seedCategories.ts",
-    "seedVenues": "ts-node ./src/server/db/seeds/seedVenues.ts",
-    "resetTasks": "ts-node ./src/server/workers/tasks.ts",
     "seed": "ts-node ./src/server/db/seeds/index.ts"
   },
   "repository": {
