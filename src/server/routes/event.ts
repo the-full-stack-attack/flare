@@ -178,8 +178,60 @@ eventRouter.post('/', async (req: any, res: Response) => {
 
 
 const runApifyActor = async (googlePlaceId: any) => {
+    if (!googlePlaceId) {
+        throw new Error('MISSING GOOGLE PLACE ID');
+    }
+
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Accept', 'application/json');
+    myHeaders.append('Authorization', `Bearer ${process.env.APIFY_API_KEY}`);
+
+
+    const raw = JSON.stringify({
+        placeIds: [`place_id:${googlePlaceId}`],
+    });
+
+    console.log('sending raw data: ', raw);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    } as any;
+
+
     try {
 
+        const apifyResponse = await fetch('https://hmy7e1idiakl.runs.apify.net/run-sync', requestOptions);
+
+        console.log('apify response: ', apifyResponse);
+
+
+
+
+        const apifyData = await apifyResponse.json();
+        console.log('apifyData: ', apifyData);
+
+
+
+
+        const datasetHeaders = new Headers();
+        datasetHeaders.append('Accept', 'application/json');
+        datasetHeaders.append('Authorization', `Bearer ${process.env.APIFY_API_KEY}`);
+        const datasetRequestOptions = {
+            method: 'GET',
+            headers: datasetHeaders,
+            redirect: 'follow',
+        } as any;
+
+        const datasetResponse = await fetch(`https://api.apify.com/v2/datasets/${apifyData.data.defaultDatasetId}/items`, datasetRequestOptions);
+
+        const datasetItems = await datasetResponse.json();
+        console.log('DETAILS: ', datasetItems);
+        console.log('RESPONSE IS HERE,', datasetResponse);
+        return datasetItems;
     } catch (error) {
         console.error('Error running Apify Actor', error);
     }
@@ -193,6 +245,7 @@ const getGooglePlaceId = async (venueData: any) => {
             const response = await fetch(googlePlacesUrl)
             const data = await response.json();
             const googlePlaceId: any = data.results[0].place_id;
+            console.log('google places id: ', googlePlaceId);
             return googlePlaceId;
         } catch (error) {
             console.error('Error getting Google Place Id for Venue');
@@ -208,6 +261,8 @@ const getFallbackData = async (venueData: any) => {
 
         const test = await getGooglePlaceId(venueData);
         console.log('CHECK HERE', test);
+        const test2 = await runApifyActor(test);
+        console.log('LETS CHECK: ', test2);
         // if (!venueData.description) {
         //     // // need to get the google places id for this venue -- using google text search endpoint for google places api
         //     // // requires a radius parameter - may work around that tho
@@ -572,7 +627,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             phone: venueData.tel || 'none found',
             website: venueData.website || 'none found',
             rating: venueData.rating || 'none found',
-            reviewCount: venueData.stats.total_ratings || 'none found',
+            reviewCount: venueData?.stats?.total_ratings || 'none found',
             // acceptedPayments:
         });
 
