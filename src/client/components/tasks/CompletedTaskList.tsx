@@ -12,8 +12,16 @@ type UserTask = {
   opted_out?: boolean;
   UserId: number;
   TaskId: number;
+  Task: Task;
 };
-
+type Task = {
+  id: number;
+  description: string;
+  type: string;
+  completed_count: number;
+  date: dayjs.Dayjs | '';
+  difficulty: number;
+};
 function CompletedTaskList() {
   const { user } = useContext(UserContext);
   const [completedTasks, setCompletedTasks] = useState<CompletedTasks>([]);
@@ -23,7 +31,6 @@ function CompletedTaskList() {
     axios
       .get(`/api/user_task/complete/${id}`)
       .then(({ data }) => {
-        console.log('Completed tasks from server: ', data);
         setCompletedTasks(data);
       })
       .catch((err) => {

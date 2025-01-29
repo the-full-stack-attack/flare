@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React from 'react';
 import dayjs from 'dayjs';
 
 type CompletedTaskProps = {
@@ -22,19 +22,11 @@ type Task = {
   difficulty: number;
 };
 function CompletedTask({ userTask }: CompletedTaskProps) {
-  const { type, description, difficulty} = userTask.Task;
-  const dateString: string = dayjs(userTask.date_completed).format('MM/DD/YYYY');
-  const [currTask, setCurrTask] = useState<Task>({
-    id: 0,
-    description: '',
-    type: '',
-    completed_count: 0,
-    date: '',
-    difficulty: 0,
-  });
-  useEffect(() => {
-    const { taskId } = userTask;
-  }, [userTask]);
+  const { type, description, difficulty } = userTask.Task;
+  // date_completed needs to be converted to string to be rendered to the page
+  const dateString: string = dayjs(userTask.date_completed).format(
+    'MM/DD/YYYY'
+  );
   return <li>{`Level ${difficulty} ${type} ${description} ${dateString}`}</li>;
 }
 
