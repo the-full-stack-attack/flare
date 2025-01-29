@@ -94,7 +94,12 @@ function Chatroom() {
   const displayMessage = (msg: string) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
+  // QUIPLASH
+  const [isPlayingQuipLash, setIsPlayingQuiplash] = useState(false);
 
+  const toggleQuiplash = () => {
+    isPlayingQuiplash ? setIsPlayingQuiplash(false) : setIsPlayingQuiplash(true);
+  }
   // TESTING //
   let anim = useRef(false);
 
@@ -297,6 +302,10 @@ function Chatroom() {
               loop={true}
             /> */}
           </Application>
+          <Button onClick={}>Play Quiplash</Button>
+          {
+            isPlayingQuipLash && <div>QUIPLASH</div>
+          }
         </div>
       </div>
       <div
