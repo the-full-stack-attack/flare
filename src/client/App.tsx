@@ -18,7 +18,11 @@ import './styles/main.css';
 import { UserType, UserContext } from './contexts/UserContext';
 
 export default function App() {
-  const [user, setUser] = useState<UserType>({ id: 0 });
+  const [user, setUser] = useState<UserType>({
+    id: 0,
+    Interests: [],
+    Notifications: [],
+  });
   const getUser = () => {
     axios
       .get('/api/user')

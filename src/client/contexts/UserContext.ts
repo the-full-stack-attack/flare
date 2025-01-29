@@ -14,11 +14,11 @@ export interface UserType {
   avatar_shirt?: string;
   avatar_pants?: string;
   current_task_id?: number;
-  Interests?: {
+  Interests: {
     id: number;
     name: string;
   }[];
-  Notifications?: {
+  Notifications: {
     id: number;
     message: string;
     send_time: Date;
@@ -35,7 +35,7 @@ type UserContextType = {
 };
 
 export const UserContext = createContext<UserContextType>({
-  user: { id: 0 },
+  user: { id: 0, Interests: [], Notifications: [] },
   setUser: () => {},
   getUser: () => {},
 });
