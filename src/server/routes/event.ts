@@ -257,143 +257,201 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         );
 
         const venueData = await response.json();
-        // console.log('FSQ DATA: ', venueData);
-
-
-        // get google place id
         const googlePlaceId = await getGooglePlaceId(venueData);
         const googleBizData = await runApifyActor(googlePlaceId);
+        const gData = googleBizData[0];
 
 
+        const venueBasicInfo = {
+            name: venueData?.name || gData.title || 'NO NAME FOUND',
+            description: gData?.description || 'NO DESCRIPTION FOUND',
+            street_address: venueData?.location?.address || gData?.street || 'NO ADDRESS FOUND',
+            zip_code: venueData?.location?.postcode || gData?.postalCode || 'NO ZIP CODE FOUND',
+            city_name: venueData?.location?.locality || gData?.city || 'NO CITY FOUND',
+            state_name: venueData?.location?.region || gData?.state || 'NO STATE FOUND',
+            phone: gData?.phone || venueData?.tel || 'NO PHONE FOUND',
+            website: venueData?.website || gData?.website || 'NO WEBSITE FOUND',
+        };
 
-        if (venueData) {
-            const amenities = venueData?.features?.amenities;
+        const venueDetails = {
+            price_range: gData?.price || (venueData?.price ? `Level ${venueData.price}` : 'NO PRICE FOUND'),
+            rating: gData?.totalScore || (venueData?.rating ? venueData.rating : null),
+            total_reviews: gData?.reviewsCount || venueData?.stats?.total_ratings || 0,
+            cleanliness: venueData?.features?.attributes?.clean || 'CLEANLINESS NOT FOUND',
+            service_quality: venueData?.features?.attributes?.service_quality || 'SERVICE QUALITY NOT FOUND',
 
-            const outdoorSeating = amenities?.outdoor_seating || 'OUTDOOR SEATING INFO NOT FOUND';
-            const restroom = amenities?.restroom || 'RESTROOM INFO NOT FOUND';
-            const parking = amenities?.parking?.parking || 'NO PARKING INFO FOUND';
-            const streetParking = amenities?.parking?.street_parking || 'STREET PARKING INFO NOT FOUND';
-            const wheelChairAccess = amenities?.wheelchair_accessible || 'WHEELCHAIR ACCESS INFO NOT FOUND';
-            const atm = amenities?.atm || 'ATM INFO NOT FOUND';
+            has_outdoor_seating: Boolean(
+                gData?.additionalInfo?.['Service options']?.find((opt: any) =>
+                opt['Outdoor seating']) || venueData?.features?.amenities?.outdoor_seating
+            ),
 
+            has_wheelchair_access: Boolean(
+                gData?.additionalInfo?.Accessibility?.find((acc: any) =>
+                    acc['Wheelchair accessible entrance']) ||
+                venueData?.features?.amenities?.wheelchair_accessible
+            ),
 
-            console.log(`
-            AMENITIES DATA LOCATED HERE: \n
-            outdoorSeating: ${outdoorSeating} \n
-            restroom: ${restroom} \n
-            parking: ${parking} \n
-            streetParking: ${streetParking} \n
-            wheelChairAccess: ${wheelChairAccess} \n
-            atm: ${atm} \n
-            *-----------------------*
-            `)
-        } else {
-            console.log('*-----------------------* \n SOMETHING HAS GONE SERIOUSLY WRONG IN AMENITIES DATA \n *-----------------------*')
-        }
+            has_restroom: Boolean(
+                gData?.additionalInfo?.Amenities?.find((am: any) =>
+                    am['Restroom']) ||
+                venueData?.features?.amenities?.restroom
+            ),
 
-        // if (venueData?.features?.payment) {
-        //     Object.entries(venueData.features.payment).forEach(([category, values]: any) => {
-        //         Object.entries(values).forEach(([key, value]) => {
-        //             console.log(`${venueData.name} accepts specific payments: ${category}.${key}:`, value);
-        //         });
-        //     });
-        // } else {
-        //     console.log(`${venueData.name} has no payment options shown`)
-        // }
+            serves_alcohol: Boolean(
+                gData?.additionalInfo?.Offerings?.find((off: any) =>
+                    off['Alcohol']) ||
+                venueData?.features?.food_and_drink?.alcohol?.cocktails ||
+                venueData?.features?.food_and_drink?.alcohol?.full_bar
+            ),
+        };
 
-
-
-        if (venueData) {
-            const attributes = venueData?.features?.attributes;
-            const features = venueData?.features;
-
-            const cleanliness = attributes?.clean || 'CLEANLINESS NOT FOUND';
-            const noise = attributes?.noise || 'NOISE NOT FOUND';
-            const moreNoise = attributes?.noisy || 'MORE NOISE NOT FOUND';
-            const crowdRating = attributes?.crowded || 'CROWDED NOT FOUND';
-            const dressy = attributes?.dressy || 'DRESSY NOT FOUND';
-            const glutenFree = attributes?.gluten_free_diet || 'GLUTEN FREE NOT FOUND';
-            const isDogFriendly = attributes?.good_for_dogs || 'ISDOGFRIENDLY NOT FOUND';
-            const lateNight = attributes?.late_night || 'LATE NIGHT NOT FOUND';
-            const serviceQuality = attributes?.service_quality || 'SERVICE QUALITY NOT FOUND';
-
-            const foodAndBevInfo = features?.food_and_drink || 'FOOD AND BEV INFO NOT FOUND';
-            const alcohol = features?.food_and_drink?.alcohol || 'ALCOHOL INFO NOT FOUND';
-            const cocktails = features?.food_and_drink?.alcohol?.cocktails || 'COCKTAILS NOT FOUND';
-            const fullBar = features?.food_and_drink?.alcohol?.cocktails?.full_bar || 'FULL BAR NOT FOUND';
-            const paymentType = features?.payment || 'NO PAYMENT TYPE INFO FOUND';
-
-            console.log(`
-            ATTRIBUTES DATA LOCATED HERE: \n
-            Cleanliness: ${cleanliness} \n
-            Noise: ${noise} \n
-            moreNoise: ${moreNoise} \n
-            crowdRating: ${crowdRating} \n
-            Dressy: ${dressy} \n
-            glutenFree: ${glutenFree} \n
-            isDogFriendly: ${isDogFriendly} \n
-            lateNight: ${lateNight} \n
-            serviceQuality: ${serviceQuality} \n
-            foodAndBevInfo: ${foodAndBevInfo} \n
-            alcohol: ${alcohol} \n
-            cocktails: ${cocktails} \n
-            fullBar: ${fullBar} \n
-            paymentTypes: ${paymentType} \n
-            *-----------------------*
-            `)
-
-        } else {
-            console.log('*-----------------------* \n SOMETHING HAS GONE SERIOUSLY WRONG IN ATTRIBUTES DATA \n *-----------------------*');
+        const popularHours = gData?.popularTimesHistogram || venueData?.hours_popular || 'NO POPULAR HOURS';
+        const reviews = {
+            tips: venueData?.tips || [],
+            review_tags: gData?.reviewsTags || []
         };
 
 
 
-        if (venueData) {
-            const category = venueData?.categories[0]?.name || 'NO CATEGORY FOUND';
-            const rating = venueData?.rating || 'NO VENUE RATING FOUND';
-            const facebook = venueData?.social_media?.facebook_id || 'NO FACEBOOK FOUND';
-            const instagram = venueData?.social_media?.instagram || 'NO INSTAGRAM FOUND';
-            const totalRatings = venueData?.stats?.total_ratings || 'NO TOTAL RATINGS FOUND';
-            const telephone = venueData?.tel || 'NO TEL NUMBER FOUND';
-            const tastes = venueData?.tastes || 'NO TASTES FOUND';
-            const tips = venueData?.tips || 'NO TIPS FOUND';
-            const website = venueData?.website || 'NO WEBSITE FOUND';
-            const hoursPopular = venueData?.hours_popular || 'NO HOURS POPULAR FOUND';
-            const price = venueData?.price || 'NO PRICE FOUND';
-
-            console.log(`
-            GENERIC DATA LOCATED HERE: \n
-            category: ${category} \n
-            rating: ${rating} \n
-            facebook: ${facebook} \n
-            instagram: ${instagram} \n
-            totalRatings: ${totalRatings} \n
-            telephone: ${telephone} \n
-            tastes: ${tastes} \n
-            tips: ${tips} \n
-            website: ${website} \n
-            hoursPopular: ${hoursPopular} \n
-            price: ${price} \n
-            *-----------------------*
-            `)
-
-        } else {
-            console.log('*-----------------------* \n SOMETHING HAS GONE SERIOUSLY WRONG IN GENERIC DATA \n *-----------------------*');
-        }
+        return res.json({
+            venueBasicInfo,
+            venueDetails,
+            popularHours,
+            reviews
+        });
 
 
 
 
-
-
-
-        if (venueData?.description) {
-            console.log(`${venueData.name} has a description of...${venueData.description}`);
-        } else if (!venueData.description) {
-            const test = await getFallbackData(venueData);
-            console.log('Look Here', test);
-        }
-
+        //
+        //
+        // if (venueData) {
+        //     const amenities = venueData?.features?.amenities;
+        //
+        //     const outdoorSeating = amenities?.outdoor_seating || 'OUTDOOR SEATING INFO NOT FOUND';
+        //     const restroom = amenities?.restroom || 'RESTROOM INFO NOT FOUND';
+        //     const parking = amenities?.parking?.parking || 'NO PARKING INFO FOUND';
+        //     const streetParking = amenities?.parking?.street_parking || 'STREET PARKING INFO NOT FOUND';
+        //     const wheelChairAccess = amenities?.wheelchair_accessible || 'WHEELCHAIR ACCESS INFO NOT FOUND';
+        //     const atm = amenities?.atm || 'ATM INFO NOT FOUND';
+        //
+        //     // console.log(`
+        //     // AMENITIES DATA LOCATED HERE: \n
+        //     // outdoorSeating: ${outdoorSeating} \n
+        //     // restroom: ${restroom} \n
+        //     // parking: ${parking} \n
+        //     // streetParking: ${streetParking} \n
+        //     // wheelChairAccess: ${wheelChairAccess} \n
+        //     // atm: ${atm} \n
+        //     // *-----------------------*
+        //     // `)
+        // } else {
+        //     console.log('*-----------------------* \n SOMETHING HAS GONE SERIOUSLY WRONG IN AMENITIES DATA \n *-----------------------*')
+        // }
+        //
+        // // if (venueData?.features?.payment) {
+        // //     Object.entries(venueData.features.payment).forEach(([category, values]: any) => {
+        // //         Object.entries(values).forEach(([key, value]) => {
+        // //             console.log(`${venueData.name} accepts specific payments: ${category}.${key}:`, value);
+        // //         });
+        // //     });
+        // // } else {
+        // //     console.log(`${venueData.name} has no payment options shown`)
+        // // }
+        //
+        //
+        //
+        // if (venueData) {
+        //     const attributes = venueData?.features?.attributes;
+        //     const features = venueData?.features;
+        //
+        //     const cleanliness = attributes?.clean || 'CLEANLINESS NOT FOUND';
+        //     const noise = attributes?.noise || 'NOISE NOT FOUND';
+        //     const moreNoise = attributes?.noisy || 'MORE NOISE NOT FOUND';
+        //     const crowdRating = attributes?.crowded || 'CROWDED NOT FOUND';
+        //     const dressy = attributes?.dressy || 'DRESSY NOT FOUND';
+        //     const glutenFree = attributes?.gluten_free_diet || 'GLUTEN FREE NOT FOUND';
+        //     const isDogFriendly = attributes?.good_for_dogs || 'ISDOGFRIENDLY NOT FOUND';
+        //     const lateNight = attributes?.late_night || 'LATE NIGHT NOT FOUND';
+        //     const serviceQuality = attributes?.service_quality || 'SERVICE QUALITY NOT FOUND';
+        //
+        //     const foodAndBevInfo = features?.food_and_drink || 'FOOD AND BEV INFO NOT FOUND';
+        //     const alcohol = features?.food_and_drink?.alcohol || 'ALCOHOL INFO NOT FOUND';
+        //     const cocktails = features?.food_and_drink?.alcohol?.cocktails || 'COCKTAILS NOT FOUND';
+        //     const fullBar = features?.food_and_drink?.alcohol?.cocktails?.full_bar || 'FULL BAR NOT FOUND';
+        //     const paymentType = features?.payment || 'NO PAYMENT TYPE INFO FOUND';
+        //
+        //     // console.log(`
+        //     // ATTRIBUTES DATA LOCATED HERE: \n
+        //     // Cleanliness: ${cleanliness} \n
+        //     // Noise: ${noise} \n
+        //     // moreNoise: ${moreNoise} \n
+        //     // crowdRating: ${crowdRating} \n
+        //     // Dressy: ${dressy} \n
+        //     // glutenFree: ${glutenFree} \n
+        //     // isDogFriendly: ${isDogFriendly} \n
+        //     // lateNight: ${lateNight} \n
+        //     // serviceQuality: ${serviceQuality} \n
+        //     // foodAndBevInfo: ${foodAndBevInfo} \n
+        //     // alcohol: ${alcohol} \n
+        //     // cocktails: ${cocktails} \n
+        //     // fullBar: ${fullBar} \n
+        //     // paymentTypes: ${paymentType} \n
+        //     // *-----------------------*
+        //     // `)
+        //
+        // } else {
+        //     console.log('*-----------------------* \n SOMETHING HAS GONE SERIOUSLY WRONG IN ATTRIBUTES DATA \n *-----------------------*');
+        // };
+        //
+        //
+        //
+        // if (venueData) {
+        //     const category = venueData?.categories[0]?.name || 'NO CATEGORY FOUND';
+        //     const rating = venueData?.rating || 'NO VENUE RATING FOUND';
+        //     const facebook = venueData?.social_media?.facebook_id || 'NO FACEBOOK FOUND';
+        //     const instagram = venueData?.social_media?.instagram || 'NO INSTAGRAM FOUND';
+        //     const totalRatings = venueData?.stats?.total_ratings || 'NO TOTAL RATINGS FOUND';
+        //     const telephone = venueData?.tel || 'NO TEL NUMBER FOUND';
+        //     const tastes = venueData?.tastes || 'NO TASTES FOUND';
+        //     const tips = venueData?.tips || 'NO TIPS FOUND';
+        //     const website = venueData?.website || 'NO WEBSITE FOUND';
+        //     const hoursPopular = venueData?.hours_popular || 'NO HOURS POPULAR FOUND';
+        //     const price = venueData?.price || 'NO PRICE FOUND';
+        //
+        //     // console.log(`
+        //     // GENERIC DATA LOCATED HERE: \n
+        //     // category: ${category} \n
+        //     // rating: ${rating} \n
+        //     // facebook: ${facebook} \n
+        //     // instagram: ${instagram} \n
+        //     // totalRatings: ${totalRatings} \n
+        //     // telephone: ${telephone} \n
+        //     // tastes: ${tastes} \n
+        //     // tips: ${tips} \n
+        //     // website: ${website} \n
+        //     // hoursPopular: ${hoursPopular} \n
+        //     // price: ${price} \n
+        //     // *-----------------------*
+        //     // `)
+        //
+        // } else {
+        //     console.log('*-----------------------* \n SOMETHING HAS GONE SERIOUSLY WRONG IN GENERIC DATA \n *-----------------------*');
+        // }
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        // if (venueData?.description) {
+        //     console.log(`${venueData.name} has a description of...${venueData.description}`);
+        // } else if (!venueData.description) {
+        //     const test = await getFallbackData(venueData);
+        //     // console.log('Look Here', test);
+        // }
+        //
 
 
         // const Venue = database.define('Venue', {
@@ -419,21 +477,6 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
         // console.log('Complete venue data:', JSON.stringify(venueData, null, 2));
 
-
-
-        res.json({
-            name: venueData.name,
-            description: venueData.description || 'test',
-            street_address: venueData.location.address,
-            zip_code: parseInt(venueData.location.postcode),
-            city_name: venueData.location.dma,
-            state_name: venueData.location.region,
-            phone: venueData.tel || 'none found',
-            website: venueData.website || 'none found',
-            rating: venueData.rating || 'none found',
-            reviewCount: venueData?.stats?.total_ratings || 'none found',
-            // acceptedPayments:
-        });
 
     } catch (error) {
         console.error('Error fetching venue details', error);

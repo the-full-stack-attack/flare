@@ -1,5 +1,10 @@
 import Sequelize from 'sequelize';
 import database from '../index';
+import Venue_Attributes from "./venue_attributes";
+import Venue_Amenities from "./venue_amenities";
+import Venue_Hours from "./venue_hours";
+import Venue_Tags from "./venue_tags";
+
 
 const Venue = database.define('Venue', {
     name: { type: Sequelize.STRING },
@@ -11,24 +16,16 @@ const Venue = database.define('Venue', {
     phone: { type: Sequelize.STRING },
     website: { type: Sequelize.STRING },
     rating: { type: Sequelize.INTEGER },
-    reviewCount: { type: Sequelize.INTEGER },
+    total_reviews: { type: Sequelize.INTEGER },
     accepted_payments: { type: Sequelize.STRING },
-    price_level: { type: Sequelize.INTEGER },
-    outdoor_seating: { type: Sequelize.BOOLEAN },
-    wheelchair_accessible: { type: Sequelize.BOOLEAN },
-    classification: { type: Sequelize.STRING },
-    cleanliness: { type: Sequelize.STRING },
-    private_parking: { type: Sequelize.BOOLEAN },
-    street_parking: { type: Sequelize.BOOLEAN },
-    restroom: { type: Sequelize.BOOLEAN },
-    atm: { type: Sequelize.BOOLEAN },
-    crowded: { type: Sequelize.STRING },
-    attire: { type: Sequelize.STRING },
-    noisy: { type: Sequelize.STRING },
-    facebook_id: { type: Sequelize.STRING },
-    instagram: { type: Sequelize.STRING },
-    tips: { type: Sequelize.STRING },
+    price_range: { type: Sequelize.STRING },
+    fsq_id: { type: Sequelize.STRING },
+    google_place_id: { type: Sequelize.STRING },
 });
 
+Venue.hasOne(Venue_Amenities, { foreignKey: 'venue_id' });
+Venue.hasOne(Venue_Attributes, { foreignKey: 'venue_id' });
+Venue.hasMany(Venue_Hours, { foreignKey: 'venue_id' });
+Venue.hasMany(Venue_Tags, { foreignKey: 'venue_id' });
 
 export default Venue;
