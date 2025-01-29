@@ -12,11 +12,11 @@ import {
   Spritesheet, // failing
   AnimatedSprite,
 } from 'pixi.js';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Button } from '../../components/ui/button';
-import MagicCard from '../../components/ui/magicCard';
-import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
+import { Input } from '../../../components/ui/input';
+import { Label } from '../../../components/ui/label';
+import { Button } from '../../../components/ui/button';
+import MagicCard from '../../../components/ui/magicCard';
+import { InteractiveHoverButton } from '../../../components/ui/interactive-hover-button';
 import bartender from '../../assets/images/bartender.jpg'
 
 // 'extend' is unique to the beta version of pixi.js
@@ -33,7 +33,6 @@ extend({
   Text,
   TextStyle,
   AnimatedSprite,
-  Texture, // not worth it w/ useAssets...?
 });
 
 const style = new TextStyle({
@@ -50,6 +49,10 @@ const style = new TextStyle({
 
 function QuipLash() {
 
+const {
+    assets: [background],
+    isSuccess,
+  } = useAssets<Texture>([bartender]);
 
   // LOGIC
  // const { user } = useContext(UserContext);
@@ -60,8 +63,9 @@ function QuipLash() {
   const [allMessages, setAllMessages] = useState([]);
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
+
   const displayMessage = (msg: string) => {
-    setAllMessages((prevMessages) => [...prevMessages, msg]);
+   // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   // QUIPLASH
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
@@ -118,8 +122,8 @@ function QuipLash() {
 
   const sendMessage = () => {
     console.log(message);
-    socket.emit('message', { message, eventId });
-    displayMessage(message);
+    // socket.emit('message', { message, eventId });
+   //  displayMessage(message);
     setMessage('');
   };
 
@@ -133,7 +137,16 @@ function QuipLash() {
       >
         <div style={{ width: { gameWidth }, height: { gameHeight } }}>
           <Application>
-            <pixiContainer x={100} y={200}>
+            <pixiContainer x={0} y={0}>
+            {isSuccess && (
+                <pixiSprite
+                  texture={background}
+                  x={0}
+                  y={0}
+                  width={800}
+                  height={600}
+                />
+              )}
             </pixiContainer>
 
             {/* <pixiAnimatedSprite
@@ -148,6 +161,24 @@ function QuipLash() {
               loop={true}
             /> */}
           </Application>
+          <div>
+          <Label> Enter Your Quiplash! </Label>
+          <Input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '20px',
+            }}>
+            <InteractiveHoverButton onClick={sendMessage}>
+              SUBMIT QUIPLASH
+            </InteractiveHoverButton>
+          </div>
+        </div>
       </div>
 
     </div>
