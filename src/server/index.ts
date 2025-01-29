@@ -8,8 +8,8 @@ import database from './db/index';
 import './db/models/index';
 import { data } from 'react-router';
 import './workers/tasks';
-import { type SocketList, PlayerList } from '../types/Players'
-import initializeSocket from './socket'
+import { type SocketList, PlayerList } from '../types/Players';
+import initializeSocket from './socket';
 
 const PORT = 4000;
 
@@ -27,7 +27,7 @@ if (process.env.DEVELOPMENT === 'true') {
         });
       } else {
         const server = http.createServer(app);
-        const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST )
+        const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST)
         server.listen(4000, () => {
           console.log(`Listening on http://localhost:${PORT}`);
         });
@@ -42,17 +42,13 @@ if (process.env.DEVELOPMENT === 'true') {
     key: fs.readFileSync('/etc/letsencrypt/live/slayer.events/privkey.pem'),
   };
   if (process.env.SOCKET !== 'true') {
-    database
-      .sync({ alter: true })
-      .then(() => {
-        https.createServer(options, app).listen(443);
-      });
-  } else { 
-    database
-    .sync({ alter: true })
-    .then(() => {
-      let httpsServer = https.createServer(options, app)
-      const io = initializeSocket(httpsServer, PLAYER_LIST, SOCKET_LIST )
+    database.sync({ alter: true }).then(() => {
+      https.createServer(options, app).listen(443);
+    });
+  } else {
+    database.sync({ alter: true }).then(() => {
+      let httpsServer = https.createServer(options, app);
+      const io = initializeSocket(httpsServer, PLAYER_LIST, SOCKET_LIST);
       httpsServer.listen(443);
     });
   }

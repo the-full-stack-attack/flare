@@ -103,7 +103,6 @@ function Chatroom() {
     (async () => {
       try {
         anim.current = new AnimatedSprite(spritesheet.animations.enemy); // failing
-        console.log(anim, 'aye')
         await anim.current.parse();
       } catch (err) {
         console.error('No parse of spritesheet', err);
@@ -134,7 +133,6 @@ function Chatroom() {
   };
 
   const keyUp = ({ key }: Element) => {
-    console.log(anim)
     if (key === 'ArrowUp' || key === 'w') {
       // Up
       socket.emit('keyPress', { inputId: 'Up', state: false });
@@ -163,14 +161,7 @@ function Chatroom() {
 
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
-    console.log(user, 'im the user')
-    // Player has joined chat
-    console.log(eventId, 'the room id');
-    axios.get(`api/chatroom/${eventId}`)
-      .then((chatroomId) => {
-        console.log(chatroomId, 'ayyye')
-      })
-
+    axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
     socket.emit('joinChat', { user, eventId });
     /**
      *  When client joins the chat, be assigned a room.
