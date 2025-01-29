@@ -18,7 +18,6 @@ userTaskRouter.get('/complete/:id', async (req: any, res: Response) => {
       if (!userTasks) {
         res.sendStatus(404);
       } else {
-        console.log('UserTasks found: ', userTasks);
         res.status(200).send(userTasks);
       }
     })
