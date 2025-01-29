@@ -145,9 +145,15 @@ app.get('/logout', async (req: any, res: any) => {
       console.error('Error logging out user', error);
       res.sendStatus(500);
     } else {
-      await req.session.destroy();
-      await req.sessionStore.clear();
-      res.redirect('/');
+      req.session.destroy((error: Error) => {
+        if (error) {
+          console.error('Error destroying session:', error);
+          res.sendStatus(500);
+        } else {
+          res.clearCookie('google-auth-session');
+          res.redirect('/');
+        }
+      });
     }
   });
 });
