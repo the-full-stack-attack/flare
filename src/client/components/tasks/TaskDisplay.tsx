@@ -35,7 +35,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       ids: { userId, taskId },
     };
     axios
-      .patch('/api/task', config)
+      .patch('/api/task/complete', config)
       .then(({ data }) => {
         setUser(data);
       })
@@ -51,7 +51,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       userId,
     };
     axios
-      .patch(`/api/task/${taskId}`, config)
+      .patch(`/api/task/optOut/${taskId}`, config)
       .then(({ data }) => {
         setUser(data);
       })
