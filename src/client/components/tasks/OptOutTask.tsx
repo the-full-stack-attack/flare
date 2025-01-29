@@ -26,7 +26,7 @@ type Task = {
 };
 function OptOutTask({ userTask }: CompletedTaskProps) {
   const { type, description, difficulty } = userTask.Task;
-  const { user, getUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   // Function to allow a user to retry a task
   const retryTask = () => {
     // Grab the task id and the user id
@@ -36,8 +36,8 @@ function OptOutTask({ userTask }: CompletedTaskProps) {
     };
     axios
       .patch('/api/task/retry', config)
-      .then(() => {
-        getUser();
+      .then(({ data }) => {
+        setUser(data);
       })
       .catch((err) => {
         console.error('Error retrying the task: ', err);
