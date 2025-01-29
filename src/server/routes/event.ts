@@ -265,228 +265,220 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
 
 
+
+
+        if (venueData?.features?.attributes) {
+            const attributes = venueData.features.attributes;
+
+            const cleanliness = attributes.clean || 'CLEANLINESS NOT FOUND';
+            const noise = attributes.noise || 'NOISE NOT FOUND';
+            const crowdRating = attributes.crowded || 'CROWDED NOT FOUND';
+            const dressy = attributes.dressy || 'DRESSY NOT FOUND';
+
+
+        }
+
+
         // // console.log('LOOK FOR THE LOCATION: ', venueData);
-        // if (venueData?.description) {
-        //     console.log(`${venueData.name} has a description of...${venueData.description}`);
-        // } else if (!venueData.description) {
-        //     const test = await getFallbackData(venueData);
-        //     console.log('Wcheck!!! ', test);
-        // }
-        //
-        //
-        // if (venueData.categories[0]?.name) {
-        //     console.log(`${venueData.name} Category is something like a... ${venueData.categories[0].name} ?`);
-        // } else {
-        //     console.log(`${venueData.name} is missing category[0].name`)
-        // }
-        //
-        // if (venueData.features?.food_and_drink?.alcohol?.cocktails || venueData.features?.food_and_drink?.alcohol?.cocktails?.full_bar) {
-        //     console.log(`${venueData.name} alcohol looks like Cocktails: ${venueData.features.food_and_drink.alcohol.cocktails} \n AND Full Bar: ${venueData.features.food_and_drink.alcohol.full_bar}`);
-        // } else {
-        //     console.log(`${venueData.name} is missing alcohol info`)
-        // }
-        //
-        //
-        //
-        //
-        // if (venueData?.rating) {
-        //     console.log(`${venueData.name} Rating: ${venueData.rating}`);
-        // } else {
-        //     console.log(`${venueData.name} is missing rating`)
-        // }
-        //
-        // if (venueData?.social_media?.facebook_id) {
-        //     console.log(`${venueData.name} Facebook ID: ${venueData.social_media.facebook_id}`);
-        // } else {
-        //     console.log(`${venueData.name} is missing facebook id`)
-        // }
-        //
-        // if (venueData?.social_media?.instagram) {
-        //     console.log(`${venueData.name} has Instagram: @${venueData.social_media.instagram}`)
-        // } else {
-        //     console.log(`${venueData.name} is missing instagram`)
-        // }
-        //
-        //
-        // if (venueData?.stats?.total_ratings) {
-        //     console.log(`${venueData.name} has ${venueData.stats.total_ratings} reviews`);
-        // } else {
-        //     console.log(`${venueData.name} is missing reviews `)
-        // }
-        //
-        // if (venueData?.tel) {
-        //     console.log(`${venueData.name} can be called at ${venueData.tel}`);
-        // } else {
-        //     console.log(`${venueData.name} is missing telephone number`)
-        // }
-        //
-        // if (venueData?.tastes) {
-        //     console.log(`${venueData.name} is known for ${venueData.tastes}`);
-        // } else {
-        //     console.log(`${venueData.name} is not known for shit!`)
-        // }
-        //
-        // if (venueData?.tips) {
-        //     venueData.tips.forEach((tip: any) => {
-        //         console.log(`${venueData.name} has a ${tip.text}`)
-        //     })
-        // } else {
-        //     console.log(`${venueData.name} has no tips :(`)
-        // }
-        //
-        // if (venueData?.website) {
-        //     console.log(`${venueData.name} visit their website at ${venueData.website}`);
-        // } else {
-        //     console.log(`${venueData.name} has no website`)
-        // }
-        //
-        // if (venueData?.hours_popular) {
-        //     console.log(`${venueData.name} is popular at specific times`);
-        // } else {
-        //     console.log(`${venueData.name} is not popular at any specific times...weird`)
-        // }
-        //
-        // if (venueData?.stats?.total_ratings) {
-        //     console.log(`${venueData.name} has ${venueData.stats.total_ratings} reviews`);
-        // } else {
-        //     console.log(`${venueData.name} has no reviews`)
-        // }
-        //
-        //
-        //
-        // if (venueData?.price) {
-        //     console.log(`${venueData.name} has pricing rated at ${venueData.price}`);
-        // } else {
-        //     console.log(`${venueData.name} has no price rating`)
-        // }
-        //
-        // if (venueData?.features?.payment) {
-        //     Object.entries(venueData.features.payment).forEach(([category, values]: any) => {
-        //         Object.entries(values).forEach(([key, value]) => {
-        //             console.log(`${venueData.name} accepts specific payments: ${category}.${key}:`, value);
-        //         });
-        //     });
-        // } else {
-        //     console.log(`${venueData.name} has no payment options shown`)
-        // }
-        //
-        //
-        // if (venueData?.features?.attributes?.clean) {
-        //     console.log(`${venueData.name} cleanliness is...${venueData.features.attributes.clean}`);
-        // } else {
-        //     console.log(`${venueData.name} has no cleanliness info`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.noise) {
-        //     console.log(`${venueData.name} has a noisy rating of...${venueData.features.attributes.noisy}`);
-        // } else {
-        //     console.log(`${venueData.name} has no noise rating`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.crowded) {
-        //     console.log(`${venueData.name} has a crowdy rating of...${venueData.features.attributes.crowded}`);
-        // } else {
-        //     console.log(`${venueData.name} has no crowd rating`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.dressy) {
-        //     console.log(`${venueData.name} has an attire scale of...${venueData.features.attributes.dressy}`);
-        // } else {
-        //     console.log(`${venueData.name} has no attire scale`)
-        // }
-        //
-        //
-        // if (venueData?.features?.amenities?.atm) {
-        //     console.log(`{venueData.name} does it have an ATM...? ${venueData.features.amenities.atm}`);
-        // } else {
-        //     console.log(`${venueData.name} has no atm info`)
-        // }
-        //
-        // if (venueData?.features?.amenities?.wheelchair_accessible) {
-        //     console.log(`{venueData.name} is it wheelchair accessible...? ${venueData.features.amenities.wheelchair_accessible}`);
-        // } else {
-        //     console.log(`${venueData.name} has no wheelchair accessibility info`)
-        // }
-        //
-        // if (venueData?.features?.amenities?.parking?.parking) {
-        //     console.log(`${venueData.name} has regular parking: ${venueData.features.amenities.parking.parking}`);
-        // } else {
-        //     console.log(`${venueData.name} has no parking info for reg`)
-        // }
-        //
-        // if (venueData?.features?.amenities?.parking?.street_parking) {
-        //     console.log(` ${venueData.name} has street parking: ${venueData.features.amenities.parking.street_parking}`)
-        // } else {
-        //     console.log(`${venueData.name} has no street parking info`)
-        // }
-        //
-        // if (venueData?.features?.amenities?.restroom) {
-        //     console.log(`${venueData.name} has restroom? ${venueData.features.amenities.restroom}`);
-        // } else {
-        //     console.log(`${venueData.name} has no restroom info`)
-        // }
-        //
-        // if (venueData?.features?.amenities?.outdoor_seating) {
-        //     console.log(`${venueData.name} has outdoor seating? ${venueData.features.amenities.outdoor_seating}`);
-        // } else {
-        //     console.log(`${venueData.name} has no outdoord seating info`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.good_for_dogs) {
-        //     console.log(`${venueData.name} has dog info that says its ${venueData.features.attributes.good_for_dogs}`);
-        // } else {
-        //     console.log(`${venueData.name} has no dog info`)
-        // }
-        //
-        // // additional checks for data validation
-        // if (venueData?.features?.attributes?.clean) {
-        //     console.log(`${venueData.name} in attributes has cleanliness score of: ${venueData.features.attributes.clean}`);
-        // } else {
-        //     console.log(`${venueData.name} in attributes has no cleanliness score`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.crowded) {
-        //     console.log(`${venueData.name} in attributes has crowded score of: ${venueData.features.attributes.clean}`);
-        // } else {
-        //     console.log(`${venueData.name} in attributes has no crowd score`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.dressy) {
-        //     console.log(`${venueData.name} in attributes has dressy score of: ${venueData.features.attributes.dressy}`);
-        // } else {
-        //     console.log(`${venueData.name} in attributes has no dressy score`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.gluten_free_diet) {
-        //     console.log(`${venueData.name} in attributes has gluten free diet: ${venueData.features.attributes.gluten_free_diet}`);
-        // } else {
-        //     console.log(`${venueData.name} in attributes has no gluten free diet info`)
-        // }
-        //
-        //
-        // if (venueData?.features?.attributes?.good_for_dogs) {
-        //     console.log(`${venueData.name} in attributes has good for dogs score: ${venueData.features.attributes.good_for_dogs}`);
-        // } else {
-        //     console.log(`${venueData.name} in attributes has no good for dogs info`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.late_night) {
-        //     console.log(`${venueData.name} in attributes has late night score of: ${venueData.features.attributes.late_night}`);
-        // } else {
-        //     console.log(`${venueData.name} in attributes has no late night score`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.noisy) {
-        //     console.log(`${venueData.name} has noisy score of: ${venueData.features.attributes.nosy}`)
-        // } else {
-        //     console.log(`${venueData.name} in attributes has no noisy score`)
-        // }
-        //
-        // if (venueData?.features?.attributes?.service_quality) {
-        //     console.log(`${venueData.name} has service quality score of ${venueData.features.attributes.service_quality}`);
-        // } else {
-        //     console.log(`${venueData.name} in attributes has no service quality score`)
-        // }
+        if (venueData?.description) {
+            console.log(`${venueData.name} has a description of...${venueData.description}`);
+        } else if (!venueData.description) {
+            const test = await getFallbackData(venueData);
+            console.log('Wcheck!!! ', test);
+        }
+
+
+        if (venueData.categories[0]?.name) {
+            console.log(`${venueData.name} Category is something like a... ${venueData.categories[0].name} ?`);
+        } else {
+            console.log(`${venueData.name} is missing category[0].name`)
+        }
+
+        if (venueData.features?.food_and_drink?.alcohol?.cocktails || venueData.features?.food_and_drink?.alcohol?.cocktails?.full_bar) {
+            console.log(`${venueData.name} alcohol looks like Cocktails: ${venueData.features.food_and_drink.alcohol.cocktails} \n AND Full Bar: ${venueData.features.food_and_drink.alcohol.full_bar}`);
+        } else {
+            console.log(`${venueData.name} is missing alcohol info`)
+        }
+
+
+
+
+        if (venueData?.rating) {
+            console.log(`${venueData.name} Rating: ${venueData.rating}`);
+        } else {
+            console.log(`${venueData.name} is missing rating`)
+        }
+
+        if (venueData?.social_media?.facebook_id) {
+            console.log(`${venueData.name} Facebook ID: ${venueData.social_media.facebook_id}`);
+        } else {
+            console.log(`${venueData.name} is missing facebook id`)
+        }
+
+        if (venueData?.social_media?.instagram) {
+            console.log(`${venueData.name} has Instagram: @${venueData.social_media.instagram}`)
+        } else {
+            console.log(`${venueData.name} is missing instagram`)
+        }
+
+
+        if (venueData?.stats?.total_ratings) {
+            console.log(`${venueData.name} has ${venueData.stats.total_ratings} reviews`);
+        } else {
+            console.log(`${venueData.name} is missing reviews `)
+        }
+
+        if (venueData?.tel) {
+            console.log(`${venueData.name} can be called at ${venueData.tel}`);
+        } else {
+            console.log(`${venueData.name} is missing telephone number`)
+        }
+
+        if (venueData?.tastes) {
+            console.log(`${venueData.name} is known for ${venueData.tastes}`);
+        } else {
+            console.log(`${venueData.name} is not known for shit!`)
+        }
+
+        if (venueData?.tips) {
+            venueData.tips.forEach((tip: any) => {
+                console.log(`${venueData.name} has a ${tip.text}`)
+            })
+        } else {
+            console.log(`${venueData.name} has no tips :(`)
+        }
+
+        if (venueData?.website) {
+            console.log(`${venueData.name} visit their website at ${venueData.website}`);
+        } else {
+            console.log(`${venueData.name} has no website`)
+        }
+
+        if (venueData?.hours_popular) {
+            console.log(`${venueData.name} is popular at specific times`);
+        } else {
+            console.log(`${venueData.name} is not popular at any specific times...weird`)
+        }
+
+        if (venueData?.stats?.total_ratings) {
+            console.log(`${venueData.name} has ${venueData.stats.total_ratings} reviews`);
+        } else {
+            console.log(`${venueData.name} has no reviews`)
+        }
+
+
+
+        if (venueData?.price) {
+            console.log(`${venueData.name} has pricing rated at ${venueData.price}`);
+        } else {
+            console.log(`${venueData.name} has no price rating`)
+        }
+
+        if (venueData?.features?.payment) {
+            Object.entries(venueData.features.payment).forEach(([category, values]: any) => {
+                Object.entries(values).forEach(([key, value]) => {
+                    console.log(`${venueData.name} accepts specific payments: ${category}.${key}:`, value);
+                });
+            });
+        } else {
+            console.log(`${venueData.name} has no payment options shown`)
+        }
+
+
+
+
+
+        if (venueData?.features?.amenities?.atm) {
+            console.log(`{venueData.name} does it have an ATM...? ${venueData.features.amenities.atm}`);
+        } else {
+            console.log(`${venueData.name} has no atm info`)
+        }
+
+        if (venueData?.features?.amenities?.wheelchair_accessible) {
+            console.log(`{venueData.name} is it wheelchair accessible...? ${venueData.features.amenities.wheelchair_accessible}`);
+        } else {
+            console.log(`${venueData.name} has no wheelchair accessibility info`)
+        }
+
+        if (venueData?.features?.amenities?.parking?.parking) {
+            console.log(`${venueData.name} has regular parking: ${venueData.features.amenities.parking.parking}`);
+        } else {
+            console.log(`${venueData.name} has no parking info for reg`)
+        }
+
+        if (venueData?.features?.amenities?.parking?.street_parking) {
+            console.log(` ${venueData.name} has street parking: ${venueData.features.amenities.parking.street_parking}`)
+        } else {
+            console.log(`${venueData.name} has no street parking info`)
+        }
+
+        if (venueData?.features?.amenities?.restroom) {
+            console.log(`${venueData.name} has restroom? ${venueData.features.amenities.restroom}`);
+        } else {
+            console.log(`${venueData.name} has no restroom info`)
+        }
+
+        if (venueData?.features?.amenities?.outdoor_seating) {
+            console.log(`${venueData.name} has outdoor seating? ${venueData.features.amenities.outdoor_seating}`);
+        } else {
+            console.log(`${venueData.name} has no outdoord seating info`)
+        }
+
+        if (venueData?.features?.attributes?.good_for_dogs) {
+            console.log(`${venueData.name} has dog info that says its ${venueData.features.attributes.good_for_dogs}`);
+        } else {
+            console.log(`${venueData.name} has no dog info`)
+        }
+
+        // additional checks for data validation
+        if (venueData?.features?.attributes?.clean) {
+            console.log(`${venueData.name} in attributes has cleanliness score of: ${venueData.features.attributes.clean}`);
+        } else {
+            console.log(`${venueData.name} in attributes has no cleanliness score`)
+        }
+
+        if (venueData?.features?.attributes?.crowded) {
+            console.log(`${venueData.name} in attributes has crowded score of: ${venueData.features.attributes.clean}`);
+        } else {
+            console.log(`${venueData.name} in attributes has no crowd score`)
+        }
+
+        if (venueData?.features?.attributes?.dressy) {
+            console.log(`${venueData.name} in attributes has dressy score of: ${venueData.features.attributes.dressy}`);
+        } else {
+            console.log(`${venueData.name} in attributes has no dressy score`)
+        }
+
+        if (venueData?.features?.attributes?.gluten_free_diet) {
+            console.log(`${venueData.name} in attributes has gluten free diet: ${venueData.features.attributes.gluten_free_diet}`);
+        } else {
+            console.log(`${venueData.name} in attributes has no gluten free diet info`)
+        }
+
+
+        if (venueData?.features?.attributes?.good_for_dogs) {
+            console.log(`${venueData.name} in attributes has good for dogs score: ${venueData.features.attributes.good_for_dogs}`);
+        } else {
+            console.log(`${venueData.name} in attributes has no good for dogs info`)
+        }
+
+        if (venueData?.features?.attributes?.late_night) {
+            console.log(`${venueData.name} in attributes has late night score of: ${venueData.features.attributes.late_night}`);
+        } else {
+            console.log(`${venueData.name} in attributes has no late night score`)
+        }
+
+        if (venueData?.features?.attributes?.noisy) {
+            console.log(`${venueData.name} has noisy score of: ${venueData.features.attributes.nosy}`)
+        } else {
+            console.log(`${venueData.name} in attributes has no noisy score`)
+        }
+
+        if (venueData?.features?.attributes?.service_quality) {
+            console.log(`${venueData.name} has service quality score of ${venueData.features.attributes.service_quality}`);
+        } else {
+            console.log(`${venueData.name} in attributes has no service quality score`)
+        }
 
 
 
