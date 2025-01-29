@@ -6,7 +6,7 @@ import session from 'express-session';
 import passport from 'passport';
 import dotenv from 'dotenv';
 
-import verifySession from './verify';
+import { verifySessionApi, verifySessionView } from './verify';
 import apiRouter from './api';
 import User from './db/models/users';
 
@@ -59,7 +59,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // For all router endpoints, start with /api
-app.use('/api', apiRouter);
+app.use('/api', verifySessionApi, apiRouter);
 
 passport.use(
   new GoogleStrategy(
@@ -152,7 +152,7 @@ app.get('/logout', async (req: any, res: any) => {
   });
 });
 
-app.get('*', verifySession, (req: any, res: any) => {
+app.get('*', verifySessionView, (req: any, res: any) => {
   res.sendFile('index.html', {
     root: path.resolve(__dirname, '..', '..', 'dist'),
   });

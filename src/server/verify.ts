@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 // Middleware to verify sessions when a user is using the site
-const verifySession = (req: Request, res: Response, next: NextFunction) => {
+const verifySessionView = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
     res.redirect('/');
   } else {
@@ -9,4 +9,12 @@ const verifySession = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default verifySession;
+const verifySessionApi = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    res.sendStatus(401);
+  } else {
+    next();
+  }
+};
+
+export { verifySessionView, verifySessionApi };
