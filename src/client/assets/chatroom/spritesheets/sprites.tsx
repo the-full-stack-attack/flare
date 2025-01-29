@@ -9,9 +9,10 @@ import {
   TextStyle,
   Spritesheet,
   AnimatedSprite,
+  Loader,
 } from 'pixi.js';
   import owl from './spritesheetimages/Owlet_Monster_Jump_8.png'
-  await Assets.load(owl)
+   await Assets.load(owl)
 // src/client/assets/chatroom/spritesheets
 const testJumper = {
   frames: {
@@ -81,5 +82,6 @@ const testJumper = {
       Texture.from(testJumper.meta.image),
       testJumper
     );
+
 
 export { testJumper, spritesheet };

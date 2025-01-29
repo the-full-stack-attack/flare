@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
+import React, { useEffect, useState, useCallback, useContext, useRef, ref } from 'react';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
 import {
@@ -7,10 +7,10 @@ import {
   Sprite,
   Texture,
   Assets,
-  NineSliceSprite, // did not work :c
+  NineSliceSprite, // failing
   Text,
   TextStyle,
-  Spritesheet,
+  Spritesheet, // failing
   AnimatedSprite,
 } from 'pixi.js';
 import { Input } from '../../components/ui/input';
@@ -20,9 +20,12 @@ import MagicCard from '../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
-import whiteCircle from '../assets/images/temporaryAImap.png' // test circle
+import temporaryMap from '../assets/images/temporaryAImap.png' // test circle
 import { UserContext } from '../contexts/UserContext';
-import { testJumper, spritesheet } from '../assets/chatroom/spritesheets/sprites';
+import {
+  testJumper,
+  spritesheet,
+} from '../assets/chatroom/spritesheets/sprites';
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
 // must be passed into extend. Then you can utilize them as components
@@ -37,7 +40,7 @@ extend({
   Text,
   TextStyle,
   AnimatedSprite,
-  Texture,
+  Texture, // not worth it w/ useAssets...?
 });
 
 const socket = io('http://localhost:4000');
@@ -55,6 +58,8 @@ const style = new TextStyle({
 });
 
 function Chatroom() {
+  
+  
   // LOAD ASSETS
   useAssets([
     {
@@ -66,57 +71,58 @@ function Chatroom() {
       src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
     },
   ]);
+
+  // const {
+  //   assets: [animatedspritetest],
+  //   isSuccessAnimated,
+  // } = useAssets<Texture>({
+  //   alias: 'animatedspritetest',
+  //   src: spritesheet,
+  //   data: testJumper,
+  // })
+
   const {
     assets: [texture],
     isSuccess,
-  } = useAssets<Texture>([
-    whiteCircle,
-  ]);
-
-  // Temporary variables for collision detection testing
-  const { user } = useContext(UserContext);
+  } = useAssets<Texture>([temporaryMap]);
+  
+  // Collision Detection testing *relies on tilemaps, NOT READY
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
-  const [eventId, setEventId] = useState(document.location.pathname.slice(10));
+  
+  // LOGIC
+  const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
+  const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [allMessages, setAllMessages] = useState([]);
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
-  const [chatRoom, setChatRoom] = useState('');
   const displayMessage = (msg: string) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
-  const[anim, setAnim] = useState(false);
-
+  
+  // TESTING //
+   let anim = useRef(false);
   
   useEffect(() => {
-        // // Generate all the Textures asynchronously
-        ( async () => {
-          try {
-            await spritesheet.parse();
-            setAnim(new AnimatedSprite(spritesheet.animations.enemy))
-            
-            console.log(anim);
-          } catch (err) {
-            console.error('No parse of spritesheet', err)
-          }
-        })();
-    
-  
-        // // spritesheet is ready to use!
-        // const anim = new AnimatedSprite(spritesheet.animations.enemy);
-      
-        // // set the animation speed
-        // anim.animationSpeed = 0.1666;
-        // // play the animation on a loop
-        // anim.play();
-  }, [])
 
-  // LOADING
-  const drawCallback = useCallback((graphics: unknown) => {
+    (async () => {
+      try {
+        anim.current = new AnimatedSprite(spritesheet.animations.enemy); // failing
+        console.log(anim, 'aye')
+        await anim.current.parse();
+      } catch (err) {
+        console.error('No parse of spritesheet', err);
+      }
+    })();
+  }, [anim]);
+  // TESTING //
+
+  // EXAMPLES
+  const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
     graphics?.scale.set(1.5, 0.5);
   }, []);
@@ -137,7 +143,7 @@ function Chatroom() {
   };
 
   const keyUp = ({ key }: Element) => {
-    console.log(anim);
+    console.log(anim)
     if (key === 'ArrowUp' || key === 'w') {
       // Up
       socket.emit('keyPress', { inputId: 'Up', state: false });
@@ -155,7 +161,6 @@ function Chatroom() {
 
   // WINDOW SIZING
   useEffect(() => {
-    console.log(Spritesheet)
     const handleResize = () => {
       setGameWidth(window.innerWidth);
       setGameHeight(window.innerHeight);
@@ -165,7 +170,7 @@ function Chatroom() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // PLAYER ACTIVITY
+  // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
     console.log(user, 'im the user')
     // Player has joined chat
@@ -174,25 +179,23 @@ function Chatroom() {
       .then((chatroomId) => {
         console.log(chatroomId, 'ayyye')
       })
-    // Set the current endpoint to the 'room' for the sockets
-    // vs
-    // Pass the current endpoint's path of 'chatroom_id' in as data for this socket
+
     socket.emit('joinChat', { user, eventId });
     /**
-     * When client joins the chat, be assigned a room.
+     *  When client joins the chat, be assigned a room.
      *
      *  Send a get request to 'chatroom' along with the current path endpoint as a param
      *
      *  The get request will return a chatroom map. set the state to the current room map
      *
-     *
+     * 
      *
      * */
     socket.on('message', (msg) => {
       displayMessage(msg);
       // Update UI with the new message
     });
-    // Update state of all players and theirgit  respective positions
+    // Update state of all players and their respective positions
     socket.on('newPositions', (data) => {
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
@@ -272,7 +275,7 @@ function Chatroom() {
             </pixiContainer>
             {allPlayers.map((player) => (
               <pixiContainer x={player.x} y={player.y} key={player.id}>
-                {player.sentMessage && <pixiGraphics draw={drawCallback} />}
+                {player.sentMessage && <pixiGraphics draw={speechBubble} />}
                 {player.sentMessage && (
                   <pixiText
                     text={player.currentMessage}
@@ -297,19 +300,20 @@ function Chatroom() {
                   y={50}
                   style={style}
                 />
-               
+
               </pixiContainer>
             ))}
-             <pixiAnimatedSprite
-                    anchor={0.5}
-                    textures={spritesheet.animations.enemy}
-                    isPlaying={true}
-                    initialFrame={0}
-                    animationSpeed={0.1666}
-                    x={35}
-                    y={50}
-                    loop={true}
-      />
+            {/* <pixiAnimatedSprite
+              
+              anchor={0.5}
+              textures={anim}
+              isPlaying={true}
+              initialFrame={0}
+              animationSpeed={0.1666}
+              x={35}
+              y={50}
+              loop={true}
+            /> */}
           </Application>
         </div>
       </div>
