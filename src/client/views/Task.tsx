@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { UserContext } from '../contexts/UserContext';
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import ChooseTask from '../components/tasks/ChooseTask';
-import { UserContext } from '../contexts/UserContext';
+import CompletedTaskList from '../components/tasks/CompletedTaskList';
+import OptOutList from '../components/tasks/OptOutList';
 
 function Task() {
   const { user } = useContext(UserContext);
@@ -23,14 +25,13 @@ function Task() {
     }
   }, [user]);
   return (
-    <>
+    <div>
       <h4>Hello Stanky, you have reached the dashboard.</h4>
-      {user.current_task_id ? (
-        <TaskDisplay task={task} />
-      ) : (
-        <ChooseTask setTask={setTask} />
-      )}
-    </>
+      {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
+      <CompletedTaskList />
+      <br />
+      <OptOutList />
+    </div>
   );
 }
 

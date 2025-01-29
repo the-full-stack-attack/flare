@@ -136,7 +136,8 @@ const seedEvents = async () => {
     sampleEvents.forEach((event: EventData) => {
       event.venue_id = venues[Math.floor(Math.random() * venues.length)].id;
       event.created_by = users[Math.floor(Math.random() * users.length)].id;
-      event.category_id = categories[Math.floor(Math.random() * categories.length)].id;
+      event.category_id =
+        categories[Math.floor(Math.random() * categories.length)].id;
     });
 
     const addNotifications = async (events: any) => {
@@ -176,53 +177,16 @@ const seedEvents = async () => {
 
     await addInterests(newEvents);
 
-    // newEvents.forEach(async (event: any) => {
-    //   const EventId = event.dataValues.id;
-
-    //   await Event_Interest.findOrCreate({
-    //     where: {
-    //       EventId,
-    //       InterestId:
-    //         interests[Math.floor(Math.random() * interests.length)].id,
-    //     },
-    //     defaults: {
-    //       EventId,
-    //       InterestId:
-    //         interests[Math.floor(Math.random() * interests.length)].id,
-    //     },
-    //   });
-    //   await Event_Interest.findOrCreate({
-    //     where: {
-    //       EventId,
-    //       InterestId:
-    //         interests[Math.floor(Math.random() * interests.length)].id,
-    //     },
-    //     defaults: {
-    //       EventId,
-    //       InterestId:
-    //         interests[Math.floor(Math.random() * interests.length)].id,
-    //     },
-    //   });
-    //   await Event_Interest.findOrCreate({
-    //     where: {
-    //       EventId,
-    //       InterestId:
-    //         interests[Math.floor(Math.random() * interests.length)].id,
-    //     },
-    //     defaults: {
-    //       EventId,
-    //       InterestId:
-    //         interests[Math.floor(Math.random() * interests.length)].id,
-    //     },
-    //   });
-    // });
-
     console.log('Created events');
   } catch (err: unknown) {
     console.error('Failed to seedEvents:', err);
   }
 };
 
-setTimeout(() => {
-  seedEvents();
-}, 2000);
+const eventsSeed = () => {
+  setTimeout(() => {
+    seedEvents();
+  }, 2000);
+};
+
+export default eventsSeed;

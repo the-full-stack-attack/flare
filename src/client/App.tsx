@@ -10,6 +10,7 @@ import {
   Task,
   Home,
   Dashboard,
+  Notifications,
 } from './views/index';
 import NavBar from './components/NavBar';
 import './styles/main.css';

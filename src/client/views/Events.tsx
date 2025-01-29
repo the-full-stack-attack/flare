@@ -40,6 +40,7 @@ type EventData = {
   chatroom_id: number;
   createdAt: Date;
   updatedAt: Date;
+  hour_before_notif: number;
   User_Event?: {
     user_attending: boolean;
   };
@@ -204,12 +205,13 @@ function Events() {
     getEvents();
   }, [locationFilter]);
 
-  // console.log('Events:', events);
+  console.log('Events:', events);
   // console.log('Attending Events:', attendingEvents);
   // console.log('Bailed Events:', bailedEvents);
   // console.log('GeoLocation:', geoLocation);
   // console.log('Location:', location);
   // console.log('Location Filter:', locationFilter);
+  console.log('User:', user);
 
   return (
     <div className="container mx-auto px-4 content-center">
