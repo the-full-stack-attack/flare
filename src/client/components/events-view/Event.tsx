@@ -36,6 +36,7 @@ type EventProps = {
     chatroom_id: number;
     createdAt: Date;
     updatedAt: Date;
+    hour_before_notif: number;
     User_Event?: {
       user_attending: boolean;
     };
@@ -76,7 +77,11 @@ function Event({ event, getEvents, category }: EventProps) {
 
   const postAttendEvent = () => {
     axios
-      .post(`/api/event/attend/${event.id}`)
+      .post(`/api/event/attend/${event.id}`, {
+        event: {
+          notificationId: event.hour_before_notif,
+        },
+      })
       .then(getEvents)
       .catch((err: unknown) => {
         console.error('Failed to postAttendEvent:', err);
@@ -85,7 +90,11 @@ function Event({ event, getEvents, category }: EventProps) {
 
   const patchAttendingEvent = () => {
     axios
-      .patch(`/api/event/attending/${event.id}`)
+      .patch(`/api/event/attending/${event.id}`, {
+        event: {
+          notificationId: event.hour_before_notif,
+        },
+      })
       .then(getEvents)
       .catch((err: unknown) => {
         console.error('Failed to patchAttendingEvent', err);

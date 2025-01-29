@@ -15,6 +15,7 @@ type EventsListProps = {
     chatroom_id: number;
     createdAt: Date;
     updatedAt: Date;
+    hour_before_notif: number;
     User_Event?: {
       user_attending: boolean;
     };
