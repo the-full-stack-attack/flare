@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { BrowserRouter, Routes, Route } from 'react-router';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import {
   AiConversations,
   Chatroom,
@@ -14,7 +14,6 @@ import {
 } from './views/index';
 import NavBar from './components/NavBar';
 import './styles/main.css';
-
 import { UserType, UserContext } from './contexts/UserContext';
 
 export default function App() {
@@ -23,43 +22,65 @@ export default function App() {
     Interests: [],
     Notifications: [],
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const getUser = () => {
     axios
       .get('/api/user')
       .then(({ data }: any) => {
         setUser(data);
+        setIsAuthenticated(true);
       })
       .catch((err: unknown) => {
         console.error('Failed to getUser:', err);
+        setIsAuthenticated(false);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
+
   const userState = useMemo(
     () => ({
       user,
       setUser,
       getUser,
+      isAuthenticated,
     }),
-    [user]
+    [user, isAuthenticated]
   );
 
   useEffect(() => {
     getUser();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>; // Or your loading component
+  }
+
   return (
     <UserContext.Provider value={userState}>
       <BrowserRouter>
-        <NavBar />
+        {isAuthenticated && <NavBar />}
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="AiConversations" element={<AiConversations />} />
-          <Route path="/Chatroom/*" element={<Chatroom />} />
-          <Route path="CreateEvents" element={<CreateEvents />} />
-          <Route path="Events" element={<Events />} />
           <Route path="Signup" element={<Signup />} />
-          <Route path="Task" element={<Task />} />
-          <Route path="Dashboard" element={<Dashboard />} />
-          <Route path="Notifications" element={<Notifications />} />
+
+          {/* Protected Routes */}
+          {isAuthenticated ? (
+            <>
+              <Route path="AiConversations" element={<AiConversations />} />
+              <Route path="/Chatroom/*" element={<Chatroom />} />
+              <Route path="CreateEvents" element={<CreateEvents />} />
+              <Route path="Events" element={<Events />} />
+              <Route path="Task" element={<Task />} />
+              <Route path="Dashboard" element={<Dashboard />} />
+            </>
+          ) : (
+            // Redirect to home if trying to access protected routes while not authenticated
+            <Route path="*" element={<Navigate to="/" />} />
+          )}
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
