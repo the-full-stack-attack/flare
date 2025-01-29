@@ -23,6 +23,7 @@ function CompletedTaskList() {
     axios
       .get(`/api/user_task/complete/${id}`)
       .then(({ data }) => {
+        console.log('Completed tasks from server: ', data);
         setCompletedTasks(data);
       })
       .catch((err) => {
@@ -31,8 +32,8 @@ function CompletedTaskList() {
   }, [user]);
   return (
     <ul>
-      {completedTasks.map((task) => (
-        <CompletedTask key={task} task={task} />
+      {completedTasks.map((userTask) => (
+        <CompletedTask key={userTask.TaskId} userTask={userTask} />
       ))}
     </ul>
   );

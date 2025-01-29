@@ -2,7 +2,7 @@ import React, {useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 
 type CompletedTaskProps = {
-  task: UserTask;
+  userTask: UserTask;
 };
 type UserTask = {
   completed?: boolean;
@@ -11,6 +11,7 @@ type UserTask = {
   opted_out?: boolean;
   UserId: number;
   TaskId: number;
+  Task: Task;
 };
 type Task = {
   id: number;
@@ -20,7 +21,8 @@ type Task = {
   date: dayjs.Dayjs | '';
   difficulty: number;
 };
-function CompletedTask({ task }: CompletedTaskProps) {
+function CompletedTask({ userTask }: CompletedTaskProps) {
+  const { type, description, difficulty} = userTask.Task;
   const [currTask, setCurrTask] = useState<Task>({
     id: 0,
     description: '',
@@ -29,11 +31,10 @@ function CompletedTask({ task }: CompletedTaskProps) {
     date: '',
     difficulty: 0,
   });
-
   useEffect(() => {
-    const { taskId } = task;
-  }, [task]);
-  return <li />;
+    const { taskId } = userTask;
+  }, [userTask]);
+  return <li>{`Level ${difficulty} ${type} ${description}`}</li>;
 }
 
 export default CompletedTask;
