@@ -20,10 +20,12 @@ type UserContextType = {
   user: UserType;
   setUser: (user: UserType) => void;
   getUser: () => void;
+  isAuthenticated: boolean;
 };
 
 export const UserContext = createContext<UserContextType>({
   user: { id: 0 },
   setUser: () => {},
   getUser: () => {},
+  isAuthenticated: false,
 });
