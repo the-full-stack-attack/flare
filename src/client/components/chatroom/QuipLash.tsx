@@ -17,7 +17,8 @@ import { Label } from '../../../components/ui/label';
 import { Button } from '../../../components/ui/button';
 import MagicCard from '../../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../../components/ui/interactive-hover-button';
-import bartender from '../../assets/images/bartender.jpg'
+import bartender from '../../assets/images/bartender.jpg';
+import { UserContext } from '../../contexts/UserContext';
 
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
@@ -55,7 +56,7 @@ const {
   } = useAssets<Texture>([bartender]);
 
   // LOGIC
- // const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
   const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   const [message, setMessage] = useState('');
@@ -90,8 +91,9 @@ const {
 
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
+    console.log(user, 'quiplash user')
     // axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
-    // socket.emit('joinChat', { user, eventId });
+     // socket.emit('joinQuiplash', { user, eventId });
     // socket.on('message', (msg) => {
     //   displayMessage(msg);
     //   // Update UI with the new message
