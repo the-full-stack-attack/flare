@@ -10,6 +10,7 @@ import {
   Task,
   Home,
   Dashboard,
+  Notifications,
 } from './views/index';
 import NavBar from './components/NavBar';
 import './styles/main.css';
@@ -17,7 +18,11 @@ import './styles/main.css';
 import { UserType, UserContext } from './contexts/UserContext';
 
 export default function App() {
-  const [user, setUser] = useState<UserType>({ id: 0 });
+  const [user, setUser] = useState<UserType>({
+    id: 0,
+    Interests: [],
+    Notifications: [],
+  });
   const getUser = () => {
     axios
       .get('/api/user')
@@ -37,7 +42,6 @@ export default function App() {
     [user]
   );
 
-
   useEffect(() => {
     getUser();
   }, []);
@@ -55,6 +59,7 @@ export default function App() {
           <Route path="Signup" element={<Signup />} />
           <Route path="Task" element={<Task />} />
           <Route path="Dashboard" element={<Dashboard />} />
+          <Route path="Notifications" element={<Notifications />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
