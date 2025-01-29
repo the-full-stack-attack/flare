@@ -23,6 +23,7 @@ import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
 import temporaryMap from '../assets/images/temporaryAImap.png' // test circle
 import { UserContext } from '../contexts/UserContext';
+import QuipLash from '../components/chatroom/QuipLash'
 import {
   testJumper,
   spritesheet,
@@ -308,7 +309,7 @@ function Chatroom() {
           </Application>
           <Button onClick={toggleQuiplash}>Play Quiplash</Button>
           {
-            isPlayingQuiplash && <div>QUIPLASH</div>
+            isPlayingQuiplash && <QuipLash/>
           }
         </div>
       </div>

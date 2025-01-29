@@ -51,7 +51,7 @@ function QuipLash() {
 
 
   // LOGIC
-  const { user } = useContext(UserContext);
+ // const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
   const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   const [message, setMessage] = useState('');
@@ -133,7 +133,6 @@ function QuipLash() {
         <div style={{ width: { gameWidth }, height: { gameHeight } }}>
           <Application>
             <pixiContainer x={100} y={200}>
-              <pixiGraphics draw={} />
             </pixiContainer>
 
             {/* <pixiAnimatedSprite
