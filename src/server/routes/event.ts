@@ -195,7 +195,9 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         if (venueData?.description) {
             console.log(`${venueData.name} has a description of...${venueData.description}`);
         } else if (!venueData.description) {
+            // need to get the google places id for this venue -- using google text search endpoint for google places api
 
+            
         }
 
 
@@ -412,7 +414,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         } else {
             console.log(`${venueData.name} in attributes has no service quality score`)
         }
-        
+
 
 
 
