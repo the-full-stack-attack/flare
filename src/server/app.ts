@@ -6,6 +6,7 @@ import session from 'express-session';
 import passport from 'passport';
 import dotenv from 'dotenv';
 
+import verifySession from './verify';
 import apiRouter from './api';
 import User from './db/models/users';
 
@@ -151,7 +152,7 @@ app.get('/logout', async (req: any, res: any) => {
   });
 });
 
-app.all('*', (req: any, res: any) => {
+app.get('*', verifySession, (req: any, res: any) => {
   res.sendFile('index.html', {
     root: path.resolve(__dirname, '..', '..', 'dist'),
   });
