@@ -1,7 +1,15 @@
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 import { UserContext } from '../contexts/UserContext';
+
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '../../components/ui/card';
 
 function Notifications() {
   const { user } = useContext(UserContext);
@@ -50,7 +58,16 @@ function Notifications() {
         <div>
           <h1 className="text-4xl">New</h1>
           {newNotifs.map((notif: any) => (
-            <div>{notif.message}</div>
+            <div key={notif.id}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{notif.message}</CardTitle>
+                  <CardDescription>
+                    {dayjs(notif.send_date).format('h:mm a, MMM. D')}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </div>
           ))}
         </div>
         <div>
