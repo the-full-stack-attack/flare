@@ -16,6 +16,7 @@ import {
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { AnimatedList } from '../../components/ui/animated-list';
+import { Button } from '../../components/ui/button';
 import MagicCard from '../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import MsgBox from '../components/chatroom/MsgBox';
@@ -95,9 +96,12 @@ function Chatroom() {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   // QUIPLASH
-  const [isPlayingQuipLash, setIsPlayingQuiplash] = useState(false);
+  const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
+  // useEffect(() => {
 
+  // }, [isPlayingQuipLash])
   const toggleQuiplash = () => {
+    console.log('clicked')
     isPlayingQuiplash ? setIsPlayingQuiplash(false) : setIsPlayingQuiplash(true);
   }
   // TESTING //
@@ -302,9 +306,9 @@ function Chatroom() {
               loop={true}
             /> */}
           </Application>
-          <Button onClick={}>Play Quiplash</Button>
+          <Button onClick={toggleQuiplash}>Play Quiplash</Button>
           {
-            isPlayingQuipLash && <div>QUIPLASH</div>
+            isPlayingQuiplash && <div>QUIPLASH</div>
           }
         </div>
       </div>
