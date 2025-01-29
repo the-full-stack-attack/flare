@@ -3,8 +3,8 @@ import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
 type DialogProps = {
   isOpen: boolean;
-  confirm: function;
-  stateSetter: function;
+  confirm: () => void;
+  stateSetter: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   content: string;
   cancelText: string;
