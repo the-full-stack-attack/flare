@@ -22,6 +22,8 @@ userRouter.get('/', (req: any, res: Response) => {
           where: {
             send_time: { [Op.lt]: new Date(Date.now()) },
           },
+          order: ['send_time', 'DESC'],
+          limit: 10,
           required: false,
         },
       ],
