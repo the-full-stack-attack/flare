@@ -10,6 +10,7 @@ import {
   Task,
   Home,
   Dashboard,
+  Notifications,
 } from './views/index';
 import NavBar from './components/NavBar';
 import './styles/main.css';
@@ -37,7 +38,6 @@ export default function App() {
     [user]
   );
 
-
   useEffect(() => {
     getUser();
   }, []);
@@ -55,6 +55,7 @@ export default function App() {
           <Route path="Signup" element={<Signup />} />
           <Route path="Task" element={<Task />} />
           <Route path="Dashboard" element={<Dashboard />} />
+          <Route path="Notifications" element={<Notifications />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
