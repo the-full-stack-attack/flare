@@ -214,8 +214,8 @@ function Events() {
   console.log('User:', user);
 
   return (
-    <div className="container mx-auto px-4 content-center">
-      <div className="container mx-auto px-4 p-4">
+    <div className="container mx-auto px-4 pt-20 content-center">
+      <div className="container mx-auto px-4">
         <p>
           Upcoming Events from
           <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
