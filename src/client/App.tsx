@@ -17,7 +17,11 @@ import './styles/main.css';
 import { UserType, UserContext } from './contexts/UserContext';
 
 export default function App() {
-  const [user, setUser] = useState<UserType>({ id: 0 });
+  const [user, setUser] = useState<UserType>({
+    id: 0,
+    Interests: [],
+    Notifications: [],
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -71,6 +75,7 @@ export default function App() {
               <Route path="CreateEvents" element={<CreateEvents />} />
               <Route path="Events" element={<Events />} />
               <Route path="Task" element={<Task />} />
+              <Route path="Notifications" element={<Notifications />} />
               <Route path="Dashboard" element={<Dashboard />} />
             </>
           ) : (

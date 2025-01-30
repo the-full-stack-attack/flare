@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { UserContext } from '../../contexts/UserContext';
-import { Button } from '../../../components/ui/button';
+import DialogBox from './DialogBox';
 
 type CompletedTaskProps = {
   userTask: UserTask;
@@ -26,7 +27,9 @@ type Task = {
 };
 function OptOutTask({ userTask }: CompletedTaskProps) {
   const { type, description, difficulty } = userTask.Task;
+  const { Task } = userTask;
   const { user, setUser } = useContext(UserContext);
+  const [isOpen, setIsOpen] = useState(false);
   // Function to allow a user to retry a task
   const retryTask = () => {
     // Grab the task id and the user id
@@ -39,15 +42,35 @@ function OptOutTask({ userTask }: CompletedTaskProps) {
       .then(({ data }) => {
         setUser(data);
       })
+      .then(() => {
+        setIsOpen(false);
+      })
       .catch((err) => {
         console.error('Error retrying the task: ', err);
       });
   };
   return (
-    <li>
-      {`Opted out Level ${difficulty} ${type} ${description}`}
-      <Button onClick={retryTask}>Retry</Button>
-    </li>
+    <>
+      <DialogBox
+        isOpen={isOpen}
+        confirm={retryTask}
+        stateSetter={setIsOpen}
+        title="Retry Task"
+        content={`Do you want retry the task ${Task.description.slice(0, -1)}? This will opt you out of your current task if you already have one.`}
+        cancelText="Cancel"
+        confirmText="Retry"
+      />
+      <li>
+        {`Opted out Level ${difficulty} ${type} ${description}`}
+        <Button
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
+          Retry
+        </Button>
+      </li>
+    </>
   );
 }
 
