@@ -115,6 +115,7 @@ taskRouter.patch('/complete', async (req: any, res: Response) => {
     if (user && task && userTask) {
       user.current_task_id = null;
       user.total_tasks_completed += 1;
+      user.weekly_task_count += 1;
       await user.save();
       task.completed_count += 1;
       await task.save();
