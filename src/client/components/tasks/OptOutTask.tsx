@@ -40,7 +40,7 @@ function OptOutTask({ userTask }: CompletedTaskProps) {
     axios
       .patch('/api/task/retry', config)
       .then(({ data }) => {
-        getUser(data);
+        getUser();
       })
       .then(() => {
         setIsOpen(false);
