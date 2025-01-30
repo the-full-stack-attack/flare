@@ -205,17 +205,17 @@ function Events() {
     getEvents();
   }, [locationFilter]);
 
-  console.log('Events:', events);
+  // console.log('Events:', events);
   // console.log('Attending Events:', attendingEvents);
   // console.log('Bailed Events:', bailedEvents);
   // console.log('GeoLocation:', geoLocation);
   // console.log('Location:', location);
   // console.log('Location Filter:', locationFilter);
-  console.log('User:', user);
+  // console.log('User:', user);
 
   return (
-    <div className="container mx-auto px-4 content-center">
-      <div className="container mx-auto px-4 p-4">
+    <div className="container mx-auto px-4 pt-20 content-center">
+      <div className="container mx-auto px-4">
         <p>
           Upcoming Events from
           <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>

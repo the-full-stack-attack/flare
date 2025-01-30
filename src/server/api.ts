@@ -15,6 +15,7 @@ const {
   taskRouter,
   userTaskRouter,
   signUpRouter,
+  notifsRouter,
 } = routes;
 
 const apiRouter = Router();
@@ -32,5 +33,6 @@ apiRouter.use('/task', taskRouter);
 apiRouter.use('/user', userRouter);
 apiRouter.use('/user_task', userTaskRouter);
 apiRouter.use('/signup', signUpRouter);
+apiRouter.use('/notifications', notifsRouter);
 
 export default apiRouter;

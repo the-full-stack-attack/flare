@@ -6,6 +6,7 @@ import {
   FaCalendarPlus, // Create Event
   FaRobot, // AI
   FaTasks, // Task
+  FaStickyNote, // Notifications
   FaChartLine, // Dashboard
   FaSignOutAlt, // Logout
 } from 'react-icons/fa';
@@ -22,6 +23,7 @@ function NavBar(): JSX.Element {
     { title: 'Create Event', url: '/CreateEvents', icon: FaCalendarPlus },
     { title: 'AI', url: '/AiConversations', icon: FaRobot },
     { title: 'Task', url: '/Task', icon: FaTasks },
+    { title: 'Notifications', url: '/Notifications', icon: FaStickyNote },
     { title: 'Dashboard', url: '/Dashboard', icon: FaChartLine },
     { title: 'Logout', url: '/logout', icon: FaSignOutAlt },
   ];
