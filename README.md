@@ -69,7 +69,7 @@ SOCKET=false
 1. **Events**
 2. **AI Conversation**
 3. **Event Chatrooms**
-4. **Tasks:** Tasks can be used as extra motivation, or a reason, to get out of the house.  Tasks are meant to be completed the day they are assigned.
+4. **Tasks:** Tasks can be used as extra motivation, or a reason, to get out of the house.  Tasks are meant to be completed the day they are assigned.  
 Relevant Models: User, Task, & User_Task  
    1. Tasks have 2 main components, TaskDisplay and ChooseTask
       > TaskDisplay displays on the Dashboard and Task views  
@@ -84,12 +84,19 @@ Relevant Models: User, Task, & User_Task
    5. Users can opt-out of tasks
       > **See changes on PATCH request to /api/task/optOut/:id in src/server/routes/task.ts**
    6. Users can choose a difficulty level for a task on the ChooseTask component
-   7. There is a task worker in **src/server/workers/tasks.ts** that runs 2 functions everyday it midnight  
-      > resetTasks function sets every user's current_task_id to null  
-      > createTasks function generates 5 new tasks for each task type for the day
-      > This is to enforce that tasks are completed the day they are assigned
-   8. Users can retry a task they previously opted out of with a retry button on the Task view
+   7. Users can retry a task they previously opted out of with a retry button on the Task view
       > This button sets the user's current_task_id to the desired task  
       > The corresponding user_task opted_out column is switched to false  
       > **See PATCH to /api/task/retry in src/server/routes/task.ts**
+   8. Users can compare their task progress to the previous week on the Task view
+      > User model has denormalized data to track tasks completed over the last 2 weeks  
+      > Number of tasks completed the current week is held on weekly_task_count  
+      > Number of tasks completed the previous week is held on last_week_task_count  
    9. Users can generate a custom task, which will send a prompt to the Gemini AI using GoogleGenerativeAI package (***To be continued***)
+
+### **Workers:**
+   The server has workers that are scheduled to perform tasks at certain times throughout the week.  
+   - **Tasks Workers:** See **src/server/workers/tasks.ts**
+      > Two workers are scheduled for task automation  
+      > One worker is scheduled for midnight everyday for generating new tasks: resetTasks() and createTasks() are called in this worker  
+     > Another worker is scheduled for midnight on Mondays for reassigning the values of the weekly task counts for each user: resetCounts() is called in this worker
