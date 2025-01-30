@@ -7,6 +7,9 @@ import Notification from '../db/models/notifications';
 
 const notifsRouter = Router();
 
+/*
+  GET /api/notifications => Get notifications for the user
+*/
 notifsRouter.get('/', (req: any, res: Response) => {
   const notifWhere: any = { send_time: { [Op.lt]: new Date(Date.now()) } };
 
@@ -45,5 +48,29 @@ notifsRouter.get('/', (req: any, res: Response) => {
       res.sendStatus(500);
     });
 });
+
+/*
+  PATCH /api/notifications/seen/all =>
+*/
+notifsRouter.patch('/seen/all', (req: any, res: Response) => {
+  // Query User_Notifications table for all user notifs update all seen to true
+  User_Notification.update({ seen: true }, { where: { UserId: req.user.id } })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to PATCH /api/notifications/seen/all', err);
+      res.sendStatus(500);
+    });
+});
+
+/*
+  DELETE /api/notifications/:id => Delete one notification for a user
+*/
+
+
+/*
+  DELETE /api/notifications/all => Delete all notifications for a user
+*/
 
 export default notifsRouter;
