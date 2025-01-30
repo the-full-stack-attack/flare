@@ -18,11 +18,7 @@ function Notifications() {
 
   const getNotifications = useCallback(() => {
     axios
-      .get('/api/notifications', {
-        params: {
-          seen: false,
-        },
-      })
+      .get('/api/notifications')
       .then(({ data }) => {
         setNotifs(data);
       })

@@ -31,7 +31,11 @@ notifsRouter.get('/', (req: any, res: Response) => {
         required: false,
       },
     ],
-    order: [[Notification, 'send_time', 'DESC']],
+    order: [
+      // Order matters: First check seen, then order by send_time
+      [Notification, User_Notification, 'seen', 'ASC'],
+      [Notification, 'send_time', 'DESC'],
+    ],
   })
     .then((userData) => {
       res.status(200).send(userData?.dataValues.Notifications);
