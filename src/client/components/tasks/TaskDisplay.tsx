@@ -40,7 +40,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
     axios
       .patch('/api/task/complete', config)
       .then(({ data }) => {
-        setUser(data);
+        getUser(data);
       })
       .catch((err) => {
         console.error('Error completing task/user PATCH: ', err);
