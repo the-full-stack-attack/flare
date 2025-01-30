@@ -5,7 +5,40 @@ import { Console } from 'console';
 import dotenv from 'dotenv';
 const googleGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const bartenderAI = googleGenAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
+const modifiers = [
+  'Meditation',
+  'Philosophy',
+  'Relationships',
+  'Cheating',
+  'risky behavior',
+  'war',
+  'furries',
+  'fighting',
+  'social anxiety',
+  'income inequality',
+  'rehab',
+  'drinking alcohol',
+  'javascript',
+  'artificial intelligence',
+  'Arts & Crafts',
+  'Music',
+  'Gaming',
+  'Movies & TV',
+  'Comics & Anime',
+  'Books & Reading',
+  'Technology',
+  'Nature',
+  'Food & Cooking',
+  'Nightlife',
+  'Coffee & Tea',
+  'Health & Wellness',
+  'Pets & Animals',
+  'Sports & Recreation',
+  'Community Events',
+  'social media',
+  'working in an office',
+  'popular culture',
+]
 const initializeSocket = (
   server: any,
   PLAYER_LIST: any,
@@ -17,7 +50,7 @@ const initializeSocket = (
   io.on('connection', (socket) => {
     // when client joins chat, create a player, add them to the lists
     socket.on('joinChat', ({ user, eventId }) => {
-      console.log( typeof eventId, eventId)
+      console.log(typeof eventId, eventId)
       socket.data.name = socket.id;
       socket.data.eventId = eventId;
       socket.join(eventId);
@@ -28,7 +61,7 @@ const initializeSocket = (
     });
 
     // QUIPLASH SOCKETS
-    socket.on('joinQuiplash', ({ user, eventId}) => {
+    socket.on('joinQuiplash', ({ user, eventId }) => {
       console.log(user, 'quipl');
       console.log(eventId, 'quipl');
       console.log(PLAYER_LIST);
@@ -54,7 +87,14 @@ const initializeSocket = (
 
     socket.on('readyForQuiplash', async (data) => {
       console.log(data)
-      const prompt = `Generate a random quiplash question that has a high potential for funny answers`;
+      let mod = Math.floor(Math.random() * 100);
+      let prompt = `Generate a single quiplash prompt related to ${modifiers[mod]}`;
+      if (mod >= 61) {
+        prompt = `Generate a quiplash prompt`;
+      } else if (mod >= 30) {
+        prompt = `Generate a single risky quiplash prompt that might get you in trouble with ${modifiers[Math.floor(mod / 2)]}`;
+      }
+
       const result = await bartenderAI.generateContent(prompt);
       console.log(result)
       socket.emit('askNextQuiplash', result)
@@ -79,7 +119,7 @@ const initializeSocket = (
 
     socket.on('message', ({ message, eventId }) => {
       console.log(eventId, 'message id')
-      console.log( message, 'the message')
+      console.log(message, 'the message')
       PLAYER_LIST[socket.id].sentMessage = true;
       PLAYER_LIST[socket.id].currentMessage = message;
       socket.to(eventId).emit('message', message);
@@ -89,7 +129,7 @@ const initializeSocket = (
       }, 2000);
     });
 
-    
+
   });
 
   setInterval(() => {
