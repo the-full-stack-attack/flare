@@ -67,7 +67,21 @@ notifsRouter.patch('/seen/all', (req: any, res: Response) => {
 /*
   DELETE /api/notifications/:id => Delete one notification for a user
 */
-
+notifsRouter.delete('/:id', (req: any, res: Response) => {
+  User_Notification.destroy({
+    where: {
+      UserId: req.user.id,
+      NotificationId: req.params.id,
+    },
+  })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to DELETE /api/notifications/:id', err);
+      res.sendStatus(500);
+    });
+});
 
 /*
   DELETE /api/notifications/all => Delete all notifications for a user
