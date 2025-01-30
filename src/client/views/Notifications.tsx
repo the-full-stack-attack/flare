@@ -31,8 +31,6 @@ function Notifications() {
     getNotifications();
   }, [getNotifications]);
 
-  console.log(notifs);
-
   return (
     <div className="container pt-20 pb-8">
       {notifs.map((notif: any) => (
