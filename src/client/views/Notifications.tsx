@@ -14,23 +14,7 @@ import {
 function Notifications() {
   const { user } = useContext(UserContext);
 
-  const [newNotifs, setNewNotifs] = useState<any>([]);
-  const [oldNotifs, setOldNotifs] = useState<any>([]);
-
-  const getOldNotifications = useCallback(() => {
-    axios
-      .get('/api/notifications', {
-        params: {
-          seen: true,
-        },
-      })
-      .then(({ data }) => {
-        setOldNotifs(data);
-      })
-      .catch((err: unknown) => {
-        console.error('Failed to getNotifications:', err);
-      });
-  }, []);
+  const [notifs, setNotifs] = useState<any>([]);
 
   const getNotifications = useCallback(() => {
     axios
@@ -40,43 +24,35 @@ function Notifications() {
         },
       })
       .then(({ data }) => {
-        setNewNotifs(data);
+        setNotifs(data);
       })
-      .then(getOldNotifications)
       .catch((err: unknown) => {
         console.error('Failed to getNotifications:', err);
       });
-  }, [getOldNotifications]);
+  }, []);
 
   useEffect(() => {
     getNotifications();
   }, [getNotifications]);
 
+  console.log(notifs);
+
   return (
-    <div className="container ml-5 px-4 pt-20 pb-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2">
-        <div>
-          <h1 className="text-4xl">New</h1>
-          {newNotifs.map((notif: any) => (
-            <div key={notif.id}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>{notif.message}</CardTitle>
-                  <CardDescription>
-                    {dayjs(notif.send_date).format('h:mm a, MMM. D')}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </div>
-          ))}
+    <div className="container pt-20 pb-8">
+      {notifs.map((notif: any) => (
+        <div key={notif.id}>
+          <Card
+            className={`ml-4 mr-4 mb-4 ${notif.User_Notification.seen ? '' : ' bg-cyan-100'}`}
+          >
+            <CardHeader>
+              <CardTitle>{notif.message}</CardTitle>
+              <CardDescription>
+                {dayjs(notif.send_time).format('h:mm a, MMM. D')}
+              </CardDescription>
+            </CardHeader>
+          </Card>
         </div>
-        <div>
-          <h1 className="text-4xl">Old</h1>
-          {oldNotifs.map((notif: any) => (
-            <div>{notif.message}</div>
-          ))}
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

@@ -26,12 +26,12 @@ notifsRouter.get('/', (req: any, res: Response) => {
     },
     include: [
       {
-        association: 'Notifications',
+        model: Notification,
         where: notifWhere,
-        order: ['send_time', 'DESC'],
         required: false,
       },
     ],
+    order: [[Notification, 'send_time', 'DESC']],
   })
     .then((userData) => {
       res.status(200).send(userData?.dataValues.Notifications);
