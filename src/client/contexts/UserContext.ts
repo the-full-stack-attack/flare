@@ -7,7 +7,9 @@ export interface UserType {
   email?: string;
   full_name?: string;
   phone_number?: string;
-  tasks_complete?: number;
+  total_tasks_completed?: number;
+  weekly_task_count: number;
+  last_week_task_count: number;
   events_attended?: number;
   location?: string;
   avatar_id?: number;
