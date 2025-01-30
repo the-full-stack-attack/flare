@@ -1,15 +1,9 @@
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import dayjs from 'dayjs';
 
 import { UserContext } from '../contexts/UserContext';
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '../../components/ui/card';
+import NotificationList from '../components/notifications-view/NotificationList';
 
 function Notifications() {
   const { user } = useContext(UserContext);
@@ -33,20 +27,7 @@ function Notifications() {
 
   return (
     <div className="container pt-20 pb-8">
-      {notifs.map((notif: any) => (
-        <div key={notif.id}>
-          <Card
-            className={`ml-4 mr-4 mb-4 ${notif.User_Notification.seen ? '' : ' bg-cyan-100'}`}
-          >
-            <CardHeader>
-              <CardTitle>{notif.message}</CardTitle>
-              <CardDescription>
-                {dayjs(notif.send_time).format('h:mm a, MMM. D')}
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-      ))}
+      <NotificationList notifs={notifs} />
     </div>
   );
 }
