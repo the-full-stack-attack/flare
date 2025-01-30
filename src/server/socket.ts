@@ -44,6 +44,7 @@ const initializeSocket = (
   PLAYER_LIST: any,
   SOCKET_LIST: any,
   QUIPLASH_LIST: any,
+  QUIPLASH_GAMES: any,
 ) => {
   const io = new Server(server);
   // Register event listeners for Socket.IO
@@ -70,12 +71,46 @@ const initializeSocket = (
       const quiplashPlayer = QuipLashPlayer(socket.id, user, eventId);
       QUIPLASH_LIST[socket.id] = quiplashPlayer;
       console.log(QUIPLASH_LIST);
+
+       // if no game currently exists for the current room
+       if(QUIPLASH_GAMES[eventId] === undefined){
+        console.log(`no games exist for room ${eventId} yet, creating a room`);
+        // create a game on the quiplash game object
+        QUIPLASH_GAMES[eventId] = {
+          players: [],
+          votes: [],
+          playerCount: 0,
+        };
+        // if a game already exists, let server know we succeeded test #1
+      } else {
+        console.log(`a game for room ${eventId} already exists, adding player`);
+      }
+
+      // A game should already exist at this point regardless of whether or not it did before
+
+      // add the player to the array of players
+      QUIPLASH_GAMES[eventId].players.push(quiplashPlayer);
+      // increase the current player count from zero to 1
+      QUIPLASH_GAMES[eventId].playerCount += 1;
+      console.log(QUIPLASH_LIST, 'quiplash list');
+      console.log(QUIPLASH_GAMES, 'ONGOING QUIPLASH GAMES')
+
     });
 
+    // if a player quits quiplash
     socket.on('quitQuiplash', () => {
+      // remove their socket from the room
       socket.leave(socket.data.eventId);
+      // delete that player from the list of players by socket
       delete QUIPLASH_LIST[socket.id]
-      console.log(QUIPLASH_LIST)
+      // decrease the current player count for that game based on their current eventId
+      QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
+      // if there are no more players playing that game, delete the quiplash game from the list of games
+      if(QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0){
+      delete QUIPLASH_GAMES[socket.data.eventId]
+      }
+      console.log(QUIPLASH_LIST, 'list quip');
+      console.log(QUIPLASH_GAMES, 'remaining QUIPLASH GAMES');
     })
 
     // On disconnect, delete them from the lists
