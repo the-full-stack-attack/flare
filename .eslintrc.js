@@ -43,6 +43,7 @@ module.exports = {
     'no-console': 'off',
     'object-curly-newline': 'off',
     '@typescript-eslint/operator-linebreak': 'off',
+    'no-param-reassign': 'off',
   },
   // Ignore files in the test directory
   ignorePatterns: [

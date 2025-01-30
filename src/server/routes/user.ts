@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express';
 import { Op } from 'sequelize';
 
 import User from '../db/models/users';
+import Notification from '../db/models/notifications';
+import Interest from '../db/models/interests';
 
 const userRouter = Router();
 
@@ -15,19 +17,20 @@ userRouter.get('/', (req: any, res: Response) => {
       },
       include: [
         {
-          association: 'Interests',
+          model: Interest,
         },
         {
-          association: 'Notifications',
+          model: Notification,
           where: {
             send_time: { [Op.lt]: new Date(Date.now()) },
+            '$Notifications.User_Notification.seen$': false,
           },
-          order: ['send_time', 'DESC'],
           // Only HasMany associations support this:
           // limit: 10,
           required: false,
         },
       ],
+      order: [[Notification, 'send_time', 'DESC']],
     })
       .then((userData) => {
         if (!userData) {
