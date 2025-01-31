@@ -17,6 +17,7 @@ import {
 } from './views/index';
 import NavBar from './components/NavBar';
 import './styles/main.css';
+
 import { UserType, UserContext } from './contexts/UserContext';
 
 export default function App() {
@@ -59,7 +60,6 @@ export default function App() {
   }, []);
 
   if (loading) {
-
     return <div>Loading...</div>;
 
   }

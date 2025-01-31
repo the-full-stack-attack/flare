@@ -60,7 +60,6 @@ function AiConversations() {
     setMessages((prev) => [...prev, newMessage]);
     setUserMessage('');
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -69,6 +68,8 @@ function AiConversations() {
         userId: user.id,
         prompt,
       });
+      setResponse(data.structured);
+
 
       setResponse(data.structured);
 
