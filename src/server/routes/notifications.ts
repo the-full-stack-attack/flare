@@ -85,7 +85,7 @@ notifsRouter.patch('/seen/all', (req: any, res: Response) => {
 /*
   DELETE /api/notifications/:id => Delete one notification for a user
 */
-notifsRouter.delete('/:id', (req: any, res: Response) => {
+notifsRouter.delete('/:id/delete', (req: any, res: Response) => {
   User_Notification.destroy({
     where: {
       UserId: req.user.id,
@@ -119,7 +119,15 @@ notifsRouter.delete('/all', async (req: any, res: Response) => {
         },
       ],
     });
-    console.log(user);
+    
+    const notificationIds = user?.dataValues.Notifications.reduce(
+      (acc: number[], curr: any) => {
+        acc.push(curr.dataValues.id);
+        return acc;
+      },
+      []
+    );
+    console.log(notificationIds);
     // User_Notification.destroy({ where: { UserId: req.user.id } });
     res.sendStatus(200);
   } catch (err: unknown) {
