@@ -105,7 +105,8 @@ eventRouter.post('/', async (req: any, res: Response) => {
             streetAddress,
             cityName,
             stateName,
-            zipCode
+            zipCode,
+            hour_before_notif,
         } = req.body;
         const userId = req.user.id;
 
@@ -131,6 +132,7 @@ eventRouter.post('/', async (req: any, res: Response) => {
             start_time,
             end_time,
             description,
+            hour_before_notif,
             created_by: userId,
         });
 
@@ -370,23 +372,23 @@ eventRouter.get('/categories', async (req: Request, res: Response) => {
 });
 
 
-// get all venues in db
-eventRouter.get('/venues', async (req: Request, res: Response) => {
-    try {
-        const venues = await Venue.findAll();
-        const data = venues.map(venue => ({
-            name: venue.dataValues.name,
-            description: venue.dataValues.description,
-            street_address: venue.dataValues.street_address,
-            zip_code: venue.dataValues.zip_code,
-            city_name: venue.dataValues.city_name,
-            state_name: venue.dataValues.state_name,
-        }));
-        res.status(200).send(data);
-    } catch (error) {
-        console.error('Error fetching venues from DB', error);
-        res.sendStatus(500);
-    }
-})
+// // get all venues in db
+// eventRouter.get('/venues', async (req: Request, res: Response) => {
+//     try {
+//         const venues = await Venue.findAll();
+//         const data = venues.map(venue => ({
+//             name: venue.dataValues.name,
+//             description: venue.dataValues.description,
+//             street_address: venue.dataValues.street_address,
+//             zip_code: venue.dataValues.zip_code,
+//             city_name: venue.dataValues.city_name,
+//             state_name: venue.dataValues.state_name,
+//         }));
+//         res.status(200).send(data);
+//     } catch (error) {
+//         console.error('Error fetching venues from DB', error);
+//         res.sendStatus(500);
+//     }
+// })
 
 export default eventRouter;

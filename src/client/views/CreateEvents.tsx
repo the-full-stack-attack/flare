@@ -7,17 +7,10 @@ import {Button} from "../../components/ui/button";
 import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem,} from '../../components/ui/select';
 import {Card} from '../../components/ui/card';
 import {Separator} from '../../components/ui/seperator';
-import {Calendar} from '../../components/ui/calendar';
-import {CalendarIcon} from 'lucide-react';
-import {Popover, PopoverTrigger, PopoverContent} from '../../components/ui/popover';
-import {InputWithLabel} from '../../components/ui/input-with-label';
-import {ShinyButton} from '../../components/ui/shiny-button';
+import { Ripple } from '../../components/ui/ripple'
 import {Toggle, toggleVariants} from '../../components/ui/toggle';
-import {format} from 'date-fns';
-import {RainbowButton} from '../../components/ui/rainbowbutton';
-import MagicCard from '../../components/ui/magicCard';
+import dayjs from "dayjs";
 
-import cn from './../../../lib/utils'
 
 type EventData = {
     title: string;
@@ -81,11 +74,6 @@ function CreateEvents() {
                     searchInput: searchTerm,
                 }
             });
-            console.log('searching for...', searchTerm);
-            console.log('just made a requst: ', response.data);
-
-
-            console.log('do we set this? ', venues);
             setFilteredVenues(response.data);
         } catch (error) {
             console.error('oops', error);
@@ -134,20 +122,10 @@ function CreateEvents() {
         setFilteredVenues([]);
     };
 
-
-    /**
-     * // const filtered = venues.filter(venue =>
-     *             //     venue.name.toLowerCase().includes(searchTerm.toLowerCase())
-     *             // );
-     *
-     */
-
-
     // navigation handling
     function handlePrev() {
         if (step > 1) setStep((step) => step - 1);
     }
-
     function handleNext() {
         if (step < 5) setStep((step) => step + 1);
     }
@@ -193,15 +171,24 @@ function CreateEvents() {
     // form submission handling
     const onSubmit = async (e: any) => {
         e.preventDefault();
-
         try {
+
+            // convert to date
+            const eventDateTime = dayjs(`${formInfo.startDate} ${formInfo.startTime}`).toDate();
+            const oneHourBefore = new Date(eventDateTime.getTime() - (60 * 60 * 1000));
+
+            // create notif
+            const hourBeforeNotif = await axios.post('/api/notifications', {
+                message: `The upcoming event you're attending, ${formInfo.title}, starts soon at ${dayjs(formInfo.startTime).format('h:mm A')}. Hope to see you there.`,
+                send_time: oneHourBefore,
+            })
+
             const formattedData = {
                 title: formInfo.title,
                 description: formInfo.description,
                 category: formInfo.category,
                 interests: formInfo.interests,
                 startDate: formInfo.startDate,
-                endDate: formInfo.endDate,
                 startTime: formInfo.startTime,
                 endTime: formInfo.endTime,
                 venue: formInfo.venue,
@@ -209,26 +196,17 @@ function CreateEvents() {
                 streetAddress: formInfo.streetAddress,
                 zipCode: Number(formInfo.zipCode),
                 cityName: formInfo.cityName,
-                stateName: formInfo.stateName.toUpperCase()
+                stateName: formInfo.stateName.toUpperCase(),
+                hour_before_notif: hourBeforeNotif.data.id,
             };
-
-            const response = await axios.post('/api/event', formattedData);
-            console.log('Response:', response.data);
+            await axios.post('/api/event', formattedData);
+            setStep(1);
+            setFormInfo('');
         } catch (error) {
             console.error('Error creating event:', error.response?.data || error);
         }
     };
 
-
-    // get list of venues from db
-    const getVenues = async () => {
-        try {
-            const allVenues = await axios.get('/api/event/venues');
-            setVenues(allVenues.data);
-        } catch (error) {
-            console.error('Error getting venues from DB', error);
-        }
-    };
 
 
     // get interests from db
@@ -259,7 +237,6 @@ function CreateEvents() {
         // noinspection JSIgnoredPromiseFromCall
         getCategories();
         // noinspection JSIgnoredPromiseFromCall
-        getVenues();
     }, [formInfo]);
 
 
@@ -425,9 +402,23 @@ function CreateEvents() {
                                 />
 
                                 {isLoadingVenue && (
-                                    <div className='text-center my-2'>
-                                        Loading venue details...one second please!
+                                    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/20">
+                                        <Card
+                                            className="relative w-64 h-64 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+                                            <Ripple
+                                                className="opacity-80"
+                                                mainCircleSize={100}
+                                                mainCircleOpacity={0.3}
+                                                numCircles={6}
+                                            />
+                                            <div className="relative z-10 text-center">
+                                                <h3 className="text-lg font-medium text-gray-800">Gathering Venue
+                                                    Data</h3>
+                                                <p className="text-sm text-gray-600 mt-2">Just a moment...</p>
+                                            </div>
+                                        </Card>
                                     </div>
+
                                 )}
                                 {venueSearch && filteredVenues.length > 0 && (
                                     <div
