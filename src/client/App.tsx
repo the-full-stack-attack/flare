@@ -1,3 +1,6 @@
+import '@/styles/main.css'; // Main styles
+import '@/styles/themes/dark-cosmic.css'; // Theme styles
+import '@/styles/themes/cyber-neon.css'; // Theme styles
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
@@ -13,7 +16,6 @@ import {
   Notifications,
 } from './views/index';
 import NavBar from './components/NavBar';
-import './styles/main.css';
 import { UserType, UserContext } from './contexts/UserContext';
 
 export default function App() {
@@ -56,7 +58,7 @@ export default function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Or your loading component
+    return <div>Loading...</div>;
   }
 
   return (
