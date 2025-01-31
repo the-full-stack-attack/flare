@@ -8,5 +8,8 @@ type PlayerList = {
 type QuiplashList = {
   [key: string]: any;
 }
+type QuiplashGames = {
+  [key: string]: any;
+}
 
-export { type SocketList, PlayerList, QuiplashList }
+export { type SocketList, PlayerList, QuiplashList, QuiplashGames }
