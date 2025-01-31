@@ -40,7 +40,7 @@ function Notifications() {
 
   return (
     <div className="container pt-20 pb-8">
-      <NotificationList notifs={notifs} />
+      <NotificationList notifs={notifs} getNotifications={getNotifications} />
     </div>
   );
 }

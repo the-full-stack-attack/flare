@@ -105,15 +105,27 @@ notifsRouter.delete('/:id', (req: any, res: Response) => {
   DELETE /api/notifications/all => Delete all notifications for a user
     - Needs to only delete the notifications that have been sent
 */
-notifsRouter.delete('/all', (req: any, res: Response) => {
-  User_Notification.destroy({ where: { UserId: req.user.id } })
-    .then(() => {
-      res.sendStatus(200);
-    })
-    .catch((err: unknown) => {
-      console.error('Failed to DELETE /api/notifications/all', err);
-      res.sendStatus(500);
+notifsRouter.delete('/all', async (req: any, res: Response) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: req.user.id,
+      },
+      include: [
+        {
+          model: Notification,
+          where: { send_time: { [Op.lt]: new Date(Date.now()) } },
+          required: false,
+        },
+      ],
     });
+    console.log(user);
+    // User_Notification.destroy({ where: { UserId: req.user.id } });
+    res.sendStatus(200);
+  } catch (err: unknown) {
+    console.error('Failed to DELETE /api/notifications/all', err);
+    res.sendStatus(500);
+  }
 });
 
 export default notifsRouter;
