@@ -77,7 +77,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       />
       <Card>
         <CardHeader>
-          <CardTitle>Current Task:</CardTitle>
+          <CardTitle>Your Task</CardTitle>
         </CardHeader>
         <CardContent>
           {user.current_task_id

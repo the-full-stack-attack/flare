@@ -27,7 +27,9 @@ function CompletedTask({ userTask }: CompletedTaskProps) {
   const dateString: string = dayjs(userTask.date_completed).format(
     'MM/DD/YYYY'
   );
-  return <li>{`Level ${difficulty} ${type} ${description} ${dateString}`}</li>;
+  return (
+    <div className="w-screen">{`Level ${difficulty} ${type} ${description.slice(0, -1)} ${dateString}`}</div>
+  );
 }
 
 export default CompletedTask;
