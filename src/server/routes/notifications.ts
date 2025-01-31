@@ -51,10 +51,28 @@ notifsRouter.get('/', (req: any, res: Response) => {
 
 /*
   PATCH /api/notifications/seen/all =>
+   - Must send all of the notifications rendered in the view
 */
 notifsRouter.patch('/seen/all', (req: any, res: Response) => {
+  const { notifications } = req.body;
+  // Grab all of the unread notification ids
+  const unreadNotifs = notifications.reduce((acc: number[], curr: any) => {
+    if (!curr.User_Notification.seen) {
+      acc.push(curr.id);
+    }
+    return acc;
+  }, []);
+
   // Query User_Notifications table for all user notifs update all seen to true
-  User_Notification.update({ seen: true }, { where: { UserId: req.user.id } })
+  User_Notification.update(
+    { seen: true },
+    {
+      where: {
+        UserId: req.user.id,
+        NotificationId: unreadNotifs,
+      },
+    }
+  )
     .then(() => {
       res.sendStatus(200);
     })
@@ -85,6 +103,7 @@ notifsRouter.delete('/:id', (req: any, res: Response) => {
 
 /*
   DELETE /api/notifications/all => Delete all notifications for a user
+    - Needs to only delete the notifications that have been sent
 */
 notifsRouter.delete('/all', (req: any, res: Response) => {
   User_Notification.destroy({ where: { UserId: req.user.id } })

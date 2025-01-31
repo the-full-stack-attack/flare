@@ -6,7 +6,7 @@ import { UserContext } from '../contexts/UserContext';
 import NotificationList from '../components/notifications-view/NotificationList';
 
 function Notifications() {
-  const { user } = useContext(UserContext);
+  const { getUser } = useContext(UserContext);
 
   const [notifs, setNotifs] = useState<any>([]);
 
@@ -21,9 +21,22 @@ function Notifications() {
       });
   }, []);
 
+  const patchNotificationsSeenAll = useCallback(() => {
+    axios
+      .patch('/api/notifications/seen/all', { notifications: notifs })
+      .then(getUser)
+      .catch((err: unknown) => {
+        console.error('Failed to patchNotificationsSeenAll', err);
+      });
+  }, [getUser, notifs]);
+
   useEffect(() => {
     getNotifications();
   }, [getNotifications]);
+
+  useEffect(() => {
+    patchNotificationsSeenAll();
+  }, [notifs]);
 
   return (
     <div className="container pt-20 pb-8">
