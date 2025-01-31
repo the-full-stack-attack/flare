@@ -36,4 +36,19 @@ const Player = function (id: any, user: any, eventId: any): any {
   return self;
 };
 
-export default Player 
+const QuipLashPlayer = function ( id: any, user: any, eventId: any ): any {
+  const quip = {
+    username: user.username,
+    name: id,
+    playingQuiplash: false,
+    quipResponse: '',
+    sentResponse: false,
+    eventId,
+    updatePlayingQuiplash() {
+      quip.playingQuiplash = !quip.playingQuiplash;
+    },
+  };
+  return quip;
+}
+
+export { Player, QuipLashPlayer };

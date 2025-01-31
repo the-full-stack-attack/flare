@@ -11,6 +11,7 @@ import taskRouter from './task';
 import userTaskRouter from './userTask';
 import event2Router from './event2';
 import signUpRouter from './signup';
+import notifsRouter from './notifications';
 
 export = {
   aiRouter,
@@ -26,4 +27,5 @@ export = {
   userTaskRouter,
   event2Router,
   signUpRouter,
+  notifsRouter,
 };

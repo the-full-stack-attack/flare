@@ -8,6 +8,7 @@ import OptOutList from '../components/tasks/OptOutList';
 
 function Task() {
   const { user } = useContext(UserContext);
+  const { weekly_task_count, last_week_task_count } = user;
   const [task, setTask] = useState<object | null>({});
   // Use effect will call getTask if there is a change in user state
   useEffect((): void => {
@@ -26,7 +27,12 @@ function Task() {
   }, [user]);
   return (
     <div>
-      <h4>Hello Stanky, you have reached the dashboard.</h4>
+      <div>
+        <p>{`You completed ${last_week_task_count} tasks last week`}</p>
+      </div>
+      <div>
+        <p>{`You've completed ${weekly_task_count} tasks so far this week`}</p>
+      </div>
       {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
       <CompletedTaskList />
       <br />

@@ -6,7 +6,20 @@ import User_Task from '../db/models/users_tasks';
 
 const taskRouter = Router();
 
-// GET requests to /api/task/:id
+type UserType = {
+  id: number;
+  username?: string;
+  google_id?: string;
+  email?: string;
+  full_name?: string;
+  phone_number?: string;
+  tasks_complete?: number;
+  current_task_id?: number;
+};
+
+/* GET requests to /api/task/:id
+ * Comes from the Dashboard view and Task view
+ */
 taskRouter.get('/:id', (req: any, res: Response) => {
   const { id } = req.params;
   Task.findByPk(id)
@@ -23,7 +36,10 @@ taskRouter.get('/:id', (req: any, res: Response) => {
     });
 });
 
-// POST requests to /api/task
+/* POST requests to /api/task
+ * Comes from ChooseTask component on the 'choose task' button click
+ * Creates a user_task row for the specified user with the specified task
+ */
 taskRouter.post('/', async (req: any, res: Response) => {
   try {
     const { type, difficulty, date, userId } = req.body.taskInfo;
@@ -50,8 +66,12 @@ taskRouter.post('/', async (req: any, res: Response) => {
   }
 });
 
-// PATCH requests to /api/task/:id
-taskRouter.patch('/:id', async (req: any, res: Response) => {
+/* PATCH requests to /api/task/optOut/:id
+ * Comes from TaskDisplay component 'opt out' button click
+ * Sets user's current_task id to null
+ * Sets the corresponding use _task opted_out column to true
+ */
+taskRouter.patch('/optOut/:id', async (req: any, res: Response) => {
   try {
     // Get user's id from req.params
     const taskId = req.params.id;
@@ -77,8 +97,14 @@ taskRouter.patch('/:id', async (req: any, res: Response) => {
   }
 });
 
-// PATCH requests to /api/task, but not to /api/task/:id
-taskRouter.patch('/', async (req: any, res: Response) => {
+/* PATCH requests to /api/task/complete
+ * Comes from TaskDisplay component 'complete' button click
+ * Sets user's current_task id to null
+ * Sets the corresponding use _task complete column to true
+ * User's task_completed and task's completed_count are incremented
+ * User_task date_completed is updated
+ */
+taskRouter.patch('/complete', async (req: any, res: Response) => {
   try {
     const { userId, taskId } = req.body.ids;
     const user: any = await User.findByPk(userId);
@@ -88,7 +114,8 @@ taskRouter.patch('/', async (req: any, res: Response) => {
     });
     if (user && task && userTask) {
       user.current_task_id = null;
-      user.tasks_completed += 1;
+      user.total_tasks_completed += 1;
+      user.weekly_task_count += 1;
       await user.save();
       task.completed_count += 1;
       await task.save();
@@ -104,6 +131,30 @@ taskRouter.patch('/', async (req: any, res: Response) => {
     }
   } catch (err) {
     console.error('Error in PATCH to /api/task: ', err);
+    res.sendStatus(500);
+  }
+});
+
+/** PATCH requests to /api/task/retry
+ * Comes from the OptOutTask component 'retry' button click
+ */
+taskRouter.patch('/retry', async (req: any, res: Response) => {
+  try {
+    // Grab UserId and TaskId fro req.body
+    const { UserId, TaskId } = req.body.ids;
+    const user: any = await User.findByPk(UserId);
+    const userTask: any = await User_Task.findOne({ where: { UserId, TaskId } });
+    if (user && userTask) {
+      user.current_task_id = TaskId;
+      user.save();
+      userTask.opted_out = false;
+      userTask.save();
+      res.status(200).send(user);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (err) {
+    console.error('Error in findByPk in PATCH to /api/task/retry', err);
     res.sendStatus(500);
   }
 });
