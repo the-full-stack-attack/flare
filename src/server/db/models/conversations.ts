@@ -8,6 +8,7 @@ interface ConversationAttributes {
   user_id: number;
   prompt: string;
   response: string;
+  is_favorite: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -41,6 +42,11 @@ const Conversation = database.define<ConversationModel>(
     response: {
       type: DataTypes.TEXT,
       allowNull: false,
+    },
+    is_favorite: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     createdAt: {
       type: DataTypes.DATE,
