@@ -85,6 +85,8 @@ function QuipLash() {
   const [promptGiven, setPromptGiven] = useState(false);
   const [playerAnswers, setPlayerAnswers] = useState(false);
   const [answersReceived, setAnswersReceived] = useState(false);
+  const [showWinner, setShowWinner] = useState(false);
+  const [winner, setWinner] = useState('');
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -155,8 +157,14 @@ function QuipLash() {
       setPlayerAnswers(answers);
     });
 
-    socket.on('showWinner', (winner) => {
+    socket.on('showWinner', ({winner, falsyBool, truthyBool}) => {
       console.log(winner)
+      setAnswersReceived(falsyBool);
+      setShowWinner(truthyBool);
+      setWinner(winner);
+      setTimeout(() => {
+          setShowWinner(falsyBool)
+      }, 5000)
     })
     //   // Update
     // UI with the new message
@@ -285,6 +293,11 @@ function QuipLash() {
       {!promptGiven && (
         <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
       )}
+      {
+        showWinner && (
+          <h1>{winner}</h1>
+        )
+      }
       <Button onClick={quitQuiplash}>QUIT</Button>
     </div>
   );

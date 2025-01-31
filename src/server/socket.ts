@@ -142,7 +142,16 @@ const initializeSocket = (
                     winner = currentContestant;
                   }
                 }
-                socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`showWinner`, winner);
+                let falsyBool = false;
+                let truthyBool = true;
+                QUIPLASH_GAMES[eventId].votes.length = 0 // reset votes
+                // clear answers
+                for (const prop of Object.getOwnPropertyNames(QUIPLASH_GAMES[eventId].answers)) {
+                  delete QUIPLASH_GAMES[eventId].answers[prop];
+                }
+                // allow a new prompt
+                QUIPLASH_GAMES[eventId].promptGiven = false;
+                socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`showWinner`, { winner, falsyBool, truthyBool });
               }, 15000);
             }, 20000);
           }
