@@ -7,17 +7,18 @@ import {Button} from "../../components/ui/button";
 import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem,} from '../../components/ui/select';
 import {Card} from '../../components/ui/card';
 import {Separator} from '../../components/ui/seperator';
-import { Calendar } from '../../components/ui/calendar';
-import { CalendarIcon } from 'lucide-react';
-import { Popover, PopoverTrigger, PopoverContent } from '../../components/ui/popover';
+import {Calendar} from '../../components/ui/calendar';
+import {CalendarIcon} from 'lucide-react';
+import {Popover, PopoverTrigger, PopoverContent} from '../../components/ui/popover';
 import {InputWithLabel} from '../../components/ui/input-with-label';
 import {ShinyButton} from '../../components/ui/shiny-button';
 import {Toggle, toggleVariants} from '../../components/ui/toggle';
-import { format } from 'date-fns';
+import {format} from 'date-fns';
 import {RainbowButton} from '../../components/ui/rainbowbutton';
 import MagicCard from '../../components/ui/magicCard';
 
 import cn from './../../../lib/utils'
+
 type EventData = {
     title: string;
     description: string;
@@ -68,6 +69,8 @@ function CreateEvents() {
     const [venueSearch, setVenueSearch] = useState('');
     const [filteredVenues, setFilteredVenues] = useState([]);
     const [step, setStep] = useState(1);
+    const [isLoadingVenue, setIsLoadingVenue] = useState(false);
+
 
     // Venue search handling - filers based on user search input
     const handleVenueSearch = async (searchTerm: string) => {
@@ -95,6 +98,7 @@ function CreateEvents() {
         // if venue is from foursquare api
         if (venue.fsq_id) {
             try {
+                setIsLoadingVenue(true);
                 // request venue details from foursquare api
                 const response = await axios.get(`/api/event/venue/${venue.fsq_id}`);
                 // update venue form info state
@@ -109,6 +113,8 @@ function CreateEvents() {
                 }));
             } catch (error) {
                 console.error('Error fetching venue details:', error);
+            } finally {
+                setIsLoadingVenue(false);
             }
         } else {
             // for user input venue update form state
@@ -259,24 +265,23 @@ function CreateEvents() {
 
     return (
         <div
-        className='min-h-screen pt-20 flex items-center justify-center'>
+            className='min-h-screen pt-20 flex items-center justify-center'>
 
 
             <Card className='p-5 w-[550px] mx-auto bg-blue-500 p-4 px-8 rounded-lg'>
 
+
+                {/* BEGINNING OF FORM */}
+
+
                 {step === 1 && (
                     <div>
-
                         <div className='mb-5 text-2xl font-semibold'>
                             Your next favorite memory starts with this moment.
-
                         </div>
-
                         <Separator
                             className='my-5 bg-color-5'>
-
                         </Separator>
-
                         <Input
                             className='bg-color-0 mb-5'
                             name="title"
@@ -291,31 +296,25 @@ function CreateEvents() {
                             value={formInfo.description}
                             onChange={handleChange}
                         />
-
                         <div
                             className='mb-5 font-semibold text-center'>
                             Remember, everyone here started exactly where you are.
                         </div>
-
-
                     </div>
                 )}
 
 
+                {/* CATEGORY AND INTERESTS SELECTION */}
+
+
                 {step === 2 && (
-
-
                     <div>
-
                         <div className='mb-5 text-2xl font-semibold'>
                             Connect through what you love most
                         </div>
-
                         <Separator
                             className='my-5 bg-color-5'>
-
                         </Separator>
-
                         <Select
                             value={formInfo.category}
                             onValueChange={selectCategory}
@@ -332,6 +331,7 @@ function CreateEvents() {
                             </SelectContent>
                         </Select>
 
+                        {/* MAP OVER INTERESTS */}
 
                         <div className="my-5 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                             {interests.map((interest, index) => (
@@ -342,38 +342,33 @@ function CreateEvents() {
                                     variant="outline"
                                     size="lg"
                                     className='h-12 w-26'
-
                                 >
                                     {interest}
                                 </Toggle>
                             ))}
                         </div>
-
-
                         <div
                             className='my-5 font-semibold text-center'>
                             Where shared interests become shared moments
                         </div>
-
                     </div>
                 )}
 
 
+                {/* TIME AND DATE INFORMATION */}
+
+
                 {step === 3 && (
-
-
                     <div>
-
-
                         <div className='mb-5 text-2xl font-semibold'>
                             Pick your perfect moment to connect
                         </div>
                         <Separator
                             className='my-5 bg-color-5'>
-
                         </Separator>
 
 
+                        {/* DATE INPUT FIELD */}
                         <label className="block text-sm font-medium mb-1">Date</label>
                         <Input
                             name="startDate"
@@ -382,8 +377,10 @@ function CreateEvents() {
                             onChange={handleChange}
                             className='mb-5'
                         />
-                        <label className="block text-sm font-medium mb-1">Start Time</label>
 
+
+                        {/* TIME INPUT FIELDS */}
+                        <label className="block text-sm font-medium mb-1">Start Time</label>
                         <Input
                             name="startTime"
                             type="time"
@@ -391,16 +388,13 @@ function CreateEvents() {
                             onChange={handleChange}
                             className='mb-5'
                         />
-
                         <label className="block text-sm font-medium mb-1">End Time</label>
-
                         <Input
                             name="endTime"
                             type="time"
                             value={formInfo.endTime}
                             onChange={handleChange}
                         />
-
                         <div
                             className='my-5 font-semibold text-center'>
                             Set the stage for connection - your moment, your pace, your Flare.
@@ -409,22 +403,19 @@ function CreateEvents() {
                 )}
 
 
+                {/* VENUE SELECTION */}
+
+
                 {step === 4 && (
-
-
                     <div
                         className=''>
                         <div className="space-y-4">
-
                             <div className='mb-5 text-2xl font-semibold'>
                                 Choose where your story unfolds
                             </div>
-
                             <Separator
                                 className='my-5 bg-color-5'>
                             </Separator>
-
-
                             <div className="relative">
                                 <Input
                                     placeholder="Search for a venue..."
@@ -432,6 +423,12 @@ function CreateEvents() {
                                     onChange={(e) => handleVenueSearch(e.target.value)}
                                     className="w-full [&::placeholder]:!text-black "  // override default styling
                                 />
+
+                                {isLoadingVenue && (
+                                    <div className='text-center my-2'>
+                                        Loading venue details...one second please!
+                                    </div>
+                                )}
                                 {venueSearch && filteredVenues.length > 0 && (
                                     <div
                                         className="placeholder-black absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto">
@@ -457,14 +454,11 @@ function CreateEvents() {
                                 )}
                             </div>
                         </div>
-
                         <div
                             className='mt-10'>
                             <Separator>
-
                             </Separator>
                             <div
-
                                 className='text-center my-5'>
                                 Or Create Your Own Venue [COMING SOON]!
                             </div>
@@ -472,9 +466,11 @@ function CreateEvents() {
                     </div>
                 )}
 
+
+                {/* CONFIRM DETAILS */}
+
+
                 {step === 5 && (
-
-
                     <div className="mb-5 space-y-6">
                         <h2 className="text-2xl font-semibold">Confirm Your Event Details</h2>
                         <div className="space-y-4">
@@ -499,13 +495,11 @@ function CreateEvents() {
                                     <p>{new Date(formInfo.endTime).toLocaleTimeString()}</p>
                                 </div>
                             </div>
-
                             <div className="border rounded-lg p-4">
                                 <h3 className="font-semibold mb-2">Venue Information</h3>
                                 <div className="grid grid-cols-2 gap-2">
                                     <p className="text-gray-600">Venue Name:</p>
                                     <p>{formInfo.venue}</p>
-
                                     <>
                                         <p className="text-gray-600">Description:</p>
                                         <p>{formInfo.venueDescription}</p>
@@ -518,12 +512,14 @@ function CreateEvents() {
                                         <p className="text-gray-600">Zip Code:</p>
                                         <p>{formInfo.zipCode}</p>
                                     </>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 )}
+
+
+                {/* BUTTONS BUTTONS BUTTONS AND BUTTONS! */}
 
 
                 {step === 5 ? (
@@ -540,13 +536,11 @@ function CreateEvents() {
                         onClick={handleNext}
                         className='mb-3 bg-color-5 w-full h-12 flex items-center justify-center'
                     >
-
                         <span className='text-lg font-medium text-black !normal-case'>
                             {step === 4 ? "Review" : "Continue"}
                         </span>
                     </Button>
                 )}
-
                 <Button
                     onClick={handlePrev}
                     disabled={step === 1}
@@ -555,13 +549,8 @@ function CreateEvents() {
                         Go Back
                     </span>
                 </Button>
-
-
-
-
-
             </Card>
-            </div>)
-}
+        </div>
+    )}
 
 export default CreateEvents;
