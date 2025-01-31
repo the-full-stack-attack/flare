@@ -3,7 +3,6 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { UserContext } from '../contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
-
 import HelpfulPrompts from './AiConversations/components/helpful-prompts';
 import SavedConversations from './AiConversations/components/saved-conversations';
 
@@ -72,6 +71,7 @@ function AiConversations() {
       setResponse(data.structured);
 
 
+     
       const aiMessage = {
         sender: 'assistant' as const,
         text:
