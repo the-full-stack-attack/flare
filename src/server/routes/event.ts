@@ -88,7 +88,7 @@ const removeDuplicateVenues = (venues: any) => {
 }
 
 
-
+// create event route
 eventRouter.post('/', async (req: any, res: Response) => {
     try {
         const {
@@ -183,19 +183,22 @@ eventRouter.post('/', async (req: any, res: Response) => {
 
 
 
-
+// apify worker/actor that receives a Google Place Id and returns Google Business Data (scrapes data from Google My Business) - uses the Apify SDK
 const runApifyActor = async (googlePlaceId: any) => {
     try {
         const client = new ApifyClient({
             token: process.env.APIFY_API_KEY,
         })
 
+        // calls our Apify actor 'compass/google-places-api'
         const run = await client.actor("compass/google-places-api").call({
+            // each Apify actor will receive different inputs - these are specific to our Apify actor
             placeIds: [`place_id:${googlePlaceId}`]
         });
 
-        const { items } = await client.dataset(run.defaultDatasetId).listItems();
-        return items;
+        // after our Apify actor runs, it returns various meta data - including defaultDatasetId - the results of our previous call
+        const { items } = await client.dataset(run.defaultDatasetId).listItems(); // retrieve results
+        return items; // return results
 
     } catch (error) {
         console.error('Error running Apify Actor', error);
@@ -203,6 +206,7 @@ const runApifyActor = async (googlePlaceId: any) => {
     }
 }
 
+// google text search api request - receives venue name and street address, returns the goooglePlaceId
 const getGooglePlaceId = async (venueData: any) => {
     if (!venueData.description) {
         try {
@@ -283,25 +287,27 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         }) as any;
 
 
+
         // convert google popular time histogram into most popular day and hour - may eventually want to change this to save more data in the future
         if (gData?.popularTimesHistogram) {
             let mostBusy = 0;
+            let peakDay = '';
             let peakHour = 0;
 
-            // iterate through each day
-            Object.keys(gData.popularTimesHistogram).forEach(day => {
-                // get hours for current day
-                const hours = gData.popularTimesHistogram[day];
-                // loop through each hour to get highest occupancy
+            for (const day in gData.popularTimesHistogram) {
+                // get array of hours for current day
+                const hours = gData.popularTimesHistogram[day]
+                // iterate through each hour in day
                 hours.forEach((hourData: any) => {
+                    // update variables
                     if (hourData.occupancyPercent > mostBusy) {
                         mostBusy = hourData.occupancyPercent;
+                        peakDay = day;
+                        console.log(peakDay);
                         peakHour = hourData.hour;
                     }
                 })
-            })
-            // set peak hour in DB with busiest hour
-            venue.peak_hour = new Date().setHours(peakHour);
+            }
         }
 
 
@@ -376,23 +382,23 @@ eventRouter.get('/categories', async (req: Request, res: Response) => {
 });
 
 
-// // get all venues in db
-// eventRouter.get('/venues', async (req: Request, res: Response) => {
-//     try {
-//         const venues = await Venue.findAll();
-//         const data = venues.map(venue => ({
-//             name: venue.dataValues.name,
-//             description: venue.dataValues.description,
-//             street_address: venue.dataValues.street_address,
-//             zip_code: venue.dataValues.zip_code,
-//             city_name: venue.dataValues.city_name,
-//             state_name: venue.dataValues.state_name,
-//         }));
-//         res.status(200).send(data);
-//     } catch (error) {
-//         console.error('Error fetching venues from DB', error);
-//         res.sendStatus(500);
-//     }
-// })
+// get all venues in db
+eventRouter.get('/venues', async (req: Request, res: Response) => {
+    try {
+        const venues = await Venue.findAll();
+        const data = venues.map(venue => ({
+            name: venue.dataValues.name,
+            description: venue.dataValues.description,
+            street_address: venue.dataValues.street_address,
+            zip_code: venue.dataValues.zip_code,
+            city_name: venue.dataValues.city_name,
+            state_name: venue.dataValues.state_name,
+        }));
+        res.status(200).send(data);
+    } catch (error) {
+        console.error('Error fetching venues from DB', error);
+        res.sendStatus(500);
+    }
+})
 
 export default eventRouter;
