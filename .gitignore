@@ -3,4 +3,5 @@ node_modules
 dist
 .idea
 .idea/
-.txt
+.txt.DS_Store
+**/.DS_Store
