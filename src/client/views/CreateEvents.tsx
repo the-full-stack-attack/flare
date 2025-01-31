@@ -9,15 +9,14 @@ import {Card} from '../../components/ui/card';
 import {Separator} from '../../components/ui/seperator';
 import { Ripple } from '../../components/ui/ripple'
 import {Toggle, toggleVariants} from '../../components/ui/toggle';
-
+import dayjs from 'dayjs';
 
 type EventData = {
     title: string;
     description: string;
-    startDate: Date;
-    endDate: Date;
-    startTime: Date;
-    endTime: Date;
+    startDate: string;
+    startTime: string;
+    endTime: string;
     venue: string;
     venueDescription: string;
     streetAddress: string;
@@ -32,10 +31,9 @@ function CreateEvents() {
     const [formInfo, setFormInfo] = useState<EventData>({
         title: '',
         description: '',
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: new Date(),
-        endTime: new Date(),
+        startDate: '',
+        startTime: '',
+        endTime: '',
         venue: '',
         venueDescription: '',
         streetAddress: '',
@@ -53,11 +51,11 @@ function CreateEvents() {
         city_name: string;
         state_name: string;
     }>>([]);
-    const [date, setDate] = React.useState<Date>()
+    // const [date, setDate] = React.useState<Date>()
     const [categories, setCategories] = useState([]); // Categories from DB
     const [interests, setInterests] = useState([]); // Interests from DB
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]); // User selected Interests
-    const [isNewVenue, setIsNewVenue] = useState(false);
+    // const [isNewVenue, setIsNewVenue] = useState(false);
     const [venueSearch, setVenueSearch] = useState('');
     const [filteredVenues, setFilteredVenues] = useState([]);
     const [step, setStep] = useState(1);
@@ -102,6 +100,7 @@ function CreateEvents() {
                 console.error('Error fetching venue details:', error);
             } finally {
                 setIsLoadingVenue(false);
+                setStep(5)
             }
         } else {
             // for user input venue update form state
@@ -171,9 +170,6 @@ function CreateEvents() {
     const onSubmit = async (e: any) => {
         e.preventDefault();
         try {
-
-
-
             const formattedData = {
                 title: formInfo.title,
                 description: formInfo.description,
@@ -227,14 +223,12 @@ function CreateEvents() {
         // noinspection JSIgnoredPromiseFromCall
         getCategories();
         // noinspection JSIgnoredPromiseFromCall
-    }, [formInfo]);
+    },[]);
 
 
     return (
         <div
             className='min-h-screen pt-20 flex items-center justify-center'>
-
-
             <Card className='p-5 w-[550px] mx-auto bg-blue-500 p-4 px-8 rounded-lg'>
 
 
@@ -298,7 +292,9 @@ function CreateEvents() {
                             </SelectContent>
                         </Select>
 
+
                         {/* MAP OVER INTERESTS */}
+
 
                         <div className="my-5 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                             {interests.map((interest, index) => (
@@ -467,13 +463,11 @@ function CreateEvents() {
                                     <p className="text-gray-600">Interests:</p>
                                     <p>{formInfo.interests.join(', ')}</p>
                                     <p className="text-gray-600">Start Date:</p>
-                                    <p>{new Date(formInfo.startDate).toLocaleDateString()}</p>
+                                    <p>{dayjs(formInfo.startDate).format("MMM D, YYYY")}</p>
                                     <p className="text-gray-600">Start Time:</p>
-                                    <p>{new Date(formInfo.startTime).toLocaleTimeString()}</p>
-                                    <p className="text-gray-600">End Date:</p>
-                                    <p>{new Date(formInfo.endDate).toLocaleDateString()}</p>
+                                    <p>{dayjs(`2024-01-01T${formInfo.startTime}`).format("h:mm A")}</p>
                                     <p className="text-gray-600">End Time:</p>
-                                    <p>{new Date(formInfo.endTime).toLocaleTimeString()}</p>
+                                    <p>{dayjs(`2024-01-01T${formInfo.endTime}`).format("h:mm A")}</p>
                                 </div>
                             </div>
                             <div className="border rounded-lg p-4">
