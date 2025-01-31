@@ -29,7 +29,7 @@ type UserData = {
   email: string;
   full_name: string;
   phone_number: string;
-  tasks_completed: number;
+  total_tasks_completed: number;
   events_attended: number;
   location: string;
   avatar_id: number;
@@ -58,7 +58,7 @@ const adminUser: UserData = {
   email: 'admin@admin.org',
   full_name: 'Admin Man',
   phone_number: '5554443333',
-  tasks_completed: 0,
+  total_tasks_completed: 0,
   events_attended: 0,
   location: 'Here',
   avatar_id: 1,
@@ -183,10 +183,6 @@ const seedEvents = async () => {
   }
 };
 
-const eventsSeed = () => {
-  setTimeout(() => {
-    seedEvents();
-  }, 2000);
-};
-
-export default eventsSeed;
+setTimeout(() => {
+  seedEvents();
+}, 2000);
