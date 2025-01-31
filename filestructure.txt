@@ -6,6 +6,7 @@
 |-- CONTRIBUTING.md
 |-- PRESS_RELEASE.md
 |-- README.md
+|-- STYLE-GUIDE.md
 |-- components.json
 |-- lib
     |-- utils.ts
