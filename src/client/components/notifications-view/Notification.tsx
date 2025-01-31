@@ -26,7 +26,7 @@ type NotificationProps = {
 function Notification({ notif, getNotifications }: NotificationProps) {
   const deleteNotification = () => {
     axios
-      .delete(`/api/notifications/${notif.id}`)
+      .delete(`/api/notifications/${notif.id}/delete`)
       .then(getNotifications)
       .catch((err: unknown) => {
         console.error('Failed to deleteNotification:', err);

@@ -127,8 +127,9 @@ notifsRouter.delete('/all', async (req: any, res: Response) => {
       },
       []
     );
-    console.log(notificationIds);
-    // User_Notification.destroy({ where: { UserId: req.user.id } });
+    User_Notification.destroy({
+      where: { UserId: req.user.id, NotificationId: notificationIds },
+    });
     res.sendStatus(200);
   } catch (err: unknown) {
     console.error('Failed to DELETE /api/notifications/all', err);
