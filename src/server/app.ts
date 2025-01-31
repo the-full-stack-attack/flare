@@ -59,7 +59,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // For all router endpoints, start with /api
-
 app.use('/api', (req: any, res: any, next: any) => {
   // Whitelist certain routes that don't need auth
   const publicPaths = ['/api/auth/check', '/api/auth/logout'];

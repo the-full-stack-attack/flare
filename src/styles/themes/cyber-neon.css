@@ -1,0 +1,19 @@
+.theme-cyber-neon {
+  --gradient-bg: bg-gradient-to-br from-blue-900 via-purple-900 to-cyan-900;
+  --gradient-text: bg-gradient-to-r from-cyan-400 via-green-400 to-yellow-400;
+  --card-bg: backdrop-blur-lg bg-blue-500/10;
+  --card-hover: bg-cyan-500/20;
+  --card-border: border-cyan-500/30;
+}
+
+.theme-cyber-neon .bg-theme-gradient {
+  @apply bg-gradient-to-br from-blue-900 via-purple-900 to-cyan-900;
+}
+
+.theme-cyber-neon .text-theme-gradient {
+  @apply bg-gradient-to-r from-cyan-400 via-green-400 to-yellow-400 bg-clip-text text-transparent;
+}
+
+.theme-cyber-neon .card-theme {
+  @apply backdrop-blur-lg bg-blue-500/10 rounded-xl border border-cyan-500/30;
+}

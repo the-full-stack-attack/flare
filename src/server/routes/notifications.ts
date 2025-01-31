@@ -51,10 +51,28 @@ notifsRouter.get('/', (req: any, res: Response) => {
 
 /*
   PATCH /api/notifications/seen/all =>
+   - Must send all of the notifications rendered in the view
 */
 notifsRouter.patch('/seen/all', (req: any, res: Response) => {
+  const { notifications } = req.body;
+  // Grab all of the unread notification ids
+  const unreadNotifs = notifications.reduce((acc: number[], curr: any) => {
+    if (!curr.User_Notification.seen) {
+      acc.push(curr.id);
+    }
+    return acc;
+  }, []);
+
   // Query User_Notifications table for all user notifs update all seen to true
-  User_Notification.update({ seen: true }, { where: { UserId: req.user.id } })
+  User_Notification.update(
+    { seen: true },
+    {
+      where: {
+        UserId: req.user.id,
+        NotificationId: unreadNotifs,
+      },
+    }
+  )
     .then(() => {
       res.sendStatus(200);
     })
@@ -67,7 +85,7 @@ notifsRouter.patch('/seen/all', (req: any, res: Response) => {
 /*
   DELETE /api/notifications/:id => Delete one notification for a user
 */
-notifsRouter.delete('/:id', (req: any, res: Response) => {
+notifsRouter.delete('/:id/delete', (req: any, res: Response) => {
   User_Notification.destroy({
     where: {
       UserId: req.user.id,
@@ -85,16 +103,38 @@ notifsRouter.delete('/:id', (req: any, res: Response) => {
 
 /*
   DELETE /api/notifications/all => Delete all notifications for a user
+    - Needs to only delete the notifications that have been sent
 */
-notifsRouter.delete('/all', (req: any, res: Response) => {
-  User_Notification.destroy({ where: { UserId: req.user.id } })
-    .then(() => {
-      res.sendStatus(200);
-    })
-    .catch((err: unknown) => {
-      console.error('Failed to DELETE /api/notifications/all', err);
-      res.sendStatus(500);
+notifsRouter.delete('/all', async (req: any, res: Response) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: req.user.id,
+      },
+      include: [
+        {
+          model: Notification,
+          where: { send_time: { [Op.lt]: new Date(Date.now()) } },
+          required: false,
+        },
+      ],
     });
+    
+    const notificationIds = user?.dataValues.Notifications.reduce(
+      (acc: number[], curr: any) => {
+        acc.push(curr.dataValues.id);
+        return acc;
+      },
+      []
+    );
+    User_Notification.destroy({
+      where: { UserId: req.user.id, NotificationId: notificationIds },
+    });
+    res.sendStatus(200);
+  } catch (err: unknown) {
+    console.error('Failed to DELETE /api/notifications/all', err);
+    res.sendStatus(500);
+  }
 });
 
 export default notifsRouter;
