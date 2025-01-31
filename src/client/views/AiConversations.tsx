@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { UserContext } from '../contexts/UserContext';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { UserContext } from '../contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
-import { HelpfulPrompts } from './AiConversations/components/helpful-prompts';
-import { SavedConversations } from './AiConversations/components/saved-conversations';
+import HelpfulPrompts from './AiConversations/components/helpful-prompts';
+import SavedConversations from './AiConversations/components/saved-conversations';
 
 export default function AiConversations() {
   const { user } = useContext(UserContext);
@@ -16,9 +16,12 @@ export default function AiConversations() {
   // Fetch saved conversations when component mounts
   useEffect(() => {
     if (user.id) {
-      axios.get(`/api/aiConversation/saved/${user.id}`)
+      axios
+        .get(`/api/aiConversation/saved/${user.id}`)
         .then(({ data }) => setSavedConversations(data))
-        .catch(err => console.error('Failed to fetch saved conversations:', err));
+        .catch((err) =>
+          console.error('Failed to fetch saved conversations:', err)
+        );
     }
   }, [user.id]);
 
@@ -28,7 +31,7 @@ export default function AiConversations() {
     try {
       const { data } = await axios.post('/api/aiConversation', {
         userId: user.id,
-        prompt
+        prompt,
       });
       setResponse(data.structured);
     } catch (error) {
@@ -52,7 +55,7 @@ export default function AiConversations() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
-      
+
       <div className="relative z-10 container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Helpful Prompts Sidebar */}
@@ -90,10 +93,14 @@ export default function AiConversations() {
                   <p className="text-gray-300">{response.advice}</p>
                 </div>
                 <div className="p-6 rounded-xl bg-white/10 backdrop-blur-lg">
-                  <h3 className="text-xl font-bold text-white mb-4">Action Steps</h3>
+                  <h3 className="text-xl font-bold text-white mb-4">
+                    Action Steps
+                  </h3>
                   <ul className="space-y-2">
                     {response.tips.map((tip: string, index: number) => (
-                      <li key={index} className="text-gray-300">• {tip}</li>
+                      <li key={index} className="text-gray-300">
+                        • {tip}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -103,7 +110,7 @@ export default function AiConversations() {
 
           {/* Saved Conversations Sidebar */}
           <div className="md:col-span-1">
-            <SavedConversations 
+            <SavedConversations
               conversations={savedConversations}
               onSelect={(conv) => setPrompt(conv.prompt)}
             />
