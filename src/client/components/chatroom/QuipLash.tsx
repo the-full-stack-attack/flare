@@ -87,6 +87,7 @@ function QuipLash() {
   const [answersReceived, setAnswersReceived] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState('');
+  const [quiplashPrompt, setQuiplashPrompt] = useState('');
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -144,6 +145,8 @@ function QuipLash() {
       }) => {
         console.log('next question has arrived!');
         console.log(text);
+        setQuiplashPrompt(text);
+
       }
     );
 
@@ -268,6 +271,11 @@ function QuipLash() {
               loop={true}
             /> */}
         </Application>
+        {promptGiven && (
+          <h6>{quiplashPrompt}</h6>
+        )
+  
+        }
         {promptGiven && !answersReceived && (
           <div>
             <Label> Enter Your Quiplash! </Label>
