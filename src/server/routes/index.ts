@@ -12,6 +12,7 @@ import userTaskRouter from './userTask';
 import event2Router from './event2';
 import signUpRouter from './signup';
 import notifsRouter from './notifications';
+import textRouter from './text';
 
 export = {
   aiRouter,
@@ -28,4 +29,5 @@ export = {
   event2Router,
   signUpRouter,
   notifsRouter,
+  textRouter,
 };
