@@ -287,11 +287,10 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         }) as any;
 
 
-
         // convert google popular time histogram into most popular day and hour - may eventually want to change this to save more data in the future
         if (gData?.popularTimesHistogram) {
             let mostBusy = 0;
-            let peakDay = '';
+            let peakDay: any = '';
             let peakHour = 0;
 
             for (const day in gData.popularTimesHistogram) {
@@ -303,11 +302,12 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                     if (hourData.occupancyPercent > mostBusy) {
                         mostBusy = hourData.occupancyPercent;
                         peakDay = day;
-                        console.log(peakDay);
                         peakHour = hourData.hour;
                     }
                 })
             }
+            const date = dayjs().day(peakDay).hour(peakHour)
+            venue.peak_hour = date.toDate();
         }
 
 
@@ -382,23 +382,23 @@ eventRouter.get('/categories', async (req: Request, res: Response) => {
 });
 
 
-// get all venues in db
-eventRouter.get('/venues', async (req: Request, res: Response) => {
-    try {
-        const venues = await Venue.findAll();
-        const data = venues.map(venue => ({
-            name: venue.dataValues.name,
-            description: venue.dataValues.description,
-            street_address: venue.dataValues.street_address,
-            zip_code: venue.dataValues.zip_code,
-            city_name: venue.dataValues.city_name,
-            state_name: venue.dataValues.state_name,
-        }));
-        res.status(200).send(data);
-    } catch (error) {
-        console.error('Error fetching venues from DB', error);
-        res.sendStatus(500);
-    }
-})
+// // get all venues in db
+// eventRouter.get('/venues', async (req: Request, res: Response) => {
+//     try {
+//         const venues = await Venue.findAll();
+//         const data = venues.map(venue => ({
+//             name: venue.dataValues.name,
+//             description: venue.dataValues.description,
+//             street_address: venue.dataValues.street_address,
+//             zip_code: venue.dataValues.zip_code,
+//             city_name: venue.dataValues.city_name,
+//             state_name: venue.dataValues.state_name,
+//         }));
+//         res.status(200).send(data);
+//     } catch (error) {
+//         console.error('Error fetching venues from DB', error);
+//         res.sendStatus(500);
+//     }
+// })
 
 export default eventRouter;
