@@ -1,6 +1,14 @@
-import React, { useEffect, useState, useCallback, useContext, useRef, ref } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useContext,
+  useRef,
+  ref,
+} from 'react';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
+import '@pixi/events';
 import {
   Container,
   Graphics,
@@ -12,6 +20,7 @@ import {
   TextStyle,
   Spritesheet, // failing
   AnimatedSprite,
+  Rectangle,
 } from 'pixi.js';
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
@@ -48,19 +57,18 @@ const style = new TextStyle({
 });
 
 function QuipLash() {
-
   useAssets([
-      {
-        alias: 'bunny',
-        src: 'https://pixijs.com/assets/bunny.png',
-      },
-      {
-        alias: 'speech',
-        src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
-      },
-    ]);
+    {
+      alias: 'bunny',
+      src: 'https://pixijs.com/assets/bunny.png',
+    },
+    {
+      alias: 'speech',
+      src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
+    },
+  ]);
 
-const {
+  const {
     assets: [background],
     isSuccess,
   } = useAssets<Texture>([bartender]);
@@ -78,22 +86,28 @@ const {
   const [playerAnswers, setPlayerAnswers] = useState(false);
   const [answersReceived, setAnswersReceived] = useState(false);
   const displayMessage = (msg: string) => {
-   // setAllMessages((prevMessages) => [...prevMessages, msg]);
+    // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   // QUIPLASH
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
 
-
   // EXAMPLES
-  const speechBubble = useCallback((graphics: unknown) => {
-    graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
-    graphics?.scale.set(1, 1);
+  const speechBubble = useCallback((graphics: unknown, element) => {
+    graphics?.texture(Assets.get('speech'), 0xffffff, 10, 0, 270);
+    graphics?.scale.set(1, 0.7);
     graphics.interactive = true;
-    graphics.onclick = () => {
-       console.log('clicked graphic')
-     }
-  
+    graphics.cursor = 'pointer';
+    graphics.label = 'HELLO';
+    // console.log(graphics)
+    graphics.on('pointerdown', test);
+    //graphics.pointerdown =
+
+    //graphics.hitArea = new Rectangle(0, 0, 100, 100)
   }, []);
+
+  function onTouchstart(param, e) {
+    console.log(e);
+  }
 
   // WINDOW SIZING
   useEffect(() => {
@@ -108,26 +122,39 @@ const {
 
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
-    console.log(user, 'quiplash user')
+    console.log(user, 'quiplash user');
     // axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
-     socket.emit('joinQuiplash', { user, eventId });
+    socket.emit('joinQuiplash', { user, eventId });
     // socket.on('message', (msg) => {
     //   displayMessage(msg);
-    socket.on('receivePrompt', ({ response: { candidates: [ { content: { parts: [{ text } ] } } ] } } ) => {
-      console.log('next question has arrived!')
-      console.log(text);
-    })
-    
+    socket.on(
+      'receivePrompt',
+      ({
+        response: {
+          candidates: [
+            {
+              content: {
+                parts: [{ text }],
+              },
+            },
+          ],
+        },
+      }) => {
+        console.log('next question has arrived!');
+        console.log(text);
+      }
+    );
+
     socket.on('promptGiven', (bool) => {
       setPromptGiven(bool);
     });
 
     socket.on('showAnswers', (answers) => {
-      console.log(answers, 'the answers were received')
+      console.log(answers, 'the answers were received');
       setAnswersReceived(true);
       setPlayerAnswers(answers);
-    })
-    //   // Update 
+    });
+    //   // Update
     // UI with the new message
     // });
     // // Update state of all players and their respective positions
@@ -157,62 +184,66 @@ const {
   const quitQuiplash = () => {
     socket.emit('quitQuiplash');
     console.log('the player has quit');
-  }
+  };
 
   const readyForQuiplash = () => {
     socket.emit('generatePrompt');
-  }
+  };
   const sendMessage = () => {
     console.log(message);
-   socket.emit('quiplashMessage', { message, eventId, user });
-   //  displayMessage(message);
+    socket.emit('quiplashMessage', { message, eventId, user });
+    //  displayMessage(message);
     setMessage('');
   };
 
-  const test = () => {
-    console.log('test is passing for onclick')
-  }
+  const test = (e) => {
+    console.log('test is passing for onclick', e);
+  };
   return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '20px',
-        }}
-      >
-        <div style={{ width: { gameWidth }, height: { gameHeight } }}>
-          <Application>
-            <pixiContainer>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: '20px',
+      }}
+    >
+      <div style={{ width: { gameWidth }, height: { gameHeight } }}>
+        <Application>
+          <pixiContainer>
             {isSuccess && (
-                <pixiSprite
-                  texture={background}
-                  x={0}
-                  y={0}
-                  width={800}
-                  height={600}
-                />
-              )}
-          {answersReceived && Object.entries(playerAnswers).map((val, i) => (
- 
-            <pixiContainer  x={50} y={150 + (i * 150)} key={Math.random()}>
-              <pixiGraphics onClick={test} draw={speechBubble}>
-            </pixiGraphics>
-              <pixiText
-                text={`${val[1]} \n - ${val[0]}`}
-                anchor={0.5}
-                x={90}
-                y={-100}
-                style={style}
-                onClick={test}
+              <pixiSprite
+                texture={background}
+                x={0}
+                y={0}
+                width={800}
+                height={600}
               />
-            </pixiContainer>
-           
-          ))}
-            </pixiContainer>
-          <pixiContainer></pixiContainer>
+            )}
+          </pixiContainer>
+          {answersReceived &&
+            Object.entries(playerAnswers).map((tupleAnswer, i) => (
+              <pixiContainer
+                interactive={true}
+                onPointerDown={() => {
+                  test(tupleAnswer[0]);
+                }}
+                x={50}
+                y={150 + i * 150}
+                key={Math.random().toFixed(6) + String.fromCharCode(Math.random.toFixed(1))}
+              >
+                <pixiGraphics draw={speechBubble}>
+                  <pixiText
+                    text={`${tupleAnswer[1]} \n - ${tupleAnswer[0]}`}
+                    anchor={0.5}
+                    x={120}
+                    y={100}
+                    style={style}
+                  />
+                </pixiGraphics>
+              </pixiContainer>
+            ))}
 
-
-            {/* <pixiAnimatedSprite
+          {/* <pixiAnimatedSprite
 
               anchor={0.5}
               textures={anim}
@@ -223,28 +254,33 @@ const {
               y={50}
               loop={true}
             /> */}
-          </Application>
-         { promptGiven && <div>
-          <Label> Enter Your Quiplash! </Label>
-          <Input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: '20px',
-            }}>
-            <InteractiveHoverButton onClick={sendMessage}>
-              SUBMIT QUIPLASH
-            </InteractiveHoverButton>
+        </Application>
+        {promptGiven && (
+          <div>
+            <Label> Enter Your Quiplash! </Label>
+            <Input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '20px',
+              }}
+            >
+              <InteractiveHoverButton onClick={sendMessage}>
+                SUBMIT QUIPLASH
+              </InteractiveHoverButton>
+            </div>
           </div>
-        </div> }
+        )}
       </div>
-      { !promptGiven && <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>}
-            <Button onClick={quitQuiplash}>QUIT</Button>
+      {!promptGiven && (
+        <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
+      )}
+      <Button onClick={quitQuiplash}>QUIT</Button>
     </div>
   );
 }

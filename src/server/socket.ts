@@ -118,7 +118,7 @@ const initializeSocket = (
               QUIPLASH_GAMES[eventId].promptGiven = false;
               socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`promptGiven`, QUIPLASH_GAMES[eventId].promptGiven);
               socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
-            }, 5000);
+            }, 1000);
           }
         };
         // if a game already exists, let server know we succeeded test #1
