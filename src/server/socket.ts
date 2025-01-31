@@ -118,7 +118,33 @@ const initializeSocket = (
               QUIPLASH_GAMES[eventId].promptGiven = false;
               socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`promptGiven`, QUIPLASH_GAMES[eventId].promptGiven);
               socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
-            }, 1000);
+
+              setTimeout(() => {
+                let totalVotes : { [key: string]: any } = {};
+                let winner = [ '' , 0 ];
+                for(let i = 0; i < QUIPLASH_GAMES[eventId].votes.length; i++){
+                  // if the current name that was voted for is not in the object
+                  if(totalVotes[QUIPLASH_GAMES[eventId].votes[i]] === undefined){
+                    // add them to the object , set their vote to 1
+                    totalVotes[QUIPLASH_GAMES[eventId].votes[i]] = 1;
+                  } else {
+                    // if they are already in the object, add 1 to that persons name
+                    totalVotes[QUIPLASH_GAMES[eventId].votes[i]] += 1;
+                  }
+                }
+                // At the end of the loop, check who has the highest vote.
+                // loop through the object
+                for (let key in totalVotes) {
+                  let currentContestant = [key, totalVotes[key]];
+                  // if there is no winner (the first iteration)
+                  if (winner[1] < currentContestant[1]) {
+                    // set the winner to the first guy
+                    winner = currentContestant;
+                  }
+                }
+                socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`showWinner`, winner);
+              }, 15000);
+            }, 20000);
           }
         };
         // if a game already exists, let server know we succeeded test #1
@@ -205,7 +231,11 @@ I am not too sure, but I am thinking about writing a dev.to article about this b
       QUIPLASH_GAMES[socket.data.eventId].answers[user.username] = message;
     })
 
-
+    // VOTE
+    socket.on('vote', (e) => {
+      console.log('vote received for ', e)
+      QUIPLASH_GAMES[socket.data.eventId].votes.push(e);
+    })
 
 
 

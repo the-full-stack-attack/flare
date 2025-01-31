@@ -150,10 +150,14 @@ function QuipLash() {
     });
 
     socket.on('showAnswers', (answers) => {
-      console.log(answers, 'the answers were received');
+      console.log(answers, 'the answers were received by client');
       setAnswersReceived(true);
       setPlayerAnswers(answers);
     });
+
+    socket.on('showWinner', (winner) => {
+      console.log(winner)
+    })
     //   // Update
     // UI with the new message
     // });
@@ -198,6 +202,7 @@ function QuipLash() {
 
   const test = (e) => {
     console.log('test is passing for onclick', e);
+    socket.emit('vote', e);
   };
   return (
     <div
@@ -229,7 +234,7 @@ function QuipLash() {
                 }}
                 x={50}
                 y={150 + i * 150}
-                key={Math.random().toFixed(6) + String.fromCharCode(Math.random.toFixed(1))}
+                key={Math.random().toFixed(6) + String.fromCharCode(Math.random().toFixed(1))}
               >
                 <pixiGraphics draw={speechBubble}>
                   <pixiText
@@ -255,7 +260,7 @@ function QuipLash() {
               loop={true}
             /> */}
         </Application>
-        {promptGiven && (
+        {promptGiven && !answersReceived && (
           <div>
             <Label> Enter Your Quiplash! </Label>
             <Input
