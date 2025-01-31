@@ -143,12 +143,14 @@ taskRouter.patch('/retry', async (req: any, res: Response) => {
     // Grab UserId and TaskId fro req.body
     const { UserId, TaskId } = req.body.ids;
     const user: any = await User.findByPk(UserId);
-    const userTask: any = await User_Task.findOne({ where: { UserId, TaskId } });
+    const userTask: any = await User_Task.findOne({
+      where: { UserId, TaskId },
+    });
     if (user && userTask) {
       user.current_task_id = TaskId;
-      user.save();
+      await user.save();
       userTask.opted_out = false;
-      userTask.save();
+      await userTask.save();
       res.status(200).send(user);
     } else {
       res.sendStatus(404);

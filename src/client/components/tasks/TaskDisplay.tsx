@@ -29,8 +29,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
   const [openComplete, setOpenComplete] = useState(false);
   const [openOptOut, setOpenOptOut] = useState(false);
   // Function for when a task is complete
-  const { user, getUser, setUser } = useContext(UserContext);
-  // Is it better to use getUser or setUser in this function?
+  const { user, getUser } = useContext(UserContext);
   const completeTask = (): void => {
     const userId = user.id;
     const taskId = task.id;
@@ -40,7 +39,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
     axios
       .patch('/api/task/complete', config)
       .then(({ data }) => {
-        setUser(data);
+        getUser();
       })
       .catch((err) => {
         console.error('Error completing task/user PATCH: ', err);
@@ -56,7 +55,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
     axios
       .patch(`/api/task/optOut/${taskId}`, config)
       .then(({ data }) => {
-        setUser(data);
+        getUser();
       })
       .then(() => {
         setOpenOptOut(false);
@@ -78,7 +77,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       />
       <Card>
         <CardHeader>
-          <CardTitle>Current Task:</CardTitle>
+          <CardTitle>Your Task</CardTitle>
         </CardHeader>
         <CardContent>
           {user.current_task_id

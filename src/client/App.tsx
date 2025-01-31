@@ -16,7 +16,7 @@ import {
   Notifications,
 } from './views/index';
 import NavBar from './components/NavBar';
-import './styles/main.css';
+import '../styles/main.css';
 
 import { UserType, UserContext } from './contexts/UserContext';
 

@@ -38,11 +38,11 @@ function CompletedTaskList() {
       });
   }, [user]);
   return (
-    <ul>
+    <div className="grid-auto-flow: column">
       {completedTasks.map((userTask) => (
         <CompletedTask key={userTask.TaskId} userTask={userTask} />
       ))}
-    </ul>
+    </div>
   );
 }
 
