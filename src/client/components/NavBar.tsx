@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, JSX } from 'react';
 import { motion } from 'framer-motion';
 import { Transition } from '@headlessui/react';
 import {
@@ -11,9 +11,8 @@ import {
   FaSignOutAlt, // Logout
 } from 'react-icons/fa';
 import cn from '../../../lib/utils';
-// Import icons
-
 import { UserContext } from '../contexts/UserContext';
+
 
 function NavBar(): JSX.Element {
   const { user } = useContext(UserContext);
