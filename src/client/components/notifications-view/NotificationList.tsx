@@ -11,14 +11,15 @@ type NotificationListProps = {
       seen: boolean;
     };
   }[];
+  getNotifications: () => void;
 };
 
-function NotificationList({ notifs }: NotificationListProps) {
+function NotificationList({ notifs, getNotifications }: NotificationListProps) {
   return (
     <>
       {notifs.map((notif: any) => (
         <div key={notif.id}>
-          <Notification notif={notif} />
+          <Notification notif={notif} getNotifications={getNotifications} />
         </div>
       ))}
     </>
