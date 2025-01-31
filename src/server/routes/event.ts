@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import { Op } from 'sequelize';
 import { ApifyClient } from 'apify-client';
 import Venue_Tag from "../db/models/venue_tags";
-
+import Notification from '../db/models/notifications';
 
 const eventRouter = Router();
 
@@ -56,7 +56,6 @@ eventRouter.get('/search', async (req: any, res: Response) => {
             state_name: result.place.location.region,
             fsq_id: result.place.fsq_id,
         }));
-
         // combine both venue results
         const combinedResults = [...dbVenues, ...mappedData ]
         // de-duplicate
@@ -106,7 +105,6 @@ eventRouter.post('/', async (req: any, res: Response) => {
             cityName,
             stateName,
             zipCode,
-            hour_before_notif,
         } = req.body;
         const userId = req.user.id;
 
@@ -126,13 +124,19 @@ eventRouter.post('/', async (req: any, res: Response) => {
             state_name: stateName,
         });
 
+
+        const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
+        const notification: any = await Notification.create({
+            message: `The upcoming event you're attending, ${title}, starts soon at ${dayjs(`${startDate} ${startTime}`).format('h:mm A')}. Hope to see you there.`,
+            send_time: oneHourBefore,
+        });
         // then create the event
         const newEvent: any = await Event.create({
             title,
             start_time,
             end_time,
             description,
-            hour_before_notif,
+            hour_before_notif: notification.id,
             created_by: userId,
         });
 

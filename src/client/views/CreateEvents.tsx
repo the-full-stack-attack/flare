@@ -9,7 +9,6 @@ import {Card} from '../../components/ui/card';
 import {Separator} from '../../components/ui/seperator';
 import { Ripple } from '../../components/ui/ripple'
 import {Toggle, toggleVariants} from '../../components/ui/toggle';
-import dayjs from "dayjs";
 
 
 type EventData = {
@@ -173,15 +172,7 @@ function CreateEvents() {
         e.preventDefault();
         try {
 
-            // convert to date
-            const eventDateTime = dayjs(`${formInfo.startDate} ${formInfo.startTime}`).toDate();
-            const oneHourBefore = new Date(eventDateTime.getTime() - (60 * 60 * 1000));
 
-            // create notif
-            const hourBeforeNotif = await axios.post('/api/notifications', {
-                message: `The upcoming event you're attending, ${formInfo.title}, starts soon at ${dayjs(formInfo.startTime).format('h:mm A')}. Hope to see you there.`,
-                send_time: oneHourBefore,
-            })
 
             const formattedData = {
                 title: formInfo.title,
@@ -197,7 +188,6 @@ function CreateEvents() {
                 zipCode: Number(formInfo.zipCode),
                 cityName: formInfo.cityName,
                 stateName: formInfo.stateName.toUpperCase(),
-                hour_before_notif: hourBeforeNotif.data.id,
             };
             await axios.post('/api/event', formattedData);
             setStep(1);
