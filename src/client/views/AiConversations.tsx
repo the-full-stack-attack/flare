@@ -71,8 +71,7 @@ function AiConversations() {
       setResponse(data.structured);
 
 
-      setResponse(data.structured);
-
+     
       const aiMessage = {
         sender: 'assistant' as const,
         text:
