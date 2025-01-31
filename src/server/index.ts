@@ -8,7 +8,7 @@ import database from './db/index';
 import './db/models/index';
 import { data } from 'react-router';
 import './workers/tasks';
-import { type SocketList, PlayerList } from '../types/Players';
+import { type SocketList, PlayerList, QuiplashList, QuiplashGames } from '../types/Players';
 import initializeSocket from './socket';
 
 const PORT = 4000;
@@ -16,6 +16,8 @@ const PORT = 4000;
 
 const SOCKET_LIST: SocketList = {};
 const PLAYER_LIST: PlayerList = {};
+const QUIPLASH_LIST: QuiplashList = {};
+const QUIPLASH_GAMES: QuiplashGames = {};
 
 if (process.env.DEVELOPMENT === 'true') {
   database
@@ -27,7 +29,7 @@ if (process.env.DEVELOPMENT === 'true') {
         });
       } else {
         const server = http.createServer(app);
-        const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST)
+        const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST, QUIPLASH_LIST, QUIPLASH_GAMES)
         server.listen(4000, () => {
           console.log(`Listening on http://localhost:${PORT}`);
         });
@@ -54,7 +56,7 @@ if (process.env.DEVELOPMENT === 'true') {
     .sync({ alter: true })
     .then(() => {
       let httpsServer = https.createServer(options, app)
-      const io = initializeSocket(httpsServer, PLAYER_LIST, SOCKET_LIST )
+      const io = initializeSocket(httpsServer, PLAYER_LIST, SOCKET_LIST, QUIPLASH_LIST, QUIPLASH_GAMES)
       httpsServer.listen(443);
     });
   }

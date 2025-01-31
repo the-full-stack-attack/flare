@@ -188,13 +188,12 @@ event2Router.patch('/attending/:id', async (req: any, res: Response) => {
       });
     } else {
       // If a user bails on an event, destroy the notification.
-      const hourBeforeNotif: any = await User_Notification.findOne({
+      await User_Notification.destroy({
         where: {
           UserId: req.user.id,
           NotificationId: event.notificationId,
         },
       });
-      await hourBeforeNotif.destroy();
     }
 
     await userEvent.save();

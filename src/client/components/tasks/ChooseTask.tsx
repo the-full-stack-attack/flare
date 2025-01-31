@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import {
   Card,
   CardHeader,
@@ -8,9 +9,9 @@ import {
   CardContent,
   CardFooter,
 } from '../../../components/ui/card';
-import { Button } from '../../../components/ui/button';
 import TypeButton from './TypeButton';
 import DifficultyButton from './DifficultyButton';
+import DialogBox from './DialogBox';
 import { UserContext } from '../../contexts/UserContext';
 
 type TaskInfo = {
@@ -22,6 +23,7 @@ type TaskInfo = {
 const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection Therapy'];
 const difficulties: number[] = [1, 2, 3, 4, 5];
 function ChooseTask() {
+  const [isOpen, setIsOpen] = useState(false);
   const [taskInfo, setTaskInfo] = useState<TaskInfo>({
     type: '',
     difficulty: 3,
@@ -44,41 +46,60 @@ function ChooseTask() {
       .then(() => {
         getUser();
       })
+      .then(() => {
+        setIsOpen(false);
+      })
       .catch((err) => {
         console.error('Error posting task: ', err);
       });
   };
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Choose A Task</CardTitle>
-      </CardHeader>
-      <CardContent>
-        Choose a Difficulty
-        {difficulties.map((difficulty) => (
-          <DifficultyButton
-            key={difficulty}
-            difficulty={difficulty}
-            taskInfo={taskInfo}
-            setTaskInfo={setTaskInfo}
-          />
-        ))}
-        <br />
-        {types.map((type) => (
-          <TypeButton
-            key={type}
-            type={type}
-            setTaskInfo={setTaskInfo}
-            taskInfo={taskInfo}
-          />
-        ))}
-      </CardContent>
-      <CardFooter>
-        <Button onClick={chooseTask} variant="secondary">
-          Choose Task
-        </Button>
-      </CardFooter>
-    </Card>
+    <>
+      <DialogBox
+        isOpen={isOpen}
+        confirm={chooseTask}
+        stateSetter={setIsOpen}
+        title="Confirm Task"
+        content={`Do you want to choose the Level ${taskInfo.difficulty} ${taskInfo.type} task?`}
+        cancelText="Cancel"
+        confirmText="Confirm"
+      />
+      <Card>
+        <CardHeader>
+          <CardTitle>Choose A Task</CardTitle>
+        </CardHeader>
+        <CardContent>
+          Choose a Difficulty
+          {difficulties.map((difficulty) => (
+            <DifficultyButton
+              key={difficulty}
+              difficulty={difficulty}
+              taskInfo={taskInfo}
+              setTaskInfo={setTaskInfo}
+            />
+          ))}
+          <br />
+          {types.map((type) => (
+            <TypeButton
+              key={type}
+              type={type}
+              setTaskInfo={setTaskInfo}
+              taskInfo={taskInfo}
+            />
+          ))}
+        </CardContent>
+        <CardFooter>
+          <Button
+            onClick={() => {
+              setIsOpen(true);
+            }}
+            variant="secondary"
+          >
+            Choose Task
+          </Button>
+        </CardFooter>
+      </Card>
+    </>
   );
 }
 

@@ -16,6 +16,7 @@ import {
   Notifications,
 } from './views/index';
 import NavBar from './components/NavBar';
+import './styles/main.css';
 import { UserType, UserContext } from './contexts/UserContext';
 
 export default function App() {
@@ -58,7 +59,9 @@ export default function App() {
   }, []);
 
   if (loading) {
+
     return <div>Loading...</div>;
+
   }
 
   return (
@@ -77,6 +80,7 @@ export default function App() {
               <Route path="CreateEvents" element={<CreateEvents />} />
               <Route path="Events" element={<Events />} />
               <Route path="Task" element={<Task />} />
+              <Route path="Notifications" element={<Notifications />} />
               <Route path="Dashboard" element={<Dashboard />} />
             </>
           ) : (

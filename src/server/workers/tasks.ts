@@ -38,7 +38,7 @@ const resetTasks = async () => {
     }
   );
 };
-
+// Function to generate tasks for the day
 const createTasks = () => {
   console.log('Running resetTasks');
   const day = dayjs().day();
@@ -67,10 +67,50 @@ just tell them to go to where the task will take place.`;
       console.error('Error from gemini: ', err);
     });
 };
-// Cron expression for everyday at midnight 0 0 * * *
+
+type UserType = {
+  id: number;
+  username: string;
+  google_id?: number;
+  email?: string;
+  full_name?: string;
+  phone_number?: string;
+  total_tasks_completed: number;
+  weekly_task_count: number;
+  last_week_task_count: number;
+  events_attended?: number;
+  location?: string;
+  avatar_id?: number;
+  avatar_shirt?: string;
+  avatar_pants?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  current_task_id: number;
+};
+// Function to switch weekly_task_count and last_week_task_count values on every user
+const resetCounts = async () => {
+  console.log('Switching task counts for a new week');
+  // Find all the user
+  const users: any = await User.findAll();
+  // Switch the last_week_task_count to the weekly_task_count of each user
+  users.forEach(async (user: any) => {
+    user.last_week_task_count = user.weekly_task_count;
+    user.save();
+    user.weekly_task_count = 0;
+    user.save();
+  });
+};
+/* Use node-cron to schedule the workers
+ * Cron expression for everyday at midnight 0 0 * * *
+ * Cron expression for 12 am on monday 0 0 * * 1 OR 0 0 * * MON
+ */
 cron.schedule('0 0 * * *', () => {
   resetTasks();
   createTasks();
+});
+
+cron.schedule('0 0 * * MON', () => {
+  resetCounts();
 });
 
 export default resetTasks;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, JSX } from 'react';
+import React, { useState, useEffect, useContext, JSX } from 'react';
 import { motion } from 'framer-motion';
 import { Transition } from '@headlessui/react';
 import {
@@ -6,13 +6,17 @@ import {
   FaCalendarPlus, // Create Event
   FaRobot, // AI
   FaTasks, // Task
+  FaStickyNote, // Notifications
   FaChartLine, // Dashboard
   FaSignOutAlt, // Logout
 } from 'react-icons/fa';
 import cn from '../../../lib/utils';
-// Import icons
+import { UserContext } from '../contexts/UserContext';
+
 
 function NavBar(): JSX.Element {
+  const { user } = useContext(UserContext);
+  
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -22,6 +26,11 @@ function NavBar(): JSX.Element {
     { title: 'Create Event', url: '/CreateEvents', icon: FaCalendarPlus },
     { title: 'AI', url: '/AiConversations', icon: FaRobot },
     { title: 'Task', url: '/Task', icon: FaTasks },
+    {
+      title: `Notifications${user.Notifications.length ? ` (${user.Notifications.length})` : ''}`,
+      url: '/Notifications',
+      icon: FaStickyNote,
+    },
     { title: 'Dashboard', url: '/Dashboard', icon: FaChartLine },
     { title: 'Logout', url: '/logout', icon: FaSignOutAlt },
   ];
