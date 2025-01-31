@@ -61,13 +61,43 @@ const initializeSocket = (
       PLAYER_LIST[socket.id] = player;
     });
 
+    // On disconnect, delete them from the lists
+    socket.on('disconnect', () => {
+      socket.leave(socket.data.eventId);
+      delete SOCKET_LIST[socket.id];
+      delete PLAYER_LIST[socket.id];
+    });
     // QUIPLASH SOCKETS
+    
+    // QUITTING 
+
+    // if a player quits quiplash
+    socket.on('quitQuiplash', () => {
+      // remove their socket from the room
+      socket.leave(`Quiplash room: ${socket.data.eventId}`);
+      // delete that player from the list of players by socket
+      delete QUIPLASH_LIST[socket.id]
+      // decrease the current player count for that game based on their current eventId
+      QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
+      // if there are no more players playing that game, delete the quiplash game from the list of games
+      if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
+        delete QUIPLASH_GAMES[socket.data.eventId]
+      }
+      console.log(QUIPLASH_LIST, 'list quip');
+      console.log(QUIPLASH_GAMES, 'remaining QUIPLASH GAMES');
+    })
+
+
+
+    // JOINING
+
     socket.on('joinQuiplash', ({ user, eventId }) => {
       console.log(user, 'quipl');
       console.log(eventId, 'quipl');
       console.log(PLAYER_LIST);
       console.log(socket.id);
       socket.data.eventId = eventId;
+      socket.join(`Quiplash room: ${eventId}`);
       const quiplashPlayer = QuipLashPlayer(socket.id, user, eventId);
       QUIPLASH_LIST[socket.id] = quiplashPlayer;
       console.log(QUIPLASH_LIST);
@@ -77,51 +107,43 @@ const initializeSocket = (
         console.log(`no games exist for room ${eventId} yet, creating a room`);
         // create a game on the quiplash game object
         QUIPLASH_GAMES[eventId] = {
-          players: [],
-          votes: [],
-          playerCount: 0,
+          players: {}, // each key in this object is the users username, and it points to quiplash player
+          votes: [], // array of usernames that was voted for
+          playerCount: 0, // count of players, when it is zero; delete the game
+          answers: {},
+          promptGiven: false, // This dictates if the button is pushable or not
+          startTimer() {
+            console.log('timer started');
+            setTimeout(() => {
+              QUIPLASH_GAMES[eventId].promptGiven = false;
+              socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`promptGiven`, QUIPLASH_GAMES[eventId].promptGiven);
+              socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
+            }, 5000);
+          }
         };
         // if a game already exists, let server know we succeeded test #1
       } else {
         console.log(`a game for room ${eventId} already exists, adding player`);
       }
-
       // A game should already exist at this point regardless of whether or not it did before
-
-      // add the player to the array of players
-      QUIPLASH_GAMES[eventId].players.push(quiplashPlayer);
+      // add the player to the correct game by eventId, a quiplash player to the players object. their key is their username
+      QUIPLASH_GAMES[eventId].players[user.username] = quiplashPlayer;
       // increase the current player count from zero to 1
       QUIPLASH_GAMES[eventId].playerCount += 1;
       console.log(QUIPLASH_LIST, 'quiplash list');
-      console.log(QUIPLASH_GAMES, 'ONGOING QUIPLASH GAMES')
-
+      console.log(QUIPLASH_GAMES, 'ONGOING QUIPLASH GAMES');
+      let returnData = QUIPLASH_GAMES[eventId];
+      socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit('ongoingPrompt', QUIPLASH_GAMES[eventId].promptGiven);
     });
 
-    // if a player quits quiplash
-    socket.on('quitQuiplash', () => {
-      // remove their socket from the room
-      socket.leave(socket.data.eventId);
-      // delete that player from the list of players by socket
-      delete QUIPLASH_LIST[socket.id]
-      // decrease the current player count for that game based on their current eventId
-      QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
-      // if there are no more players playing that game, delete the quiplash game from the list of games
-      if(QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0){
-      delete QUIPLASH_GAMES[socket.data.eventId]
-      }
-      console.log(QUIPLASH_LIST, 'list quip');
-      console.log(QUIPLASH_GAMES, 'remaining QUIPLASH GAMES');
-    })
 
-    // On disconnect, delete them from the lists
-    socket.on('disconnect', () => {
-      socket.leave(socket.data.eventId);
-      delete SOCKET_LIST[socket.id];
-      delete PLAYER_LIST[socket.id];
-    });
 
-    socket.on('readyForQuiplash', async (data) => {
-      console.log(data)
+    //  GENERATE A PROMPT
+
+        // triggered when its time to give a new prompt
+    socket.on('generatePrompt', async () => {
+    
+      // generate quiplash prompt that is unique
       let mod = Math.floor(Math.random() * 100);
       let prompt = `Generate a single quiplash prompt related to ${modifiers[mod]}`;
       if (mod >= 61) {
@@ -129,12 +151,68 @@ const initializeSocket = (
       } else if (mod >= 30) {
         prompt = `Generate a single risky quiplash prompt that might get you in trouble with ${modifiers[Math.floor(mod / 2)]}`;
       }
+      // on the client side, they need to deactivate the ability to access this socket for all players in the same chatroom once it is clicked.
+      // after 90 seconds, the client can reactivate the button to access this socket for all players in the same room
+      try {
+        const result = await bartenderAI.generateContent(prompt);
+        console.log(result)
 
-      const result = await bartenderAI.generateContent(prompt);
-      console.log(result)
-      socket.emit('askNextQuiplash', result)
+        /**
+In my understanding for Socket.IO, nsp (namespaces) act as isolated channels for communication. 
+When you create a new socket, it's like tuning into a radio station that broadcasts on a specific frequency. 
+Without specifying a namespace, you're essentially broadcasting your message on a public channel where anyone can listen in. 
+But by using 'nsp', you create a private channel for your sockets to communicate on.
 
+Imagine a large office building with hundreds of employees. 
+If everyone talked at once, you'd have a cacophony of noise and no one would get anything done. 
+Now, introduce conference rooms with walls—each room is a namespace. 
+
+When you use 'socket.nsp.to('room').emit(data)', you're essentially speaking into the intercom of that specific conference room. 
+Only the sockets that have joined that 'room' & namespace will receive the message. 
+Take a step further back and look at the documentation on namespaces:
+
+Official documentation states that
+io.sockets === io.of("/") <-- this is a default 'namespace' of io. Where the namespace is essentially global. 
+So whenever I try to put two and two together; I am thinking that:
+socket.nsp === io.of('this socket').
+in which case
+socket.nsp.emit(data) <-- this part emits only to yourself...?
+(i put ...? because I think where this emits is dependent on the original way you initiated io... meaning I
+think the 'nsp' is a property that refrences the io initialization)
+the latter half
+socket.to(room).emit <--- behaves normally by emitting to all in the room except yourself. possibly by removing every socket that is not connected to this room...?
+
+then the final part is just chaining the two
+`socket.nsp.to(room).emit(data) <--- emits to yourself, and to everyone else in a certain room
+
+I am not too sure, but I am thinking about writing a dev.to article about this because it seems as if there is no official documentation explaining the .nsp property on the socket from their official site for any version whatsoever
+         */
+        socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit('receivePrompt', result);
+      } catch (err) {
+        
+        let boo = { response: { candidates: [{ content: { parts: [{ text: 'what would you do for a klondike bar?' }] } }] } }
+        socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit('receivePrompt', boo);
+      }
+      QUIPLASH_GAMES[socket.data.eventId].promptGiven = true;
+      QUIPLASH_GAMES[socket.data.eventId].startTimer();
+      socket.nsp.to(`Quiplash room: ${socket.data.eventId}`).emit(`promptGiven`, QUIPLASH_GAMES[socket.data.eventId].promptGiven)
     })
+
+    // Quiplash Answer Submissions
+
+    socket.on('quiplashMessage', ({ message, eventId, user }) => {
+      console.log('received a quiplash message');
+      QUIPLASH_GAMES[socket.data.eventId].answers[user.username] = message;
+    })
+
+
+
+
+
+
+    // chatroom
+
+
 
     // Controls movement. Update their respective state via socket.id
     socket.on('keyPress', ({ inputId, state }) => {

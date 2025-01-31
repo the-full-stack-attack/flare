@@ -35,18 +35,30 @@ extend({
 });
 
 const style = new TextStyle({
-  align: 'center',
+  align: 'left',
   fontFamily: 'sans-serif',
-  fontSize: 15,
+  fontSize: 17,
   fontWeight: 'bold',
   fill: '#000000',
   stroke: '#eef1f5',
-  letterSpacing: 5,
+  letterSpacing: 2,
   wordWrap: true,
-  wordWrapWidth: 350,
+  wordWrapWidth: 150,
+  breakWords: true,
 });
 
 function QuipLash() {
+
+  useAssets([
+      {
+        alias: 'bunny',
+        src: 'https://pixijs.com/assets/bunny.png',
+      },
+      {
+        alias: 'speech',
+        src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
+      },
+    ]);
 
 const {
     assets: [background],
@@ -62,7 +74,9 @@ const {
   const [allMessages, setAllMessages] = useState([]);
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
-
+  const [promptGiven, setPromptGiven] = useState(false);
+  const [playerAnswers, setPlayerAnswers] = useState(false);
+  const [answersReceived, setAnswersReceived] = useState(false);
   const displayMessage = (msg: string) => {
    // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -73,7 +87,12 @@ const {
   // EXAMPLES
   const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
-    graphics?.scale.set(1.5, 0.5);
+    graphics?.scale.set(1, 1);
+    graphics.interactive = true;
+    graphics.onclick = () => {
+       console.log('clicked graphic')
+     }
+  
   }, []);
 
   // WINDOW SIZING
@@ -94,11 +113,22 @@ const {
      socket.emit('joinQuiplash', { user, eventId });
     // socket.on('message', (msg) => {
     //   displayMessage(msg);
-    socket.on('askNextQuiplash', ({ response: { candidates: [ { content: { parts: [{ text } ] } } ] } } ) => {
+    socket.on('receivePrompt', ({ response: { candidates: [ { content: { parts: [{ text } ] } } ] } } ) => {
       console.log('next question has arrived!')
       console.log(text);
     })
-    //   // Update UI with the new message
+    
+    socket.on('promptGiven', (bool) => {
+      setPromptGiven(bool);
+    });
+
+    socket.on('showAnswers', (answers) => {
+      console.log(answers, 'the answers were received')
+      setAnswersReceived(true);
+      setPlayerAnswers(answers);
+    })
+    //   // Update 
+    // UI with the new message
     // });
     // // Update state of all players and their respective positions
     // socket.on('newPositions', (data) => {
@@ -126,19 +156,22 @@ const {
 
   const quitQuiplash = () => {
     socket.emit('quitQuiplash');
-    console.log('the player has quit')
+    console.log('the player has quit');
   }
 
   const readyForQuiplash = () => {
-    socket.emit('readyForQuiplash');
+    socket.emit('generatePrompt');
   }
   const sendMessage = () => {
     console.log(message);
-    // socket.emit('message', { message, eventId });
+   socket.emit('quiplashMessage', { message, eventId, user });
    //  displayMessage(message);
     setMessage('');
   };
 
+  const test = () => {
+    console.log('test is passing for onclick')
+  }
   return (
       <div
         style={{
@@ -149,7 +182,7 @@ const {
       >
         <div style={{ width: { gameWidth }, height: { gameHeight } }}>
           <Application>
-            <pixiContainer x={0} y={0}>
+            <pixiContainer>
             {isSuccess && (
                 <pixiSprite
                   texture={background}
@@ -159,7 +192,25 @@ const {
                   height={600}
                 />
               )}
+          {answersReceived && Object.entries(playerAnswers).map((val, i) => (
+ 
+            <pixiContainer  x={50} y={150 + (i * 150)} key={Math.random()}>
+              <pixiGraphics onClick={test} draw={speechBubble}>
+            </pixiGraphics>
+              <pixiText
+                text={`${val[1]} \n - ${val[0]}`}
+                anchor={0.5}
+                x={90}
+                y={-100}
+                style={style}
+                onClick={test}
+              />
             </pixiContainer>
+           
+          ))}
+            </pixiContainer>
+          <pixiContainer></pixiContainer>
+
 
             {/* <pixiAnimatedSprite
 
@@ -173,7 +224,7 @@ const {
               loop={true}
             /> */}
           </Application>
-          <div>
+         { promptGiven && <div>
           <Label> Enter Your Quiplash! </Label>
           <Input
             type="text"
@@ -190,9 +241,9 @@ const {
               SUBMIT QUIPLASH
             </InteractiveHoverButton>
           </div>
-        </div>
+        </div> }
       </div>
-      <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
+      { !promptGiven && <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>}
             <Button onClick={quitQuiplash}>QUIT</Button>
     </div>
   );
