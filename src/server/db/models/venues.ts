@@ -1,9 +1,6 @@
 import Sequelize from 'sequelize';
 import database from '../index';
-import Venue_Attributes from "./venue_attributes";
-import Venue_Amenities from "./venue_amenities";
-import Venue_Hours from "./venue_hours";
-import Venue_Tags from "./venue_tags";
+import Venue_Tag from "./venue_tags";
 
 
 const Venue = database.define('Venue', {
@@ -21,11 +18,22 @@ const Venue = database.define('Venue', {
     price_range: { type: Sequelize.STRING },
     fsq_id: { type: Sequelize.STRING },
     google_place_id: { type: Sequelize.STRING },
+    outdoor_seating: { type: Sequelize.BOOLEAN },
+    peak_hour: { type: Sequelize.DATE },
+    wheelchair_accessible: { type: Sequelize.BOOLEAN },
+    restroom: { type: Sequelize.BOOLEAN },
+    private_parking: { type: Sequelize.BOOLEAN },
+    street_parking: { type: Sequelize.BOOLEAN },
+    serves_alcohol: { type: Sequelize.BOOLEAN },
+    cleanliness: { type: Sequelize.STRING },
+    crowded: { type: Sequelize.STRING },
+    noise_level: { type: Sequelize.STRING },
+    service_quality: { type: Sequelize.STRING },
 });
 
-Venue.hasOne(Venue_Amenities, { foreignKey: 'venue_id' });
-Venue.hasOne(Venue_Attributes, { foreignKey: 'venue_id' });
-Venue.hasMany(Venue_Hours, { foreignKey: 'venue_id' });
-Venue.hasMany(Venue_Tags, { foreignKey: 'venue_id' });
+
+Venue.hasMany(Venue_Tag, { foreignKey: 'venue_id' });
+Venue_Tag.belongsTo(Venue, { foreignKey: 'venue_id' });
+
 
 export default Venue;
