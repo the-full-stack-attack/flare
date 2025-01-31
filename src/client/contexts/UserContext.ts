@@ -8,8 +8,8 @@ export interface UserType {
   full_name?: string;
   phone_number?: string;
   total_tasks_completed?: number;
-  weekly_task_count: number;
-  last_week_task_count: number;
+  weekly_task_count?: number;
+  last_week_task_count?: number;
   events_attended?: number;
   location?: string;
   avatar_id?: number;
