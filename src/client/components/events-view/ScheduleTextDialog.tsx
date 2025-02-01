@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import axios from 'axios';
 
 import {
@@ -26,11 +26,16 @@ function ScheduleTextDialog({
   endTime,
 }: ScheduleTextDialogProps) {
   const [sendTime, setSendTime] = useState<string>('30-minutes');
+  const [message, setMessage] = useState<string>('');
 
-  const handleSendTimeSelect = ({ target }) => {
+  const handleSendTimeSelect = useCallback(({ target }: any) => {
     setSendTime(target.value);
-  };
-  
+  }, []);
+
+  const handleMessageChange = useCallback(({ target }: any) => {
+    setMessage(target.value);
+  }, []);
+
   return (
     <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
@@ -74,7 +79,11 @@ function ScheduleTextDialog({
           <Label htmlFor="message" className="text-left">
             Custom Message
           </Label>
-          <Textarea placeholder="Optional: Create a custom message..." />
+          <Textarea
+            placeholder="Optional: Create a custom message..."
+            value={message}
+            onChange={handleMessageChange}
+          />
         </div>
       </DialogHeader>
     </DialogContent>
