@@ -119,6 +119,7 @@ aiConversationRouter.post(
   async (req: Request, res: Response): Promise<void> => {
     try {
       const { conversationId } = req.params;
+      // Find the conversation by ID
       const conversation = await Conversation.findByPk(conversationId);
 
       if (!conversation) {
@@ -126,11 +127,56 @@ aiConversationRouter.post(
         return;
       }
 
+      // Update is_favorite to true
       await conversation.update({ is_favorite: true });
       res.send(conversation);
     } catch (error) {
       console.error('[saveConversation] Error:', error);
       res.status(500).send({ error: 'Failed to save conversation' });
+    }
+  }
+);
+
+aiConversationRouter.post(
+  '/save/:conversationId',
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { conversationId } = req.params;
+      // Find the conversation by ID
+      const conversation = await Conversation.findByPk(conversationId);
+
+      if (!conversation) {
+        res.status(404).send({ error: 'Conversation not found' });
+        return;
+      }
+
+      // Update is_favorite to true
+      await conversation.update({ is_favorite: true });
+      res.send(conversation);
+    } catch (error) {
+      console.error('[saveConversation] Error:', error);
+      res.status(500).send({ error: 'Failed to save conversation' });
+    }
+  }
+);
+
+aiConversationRouter.get(
+  '/saved/:userId',
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { userId } = req.params;
+      const savedConversations = await Conversation.findAll({
+        where: {
+          user_id: userId,
+          is_favorite: true,
+        },
+        order: [['createdAt', 'DESC']],
+        limit: 10,
+      });
+      res.send(savedConversations);
+    } catch (error) {
+      console.error('[getSavedConversations] Error:', error);
+      res.status(500).send({ error: 'Failed to fetch saved conversations' });
     }
   }
 );
