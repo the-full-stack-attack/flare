@@ -17,12 +17,14 @@ type ScheduleTextDialogProps = {
   eventId: number;
   startTime: Date;
   endTime: Date;
+  eventTitle: string;
 };
 
 function ScheduleTextDialog({
   eventId,
   startTime,
   endTime,
+  eventTitle,
 }: ScheduleTextDialogProps) {
   const [sendTime, setSendTime] = useState<string>('30-minutes');
   const [message, setMessage] = useState<string>('');
@@ -48,6 +50,13 @@ function ScheduleTextDialog({
         event_id: eventId,
       },
     };
+
+    if (message === '') {
+      body.text.content = `Are you still having a good time at ${eventTitle}?
+      If you aren't, remember that you don't need to stay.
+      If you are, disregard this message and live your best life!`;
+    }
+
     if (sendTime === '30-minutes') {
       body.text.send_time = new Date(
         new Date(startTime).getTime() + 1000 * 60 * 30

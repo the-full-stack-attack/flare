@@ -165,6 +165,7 @@ function EventDetails({
                 eventId={event.id}
                 startTime={start_time}
                 endTime={end_time}
+                eventTitle={event.title}
               />
             </Dialog>
           </div>
