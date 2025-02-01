@@ -226,7 +226,7 @@ function QuipLash() {
   return (
     <div
       style={{
-        display: 'flex',
+        display: 'inline-block',
         justifyContent: 'center',
         marginTop: '20px',
       }}
@@ -279,7 +279,7 @@ function QuipLash() {
                   />}
                   </pixiContainer>
         </Application>
-        {promptGiven && <h6>{quiplashPrompt} </h6>}
+        {promptGiven && <h6 class="text-white text-[22px]">{quiplashPrompt} </h6>}
         {promptGiven && !answersReceived && (
           <div>
             <Label> Enter Your Quiplash! </Label>
@@ -302,11 +302,21 @@ function QuipLash() {
           </div>
         )}
       </div>
-      {!promptGiven && (
-        <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
-      )}
-      {showWinner && <h1>{winner}</h1>}
-      <Button onClick={quitQuiplash}>QUIT</Button>
+      <div
+              style={{
+                display: 'inline-block',
+                justifyContent: 'center',
+                marginTop: '20px',
+              }}
+            >
+            {!promptGiven && (<div>
+      <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
+      </div>
+    )}
+    </div>
+    {showWinner && <h1>{winner}</h1>}
+    <Button onClick={quitQuiplash}>QUIT</Button>
+
     </div>
   );
 }

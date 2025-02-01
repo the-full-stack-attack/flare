@@ -268,7 +268,7 @@ function Chatroom() {
         pinchToZoom={true}
         wheel={true}
       > */}
-          <Application>
+          <Application >
             <pixiContainer x={100} y={200}>
               <pixiGraphics draw={drawCircle} />
             </pixiContainer>
@@ -326,7 +326,12 @@ function Chatroom() {
             /> */}
           </Application>
           {/* </Viewport> */}
-          <Button onClick={toggleQuiplash}>Play Quiplash</Button>
+          <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '10px',}}
+          ><Button onClick={toggleQuiplash}>Play Quiplash</Button></div>
           {
             isPlayingQuiplash && <QuipLash startTime={start_time}/>
           }
@@ -358,21 +363,22 @@ function Chatroom() {
           </div>
         </div>
       </div>
+        <MagicCard>
+
       <div
         style={{
           display: 'flex',
           justifyContent: 'center',
-          marginTop: '20px',
+          
+          width: '250px'
         }}>
-        <MagicCard>
-
-          <AnimatedList>
+          <AnimatedList class="w-80 md:w-160 lg:w-2550">
             {allMessages.map((msg) => (
-              <MsgBox msg={msg.message} user={msg.username} />
+              <MsgBox class="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} />
             ))}
           </AnimatedList>
-        </MagicCard>
       </div>
+        </MagicCard>
 
     </div>
   );
