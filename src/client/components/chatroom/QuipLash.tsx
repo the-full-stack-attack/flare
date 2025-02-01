@@ -100,11 +100,11 @@ function QuipLash() {
   const speechBubble = useCallback((graphics: unknown, element) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, 0, 270);
     graphics?.scale.set(1, 0.7);
-    graphics.interactive = true;
+    // graphics.interactive = true;
     graphics.cursor = 'pointer';
     graphics.label = 'HELLO';
     // console.log(graphics)
-    graphics.on('pointerdown', test);
+    // graphics.on('pointerdown', test);
     //graphics.pointerdown =
 
     //graphics.hitArea = new Rectangle(0, 0, 100, 100)
@@ -241,7 +241,7 @@ function QuipLash() {
           {answersReceived &&
             Object.entries(playerAnswers).map((tupleAnswer, i) => (
               <pixiContainer
-                interactive={true}
+                eventMode='static'
                 onPointerDown={() => {
                   test(tupleAnswer[0]);
                 }}
