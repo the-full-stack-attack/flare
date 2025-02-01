@@ -28,6 +28,7 @@ function ScheduleTextDialog({
 }: ScheduleTextDialogProps) {
   const [sendTime, setSendTime] = useState<string>('30-minutes');
   const [message, setMessage] = useState<string>('');
+  const [newTextMode, setNewTextMode] = useState<boolean>(true);
 
   const handleSendTimeSelect = useCallback(({ target }: any) => {
     setSendTime(target.value);
@@ -36,6 +37,21 @@ function ScheduleTextDialog({
   const handleMessageChange = useCallback(({ target }: any) => {
     setMessage(target.value);
   }, []);
+
+  const getText = useCallback(() => {
+    axios
+      .get(`/api/text/${eventId}`)
+      .then(({ data }) => {
+        if (data !== '') {
+          setNewTextMode(false);
+          setMessage(data.content);
+          setSendTime(data.time_from_start);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to getText:', err);
+      });
+  }, [eventId]);
 
   const postText = () => {
     const body: {
@@ -78,27 +94,11 @@ function ScheduleTextDialog({
     }
     axios
       .post('/api/text', body)
-      .then(() => {
-        console.log('Text scheduled');
-      })
+      .then(getText)
       .catch((err: unknown) => {
         console.error('Failed to postText:', err);
       });
   };
-
-  const getText = useCallback(() => {
-    axios
-      .get(`/api/text/${eventId}`)
-      .then(({ data }) => {
-        if (data !== '') {
-          setMessage(data.content);
-          setSendTime(data.time_from_start);
-        }
-      })
-      .catch((err: unknown) => {
-        console.error('Failed to getText:', err);
-      });
-  }, [eventId]);
 
   useEffect(() => {
     getText();
@@ -117,7 +117,7 @@ function ScheduleTextDialog({
         <Label htmlFor="Send Time" className="text-left">
           Send a Text In
         </Label>
-        <RadioGroup defaultValue={sendTime}>
+        <RadioGroup defaultValue={sendTime} disabled={!newTextMode}>
           <div className="flex items-center space-x-2">
             <RadioGroupItem
               id="30-minutes"
@@ -150,14 +150,17 @@ function ScheduleTextDialog({
         </Label>
         <Textarea
           placeholder="Optional: Create a custom message..."
+          readOnly={!newTextMode}
           value={message}
           onChange={handleMessageChange}
         />
       </div>
       <DialogFooter>
-        <Button type="submit" onClick={postText}>
-          Schedule Text
-        </Button>
+        {newTextMode ? (
+          <Button type="submit" onClick={postText}>
+            Schedule Text
+          </Button>
+        ) : null}
       </DialogFooter>
     </DialogContent>
   );
