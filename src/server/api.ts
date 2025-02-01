@@ -13,7 +13,10 @@ const {
   event2Router,
   userRouter,
   taskRouter,
+  userTaskRouter,
   signUpRouter,
+  notifsRouter,
+  textRouter,
 } = routes;
 
 const apiRouter = Router();
@@ -29,6 +32,9 @@ apiRouter.use('/event', eventRouter);
 apiRouter.use('/event', event2Router);
 apiRouter.use('/task', taskRouter);
 apiRouter.use('/user', userRouter);
+apiRouter.use('/user_task', userTaskRouter);
 apiRouter.use('/signup', signUpRouter);
+apiRouter.use('/notifications', notifsRouter);
+apiRouter.use('/text', textRouter);
 
 export default apiRouter;

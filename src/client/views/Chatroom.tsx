@@ -1,123 +1,148 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext, useRef, ref } from 'react';
 import io from 'socket.io-client';
+import { Application, extend, useAssets } from '@pixi/react';
+import {
+  Container,
+  Graphics,
+  Sprite,
+  Texture,
+  Assets,
+  NineSliceSprite, // failing
+  Text,
+  TextStyle,
+  Spritesheet, // failing
+  AnimatedSprite,
+} from 'pixi.js';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
+import { AnimatedList } from '../../components/ui/animated-list';
 import { Button } from '../../components/ui/button';
-import { Application, extend, useAsset } from '@pixi/react';
-import { Container, Graphics, Sprite, Texture, Assets } from 'pixi.js';
-
+import MagicCard from '../../components/ui/magicCard';
+import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
+import MsgBox from '../components/chatroom/MsgBox';
+import axios from 'axios';
+import temporaryMap from '../assets/images/temporaryAImap.png' // test circle
+import { UserContext } from '../contexts/UserContext';
+import QuipLash from '../components/chatroom/QuipLash'
+import {
+  testJumper,
+  spritesheet,
+} from '../assets/chatroom/spritesheets/sprites';
 // 'extend' is unique to the beta version of pixi.js
 // With this beta version, everything you import from pixijs
 // must be passed into extend. Then you can utilize them as components
 // prefixed with pixi ex. <pixiContainer/> <pixiGraphics/>
+
 extend({
   Container,
   Graphics,
   Sprite,
   Texture,
+  NineSliceSprite,
+  Text,
+  TextStyle,
+  AnimatedSprite,
+  Texture, // not worth it w/ useAssets...?
 });
 
 const socket = io('http://localhost:4000');
 
+const style = new TextStyle({
+  align: 'center',
+  fontFamily: 'sans-serif',
+  fontSize: 15,
+  fontWeight: 'bold',
+  fill: '#000000',
+  stroke: '#eef1f5',
+  letterSpacing: 5,
+  wordWrap: true,
+  wordWrapWidth: 350,
+});
+
 function Chatroom() {
-  // useAssets is how images are loaded into Application
+
+
+  // LOAD ASSETS
   useAssets([
-    'https://pixijs.com/assets/bunny.png',
     {
       alias: 'bunny',
       src: 'https://pixijs.com/assets/bunny.png',
     },
+    {
+      alias: 'speech',
+      src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
+    },
   ]);
 
-  // useCallback works for drawing circle
-  const drawCallback = useCallback((graphics: unknown) => {
-    // graphics.clear()
-    graphics?.setFillStyle({ color: 'red' });
-    graphics?.circle(100, 100, 50);
-    graphics?.fill();
-  }, []);
+  const {
+    assets: [texture],
+    isSuccess,
+  } = useAssets<Texture>([temporaryMap]);
 
-  // Temporary variables for collision detection testing
+  // Collision Detection testing *relies on tilemaps, NOT READY
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
 
-  // An array of every player connected to the chatroom
+  // LOGIC
+  const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
+  const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  // const app = useApp();
+  const [allMessages, setAllMessages] = useState([]);
+  const [gameWidth, setGameWidth] = useState(window.innerWidth);
+  const [gameHeight, setGameHeight] = useState(window.innerHeight);
+  const displayMessage = (msg: string) => {
+    setAllMessages((prevMessages) => [...prevMessages, msg]);
+  };
+  // QUIPLASH
+  const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
+  // useEffect(() => {
+
+  // }, [isPlayingQuipLash])
+  const toggleQuiplash = () => {
+    console.log('clicked')
+    isPlayingQuiplash ? setIsPlayingQuiplash(false) : setIsPlayingQuiplash(true);
+  }
+  // TESTING //
+  let anim = useRef(false);
 
   useEffect(() => {
-    // Player has joined chat
-    socket.emit('joinChat');
-    socket.on('message', (msg) => {
-      console.log('message received: ' + msg);
-      // Update UI with the new message
-    });
-    // Update state of all players and their respective positions
-    socket.on('newPositions', (data) => {
-      let allPlayerInfo = [];
-      for (let i = 0; i < data.length; i++) {
-        allPlayerInfo.push({
-          id: data[i].id,
-          x: data[i].x,
-          y: data[i].y,
-        });
+
+    (async () => {
+      try {
+        anim.current = new AnimatedSprite(spritesheet.animations.enemy); // failing
+        await anim.current.parse();
+      } catch (err) {
+        console.error('No parse of spritesheet', err);
       }
-      setAllPlayers(allPlayerInfo);
-    });
+    })();
+  }, [anim]);
+  // TESTING //
+
+  // EXAMPLES
+  const speechBubble = useCallback((graphics: unknown) => {
+    graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
+    graphics?.scale.set(1.5, 0.5);
   }, []);
 
-  const sendMessage = () => {
-    socket.emit('message', message);
-    setMessage('');
-  };
-
-  // When the player is typing, remove event listeners for movement
-  useEffect(() => {
-    console.log('isTyping changed to', isTyping);
-  }, [isTyping]);
-  useEffect(() => {
-    const handleInputChange = (event) => {
-      console.log('Input changed:', event.target.value);
-    };
+  // CONTROLS
+  const keyPress = ({ key }: Element) => {
     if (isTyping === false) {
-      document.addEventListener('keydown', keyPress);
-      document.addEventListener('keyup', keyUp);
-    } else {
-      document.removeEventListener('keydown', keyPress);
-      document.removeEventListener('keyup', keyUp);
-    }
-    return () => {
-      document.removeEventListener('keydown', keyPress);
-      document.removeEventListener('keyup', keyUp);
-    };
-  }, [isTyping]);
-
-  // Changes when div containing typing is clicked
-  const typing = async () => {
-    await setIsTyping(!isTyping);
-  };
-
-  // Controls movement by updating the state on the server
-  const keyPress = ({ key }) => {
-    if (isTyping === false) {
-      if (key === 'ArrowUp' || key === 'w') { 
-        console.log('emitted');
+      if (key === 'ArrowUp' || key === 'w') {
         socket.emit('keyPress', { inputId: 'Up', state: true });
-      } else if (key === 'ArrowDown' || key === 's') { 
+      } else if (key === 'ArrowDown' || key === 's') {
         socket.emit('keyPress', { inputId: 'Down', state: true });
-      } else if (key === 'ArrowLeft' || key === 'a') { 
+      } else if (key === 'ArrowLeft' || key === 'a') {
         socket.emit('keyPress', { inputId: 'Left', state: true });
-      } else if (key === 'ArrowRight' || key === 'd') { 
+      } else if (key === 'ArrowRight' || key === 'd') {
         socket.emit('keyPress', { inputId: 'Right', state: true });
       }
     }
   };
 
-  const keyUp = ({ key }) => {
-    console.log('aye');
+  const keyUp = ({ key }: Element) => {
     if (key === 'ArrowUp' || key === 'w') {
       // Up
       socket.emit('keyPress', { inputId: 'Up', state: false });
@@ -133,37 +158,202 @@ function Chatroom() {
     }
   };
 
+  // WINDOW SIZING
+  useEffect(() => {
+    const handleResize = () => {
+      setGameWidth(window.innerWidth);
+      setGameHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // SOCKET ACTIVITY & MAP LOAD
+  useEffect(() => {
+    axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
+    socket.emit('joinChat', { user, eventId });
+    /**
+     *  When client joins the chat, be assigned a room.
+     *
+     *  Send a get request to 'chatroom' along with the current path endpoint as a param
+     *
+     *  The get request will return a chatroom map. set the state to the current room map
+     *
+     * 
+     *
+     * */
+    socket.on('message', (msg) => {
+      displayMessage(msg);
+      // Update UI with the new message
+    });
+    // Update state of all players and their respective positions
+    socket.on('newPositions', (data) => {
+      let allPlayerInfo = [];
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].room === eventId) {
+          allPlayerInfo.push({
+            id: data[i].id,
+            x: data[i].x,
+            y: data[i].y,
+            username: data[i].username,
+            sentMessage: data[i].sentMessage,
+            currentMessage: data[i].currentMessage,
+            room: data[i].room,
+          });
+        }
+      }
+      setAllPlayers(allPlayerInfo);
+    });
+  }, []);
+
+  // EVENT LISTENERS FOR TYPING
+  useEffect(() => {
+    if (isTyping === false) {
+      document.addEventListener('keydown', keyPress);
+      document.addEventListener('keyup', keyUp);
+    } else {
+      document.removeEventListener('keydown', keyPress);
+      document.removeEventListener('keyup', keyUp);
+    }
+    return () => {
+      document.removeEventListener('keydown', keyPress);
+      document.removeEventListener('keyup', keyUp);
+    };
+  }, [isTyping]);
+
+  const typing = async () => {
+    await setIsTyping(!isTyping);
+  };
+
+  const sendMessage = () => {
+    console.log(message);
+    socket.emit('message', { message, eventId });
+    displayMessage(message);
+    setMessage('');
+  };
+
+  // test circle
+  const drawCircle = (graphics: unknown) => {
+    graphics?.clear();
+    graphics?.circle(100, 100, 50);
+    graphics?.fill('red');
+  };
 
   return (
     <div>
-      <div>
-        <Application>
-          <pixiContainer x={100} y={200}>
-            <pixiGraphics draw={drawCallback} />
-          </pixiContainer>
-          <pixiContainer x={200} y={100}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '20px',
+        }}
+      >
+        <div style={{ width: { gameWidth }, height: { gameHeight } }}>
+          <Application>
+            <pixiContainer x={100} y={200}>
+              <pixiGraphics draw={drawCircle} />
+            </pixiContainer>
+            <pixiContainer>
+              {isSuccess && (
+                <pixiSprite
+                  texture={texture}
+                  x={0}
+                  y={0}
+                  width={800}
+                  height={700}
+                />
+              )}
+            </pixiContainer>
             {allPlayers.map((player) => (
-              <pixiSprite
-                texture={Assets.get('https://pixijs.com/assets/bunny.png')}
-                x={player.x}
-                y={player.y}
-                width={20}
-                height={20}
-                key={player.id}
-              />
+              <pixiContainer x={player.x} y={player.y} key={player.id}>
+                {player.sentMessage && <pixiGraphics draw={speechBubble} />}
+                {player.sentMessage && (
+                  <pixiText
+                    text={player.currentMessage}
+                    anchor={0.5}
+                    x={70}
+                    y={-50}
+                    style={style}
+                  />
+                )}
+                <pixiSprite
+                  texture={Assets.get('bunny')}
+                  x={0}
+                  y={0}
+                  width={22}
+                  height={22}
+                  key={player.id}
+                />
+                <pixiText
+                  text={player.username}
+                  anchor={0.5}
+                  x={0}
+                  y={50}
+                  style={style}
+                />
+
+              </pixiContainer>
             ))}
-          </pixiContainer>
-        </Application>
+            {/* <pixiAnimatedSprite
+
+              anchor={0.5}
+              textures={anim}
+              isPlaying={true}
+              initialFrame={0}
+              animationSpeed={0.1666}
+              x={35}
+              y={50}
+              loop={true}
+            /> */}
+          </Application>
+          <Button onClick={toggleQuiplash}>Play Quiplash</Button>
+          {
+            isPlayingQuiplash && <QuipLash/>
+          }
+        </div>
       </div>
-      <div onClick={typing}>
-        <Label> Oi, put a message in stinky!</Label>
-        <Input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <Button onClick={sendMessage}>Send</Button>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '20px',
+        }}>
+        <div onClick={typing}>
+          <Label> Send A Chat To the Chatroom! ayyye!</Label>
+          <Input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '20px',
+            }}>
+            <InteractiveHoverButton onClick={sendMessage}>
+              Send
+            </InteractiveHoverButton>
+          </div>
+        </div>
       </div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '20px',
+        }}>
+        <MagicCard>
+
+          <AnimatedList>
+            {allMessages.map((msg) => (
+              <MsgBox msg={msg} user={user} />
+            ))}
+          </AnimatedList>
+        </MagicCard>
+      </div>
+
     </div>
   );
 }

@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import {
   Card,
   CardHeader,
@@ -8,12 +9,12 @@ import {
   CardContent,
   CardFooter,
 } from '../../../components/ui/card';
-import { Button } from '../../../components/ui/button';
 import { UserContext } from '../../contexts/UserContext';
+import DialogBox from './DialogBox';
 
 // Define the props interface
 interface TaskDisplayProps {
-  task: Task | null | object;
+  task: Task | object;
 }
 type Task = {
   id: number;
@@ -25,8 +26,10 @@ type Task = {
 };
 
 function TaskDisplay({ task }: TaskDisplayProps) {
-  const { user, getUser, setUser } = useContext(UserContext);
-  // Is it better to use getUser or setUser in this function?
+  const [openComplete, setOpenComplete] = useState(false);
+  const [openOptOut, setOpenOptOut] = useState(false);
+  // Function for when a task is complete
+  const { user, getUser } = useContext(UserContext);
   const completeTask = (): void => {
     const userId = user.id;
     const taskId = task.id;
@@ -34,25 +37,70 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       ids: { userId, taskId },
     };
     axios
-      .patch('/api/task', config)
+      .patch('/api/task/complete', config)
       .then(({ data }) => {
-        setUser(data);
-        console.log('Data from the patch: ', data);
+        getUser();
       })
       .catch((err) => {
         console.error('Error completing task/user PATCH: ', err);
       });
   };
+  // Function for when a user opts out of a task
+  const optOut = (): void => {
+    const userId = user.id;
+    const taskId = task.id;
+    const config = {
+      userId,
+    };
+    axios
+      .patch(`/api/task/optOut/${taskId}`, config)
+      .then(({ data }) => {
+        getUser();
+      })
+      .then(() => {
+        setOpenOptOut(false);
+      })
+      .catch((err) => {
+        console.error('Error in the optOut PATCH: ', err);
+      });
+  };
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Current Task:</CardTitle>
-      </CardHeader>
-      <CardContent>{task.description}</CardContent>
-      <CardFooter>
-        <Button onClick={completeTask}>Complete</Button>
-      </CardFooter>
-    </Card>
+    <>
+      <DialogBox
+        isOpen={openOptOut}
+        confirm={optOut}
+        stateSetter={setOpenOptOut}
+        title="Opt out of Task"
+        content="Are you sure you want to opt out of your current task?"
+        cancelText="Cancel"
+        confirmText="Opt Out"
+      />
+      <Card>
+        <CardHeader>
+          <CardTitle>Your Task</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {user.current_task_id
+            ? `Level ${task.difficulty} ${task.type} task  ${task.description}`
+            : 'You are not assigned a task. Go to the Task page to choose your task.'}
+        </CardContent>
+        {user.current_task_id ? (
+          <CardFooter>
+            <Button onClick={completeTask} variant="secondary">
+              Complete
+            </Button>
+            <Button
+              onClick={() => {
+                setOpenOptOut(true);
+              }}
+              variant="secondary"
+            >
+              Opt-Out
+            </Button>
+          </CardFooter>
+        ) : null}
+      </Card>
+    </>
   );
 }
 

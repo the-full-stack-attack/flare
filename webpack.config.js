@@ -3,12 +3,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 const DIST_DIR = path.resolve(__dirname, 'dist');
-const SRC_DIR = path.resolve(__dirname, 'src', 'client' );
+const SRC_DIR = path.resolve(__dirname, 'src');
+const CLIENT_DIR = path.resolve(__dirname, 'src', 'client');
+
 module.exports = {
   mode: 'development',
-  entry: path.resolve(SRC_DIR, 'index.tsx'),
+  entry: path.resolve(CLIENT_DIR, 'index.tsx'),
   output: {
     path: DIST_DIR,
+    publicPath: '/',
     filename: 'bundle.js',
   },
   module: {
@@ -30,10 +33,14 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env', '@babel/preset-typescript', '@babel/preset-react', ]
+              presets: [
+                '@babel/preset-env',
+                '@babel/preset-typescript',
+                '@babel/preset-react',
+              ]
             }
-        },
-      ],
+          },
+        ],
         exclude: /node_modules/,
       },
       {
@@ -49,25 +56,24 @@ module.exports = {
           'postcss-loader'
         ],
       },
-      // {
-      //   test: /\.(ts|tsx)$/,
-      //   use: 'ts-loader',
-      //   exclude: /node_modules/
-      // }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(SRC_DIR, 'index.html'),
-      filename: 'index.html'
+      template: path.resolve(CLIENT_DIR, 'index.html'),
+      filename: 'index.html',
+      inject: true
     }),
     new CleanWebpackPlugin()
   ],
   resolve: {
-    extensions: [
-      '.tsx',
-      '.ts',
-      '.js'
+    extensions: ['.tsx', '.ts', '.js', '.css'],
+    alias: {
+      '@': SRC_DIR,
+    },
+    modules: [
+      'node_modules',
+      SRC_DIR,
     ]
   }
-}
+};

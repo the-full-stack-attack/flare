@@ -7,23 +7,39 @@ export interface UserType {
   email?: string;
   full_name?: string;
   phone_number?: string;
-  tasks_complete?: number;
+  total_tasks_completed?: number;
+  weekly_task_count?: number;
+  last_week_task_count?: number;
   events_attended?: number;
   location?: string;
   avatar_id?: number;
   avatar_shirt?: string;
   avatar_pants?: string;
   current_task_id?: number;
+  Interests: {
+    id: number;
+    name: string;
+  }[];
+  Notifications: {
+    id: number;
+    message: string;
+    send_time: Date;
+    User_Notification: {
+      NotificationId: number;
+    };
+  }[];
 }
 
 type UserContextType = {
   user: UserType;
   setUser: (user: UserType) => void;
   getUser: () => void;
+  isAuthenticated: boolean;
 };
 
 export const UserContext = createContext<UserContextType>({
-  user: { id: 0 },
+  user: { id: 0, Interests: [], Notifications: [] },
   setUser: () => {},
   getUser: () => {},
+  isAuthenticated: false,
 });

@@ -36,8 +36,34 @@ type EventProps = {
     chatroom_id: number;
     createdAt: Date;
     updatedAt: Date;
+    hour_before_notif: number;
     User_Event?: {
       user_attending: boolean;
+    };
+    Users?: {
+      id: number;
+      username: string;
+      full_name: string;
+      User_Event: {
+        user_attending: boolean;
+      };
+    }[];
+    Category?: {
+      id: number;
+      name: string;
+    };
+    Interests?: {
+      id: number;
+      name: string;
+    }[];
+    Venue?: {
+      id: number;
+      name: string;
+      description: string;
+      street_address: string;
+      city_name: string;
+      state_name: string;
+      zip_code: number;
     };
   };
   getEvents: () => void;
@@ -47,9 +73,15 @@ type EventProps = {
 function Event({ event, getEvents, category }: EventProps) {
   const { user } = useContext(UserContext);
 
+  const { title, start_time, end_time, Users } = event;
+
   const postAttendEvent = () => {
     axios
-      .post(`/api/event/attend/${event.id}`)
+      .post(`/api/event/attend/${event.id}`, {
+        event: {
+          notificationId: event.hour_before_notif,
+        },
+      })
       .then(getEvents)
       .catch((err: unknown) => {
         console.error('Failed to postAttendEvent:', err);
@@ -58,7 +90,11 @@ function Event({ event, getEvents, category }: EventProps) {
 
   const patchAttendingEvent = () => {
     axios
-      .patch(`/api/event/attending/${event.id}`)
+      .patch(`/api/event/attending/${event.id}`, {
+        event: {
+          notificationId: event.hour_before_notif,
+        },
+      })
       .then(getEvents)
       .catch((err: unknown) => {
         console.error('Failed to patchAttendingEvent', err);
@@ -66,50 +102,64 @@ function Event({ event, getEvents, category }: EventProps) {
   };
 
   return (
-    <li key={event.id} className="text-lg text-center p-[10px]">
+    <div key={event.id} className="text-lg text-center p-[10px]">
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg text-center">{event.title}</CardTitle>
-          <CardDescription>{`${dayjs(event.start_time).format('MMMM D [--] h:mm A')} - ${dayjs(event.end_time).format('h:mm A')}`}</CardDescription>
+          <CardTitle className="text-lg text-center">{title}</CardTitle>
+          <CardDescription>{`${dayjs(start_time).format('MMMM D [--] h:mm A')} - ${dayjs(end_time).format('h:mm A')}`}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div>
-            <Drawer>
-              <DrawerTrigger asChild>
-                <Button>Open</Button>
-              </DrawerTrigger>
-              <DrawerContent className="mx-auto w-full max-w-md">
-                <EventDetails
-                  event={event}
-                  getEvents={getEvents}
-                  category={category}
-                />
-              </DrawerContent>
-            </Drawer>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2 grid grid-cols-subgrid gap-4">
-              <div className="col-start-1">
-                {user.id === event.created_by ? <b>Host</b> : null}
-              </div>
+          <div className="grid grid-cols-2 gap-4 place-content-center">
+            <div>
+              <img
+                className="h-30 w-30 object-contain"
+                src="https://itseverythingdelicious.com/wp-content/uploads/2018/08/Cafe-Du-Monde-man-singing-outside-768x768.jpg"
+                alt="Cafe Du Monde"
+              />
             </div>
             <div>
-              {category === 'upcoming' ? (
-                <Button onClick={postAttendEvent}>Attend</Button>
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button>Details / RSVP</Button>
+                </DrawerTrigger>
+                <DrawerContent className="mx-auto w-full max-w-md">
+                  <EventDetails
+                    event={event}
+                    category={category}
+                    postAttendEvent={postAttendEvent}
+                    patchAttendingEvent={patchAttendingEvent}
+                  />
+                </DrawerContent>
+              </Drawer>
+              <div className="p-2">
+                {user.id === event.created_by ? <b>Host</b> : null}
+              </div>
+              
+              {Users?.reduce((acc, curr) => {
+                if (curr.id === user.id && curr.User_Event.user_attending) {
+                  acc = true;
+                }
+                return acc;
+              }, false) ? (
+                <div className="p-2">
+                  <i>Attending</i>
+                </div>
               ) : null}
-              {category === 'attending' ? (
-                <Button onClick={patchAttendingEvent}>Bail</Button>
-              ) : null}
-              {category === 'bailed' ? (
-                <Button onClick={patchAttendingEvent}>Re-attend</Button>
+              {Users?.reduce((acc, curr) => {
+                if (curr.id === user.id && !curr.User_Event.user_attending) {
+                  acc = true;
+                }
+                return acc;
+              }, false) ? (
+                <div className="p-2">
+                  <i>Bailed</i>
+                </div>
               ) : null}
             </div>
           </div>
-        </CardFooter>
+        </CardContent>
       </Card>
-    </li>
+    </div>
   );
 }
 

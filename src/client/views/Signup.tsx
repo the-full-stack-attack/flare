@@ -14,6 +14,7 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
 
+
 function Signup() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('');
@@ -75,6 +76,11 @@ function Signup() {
         console.error('error', err);
       });
   }, []);
+
+  
+  const chosenAlias = (x) => {
+    console.log(x)
+  }
 
   // return the signup template
   return (
@@ -169,6 +175,7 @@ function Signup() {
                       </div>
                     </CardFooter>
                   </CardHeader>
+                  
                   <RainbowButton type="submit" value="Submit">
                     {' '}
                     Complete{' '}

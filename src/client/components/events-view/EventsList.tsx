@@ -15,17 +15,36 @@ type EventsListProps = {
     chatroom_id: number;
     createdAt: Date;
     updatedAt: Date;
+    hour_before_notif: number;
     User_Event?: {
       user_attending: boolean;
     };
+    Venue?: {
+      id: number;
+      name: string;
+      description: string;
+      street_address: string;
+      city_name: string;
+      state_name: string;
+      zip_code: number;
+    };
   }[];
   getEvents: () => void;
+  locationFilter: {
+    city: string;
+    state: string;
+  };
   category: string;
 };
 
-function EventsList({ events, getEvents, category }: EventsListProps) {
+function EventsList({
+  events,
+  getEvents,
+  locationFilter,
+  category,
+}: EventsListProps) {
   return (
-    <ul className="container content-center">
+    <>
       {events.map((event) => (
         <Event
           key={event.id}
@@ -34,7 +53,7 @@ function EventsList({ events, getEvents, category }: EventsListProps) {
           category={category}
         />
       ))}
-    </ul>
+    </>
   );
 }
 

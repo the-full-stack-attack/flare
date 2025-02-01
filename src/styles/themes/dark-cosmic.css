@@ -1,0 +1,20 @@
+/* Our current theme */
+.theme-dark-cosmic {
+  --gradient-bg: bg-gradient-to-br from-black via-gray-900 to-pink-900;
+  --gradient-text: bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500;
+  --card-bg: backdrop-blur-lg bg-white/10;
+  --card-hover: bg-white/20;
+  --card-border: border-white/10;
+}
+
+.theme-dark-cosmic .bg-theme-gradient {
+  @apply bg-gradient-to-br from-black via-gray-900 to-pink-900;
+}
+
+.theme-dark-cosmic .text-theme-gradient {
+  @apply bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent;
+}
+
+.theme-dark-cosmic .card-theme {
+  @apply backdrop-blur-lg bg-white/10 rounded-xl border border-white/10;
+}
