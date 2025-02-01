@@ -95,7 +95,27 @@ const initializeSocket = (
           playerCount: 0,
           answers: {},
           promptGiven: false,
-          startTimer() { 
+          startTimer() {
+            let initialIntervalId: NodeJS.Timeout;
+
+            let initialTimer = 30;
+            let startInitialInterval = () => {
+              initialIntervalId = setInterval(() => {
+                console.log('Interval running...');
+                initialTimer -= 1;
+                socket.nsp
+                  .to(`Quiplash room: ${socket.data.eventId}`)
+                  .emit(`countDown`, initialTimer);
+              }, 1000); // Run every 1 second
+            };
+
+            startInitialInterval();
+
+            // Stop the interval after 30 seconds
+            setTimeout(() => {
+              clearInterval(initialIntervalId);
+              console.log('initial Interval stopped.');
+            }, 30000);
             // After 30 seconds, Show answers & begin next timer
             setTimeout(() => {
               QUIPLASH_GAMES[eventId].promptGiven = false;
@@ -105,29 +125,27 @@ const initializeSocket = (
               socket.nsp
                 .to(`Quiplash room: ${socket.data.eventId}`)
                 .emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
-                
+
               let intervalId: NodeJS.Timeout;
-              
-              let timer = 30;
+
+              let timer = 15;
               let startInterval = () => {
-                  intervalId = setInterval(() => {
-                    console.log("Interval running...");
-                    timer -= 1;
-                      socket.nsp
-                      .to(`Quiplash room: ${socket.data.eventId}`)
-                      .emit(`countDown`, timer)
-                    
-                  }, 1000); // Run every 1 second
-                }
-                
-                
+                intervalId = setInterval(() => {
+                  console.log('Interval running...');
+                  timer -= 1;
+                  socket.nsp
+                    .to(`Quiplash room: ${socket.data.eventId}`)
+                    .emit(`countDown`, timer);
+                }, 1000); // Run every 1 second
+              };
+
               startInterval();
-                
-                // Stop the interval after 5 seconds
-                setTimeout(() => {
-                  clearInterval(intervalId);
-                  console.log("Interval stopped.");
-                }, 5000);
+
+              // Stop the interval after 5 seconds
+              setTimeout(() => {
+                clearInterval(intervalId);
+                console.log('Interval stopped.');
+              }, 15000);
 
               setTimeout(() => {
                 let totalVotes: { [key: string]: any } = {};
@@ -168,7 +186,7 @@ const initializeSocket = (
                   .to(`Quiplash room: ${socket.data.eventId}`)
                   .emit(`showWinner`, { winner, falsyBool, truthyBool });
               }, 15000);
-            }, 20000);
+            }, 30000);
           },
         };
         // if a game already exists, let server know we succeeded test #1
