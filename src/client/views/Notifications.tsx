@@ -55,6 +55,9 @@ function Notifications() {
         Clear All Notifications
       </Button>
       <NotificationList notifs={notifs} getNotifications={getNotifications} />
+      {notifs.length === 0 ? (
+        <p>You currently have no notifications...</p>
+      ) : null}
     </div>
   );
 }
