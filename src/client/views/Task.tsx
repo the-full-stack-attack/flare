@@ -27,7 +27,7 @@ function Task() {
   }, [user]);
   return (
     <div>
-      <div>
+      <div className="pt-14">
         <p>{`You completed ${last_week_task_count} tasks last week`}</p>
       </div>
       <div>
