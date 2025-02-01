@@ -122,7 +122,6 @@ const initializeSocket = (
                   }
                 }
                 // At the end of the loop, check who has the highest vote.
-                // loop through the object
                 for (let key in totalVotes) {
                   let currentContestant = [key, totalVotes[key]];
                   // if there is no winner (the first iteration)
@@ -171,54 +170,24 @@ const initializeSocket = (
     // triggered when its time to give a new prompt
     socket.on('generatePrompt', async () => {
       // generate quiplash prompt that is unique
-      let mod = Math.floor(Math.random() * 100);
-      let prompt = `Generate a single quiplash prompt related to ${modifiers[mod]}`;
+      let mod = Math.floor(Math.random() * 70);
+      console.log(mod)
+      let prompt = `Generate a single quiplash prompt related to ${modifiers[mod]} without using possessive pronouns`;
       if (mod >= 61) {
-        prompt = `Generate a quiplash prompt`;
+        prompt = `Generate a quiplash prompt without using possessive pronouns`;
       } else if (mod >= 30) {
-        prompt = `Generate a single risky quiplash prompt that might get you in trouble with ${modifiers[Math.floor(mod / 2)]}`;
+        prompt = `Generate a single risky quiplash prompt that might get you in trouble with ${modifiers[Math.floor(mod / 2)]} without using possessive pronouns`;
       }
       // on the client side, they need to deactivate the ability to access this socket for all players in the same chatroom once it is clicked.
       // after 90 seconds, the client can reactivate the button to access this socket for all players in the same room
       try {
         const result = await bartenderAI.generateContent(prompt);
         console.log(result);
-
-        /**
-In my understanding for Socket.IO, nsp (namespaces) act as isolated channels for communication. 
-When you create a new socket, it's like tuning into a radio station that broadcasts on a specific frequency. 
-Without specifying a namespace, you're essentially broadcasting your message on a public channel where anyone can listen in. 
-But by using 'nsp', you create a private channel for your sockets to communicate on.
-
-Imagine a large office building with hundreds of employees. 
-If everyone talked at once, you'd have a cacophony of noise and no one would get anything done. 
-Now, introduce conference rooms with walls—each room is a namespace. 
-
-When you use 'socket.nsp.to('room').emit(data)', you're essentially speaking into the intercom of that specific conference room. 
-Only the sockets that have joined that 'room' & namespace will receive the message. 
-Take a step further back and look at the documentation on namespaces:
-
-Official documentation states that
-io.sockets === io.of("/") <-- this is a default 'namespace' of io. Where the namespace is essentially global. 
-So whenever I try to put two and two together; I am thinking that:
-socket.nsp === io.of('this socket').
-in which case
-socket.nsp.emit(data) <-- this part emits only to yourself...?
-(i put ...? because I think where this emits is dependent on the original way you initiated io... meaning I
-think the 'nsp' is a property that refrences the io initialization)
-the latter half
-socket.to(room).emit <--- behaves normally by emitting to all in the room except yourself. possibly by removing every socket that is not connected to this room...?
-
-then the final part is just chaining the two
-`socket.nsp.to(room).emit(data) <--- emits to yourself, and to everyone else in a certain room
-
-I am not too sure, but I am thinking about writing a dev.to article about this because it seems as if there is no official documentation explaining the .nsp property on the socket from their official site for any version whatsoever
-         */
         socket.nsp
           .to(`Quiplash room: ${socket.data.eventId}`)
           .emit('receivePrompt', result);
       } catch (err) {
-        let boo = {
+        const boo = {
           response: {
             candidates: [
               {
