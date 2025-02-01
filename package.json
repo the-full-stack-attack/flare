@@ -104,6 +104,7 @@
     "node-cron": "^3.0.3",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "pixi-viewport": "^6.0.3",
     "pixi.js": "^8.7.3",
     "react": "^19.0.0",
     "react-day-picker": "^9.5.1",

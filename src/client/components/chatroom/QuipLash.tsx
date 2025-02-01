@@ -5,8 +5,10 @@ import React, {
   useContext,
   useRef,
   ref,
+  useId,
 } from 'react';
 import io from 'socket.io-client';
+
 import { Application, extend, useAssets } from '@pixi/react';
 import '@pixi/events';
 import {
@@ -56,7 +58,9 @@ const style = new TextStyle({
   breakWords: true,
 });
 
+
 function QuipLash() {
+
   useAssets([
     {
       alias: 'bunny',
@@ -72,7 +76,7 @@ function QuipLash() {
     assets: [background],
     isSuccess,
   } = useAssets<Texture>([bartender]);
-
+  
   // LOGIC
   const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
@@ -87,25 +91,37 @@ function QuipLash() {
   const [answersReceived, setAnswersReceived] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState('');
+  const uniqueId = useId;
   const [quiplashPrompt, setQuiplashPrompt] = useState('');
+  const [timer, setTimer] = useState('30');
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
+  
   // QUIPLASH
+  const [color, setColor] = useState('#ffffff');
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
-
+ 
+  const style2 = new TextStyle({
+    align: 'left',
+    fontFamily: '\"Trebuchet MS\", Helvetica, sans-serif',
+    fontSize: 30,
+    fontWeight: 'bold',
+    fill: color,
+    stroke: '#000000',
+    strokeThickness: 10,
+    lineJoin: 'round',
+    letterSpacing: 4,
+    wordWrap: true,
+    wordWrapWidth: 150,
+    breakWords: true,
+  });
   // EXAMPLES
   const speechBubble = useCallback((graphics: unknown, element) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, 0, 270);
     graphics?.scale.set(1, 0.7);
-    graphics.interactive = true;
     graphics.cursor = 'pointer';
     graphics.label = 'HELLO';
-    // console.log(graphics)
-    graphics.on('pointerdown', test);
-    //graphics.pointerdown =
-
-    //graphics.hitArea = new Rectangle(0, 0, 100, 100)
   }, []);
 
   function onTouchstart(param, e) {
@@ -126,10 +142,7 @@ function QuipLash() {
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
     console.log(user, 'quiplash user');
-    // axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
     socket.emit('joinQuiplash', { user, eventId });
-    // socket.on('message', (msg) => {
-    //   displayMessage(msg);
     socket.on(
       'receivePrompt',
       ({
@@ -146,7 +159,6 @@ function QuipLash() {
         console.log('next question has arrived!');
         console.log(text);
         setQuiplashPrompt(text);
-
       }
     );
 
@@ -160,36 +172,29 @@ function QuipLash() {
       setPlayerAnswers(answers);
     });
 
-    socket.on('showWinner', ({winner, falsyBool, truthyBool}) => {
-      console.log(winner)
+    socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
+      console.log(winner);
       setAnswersReceived(falsyBool);
       setShowWinner(truthyBool);
       setWinner(winner);
       setTimeout(() => {
-          setShowWinner(falsyBool)
-      }, 5000)
+        setShowWinner(falsyBool);
+      }, 5000);
+    });
+
+    socket.on('countDown', (time) => {
+      console.log('countdownrunning')
+      console.log(time);
+      if(time >= 11 ){
+        setColor('#55ff00');
+      } else if(time >= 5){
+        setColor('#f7f720');
+      }
+      if(time < 5){
+        setColor('#cf060a');
+      }
+      setTimer((time).toString())
     })
-    //   // Update
-    // UI with the new message
-    // });
-    // // Update state of all players and their respective positions
-    // socket.on('newPositions', (data) => {
-    //   let allPlayerInfo = [];
-    //   for (let i = 0; i < data.length; i++) {
-    //     if (data[i].room === eventId) {
-    //       allPlayerInfo.push({
-    //         id: data[i].id,
-    //         x: data[i].x,
-    //         y: data[i].y,
-    //         username: data[i].username,
-    //         sentMessage: data[i].sentMessage,
-    //         currentMessage: data[i].currentMessage,
-    //         room: data[i].room,
-    //       });
-    //     }
-    //   }
-    //   setAllPlayers(allPlayerInfo);
-    // });
   }, []);
 
   const typing = async () => {
@@ -207,18 +212,21 @@ function QuipLash() {
   const sendMessage = () => {
     console.log(message);
     socket.emit('quiplashMessage', { message, eventId, user });
-    //  displayMessage(message);
     setMessage('');
   };
 
   const test = (e) => {
     console.log('test is passing for onclick', e);
+    if(e === user.username){
+      console.log('you cannot vote for yourself!');
+    } else {
     socket.emit('vote', e);
+    }
   };
   return (
     <div
       style={{
-        display: 'flex',
+        display: 'inline-block',
         justifyContent: 'center',
         marginTop: '20px',
       }}
@@ -239,13 +247,13 @@ function QuipLash() {
           {answersReceived &&
             Object.entries(playerAnswers).map((tupleAnswer, i) => (
               <pixiContainer
-                interactive={true}
+                eventMode="static"
                 onPointerDown={() => {
                   test(tupleAnswer[0]);
                 }}
                 x={50}
                 y={150 + i * 150}
-                key={Math.random().toFixed(6) + String.fromCharCode(Math.random().toFixed(1))}
+                key={ useId }
               >
                 <pixiGraphics draw={speechBubble}>
                   <pixiText
@@ -258,24 +266,20 @@ function QuipLash() {
                 </pixiGraphics>
               </pixiContainer>
             ))}
-
-          {/* <pixiAnimatedSprite
-
-              anchor={0.5}
-              textures={anim}
-              isPlaying={true}
-              initialFrame={0}
-              animationSpeed={0.1666}
-              x={35}
-              y={50}
-              loop={true}
-            /> */}
+            <pixiContainer
+              x={300}
+              y={100}
+            >
+            {timer && <pixiText
+                    text={`TIME: ${timer}`}
+                    anchor={0.5}
+                    x={130}
+                    y={450}
+                    style={style2}
+                  />}
+                  </pixiContainer>
         </Application>
-        {promptGiven && (
-          <h6>{quiplashPrompt}</h6>
-        )
-  
-        }
+        {promptGiven && <h6 class="text-white text-[22px]">{quiplashPrompt} </h6>}
         {promptGiven && !answersReceived && (
           <div>
             <Label> Enter Your Quiplash! </Label>
@@ -298,15 +302,21 @@ function QuipLash() {
           </div>
         )}
       </div>
-      {!promptGiven && (
-        <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
-      )}
-      {
-        showWinner && (
-          <h1>{winner}</h1>
-        )
-      }
-      <Button onClick={quitQuiplash}>QUIT</Button>
+      <div
+              style={{
+                display: 'inline-block',
+                justifyContent: 'center',
+                marginTop: '20px',
+              }}
+            >
+            {!promptGiven && (<div>
+      <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
+      </div>
+    )}
+    </div>
+    {showWinner && <h1>{winner}</h1>}
+    <Button onClick={quitQuiplash}>QUIT</Button>
+
     </div>
   );
 }

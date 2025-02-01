@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useCallback, useContext, useRef, ref } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
+import dayjs from 'dayjs';
+import { Viewport } from 'pixi-viewport';
 import {
   Container,
   Graphics,
@@ -23,7 +26,8 @@ import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
 import temporaryMap from '../assets/images/temporaryAImap.png' // test circle
 import { UserContext } from '../contexts/UserContext';
-import QuipLash from '../components/chatroom/QuipLash'
+import QuipLash from '../components/chatroom/QuipLash';
+import { Countdown } from '../components/chatroom/countdown';
 import {
   testJumper,
   spritesheet,
@@ -43,6 +47,7 @@ extend({
   TextStyle,
   AnimatedSprite,
   Texture, // not worth it w/ useAssets...?
+  Viewport,
 });
 
 const socket = io('http://localhost:4000');
@@ -60,8 +65,8 @@ const style = new TextStyle({
 });
 
 function Chatroom() {
-
-
+  const location = useLocation();
+  const start_time = location.state;
   // LOAD ASSETS
   useAssets([
     {
@@ -93,7 +98,7 @@ function Chatroom() {
   const [allMessages, setAllMessages] = useState([]);
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
-  const displayMessage = (msg: string) => {
+  const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   // QUIPLASH
@@ -229,7 +234,7 @@ function Chatroom() {
   const sendMessage = () => {
     console.log(message);
     socket.emit('message', { message, eventId });
-    displayMessage(message);
+    displayMessage({message: message, username: user?.username });
     setMessage('');
   };
 
@@ -241,7 +246,7 @@ function Chatroom() {
   };
 
   return (
-    <div>
+    <div className='bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12'>
       <div
         style={{
           display: 'flex',
@@ -250,7 +255,20 @@ function Chatroom() {
         }}
       >
         <div style={{ width: { gameWidth }, height: { gameHeight } }}>
-          <Application>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '80px',
+        }} ><Countdown endTime={dayjs(start_time)}/></div>
+             {/* <Viewport 
+        app={app} // Pass the Pixi.js application instance to the Viewport
+        width={800} 
+        height={600}
+        drag={true}
+        pinchToZoom={true}
+        wheel={true}
+      > */}
+          <Application >
             <pixiContainer x={100} y={200}>
               <pixiGraphics draw={drawCircle} />
             </pixiContainer>
@@ -307,9 +325,15 @@ function Chatroom() {
               loop={true}
             /> */}
           </Application>
-          <Button onClick={toggleQuiplash}>Play Quiplash</Button>
+          {/* </Viewport> */}
+          <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '10px',}}
+          ><Button onClick={toggleQuiplash}>Play Quiplash</Button></div>
           {
-            isPlayingQuiplash && <QuipLash/>
+            isPlayingQuiplash && <QuipLash startTime={start_time}/>
           }
         </div>
       </div>
@@ -320,8 +344,9 @@ function Chatroom() {
           marginTop: '20px',
         }}>
         <div onClick={typing}>
-          <Label> Send A Chat To the Chatroom! ayyye!</Label>
+          <Label class="text-white"> Send A Chat To the Chatroom! ayyye!</Label>
           <Input
+            class="bg-white" 
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -338,21 +363,22 @@ function Chatroom() {
           </div>
         </div>
       </div>
+        <MagicCard>
+
       <div
         style={{
           display: 'flex',
           justifyContent: 'center',
-          marginTop: '20px',
+          
+          width: '250px'
         }}>
-        <MagicCard>
-
-          <AnimatedList>
+          <AnimatedList class="w-80 md:w-160 lg:w-2550">
             {allMessages.map((msg) => (
-              <MsgBox msg={msg} user={user} />
+              <MsgBox class="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} />
             ))}
           </AnimatedList>
-        </MagicCard>
       </div>
+        </MagicCard>
 
     </div>
   );
