@@ -6,6 +6,7 @@ import User_Event from '../db/models/users_events';
 import User_Notification from '../db/models/users_notifications';
 import User from '../db/models/users';
 import Venue from '../db/models/venues';
+import Text from '../db/models/texts';
 
 const event2Router = Router();
 
@@ -187,11 +188,17 @@ event2Router.patch('/attending/:id', async (req: any, res: Response) => {
         },
       });
     } else {
-      // If a user bails on an event, destroy the notification.
+      // If a user bails on an event, destroy the notification & the scheduled text
       await User_Notification.destroy({
         where: {
           UserId: req.user.id,
           NotificationId: event.notificationId,
+        },
+      });
+      await Text.destroy({
+        where: {
+          user_id: req.user.id,
+          event_id: req.params.id,
         },
       });
     }
