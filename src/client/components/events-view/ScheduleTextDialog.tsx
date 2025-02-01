@@ -6,7 +6,9 @@ import {
   DialogTitle,
 } from '../../../components/ui/dialog';
 
-function ScheduleTextDialog() {
+type ScheduleTextDialogProps = { eventId: number };
+
+function ScheduleTextDialog({ eventId }: ScheduleTextDialogProps) {
   return (
     <DialogContent>
       <DialogHeader>
