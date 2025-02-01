@@ -15,7 +15,8 @@
     - [Install \& Setup 🛠️](#install--setup-️)
       - [Environment Variables \& Credentials](#environment-variables--credentials)
     - [Database Setup](#database-setup)
-    - [Feature Breakdown:](#feature-breakdown)
+    - [Feature Breakdown](#feature-breakdown)
+    - [Workers](#workers)
     - [**📈 Git Workflow for Teams:**](#-git-workflow-for-teams)
 
 
@@ -101,6 +102,14 @@ SOCKET=false
 
    > Connection has been established to the 'flare' database.
    > Listening on http://localhost:4000
+3. Seed the database:
+   - npm run seed
+   - npm run seedEvents
+   > If you ever need to reseed the database follow these steps:
+   > 1. Drop the flare database
+   > 2. Recreate the flare database
+   > 3. Start/Restart the server so the models are read
+   > 4. Follow the seeding instructions
 
 <br>
 
@@ -110,28 +119,43 @@ SOCKET=false
 1. **Events**
 2. **AI Conversation**
 3. **Event Chatrooms**
-4. **Tasks:** Tasks can be used as extra motivation, or a reason, to get out of the house.  Tasks are meant to be completed the day they are assigned.
-
-   Relevant Models: User, Task, & User_Task
+4. **Tasks:** Tasks can be used as extra motivation, or a reason, to get out of the house.  Tasks are meant to be completed the day they are assigned.  
+Relevant Models: User, Task, & User_Task  
    1. Tasks have 2 main components, TaskDisplay and ChooseTask
-      - TaskDisplay displays on the Dashboard and Task views
-      - ChooseTask displays on the Task view
-   2. The components render conditionally on the Task view based on the user's current_task_id value:
-      - A null current_task_id will render the ChooseTask component
-      - A number current_task_id will render the TaskDisplay component
-      - If the current_task_id is not null, the current task is retrieved from the database using the current_task_id (**See in Dashboard view useEffect hook**)
-   3. Users can choose from 5 task categories: 
-      - Fun, Active, Duo, Normal, and Rejection Therapy
-   4. Tasks can be declared complete on the TaskDisplay component. This causes a number of changes in the database
-      - **See changes on PATCH request to /api/task in /src/server/routes/task.ts**
-   5. Users can opt-out of tasks
-      - **See changes on PATCH to /api/task/:id request in src/server/routes/task.ts**
+      > - TaskDisplay displays on the Dashboard and Task views  
+      > - ChooseTask displays on the Task view
+   2. The components render conditionally on the Task view based on the user's current_task_id value:  
+      > - A null current_task_id will render the ChooseTask component  
+      > - A number current_task_id will render the TaskDisplay component  
+       > - If the current_task_id is not null, the current task is retrieved from the database using the current_task_id (**See in Dashboard view useEffect hook**)
+   3. Users can choose from 5 task categories: Fun, Active, Duo, Normal, and Rejection Therapy
+   4. Tasks can be declared complete on the TaskDisplay component. This causes a number of changes in the database  
+      **See changes on PATCH request to /api/task/complete in /src/server/routes/task.ts**
+   5. Users can opt-out of tasks  
+      **See changes on PATCH request to /api/task/optOut/:id in src/server/routes/task.ts**
    6. Users can choose a difficulty level for a task on the ChooseTask component
-   7. There is a task worker in **src/server/workers/tasks.ts** that runs 2 functions everyday it midnight  
-      - resetTasks function sets every user's current_task_id to null  
-      - createTasks function generates 5 new tasks for each task type for the day
-      - This is to enforce that tasks are completed the day they are assigned
-   8. Users can generate a custom task, which will send a prompt to the Gemini AI using GoogleGenerativeAI package (***To be continued***)
+   7. Users can retry a task they previously opted out of with a retry button on the Task view  
+    **See PATCH to /api/task/retry in src/server/routes/task.ts**
+      > - This button sets the user's current_task_id to the desired task  
+      > - The corresponding user_task opted_out column is switched to false  
+      > - The user will opt out of there current task if they are currently assigned one  
+   8. Users can compare their task progress to the previous week on the Task view
+      > - User model has denormalized data to track tasks completed over the last 2 weeks  
+      > - Number of tasks completed the current week is held on weekly_task_count  
+      > - Number of tasks completed the previous week is held on last_week_task_count  
+   9. Users can generate a custom task, which will send a prompt to the Gemini AI using GoogleGenerativeAI package (***To be continued***)
+5. **Flares:** Flares are achievements that users can earn by using the Flare app
+   
+   Relevant Models: Flare, User_Flare, Notification, User_Notification
+   1. Talk about the feature below
+
+### **Workers:**
+> The server has workers that are scheduled to perform tasks at certain times throughout the week.  
+
+**Tasks Workers:** See **src/server/workers/tasks.ts**
+   - Two workers are scheduled for task automation  
+   - One worker is scheduled for midnight everyday for generating new tasks: resetTasks() and createTasks() are called in this worker  
+   - Another worker is scheduled for midnight on Mondays for reassigning the values of the weekly task counts for each user: resetCounts() is called in this worker
 
 ---
 
@@ -155,3 +179,5 @@ SOCKET=false
 7. **↩️ If Changes Requested:**
    1. Make changes on local (commit/push)
    2. _Continue to Step 5_
+
+---
