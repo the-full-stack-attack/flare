@@ -90,6 +90,7 @@ function QuipLash() {
   const [winner, setWinner] = useState('');
   const uniqueId = useId;
   const [quiplashPrompt, setQuiplashPrompt] = useState('');
+  const [timer, setTimer] = useState(0);
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -161,6 +162,11 @@ function QuipLash() {
         setShowWinner(falsyBool);
       }, 5000);
     });
+
+    socket.on('countDown', (time) => {
+      console.log('countdownrunning')
+      console.log(time);
+    })
   }, []);
 
   const typing = async () => {
@@ -228,6 +234,18 @@ function QuipLash() {
                 </pixiGraphics>
               </pixiContainer>
             ))}
+            <pixiContainer
+              x={300}
+              y={100}
+            >
+            {/* {timer && <pixiText
+                    text={timer}
+                    anchor={0.5}
+                    x={120}
+                    y={100}
+                    style={style}
+                  />} */}
+                  </pixiContainer>
         </Application>
         {promptGiven && <h6>{quiplashPrompt} </h6>}
         {promptGiven && !answersReceived && (

@@ -13,7 +13,6 @@ import initializeSocket from './socket';
 
 const PORT = 4000;
 
-
 const SOCKET_LIST: SocketList = {};
 const PLAYER_LIST: PlayerList = {};
 const QUIPLASH_LIST: QuiplashList = {};
@@ -61,6 +60,3 @@ if (process.env.DEVELOPMENT === 'true') {
     });
   }
 }
-
-// Async function, updates chatroom state based on all player positions in list
-

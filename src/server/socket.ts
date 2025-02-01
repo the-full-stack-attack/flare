@@ -105,6 +105,29 @@ const initializeSocket = (
               socket.nsp
                 .to(`Quiplash room: ${socket.data.eventId}`)
                 .emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
+                
+              let intervalId: NodeJS.Timeout;
+              
+              let timer = 30;
+              let startInterval = () => {
+                  intervalId = setInterval(() => {
+                    console.log("Interval running...");
+                    timer -= 1;
+                      socket.nsp
+                      .to(`Quiplash room: ${socket.data.eventId}`)
+                      .emit(`countDown`, timer)
+                    
+                  }, 1000); // Run every 1 second
+                }
+                
+                
+              startInterval();
+                
+                // Stop the interval after 5 seconds
+                setTimeout(() => {
+                  clearInterval(intervalId);
+                  console.log("Interval stopped.");
+                }, 5000);
 
               setTimeout(() => {
                 let totalVotes: { [key: string]: any } = {};
@@ -171,7 +194,6 @@ const initializeSocket = (
     socket.on('generatePrompt', async () => {
       // generate quiplash prompt that is unique
       let mod = Math.floor(Math.random() * 70);
-      console.log(mod)
       let prompt = `Generate a single quiplash prompt related to ${modifiers[mod]} without using possessive pronouns`;
       if (mod >= 61) {
         prompt = `Generate a quiplash prompt without using possessive pronouns`;
