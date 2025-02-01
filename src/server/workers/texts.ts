@@ -11,41 +11,8 @@ dotenv.config();
 
 const { TEXTBELT_API_KEY } = process.env;
 
-// const sendText = () => {
-//   fetch('https://textbelt.com/text', {
-//     method: 'post',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({
-//       phone: '9857058143',
-//       message: 'Hello world',
-//       key: TEXTBELT_API_KEY,
-//     }),
-//   })
-//     .then((response) => {
-//       return response.json();
-//     })
-//     .then((data) => {
-//       console.log(data);
-//     });
-// };
-
-// sendText();
-
-// axios
-//   .post('https://textbelt.com/text', {
-//     phone: '9857058143',
-//     message: 'Hello world',
-//     key: TEXTBELT_API_KEY,
-//   })
-//   .then(({ data }) => {
-//     console.log(data); // { success: boolean, textId: string, quotaRemaining: number }
-//   })
-//   .catch((err: unknown) => {
-//     console.error('Failed to send text:', err);
-//   });
-
-cron.schedule('0,5,10,15,20,25,30,35,40,45,50,55 * * * *', () => {
-  console.log('Every 5 minutes', dayjs(Date.now()).format('H:mm:ss A'));
+cron.schedule('*/5 * * * *', () => {
+  // console.log('Every 5 minutes', dayjs(Date.now()).format('H:mm:ss A'));
   // Query Texts table for all send_times from 10 minutes ago to now
   const now = Date.now();
   Text.findAll({
@@ -60,9 +27,24 @@ cron.schedule('0,5,10,15,20,25,30,35,40,45,50,55 * * * *', () => {
       texts.forEach((text: any) => {
         // Find the user using user_id
         User.findOne({ where: { id: text.dataValues.user_id } })
-          .then((user) => {
-            console.log('User:', user);
-            console.log('Text:', text);
+          .then((user: any) => {
+            // Send text using user phone number
+            axios
+              .post('https://textbelt.com/text', {
+                phone: user.dataValues.phone_number,
+                message: text.dataValues.content,
+                key: TEXTBELT_API_KEY,
+              })
+              .then(({ data }) => {
+                // data: { success: boolean, textId: string, quotaRemaining: number }
+                if (data.success) {
+                  // Destroy text once the text sends
+                  text.destroy();
+                }
+              })
+              .catch((err: unknown) => {
+                console.error('Failed to send text:', err);
+              });
           })
           .catch((err: unknown) => {
             console.error('Failed to find User to text:', err);
@@ -72,6 +54,4 @@ cron.schedule('0,5,10,15,20,25,30,35,40,45,50,55 * * * *', () => {
     .catch((err: unknown) => {
       console.error('Failed to findAll Texts:', err);
     });
-        // Send text using user phone number
-          // Destroy text once the text sends
 });
