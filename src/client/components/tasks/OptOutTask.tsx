@@ -62,8 +62,8 @@ function OptOutTask({ userTask }: CompletedTaskProps) {
       />
       <div className="table-row-group">
         <div className="table-row">
-          <div className="table-cell ...">{`${difficulty} ${type}`}</div>
-          <div className="table-cell ...">{description.slice(0, -1)}</div>
+          <div className="table-cell">{`${difficulty} ${type}`}</div>
+          <div className="table-cell">{description.slice(0, -1)}</div>
         </div>
         <Button
           onClick={() => {
