@@ -43,10 +43,10 @@ textRouter.get('/:eventId', (req: any, res: Response) => {
 });
 
 /*
-  PATCH /api/text/update/:eventId
+  PATCH /api/text/:eventId
   BODY: { text: { content, time_from_start, send_time } }
 */
-textRouter.patch('/update/:eventId', (req: any, res: Response) => {
+textRouter.patch('/:eventId', (req: any, res: Response) => {
   const { text } = req.body;
   Text.update(text, {
     where: { user_id: req.user.id, event_id: req.params.eventId },
@@ -63,5 +63,6 @@ textRouter.patch('/update/:eventId', (req: any, res: Response) => {
 /*
   DELETE /api/text/:id => Delete text from DB so the worker doesn't send it.
 */
+textRouter.delete('/:eventId')
 
 export default textRouter;
