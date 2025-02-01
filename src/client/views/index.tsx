@@ -7,6 +7,7 @@ import Task from './Task';
 import Events from './Events';
 import Dashboard from './Dashboard';
 import Notifications from './Notifications';
+import AccountSettings from './AccountSettings';
 
 export {
   AiConversations,
@@ -18,4 +19,5 @@ export {
   Task,
   Dashboard,
   Notifications,
+  AccountSettings,
 };

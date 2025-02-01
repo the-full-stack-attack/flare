@@ -14,6 +14,7 @@ import {
   Home,
   Dashboard,
   Notifications,
+  AccountSettings,
 } from './views/index';
 import NavBar from './components/NavBar';
 import '../styles/main.css';
@@ -82,6 +83,7 @@ export default function App() {
               <Route path="Task" element={<Task />} />
               <Route path="Notifications" element={<Notifications />} />
               <Route path="Dashboard" element={<Dashboard />} />
+              <Route path='Settings' element={<AccountSettings />} />
             </>
           ) : (
             // Redirect to home if trying to access protected routes while not authenticated
