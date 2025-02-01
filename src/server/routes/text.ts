@@ -43,11 +43,40 @@ textRouter.get('/:eventId', (req: any, res: Response) => {
 });
 
 /*
-  PATCH /api/text/:id
+  PATCH /api/text/:eventId
+  BODY: { text: { content, time_from_start, send_time } }
 */
+textRouter.patch('/:eventId', (req: any, res: Response) => {
+  const { text } = req.body;
+  Text.update(text, {
+    where: { user_id: req.user.id, event_id: req.params.eventId },
+  })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to PATCH /api/text/update/:eventId', err);
+      res.sendStatus(500);
+    });
+});
 
 /*
   DELETE /api/text/:id => Delete text from DB so the worker doesn't send it.
 */
+textRouter.delete('/:eventId', (req: any, res: Response) => {
+  Text.destroy({
+    where: {
+      user_id: req.user.id,
+      event_id: req.params.eventId,
+    },
+  })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to DELETE /api/text/:eventId', err);
+      res.sendStatus(500);
+    });
+});
 
 export default textRouter;

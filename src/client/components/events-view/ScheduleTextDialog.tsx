@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogClose,
 } from '../../../components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '../../../components/ui/radio-group';
 import { Button } from '../../../components/ui/button';
@@ -28,6 +29,8 @@ function ScheduleTextDialog({
 }: ScheduleTextDialogProps) {
   const [sendTime, setSendTime] = useState<string>('30-minutes');
   const [message, setMessage] = useState<string>('');
+  const [newTextMode, setNewTextMode] = useState<boolean>(true);
+  const [updateMode, setUpdateMode] = useState<boolean>(false);
 
   const handleSendTimeSelect = useCallback(({ target }: any) => {
     setSendTime(target.value);
@@ -37,7 +40,28 @@ function ScheduleTextDialog({
     setMessage(target.value);
   }, []);
 
-  const postText = () => {
+  const getText = useCallback(() => {
+    axios
+      .get(`/api/text/${eventId}`)
+      .then(({ data }) => {
+        if (data !== '') {
+          setNewTextMode(false);
+          setUpdateMode(false);
+          setMessage(data.content);
+          setSendTime(data.time_from_start);
+        } else {
+          setNewTextMode(true);
+          setUpdateMode(false);
+          setMessage('');
+          setSendTime('30-minutes');
+        }
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to getText:', err);
+      });
+  }, [eventId]);
+
+  const postPatchText = () => {
     const body: {
       text: {
         content: string;
@@ -54,9 +78,7 @@ function ScheduleTextDialog({
     };
 
     if (message === '') {
-      body.text.content = `Are you still having a good time at ${eventTitle}?
-      If you aren't, remember that you don't need to stay.
-      If you are, disregard this message and live your best life!`;
+      body.text.content = `Are you still having a good time at ${eventTitle}?\nIf you aren't, remember that you don't need to stay.\nIf you are, disregard this message and live your best life!`;
     }
 
     if (sendTime === '30-minutes') {
@@ -76,29 +98,36 @@ function ScheduleTextDialog({
         new Date(startTime).getTime() + 1000 * 60 * 60 * 2
       );
     }
-    axios
-      .post('/api/text', body)
-      .then(() => {
-        console.log('Text scheduled');
-      })
-      .catch((err: unknown) => {
-        console.error('Failed to postText:', err);
-      });
+    if (updateMode) {
+      axios
+        .patch(`/api/text/${eventId}`, body)
+        .then(getText)
+        .catch((err: unknown) => {
+          console.error('Failed to patchText:', err);
+        });
+    } else {
+      axios
+        .post('/api/text', body)
+        .then(getText)
+        .catch((err: unknown) => {
+          console.error('Failed to postText:', err);
+        });
+    }
   };
 
-  const getText = useCallback(() => {
+  const handleUpdateModeTrue = () => {
+    setUpdateMode(true);
+    setNewTextMode(true);
+  };
+
+  const deleteText = () => {
     axios
-      .get(`/api/text/${eventId}`)
-      .then(({ data }) => {
-        if (data !== '') {
-          setMessage(data.content);
-          setSendTime(data.time_from_start);
-        }
-      })
+      .delete(`/api/text/${eventId}`)
+      .then(getText)
       .catch((err: unknown) => {
-        console.error('Failed to getText:', err);
+        console.error('Failed to deleteText:', err);
       });
-  }, [eventId]);
+  };
 
   useEffect(() => {
     getText();
@@ -117,7 +146,7 @@ function ScheduleTextDialog({
         <Label htmlFor="Send Time" className="text-left">
           Send a Text In
         </Label>
-        <RadioGroup defaultValue={sendTime}>
+        <RadioGroup defaultValue={sendTime} disabled={!newTextMode}>
           <div className="flex items-center space-x-2">
             <RadioGroupItem
               id="30-minutes"
@@ -150,14 +179,29 @@ function ScheduleTextDialog({
         </Label>
         <Textarea
           placeholder="Optional: Create a custom message..."
+          readOnly={!newTextMode}
           value={message}
           onChange={handleMessageChange}
         />
       </div>
       <DialogFooter>
-        <Button type="submit" onClick={postText}>
-          Schedule Text
-        </Button>
+        {newTextMode ? (
+          <div className="grid grid-cols-2 gap-2">
+            <DialogClose asChild>
+              <Button type="submit" onClick={postPatchText}>
+                Schedule Text
+              </Button>
+            </DialogClose>
+            {updateMode ? <Button onClick={getText}>Cancel</Button> : null}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">
+            <Button onClick={handleUpdateModeTrue}>Update</Button>
+            <DialogClose asChild>
+              <Button onClick={deleteText}>Delete</Button>
+            </DialogClose>
+          </div>
+        )}
       </DialogFooter>
     </DialogContent>
   );
