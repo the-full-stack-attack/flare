@@ -55,14 +55,23 @@ cron.schedule('0,5,10,15,20,25,30,35,40,45,50,55 * * * *', () => {
       },
     },
   })
-    .then((data) => {
-      console.log(data);
+    .then((texts) => {
+      // Iterate through texts returned
+      texts.forEach((text: any) => {
+        // Find the user using user_id
+        User.findOne({ where: { id: text.dataValues.user_id } })
+          .then((user) => {
+            console.log('User:', user);
+            console.log('Text:', text);
+          })
+          .catch((err: unknown) => {
+            console.error('Failed to find User to text:', err);
+          });
+      });
     })
     .catch((err: unknown) => {
       console.error('Failed to findAll Texts:', err);
     });
-    // Iterate through texts returned
-      // Find the user using user_id
         // Send text using user phone number
           // Destroy text once the text sends
 });
