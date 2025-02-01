@@ -10,7 +10,6 @@ import {
 } from '../../../components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '../../../components/ui/radio-group';
 import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
 import { Textarea } from '../../../components/ui/textarea';
 
@@ -35,6 +34,40 @@ function ScheduleTextDialog({
   const handleMessageChange = useCallback(({ target }: any) => {
     setMessage(target.value);
   }, []);
+
+  const postScheduledText = () => {
+    const body: {
+      text: {
+        content: string;
+        event_id: number;
+        send_time?: Date;
+      };
+    } = {
+      text: {
+        content: message,
+        event_id: eventId,
+      },
+    };
+    if (sendTime === '30-minutes') {
+      body.text.send_time = new Date(startTime.getTime() + 1000 * 60 * 30);
+    }
+
+    if (sendTime === '1-hour') {
+      body.text.send_time = new Date(startTime.getTime() + 1000 * 60 * 60 * 1);
+    }
+
+    if (sendTime === '2-hours') {
+      body.text.send_time = new Date(startTime.getTime() + 1000 * 60 * 60 * 2);
+    }
+    axios
+      .post('/api/text', body)
+      .then(() => {
+        console.log('Text scheduled');
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to postScheduledText:', err);
+      });
+  };
 
   return (
     <DialogContent className="sm:max-w-[425px]">
@@ -87,7 +120,9 @@ function ScheduleTextDialog({
         />
       </div>
       <DialogFooter>
-        <Button type="submit">Schedule Text</Button>
+        <Button type="submit" onClick={postScheduledText}>
+          Schedule Text
+        </Button>
       </DialogFooter>
     </DialogContent>
   );
