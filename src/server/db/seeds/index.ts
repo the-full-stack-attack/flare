@@ -10,7 +10,6 @@ import seedFlares from './seedFlares';
  *  1. Drop the flare database (if it exists)
  *  2. Recreate the flare database
  *  3. Start/Restart the server so the models are read
- *  4. Create a user on the Flare app
  * Because the seedEvents script relies on the seed script, you must the seed script first
  */
 
