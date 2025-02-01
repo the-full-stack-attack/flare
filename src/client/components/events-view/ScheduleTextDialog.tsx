@@ -44,48 +44,51 @@ function ScheduleTextDialog({
           Schedule a text to be sent during the event. This is a way to provide
           an out if you need to leave.
         </DialogDescription>
-        <div className="grid gap-4 py-4">
-          <Label htmlFor="Send Time" className="text-left">
-            Send a Text In
-          </Label>
-          <RadioGroup defaultValue={sendTime}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                id="30-minutes"
-                value="30-minutes"
-                onClick={handleSendTimeSelect}
-              />
-              <Label htmlFor="30-minutes">30 minutes</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                id="1-hour"
-                value="1-hour"
-                onClick={handleSendTimeSelect}
-              />
-              <Label htmlFor="1-hour">1 hour</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                id="2-hours"
-                value="2-hours"
-                onClick={handleSendTimeSelect}
-              />
-              <Label htmlFor="2-hours">2 hours</Label>
-            </div>
-          </RadioGroup>
-        </div>
-        <div className="grid gap-4 py-4">
-          <Label htmlFor="message" className="text-left">
-            Custom Message
-          </Label>
-          <Textarea
-            placeholder="Optional: Create a custom message..."
-            value={message}
-            onChange={handleMessageChange}
-          />
-        </div>
       </DialogHeader>
+      <div className="grid gap-4 py-4">
+        <Label htmlFor="Send Time" className="text-left">
+          Send a Text In
+        </Label>
+        <RadioGroup defaultValue={sendTime}>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem
+              id="30-minutes"
+              value="30-minutes"
+              onClick={handleSendTimeSelect}
+            />
+            <Label htmlFor="30-minutes">30 minutes</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem
+              id="1-hour"
+              value="1-hour"
+              onClick={handleSendTimeSelect}
+            />
+            <Label htmlFor="1-hour">1 hour</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem
+              id="2-hours"
+              value="2-hours"
+              onClick={handleSendTimeSelect}
+            />
+            <Label htmlFor="2-hours">2 hours</Label>
+          </div>
+        </RadioGroup>
+      </div>
+      <div className="grid gap-4 py-4">
+        <Label htmlFor="message" className="text-left">
+          Custom Message
+        </Label>
+        <Textarea
+          placeholder="Optional: Create a custom message..."
+          value={message}
+          onChange={handleMessageChange}
+        />
+      </div>
+      <DialogFooter>
+        <Button type="submit">Schedule Text</Button>
+      </DialogFooter>
     </DialogContent>
   );
 }
