@@ -23,9 +23,24 @@ textRouter.post('/', (req: any, res: Response) => {
     });
 });
 
-/* ???
-  GET /api/text/:id => Retrieve an id using UserId & EventId
+/*
+  GET /api/text/:event_id => Retrieve an id using UserId & EventId
 */
+textRouter.get('/:eventId', (req: any, res: Response) => {
+  Text.findOne({
+    where: {
+      user_id: req.user.id,
+      event_id: req.params.eventId,
+    },
+  })
+    .then((text) => {
+      res.status(200).send(text);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to GET /api/text/:eventId', err);
+      res.sendStatus(500);
+    });
+});
 
 /*
   PATCH /api/text/:id
