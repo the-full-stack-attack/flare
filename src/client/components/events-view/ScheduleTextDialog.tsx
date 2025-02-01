@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import axios from 'axios';
 
 import {
@@ -37,16 +37,18 @@ function ScheduleTextDialog({
     setMessage(target.value);
   }, []);
 
-  const postScheduledText = () => {
+  const postText = () => {
     const body: {
       text: {
         content: string;
         event_id: number;
+        time_from_start: string;
         send_time?: Date;
       };
     } = {
       text: {
         content: message,
+        time_from_start: sendTime,
         event_id: eventId,
       },
     };
@@ -80,9 +82,27 @@ function ScheduleTextDialog({
         console.log('Text scheduled');
       })
       .catch((err: unknown) => {
-        console.error('Failed to postScheduledText:', err);
+        console.error('Failed to postText:', err);
       });
   };
+
+  const getText = useCallback(() => {
+    axios
+      .get(`/api/text/${eventId}`)
+      .then(({ data }) => {
+        if (data !== '') {
+          setMessage(data.content);
+          setSendTime(data.time_from_start);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to getText:', err);
+      });
+  }, [eventId]);
+
+  useEffect(() => {
+    getText();
+  }, [getText]);
 
   return (
     <DialogContent className="sm:max-w-[425px]">
@@ -135,7 +155,7 @@ function ScheduleTextDialog({
         />
       </div>
       <DialogFooter>
-        <Button type="submit" onClick={postScheduledText}>
+        <Button type="submit" onClick={postText}>
           Schedule Text
         </Button>
       </DialogFooter>
