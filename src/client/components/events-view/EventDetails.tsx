@@ -161,7 +161,11 @@ function EventDetails({
               <DialogTrigger asChild>
                 <Button>Schedule Text</Button>
               </DialogTrigger>
-              <ScheduleTextDialog eventId={event.id} />
+              <ScheduleTextDialog
+                eventId={event.id}
+                startTime={start_time}
+                endTime={end_time}
+              />
             </Dialog>
           </div>
         ) : null}
