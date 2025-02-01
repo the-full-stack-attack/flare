@@ -38,18 +38,20 @@ function CompletedTaskList() {
       });
   }, [user]);
   return (
-    <div className="table w-full lg:w-1/2">
-      <div className="table-header-group">
-        <div className="table-row">
-          <div className="table-cell text-left">Type</div>
-          <div className="table-cell text-left">Task</div>
-          <div className="table-cell text-left">Completed</div>
-        </div>
-      </div>
-      {completedTasks.map((userTask) => (
-        <CompletedTask key={userTask.TaskId} userTask={userTask} />
-      ))}
-    </div>
+    <table className="w-full">
+      <thead>
+        <tr className="border-b-4">
+          <th className="text-left">Type</th>
+          <th className="text-left">Task</th>
+          <th className="text-left">Completed</th>
+        </tr>
+      </thead>
+      <tbody>
+        {completedTasks.map((userTask) => (
+          <CompletedTask key={userTask.TaskId} userTask={userTask} />
+        ))}
+      </tbody>
+    </table>
   );
 }
 
