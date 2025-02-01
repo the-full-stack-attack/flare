@@ -12,6 +12,14 @@ import {
   DrawerClose,
 } from '../../../components/ui/drawer';
 
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '../../../components/ui/dialog';
+
 type EventDetailsProps = {
   event: {
     id: number;
@@ -153,7 +161,16 @@ function EventDetails({
                 Enter Chatroom
               </Link>
             </Button>
-            <Button>Schedule Text</Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>Schedule Text</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Boo!</DialogTitle>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
           </div>
         ) : null}
         {category === 'attending' ? (
