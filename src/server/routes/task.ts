@@ -147,6 +147,13 @@ taskRouter.patch('/retry', async (req: any, res: Response) => {
       where: { UserId, TaskId },
     });
     if (user && userTask) {
+      if (user.current_task_id) {
+        const { current_task_id } = user;
+        await User_Task.update(
+          { opted_out: true },
+          { where: { UserId, TaskId: current_task_id } }
+        );
+      }
       user.current_task_id = TaskId;
       await user.save();
       userTask.opted_out = false;
