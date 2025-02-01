@@ -63,6 +63,20 @@ textRouter.patch('/:eventId', (req: any, res: Response) => {
 /*
   DELETE /api/text/:id => Delete text from DB so the worker doesn't send it.
 */
-textRouter.delete('/:eventId')
+textRouter.delete('/:eventId', (req: any, res: Response) => {
+  Text.destroy({
+    where: {
+      user_id: req.user.id,
+      event_id: req.params.eventId,
+    },
+  })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to DELETE /api/text/:eventId', err);
+      res.sendStatus(500);
+    });
+});
 
 export default textRouter;
