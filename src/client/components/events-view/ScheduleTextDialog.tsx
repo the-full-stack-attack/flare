@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 import {
@@ -20,7 +20,17 @@ type ScheduleTextDialogProps = {
   endTime: Date;
 };
 
-function ScheduleTextDialog({ eventId, startTime, endTime }: ScheduleTextDialogProps) {
+function ScheduleTextDialog({
+  eventId,
+  startTime,
+  endTime,
+}: ScheduleTextDialogProps) {
+  const [sendTime, setSendTime] = useState<string>('30-minutes');
+
+  const handleSendTimeSelect = ({ target }) => {
+    setSendTime(target.value);
+  };
+  
   return (
     <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
@@ -33,34 +43,28 @@ function ScheduleTextDialog({ eventId, startTime, endTime }: ScheduleTextDialogP
           <Label htmlFor="Send Time" className="text-left">
             Send a Text In
           </Label>
-          <RadioGroup className="grid grid-cols-3 gap-2 items-center">
-            <div>
+          <RadioGroup defaultValue={sendTime}>
+            <div className="flex items-center space-x-2">
               <RadioGroupItem
                 id="30-minutes"
                 value="30-minutes"
-                onClick={(e) => {
-                  console.log(e.target.value);
-                }}
+                onClick={handleSendTimeSelect}
               />
               <Label htmlFor="30-minutes">30 minutes</Label>
             </div>
-            <div>
+            <div className="flex items-center space-x-2">
               <RadioGroupItem
                 id="1-hour"
                 value="1-hour"
-                onClick={(e) => {
-                  console.log(e.target.value);
-                }}
+                onClick={handleSendTimeSelect}
               />
               <Label htmlFor="1-hour">1 hour</Label>
             </div>
-            <div>
+            <div className="flex items-center space-x-2">
               <RadioGroupItem
                 id="2-hours"
                 value="2-hours"
-                onClick={(e) => {
-                  console.log(e.target.value);
-                }}
+                onClick={handleSendTimeSelect}
               />
               <Label htmlFor="2-hours">2 hours</Label>
             </div>
