@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogClose,
 } from '../../../components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '../../../components/ui/radio-group';
 import { Button } from '../../../components/ui/button';
@@ -29,6 +30,7 @@ function ScheduleTextDialog({
   const [sendTime, setSendTime] = useState<string>('30-minutes');
   const [message, setMessage] = useState<string>('');
   const [newTextMode, setNewTextMode] = useState<boolean>(true);
+  const [updateMode, setUpdateMode] = useState<boolean>(false);
 
   const handleSendTimeSelect = useCallback(({ target }: any) => {
     setSendTime(target.value);
@@ -44,6 +46,7 @@ function ScheduleTextDialog({
       .then(({ data }) => {
         if (data !== '') {
           setNewTextMode(false);
+          setUpdateMode(false);
           setMessage(data.content);
           setSendTime(data.time_from_start);
         }
@@ -53,7 +56,7 @@ function ScheduleTextDialog({
       });
   }, [eventId]);
 
-  const postText = () => {
+  const postPatchText = () => {
     const body: {
       text: {
         content: string;
@@ -70,9 +73,7 @@ function ScheduleTextDialog({
     };
 
     if (message === '') {
-      body.text.content = `Are you still having a good time at ${eventTitle}?
-      If you aren't, remember that you don't need to stay.
-      If you are, disregard this message and live your best life!`;
+      body.text.content = `Are you still having a good time at ${eventTitle}?\nIf you aren't, remember that you don't need to stay.\nIf you are, disregard this message and live your best life!`;
     }
 
     if (sendTime === '30-minutes') {
@@ -92,12 +93,26 @@ function ScheduleTextDialog({
         new Date(startTime).getTime() + 1000 * 60 * 60 * 2
       );
     }
-    axios
-      .post('/api/text', body)
-      .then(getText)
-      .catch((err: unknown) => {
-        console.error('Failed to postText:', err);
-      });
+    if (updateMode) {
+      axios
+        .patch(`/api/text/${eventId}`, body)
+        .then(getText)
+        .catch((err: unknown) => {
+          console.error('Failed to patchText:', err);
+        });
+    } else {
+      axios
+        .post('/api/text', body)
+        .then(getText)
+        .catch((err: unknown) => {
+          console.error('Failed to postText:', err);
+        });
+    }
+  };
+
+  const handleUpdateModeTrue = () => {
+    setUpdateMode(true);
+    setNewTextMode(true);
   };
 
   useEffect(() => {
@@ -157,10 +172,22 @@ function ScheduleTextDialog({
       </div>
       <DialogFooter>
         {newTextMode ? (
-          <Button type="submit" onClick={postText}>
-            Schedule Text
-          </Button>
-        ) : null}
+          <div className="grid grid-cols-2 gap-2">
+            <DialogClose asChild>
+              <Button type="submit" onClick={postPatchText}>
+                Schedule Text
+              </Button>
+            </DialogClose>
+            {updateMode ? <Button onClick={getText}>Cancel</Button> : null}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">
+            <Button onClick={handleUpdateModeTrue}>Update</Button>
+            <DialogClose asChild>
+              <Button>Delete</Button>
+            </DialogClose>
+          </div>
+        )}
       </DialogFooter>
     </DialogContent>
   );
