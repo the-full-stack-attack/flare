@@ -100,14 +100,8 @@ function QuipLash() {
   const speechBubble = useCallback((graphics: unknown, element) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, 0, 270);
     graphics?.scale.set(1, 0.7);
-    // graphics.interactive = true;
     graphics.cursor = 'pointer';
     graphics.label = 'HELLO';
-    // console.log(graphics)
-    // graphics.on('pointerdown', test);
-    //graphics.pointerdown =
-
-    //graphics.hitArea = new Rectangle(0, 0, 100, 100)
   }, []);
 
   function onTouchstart(param, e) {
@@ -128,10 +122,7 @@ function QuipLash() {
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
     console.log(user, 'quiplash user');
-    // axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
     socket.emit('joinQuiplash', { user, eventId });
-    // socket.on('message', (msg) => {
-    //   displayMessage(msg);
     socket.on(
       'receivePrompt',
       ({
@@ -148,7 +139,6 @@ function QuipLash() {
         console.log('next question has arrived!');
         console.log(text);
         setQuiplashPrompt(text);
-
       }
     );
 
@@ -162,36 +152,15 @@ function QuipLash() {
       setPlayerAnswers(answers);
     });
 
-    socket.on('showWinner', ({winner, falsyBool, truthyBool}) => {
-      console.log(winner)
+    socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
+      console.log(winner);
       setAnswersReceived(falsyBool);
       setShowWinner(truthyBool);
       setWinner(winner);
       setTimeout(() => {
-          setShowWinner(falsyBool)
-      }, 5000)
-    })
-    //   // Update
-    // UI with the new message
-    // });
-    // // Update state of all players and their respective positions
-    // socket.on('newPositions', (data) => {
-    //   let allPlayerInfo = [];
-    //   for (let i = 0; i < data.length; i++) {
-    //     if (data[i].room === eventId) {
-    //       allPlayerInfo.push({
-    //         id: data[i].id,
-    //         x: data[i].x,
-    //         y: data[i].y,
-    //         username: data[i].username,
-    //         sentMessage: data[i].sentMessage,
-    //         currentMessage: data[i].currentMessage,
-    //         room: data[i].room,
-    //       });
-    //     }
-    //   }
-    //   setAllPlayers(allPlayerInfo);
-    // });
+        setShowWinner(falsyBool);
+      }, 5000);
+    });
   }, []);
 
   const typing = async () => {
@@ -209,7 +178,6 @@ function QuipLash() {
   const sendMessage = () => {
     console.log(message);
     socket.emit('quiplashMessage', { message, eventId, user });
-    //  displayMessage(message);
     setMessage('');
   };
 
@@ -241,13 +209,13 @@ function QuipLash() {
           {answersReceived &&
             Object.entries(playerAnswers).map((tupleAnswer, i) => (
               <pixiContainer
-                eventMode='static'
+                eventMode="static"
                 onPointerDown={() => {
                   test(tupleAnswer[0]);
                 }}
                 x={50}
                 y={150 + i * 150}
-                key={useId}
+                key={ useId }
               >
                 <pixiGraphics draw={speechBubble}>
                   <pixiText
@@ -260,24 +228,8 @@ function QuipLash() {
                 </pixiGraphics>
               </pixiContainer>
             ))}
-
-          {/* <pixiAnimatedSprite
-
-              anchor={0.5}
-              textures={anim}
-              isPlaying={true}
-              initialFrame={0}
-              animationSpeed={0.1666}
-              x={35}
-              y={50}
-              loop={true}
-            /> */}
         </Application>
-        {promptGiven && (
-          <h6>{quiplashPrompt}</h6>
-        )
-  
-        }
+        {promptGiven && <h6>{quiplashPrompt} </h6>}
         {promptGiven && !answersReceived && (
           <div>
             <Label> Enter Your Quiplash! </Label>
@@ -303,11 +255,7 @@ function QuipLash() {
       {!promptGiven && (
         <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
       )}
-      {
-        showWinner && (
-          <h1>{winner}</h1>
-        )
-      }
+      {showWinner && <h1>{winner}</h1>}
       <Button onClick={quitQuiplash}>QUIT</Button>
     </div>
   );
