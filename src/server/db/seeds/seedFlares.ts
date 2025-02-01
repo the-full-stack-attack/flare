@@ -1,9 +1,8 @@
 import User from '../models/users';
-import Flare from '../models/flares';
-import { IntegerDataTypeConstructor } from 'sequelize';
+import Flares from '../models/flares';
 
 type FlareType = {
-  id: number;
+  id?: number;
   name: string;
   icon: string | null;
   achievement: string;
@@ -43,4 +42,23 @@ const multiTasker: FlareArr = ['Multitasker', '', 'You\'ve completed 10 tasks!',
 const partyAnimal: FlareArr = ['Party Animal', '', 'You\'ve attended 10 events!', 0, ''];
 flareArrays.push(butterFlareEffect, goGetter, theHost, chattyCathy, theSpark, multiTasker, partyAnimal);
 
-console.log(flareArrays);
+// Create an object using the arrays above and push the object onto the flares array
+flareArrays.forEach((flareInfo) => {
+  flares.push(new Flare(flareInfo));
+});
+
+const seedFlares = async () => {
+  try {
+  const foundFlares = await Flares.findAll();
+  if (foundFlares) {
+    console.log('Destroying the existing flares');
+    await Flares.destroy( { where: { value: 0 } });
+  }
+   await Flares.bulkCreate(flares);
+   console.log('Flares created');
+  } catch (err) {
+    console.error('Error seeding flares in the database: ', err);
+  }
+};
+
+export default seedFlares;
