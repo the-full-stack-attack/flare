@@ -1,6 +1,6 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 import { Button } from '../../../components/ui/button';
 
@@ -74,7 +74,7 @@ function EventDetails({
     Venue,
     Category,
     Interests,
-    id
+    id,
   } = event;
 
   const { street_address, city_name, state_name, zip_code } = Venue;
@@ -147,12 +147,21 @@ function EventDetails({
           <Button onClick={postAttendEvent}>Attend</Button>
         ) : null}
         {category === 'attending' ? (
+          <div className="grid grid-cols-2 gap-2">
+            <Button>
+              <Link style={{ flex: 1 }} to={`/chatroom/${id}`}>
+                Enter Chatroom
+              </Link>
+            </Button>
+            <Button>Schedule Text</Button>
+          </div>
+        ) : null}
+        {category === 'attending' ? (
           <Button onClick={patchAttendingEvent}>Bail</Button>
         ) : null}
         {category === 'bailed' ? (
           <Button onClick={patchAttendingEvent}>Re-attend</Button>
         ) : null}
-        {category === 'attending' ? <Button><Link style={{flex: 1}} to={`/chatroom/${id}`}>Enter Chatroom</Link></Button> : null}
         <DrawerClose asChild>
           <Button>Close</Button>
         </DrawerClose>
