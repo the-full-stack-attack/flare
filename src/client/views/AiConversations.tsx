@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserContext } from '../contexts/UserContext';
@@ -8,14 +14,29 @@ import SavedConversations from './AiConversations/components/saved-conversations
 import cn from '../../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
+import HeartButton from './AiConversations/components/heart-button/heart-button';
 
+// Basic ChatMessage Interface - used as core props for a message
 interface ChatMessage {
   sender: 'user' | 'assistant';
   text: string;
   timestamp: Date;
 }
 
+interface MessageWithFavorite extends ChatMessage {
+  id?: number;
+  isFavorite: boolean;
+}
+
+interface Conversation {
+  id: number;
+  prompt: string;
+  response: string;
+  createdAt: string;
+}
+
 interface AIResponse {
+  conversation: Conversation;
   structured: {
     advice: string;
     tips: string[];
@@ -26,51 +47,62 @@ interface SavedConversation {
   id: number;
   prompt: string;
   response: string;
+  createdAt: string;
+}
+
+interface ConversationSession {
+  id?: number;
+  messages: MessageWithFavorite[];
+  createdAt: Date;
+  isSaved: boolean;
 }
 
 export default function AiConversations() {
   const { user } = useContext(UserContext);
+
+  const [conversations, setConversations] = useState<ConversationSession[]>([]);
+  const [currentConversationIndex, setCurrentConversationIndex] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [savedConversations, setSavedConversations] = useState<
     SavedConversation[]
   >([]);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userMessage, setUserMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  const fetchSavedConversations = async () => {
+  
+
+  // GET Saved Conversations from DB
+  const fetchSavedConversations = useCallback(async () => {
     try {
-      const { data } = await axios.get(`/api/aiConversation/saved/${user.id}`);
+      if (!user || !user.id) return;
+      const { data } = await axios.get<SavedConversation[]>(
+        `/api/aiConversation/saved/${user.id}`
+      );
       setSavedConversations(data);
     } catch (err) {
       console.error('Failed to fetch saved conversations:', err);
     }
-  };
+  }, [user]);
 
   // Fetch saved conversations when component mounts
   useEffect(() => {
     if (user.id) {
       fetchSavedConversations();
     }
-  }, [user.id]);
+  }, [user.id, fetchSavedConversations]);
 
-  // Auto-scroll effect
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
-
+  // Send user message
   const handleSendMessage = async () => {
     if (!userMessage.trim()) return;
     setIsLoading(true);
 
-    const newMessage = {
-      sender: 'user' as const,
+    const newMessage: MessageWithFavorite = {
+      sender: 'user',
       text: userMessage,
       timestamp: new Date(),
+      isFavorite: false,
     };
+
     setMessages((prev) => [...prev, newMessage]);
     setUserMessage('');
 
@@ -80,44 +112,80 @@ export default function AiConversations() {
         prompt: userMessage,
       });
 
-      const aiMessage = {
-        sender: 'assistant' as const,
+      const aiMessage: MessageWithFavorite = {
+        sender: 'assistant',
         text:
           data.structured?.advice ||
           'I apologize, but I am unable to process that request.',
         timestamp: new Date(),
+        isFavorite: false,
+        id: data.conversation?.id,
       };
+
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error('Failed to get AI response:', error);
       // Add error message to chat
-      const errorMessage = {
-        sender: 'assistant' as const,
+      const errorMessage: MessageWithFavorite = {
+        sender: 'assistant',
         text: 'Sorry, I encountered an error processing your request.',
         timestamp: new Date(),
+        isFavorite: false,
       };
+
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Triggered when user clicks the heart icon
+  const toggleFavorite = async (messageIndex: number) => {
+    const message = messages[messageIndex];
+    if (!message.id) {
+      console.warn('No conversation ID; cannot favorite this message.');
+      return;
+    }
+    try {
+      await axios.post(`/api/aiConversation/save/${message.id}`);
+
+      const updatedMessages = messages.map((m, idx) =>
+        idx === messageIndex ? { ...m, isFavorite: true } : m
+      );
+      setMessages(updatedMessages);
+
+      await fetchSavedConversations();
+    } catch (err) {
+      console.error('Failed to toggle favorite:', err);
+    }
+  };
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Handle Recommended Prompt Click
   const handlePromptSelect = (selectedPrompt: string) => {
     setUserMessage(selectedPrompt);
   };
 
   const handleConversationSelect = (conversation: SavedConversation) => {
+    console.log('Selected saved conversation:', conversation);
     setUserMessage(conversation.prompt);
   };
 
-  const handleSaveConversation = async (messageId: number) => {
-    try {
-      await axios.post(`/api/aiConversation/save/${messageId}`);
-      await fetchSavedConversations();
-    } catch (err) {
-      console.error('Failed to save conversation:', err);
-    }
-  };
+  // const handleSaveConversation = async (messageId: number) => {
+  //   try {
+  //     await axios.post(`/api/aiConversation/save/${messageId}`);
+  //     await fetchSavedConversations();
+  //   } catch (err) {
+  //     console.error('Failed to save conversation:', err);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20">
@@ -149,14 +217,19 @@ export default function AiConversations() {
                 className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-orange-500/20 hover:scrollbar-thumb-orange-500/30"
               >
                 <AnimatePresence>
-                  {messages.map((msg, index) => (
+                  {messages.map((msg) => (
+                    // Generate a unique key: use msg.id if available; otherwise use a combination of timestamp and text.
                     <motion.div
-                      key={index}
+                      key={
+                        msg.id
+                          ? msg.id
+                          : `${msg.timestamp.getTime()}-${msg.text}`
+                      }
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       className={cn(
-                        'mb-4 max-w-[80%]',
+                        'mb-4 max-w-[80%] relative group',
                         msg.sender === 'user' ? 'ml-auto' : 'mr-auto'
                       )}
                     >
@@ -169,9 +242,28 @@ export default function AiConversations() {
                         )}
                       >
                         <p className="text-gray-100">{msg.text}</p>
-                        <span className="text-xs text-gray-400 mt-2 block">
-                          {new Date(msg.timestamp).toLocaleTimeString()}
-                        </span>
+                        <div className="flex justify-between items-center mt-2">
+                          <span className="text-xs text-gray-400">
+                            {new Date(msg.timestamp).toLocaleTimeString()}
+                          </span>
+                          {msg.sender === 'assistant' && (
+                            <div className="transition-transform hover:scale-110">
+                              <HeartButton
+                                id={`heart-${msg.id ? msg.id : msg.timestamp.getTime()}`}
+                                checked={msg.isFavorite}
+                                onChange={() => {
+                                  const idx = messages.findIndex(
+                                    (m) =>
+                                      m.timestamp.getTime() ===
+                                        msg.timestamp.getTime() &&
+                                      m.text === msg.text
+                                  );
+                                  toggleFavorite(idx);
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </motion.div>
                   ))}
@@ -202,7 +294,7 @@ export default function AiConversations() {
                   <Input
                     value={userMessage}
                     onChange={(e) => setUserMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     placeholder="How can I help?"
                     className="flex-1 bg-black/50 border-transparent text-white placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-orange-500/50"
                   />
