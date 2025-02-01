@@ -15,7 +15,8 @@
     - [Install \& Setup 🛠️](#install--setup-️)
       - [Environment Variables \& Credentials](#environment-variables--credentials)
     - [Database Setup](#database-setup)
-    - [Feature Breakdown:](#feature-breakdown)
+    - [Feature Breakdown](#feature-breakdown)
+    - [Workers](#workers)
     - [**📈 Git Workflow for Teams:**](#-git-workflow-for-teams)
 
 
@@ -101,6 +102,14 @@ SOCKET=false
 
    > Connection has been established to the 'flare' database.
    > Listening on http://localhost:4000
+3. Seed the database:
+   - npm run seed
+   - npm run seedEvents
+   > If you ever need to reseed the database follow these steps:
+   > 1. Drop the flare database
+   > 2. Recreate the flare database
+   > 3. Start/Restart the server so the models are read
+   > 4. Follow the seeding instructions
 
 <br>
 
@@ -158,10 +167,10 @@ SOCKET=false
 
 ---
 ### **Features:**
-1. **Events**
-2. **AI Conversation**
-3. **Event Chatrooms**
-4. **Tasks:** Tasks can be used as extra motivation, or a reason, to get out of the house.  Tasks are meant to be completed the day they are assigned.  
+- **Events**
+- **AI Conversation**
+- **Event Chatrooms**
+- **Tasks:** Tasks can be used as extra motivation, or a reason, to get out of the house.  Tasks are meant to be completed the day they are assigned.  
 Relevant Models: User, Task, & User_Task  
    1. Tasks have 2 main components, TaskDisplay and ChooseTask
       > - TaskDisplay displays on the Dashboard and Task views  
@@ -186,6 +195,10 @@ Relevant Models: User, Task, & User_Task
       > - Number of tasks completed the current week is held on weekly_task_count  
       > - Number of tasks completed the previous week is held on last_week_task_count  
    9. Users can generate a custom task, which will send a prompt to the Gemini AI using GoogleGenerativeAI package (***To be continued***)
+- **Flares:** Flares are achievements that users can earn by using the Flare app
+   
+   Relevant Models: Flare, User_Flare, Notification, User_Notification
+   1. Talk about the feature below
 
 ### **Workers:**
 > The server has workers that are scheduled to perform tasks at certain times throughout the week.  
