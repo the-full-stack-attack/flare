@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Player, QuipLashPlayer } from '../client/assets/chatroom/chatAssets';
+import { useAnimationFrame } from 'framer-motion';
 
 const googleGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const bartenderAI = googleGenAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
@@ -273,7 +274,8 @@ const initializeSocket = (
     socket.on('message', ({ message, eventId }) => {
       PLAYER_LIST[socket.id].sentMessage = true;
       PLAYER_LIST[socket.id].currentMessage = message;
-      socket.to(eventId).emit('message', message);
+      
+      socket.to(eventId).emit('message', { message: message, username: PLAYER_LIST[socket.id].username } );
       // Remove message after a few seconds
       setTimeout(() => {
         PLAYER_LIST[socket.id].sentMessage = false;

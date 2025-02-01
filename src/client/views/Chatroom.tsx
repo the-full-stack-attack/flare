@@ -98,7 +98,7 @@ function Chatroom() {
   const [allMessages, setAllMessages] = useState([]);
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
-  const displayMessage = (msg: string) => {
+  const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   // QUIPLASH
@@ -234,7 +234,7 @@ function Chatroom() {
   const sendMessage = () => {
     console.log(message);
     socket.emit('message', { message, eventId });
-    displayMessage(message);
+    displayMessage({message: message, username: user?.username });
     setMessage('');
   };
 
@@ -368,7 +368,7 @@ function Chatroom() {
 
           <AnimatedList>
             {allMessages.map((msg) => (
-              <MsgBox msg={msg} user={user} />
+              <MsgBox msg={msg.message} user={msg.username} />
             ))}
           </AnimatedList>
         </MagicCard>
