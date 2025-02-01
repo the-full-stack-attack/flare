@@ -49,6 +49,11 @@ function ScheduleTextDialog({
           setUpdateMode(false);
           setMessage(data.content);
           setSendTime(data.time_from_start);
+        } else {
+          setNewTextMode(true);
+          setUpdateMode(false);
+          setMessage('');
+          setSendTime('30-minutes');
         }
       })
       .catch((err: unknown) => {
@@ -113,6 +118,15 @@ function ScheduleTextDialog({
   const handleUpdateModeTrue = () => {
     setUpdateMode(true);
     setNewTextMode(true);
+  };
+
+  const deleteText = () => {
+    axios
+      .delete(`/api/text/${eventId}`)
+      .then(getText)
+      .catch((err: unknown) => {
+        console.error('Failed to deleteText:', err);
+      });
   };
 
   useEffect(() => {
@@ -184,7 +198,7 @@ function ScheduleTextDialog({
           <div className="grid grid-cols-2 gap-2">
             <Button onClick={handleUpdateModeTrue}>Update</Button>
             <DialogClose asChild>
-              <Button>Delete</Button>
+              <Button onClick={deleteText}>Delete</Button>
             </DialogClose>
           </div>
         )}
