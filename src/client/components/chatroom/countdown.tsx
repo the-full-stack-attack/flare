@@ -1,3 +1,5 @@
+/* eslint-disable react/function-component-definition */
+/* eslint-disable import/prefer-default-export */
 import dayjs, { Dayjs } from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import React, { useMemo, useState } from 'react';
@@ -31,5 +33,5 @@ export const Countdown: React.FC<CountdownProps> = ({ endTime }) => {
       setTime(timestamp);
     }, interval);
   }, [endTime]);
-  return <>{time}</>;
+  return <h4 class="text-white text-[34px]">{time}</h4>;
 };

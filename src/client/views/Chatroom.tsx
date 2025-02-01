@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
 import dayjs from 'dayjs';
+import { Viewport } from 'pixi-viewport';
 import {
   Container,
   Graphics,
@@ -46,6 +47,7 @@ extend({
   TextStyle,
   AnimatedSprite,
   Texture, // not worth it w/ useAssets...?
+  Viewport,
 });
 
 const socket = io('http://localhost:4000');
@@ -244,8 +246,7 @@ function Chatroom() {
   };
 
   return (
-    <div>
-      <Countdown endTime={dayjs(start_time)}/>
+    <div className='bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12'>
       <div
         style={{
           display: 'flex',
@@ -254,6 +255,19 @@ function Chatroom() {
         }}
       >
         <div style={{ width: { gameWidth }, height: { gameHeight } }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '80px',
+        }} ><Countdown endTime={dayjs(start_time)}/></div>
+             {/* <Viewport 
+        app={app} // Pass the Pixi.js application instance to the Viewport
+        width={800} 
+        height={600}
+        drag={true}
+        pinchToZoom={true}
+        wheel={true}
+      > */}
           <Application>
             <pixiContainer x={100} y={200}>
               <pixiGraphics draw={drawCircle} />
@@ -311,6 +325,7 @@ function Chatroom() {
               loop={true}
             /> */}
           </Application>
+          {/* </Viewport> */}
           <Button onClick={toggleQuiplash}>Play Quiplash</Button>
           {
             isPlayingQuiplash && <QuipLash startTime={start_time}/>
@@ -324,8 +339,9 @@ function Chatroom() {
           marginTop: '20px',
         }}>
         <div onClick={typing}>
-          <Label> Send A Chat To the Chatroom! ayyye!</Label>
+          <Label class="text-white"> Send A Chat To the Chatroom! ayyye!</Label>
           <Input
+            class="bg-white" 
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
