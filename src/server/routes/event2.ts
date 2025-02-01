@@ -125,7 +125,7 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     },
     include: {
       model: Event,
-      where: { start_time: { [Op.gt]: new Date(Date.now()) } },
+      where: { end_time: { [Op.gt]: new Date(Date.now()) } },
       include: [
         {
           model: User,

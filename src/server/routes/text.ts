@@ -1,0 +1,53 @@
+import { Router, Response } from 'express';
+
+import Text from '../db/models/texts';
+
+const textRouter = Router();
+
+/*
+  POST /api/text => Create a text to be sent later for the user
+*/
+textRouter.post('/', (req: any, res: Response) => {
+  const { text } = req.body;
+  text.user_id = req.user.id;
+  Text.findOrCreate({
+    where: { user_id: req.user.id, event_id: text.event_id },
+    defaults: text,
+  })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to POST /api/text', err);
+      res.sendStatus(500);
+    });
+});
+
+/*
+  GET /api/text/:event_id => Retrieve an id using UserId & EventId
+*/
+textRouter.get('/:eventId', (req: any, res: Response) => {
+  Text.findOne({
+    where: {
+      user_id: req.user.id,
+      event_id: req.params.eventId,
+    },
+  })
+    .then((text) => {
+      res.status(200).send(text);
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to GET /api/text/:eventId', err);
+      res.sendStatus(500);
+    });
+});
+
+/*
+  PATCH /api/text/:id
+*/
+
+/*
+  DELETE /api/text/:id => Delete text from DB so the worker doesn't send it.
+*/
+
+export default textRouter;
