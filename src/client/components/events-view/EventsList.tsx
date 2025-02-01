@@ -30,28 +30,13 @@ type EventsListProps = {
     };
   }[];
   getEvents: () => void;
-  locationFilter: {
-    city: string;
-    state: string;
-  };
-  category: string;
 };
 
-function EventsList({
-  events,
-  getEvents,
-  locationFilter,
-  category,
-}: EventsListProps) {
+function EventsList({ events, getEvents }: EventsListProps) {
   return (
     <>
       {events.map((event) => (
-        <Event
-          key={event.id}
-          event={event}
-          getEvents={getEvents}
-          category={category}
-        />
+        <Event key={event.id} event={event} getEvents={getEvents} />
       ))}
     </>
   );

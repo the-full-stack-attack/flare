@@ -205,14 +205,6 @@ function Events() {
     getEvents();
   }, [locationFilter]);
 
-  // console.log('Events:', events);
-  // console.log('Attending Events:', attendingEvents);
-  // console.log('Bailed Events:', bailedEvents);
-  // console.log('GeoLocation:', geoLocation);
-  // console.log('Location:', location);
-  // console.log('Location Filter:', locationFilter);
-  // console.log('User:', user);
-
   return (
     <div className="container mx-auto px-4 pt-20 content-center">
       <div className="container mx-auto px-4">
@@ -290,34 +282,19 @@ function Events() {
           value="upcoming"
           className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
         >
-          <EventsList
-            events={events}
-            getEvents={getEvents}
-            locationFilter={locationFilter}
-            category="upcoming"
-          />
+          <EventsList events={events} getEvents={getEvents} />
         </TabsContent>
         <TabsContent
           value="attending"
           className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
         >
-          <EventsList
-            events={attendingEvents}
-            getEvents={getEvents}
-            locationFilter={locationFilter}
-            category="attending"
-          />
+          <EventsList events={attendingEvents} getEvents={getEvents} />
         </TabsContent>
         <TabsContent
           value="bailed"
           className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
         >
-          <EventsList
-            events={bailedEvents}
-            getEvents={getEvents}
-            locationFilter={locationFilter}
-            category="bailed"
-          />
+          <EventsList events={bailedEvents} getEvents={getEvents} />
         </TabsContent>
       </Tabs>
     </div>
