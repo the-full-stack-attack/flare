@@ -5,7 +5,7 @@ import Event from './events';
 
 const Text = database.define('Text', {
   content: { type: Sequelize.STRING },
-  // isEmail: { type: Sequelize.BOOLEAN, defaultValue: false, },
+  time_from_start: { type: Sequelize.STRING },
   user_id: { type: Sequelize.INTEGER },
   send_time: { type: Sequelize.DATE },
   event_id: { type: Sequelize.INTEGER },
