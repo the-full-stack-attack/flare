@@ -5,6 +5,7 @@ import React, {
   useContext,
   useRef,
   ref,
+  useId,
 } from 'react';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
@@ -87,6 +88,7 @@ function QuipLash() {
   const [answersReceived, setAnswersReceived] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState('');
+  const uniqueId = useId;
   const [quiplashPrompt, setQuiplashPrompt] = useState('');
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
@@ -245,7 +247,7 @@ function QuipLash() {
                 }}
                 x={50}
                 y={150 + i * 150}
-                key={Math.random().toFixed(6) + String.fromCharCode(Math.random().toFixed(1))}
+                key={useId}
               >
                 <pixiGraphics draw={speechBubble}>
                   <pixiText
