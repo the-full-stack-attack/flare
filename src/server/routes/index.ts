@@ -13,6 +13,7 @@ import event2Router from './event2';
 import signUpRouter from './signup';
 import notifsRouter from './notifications';
 import textRouter from './text';
+import settingsRouter from './accountSettings';
 
 export = {
   aiRouter,
@@ -29,5 +30,6 @@ export = {
   event2Router,
   signUpRouter,
   notifsRouter,
+  settingsRouter,
   textRouter,
 };

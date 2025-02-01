@@ -44,6 +44,8 @@ module.exports = {
     'object-curly-newline': 'off',
     '@typescript-eslint/operator-linebreak': 'off',
     'no-param-reassign': 'off',
+    '@typescript-eslint/lines-between-class-members':
+      '[{ exceptAfterSingleLine: true }]',
   },
   // Ignore files in the test directory
   ignorePatterns: [

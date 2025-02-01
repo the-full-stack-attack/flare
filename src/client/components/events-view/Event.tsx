@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
@@ -67,13 +67,38 @@ type EventProps = {
     };
   };
   getEvents: () => void;
-  category: string;
 };
 
-function Event({ event, getEvents, category }: EventProps) {
+function Event({ event, getEvents }: EventProps) {
   const { user } = useContext(UserContext);
 
   const { title, start_time, end_time, Users } = event;
+
+  const category = useMemo((): string => {
+    const isAttending = Users?.reduce((acc, curr) => {
+      if (curr.id === user.id && curr.User_Event.user_attending) {
+        acc = true;
+      }
+      return acc;
+    }, false);
+
+    if (isAttending) {
+      return 'attending';
+    }
+
+    const hasBailed = Users?.reduce((acc, curr) => {
+      if (curr.id === user.id && !curr.User_Event.user_attending) {
+        acc = true;
+      }
+      return acc;
+    }, false);
+
+    if (hasBailed) {
+      return 'bailed';
+    }
+
+    return 'upcoming';
+  }, [Users, user.id]);
 
   const postAttendEvent = () => {
     axios
@@ -135,22 +160,12 @@ function Event({ event, getEvents, category }: EventProps) {
                 {user.id === event.created_by ? <b>Host</b> : null}
               </div>
               
-              {Users?.reduce((acc, curr) => {
-                if (curr.id === user.id && curr.User_Event.user_attending) {
-                  acc = true;
-                }
-                return acc;
-              }, false) ? (
+              {category === 'attending' ? (
                 <div className="p-2">
                   <i>Attending</i>
                 </div>
               ) : null}
-              {Users?.reduce((acc, curr) => {
-                if (curr.id === user.id && !curr.User_Event.user_attending) {
-                  acc = true;
-                }
-                return acc;
-              }, false) ? (
+              {category === 'bailed' ? (
                 <div className="p-2">
                   <i>Bailed</i>
                 </div>

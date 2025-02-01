@@ -2,6 +2,7 @@ import { Router } from 'express';
 import routes from './routes/index';
 
 const {
+  settingsRouter,
   aiRouter,
   aiConversationRouter,
   aiTaskRouter,
@@ -21,6 +22,7 @@ const {
 
 const apiRouter = Router();
 
+apiRouter.use('/settings', settingsRouter)
 apiRouter.use('/ai', aiRouter);
 apiRouter.use('/aiConversation', aiConversationRouter);
 apiRouter.use('/aiTask', aiTaskRouter);

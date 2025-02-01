@@ -27,16 +27,21 @@ function Task() {
   }, [user]);
   return (
     <div>
-      <div>
+      <div className="pt-14">
         <p>{`You completed ${last_week_task_count} tasks last week`}</p>
       </div>
       <div>
         <p>{`You've completed ${weekly_task_count} tasks so far this week`}</p>
       </div>
       {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
-      <CompletedTaskList />
-      <br />
-      <OptOutList />
+      <div className="text-2xl font-semibold">Completed Tasks</div>
+      <div className="container overflow-auto border-2 px-1 rounded-lg max-h-80 lg:w-1/2">
+        <CompletedTaskList />
+      </div>
+      <div className="text-2xl font-semibold">Opted Out Tasks</div>
+      <div className="container overflow-auto border-2 px-1 rounded-lg max-h-80 lg:w-1/2">
+        <OptOutList />
+      </div>
     </div>
   );
 }
