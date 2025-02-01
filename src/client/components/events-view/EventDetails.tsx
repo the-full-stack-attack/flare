@@ -12,13 +12,9 @@ import {
   DrawerClose,
 } from '../../../components/ui/drawer';
 
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '../../../components/ui/dialog';
+import { Dialog, DialogTrigger } from '../../../components/ui/dialog';
+
+import ScheduleTextDialog from './ScheduleTextDialog';
 
 type EventDetailsProps = {
   event: {
@@ -165,11 +161,7 @@ function EventDetails({
               <DialogTrigger asChild>
                 <Button>Schedule Text</Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Boo!</DialogTitle>
-                </DialogHeader>
-              </DialogContent>
+              <ScheduleTextDialog />
             </Dialog>
           </div>
         ) : null}
