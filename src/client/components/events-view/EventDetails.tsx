@@ -152,7 +152,7 @@ function EventDetails({
         {category === 'bailed' ? (
           <Button onClick={patchAttendingEvent}>Re-attend</Button>
         ) : null}
-        {category === 'attending' ? <Button><Link state={ Category?.name , start_time} style={{flex: 1}} to={`/chatroom/${id}`}>Enter Chatroom</Link></Button> : null}
+        {category === 'attending' ? <Button><Link style={{flex: 1}} to={`/chatroom/${id}`}>Enter Chatroom</Link></Button> : null}
         <DrawerClose asChild>
           <Button>Close</Button>
         </DrawerClose>
