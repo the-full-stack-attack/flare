@@ -38,7 +38,14 @@ function CompletedTaskList() {
       });
   }, [user]);
   return (
-    <div className="grid-auto-flow: column">
+    <div className="table w-full lg:w-1/2">
+      <div className="table-header-group ...">
+        <div className="table-row">
+          <div className="table-cell text-left ...">Type</div>
+          <div className="table-cell text-left ...">Task</div>
+          <div className="table-cell text-left ...">Completed</div>
+        </div>
+      </div>
       {completedTasks.map((userTask) => (
         <CompletedTask key={userTask.TaskId} userTask={userTask} />
       ))}
