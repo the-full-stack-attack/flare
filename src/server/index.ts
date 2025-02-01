@@ -7,7 +7,8 @@ import app from './app';
 import database from './db/index';
 import './db/models/index';
 import { data } from 'react-router';
-import './workers/tasks';
+import './workers/tasks'; // Tasks Worker
+import './workers/texts'; // Texts Worker
 import { type SocketList, PlayerList, QuiplashList, QuiplashGames } from '../types/Players';
 import initializeSocket from './socket';
 
