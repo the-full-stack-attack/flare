@@ -49,15 +49,21 @@ function ScheduleTextDialog({
       },
     };
     if (sendTime === '30-minutes') {
-      body.text.send_time = new Date(startTime.getTime() + 1000 * 60 * 30);
+      body.text.send_time = new Date(
+        new Date(startTime).getTime() + 1000 * 60 * 30
+      );
     }
 
     if (sendTime === '1-hour') {
-      body.text.send_time = new Date(startTime.getTime() + 1000 * 60 * 60 * 1);
+      body.text.send_time = new Date(
+        new Date(startTime).getTime() + 1000 * 60 * 60 * 1
+      );
     }
 
     if (sendTime === '2-hours') {
-      body.text.send_time = new Date(startTime.getTime() + 1000 * 60 * 60 * 2);
+      body.text.send_time = new Date(
+        new Date(startTime).getTime() + 1000 * 60 * 60 * 2
+      );
     }
     axios
       .post('/api/text', body)
