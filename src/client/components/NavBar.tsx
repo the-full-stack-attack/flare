@@ -9,6 +9,7 @@ import {
   FaStickyNote, // Notifications
   FaChartLine, // Dashboard
   FaSignOutAlt, // Logout
+  FaCog // Settings
 } from 'react-icons/fa';
 import cn from '../../../lib/utils';
 import { UserContext } from '../contexts/UserContext';
@@ -32,6 +33,7 @@ function NavBar(): JSX.Element {
       icon: FaStickyNote,
     },
     { title: 'Dashboard', url: '/Dashboard', icon: FaChartLine },
+    { title: 'Settings', url: '/settings', icon: FaCog },
     { title: 'Logout', url: '/logout', icon: FaSignOutAlt },
   ];
 
