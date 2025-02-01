@@ -59,12 +59,8 @@ const style = new TextStyle({
 });
 
 
-function QuipLash({startTime}) {
-  var d = new Date(startTime);
+function QuipLash() {
 
-  // console.log(d.getUTCHours()); // Hours
-  // console.log(d.getUTCMinutes());
-  // console.log(d.getUTCSeconds());
   useAssets([
     {
       alias: 'bunny',
@@ -103,7 +99,7 @@ function QuipLash({startTime}) {
   };
   
   // QUIPLASH
-  let color = '#55ff00'
+  const [color, setColor] = useState('#ffffff');
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
  
   const style2 = new TextStyle({
@@ -189,8 +185,13 @@ function QuipLash({startTime}) {
     socket.on('countDown', (time) => {
       console.log('countdownrunning')
       console.log(time);
-      if(time < 10){
-        color = '#cf060a';
+      if(time >= 11 ){
+        setColor('#55ff00');
+      } else if(time >= 5){
+        setColor('#f7f720');
+      }
+      if(time < 5){
+        setColor('#cf060a');
       }
       setTimer((time).toString())
     })
