@@ -89,6 +89,7 @@ const initializeSocket = (
 
       // Creates a game if one doesn't already exist
       if (QUIPLASH_GAMES[eventId] === undefined) {
+
         QUIPLASH_GAMES[eventId] = {
           players: {}, // key = username // value = player
           votes: [], // array of usernames that was voted for
@@ -97,8 +98,8 @@ const initializeSocket = (
           promptGiven: false,
           startTimer() {
             let initialIntervalId: NodeJS.Timeout;
-
             let initialTimer = 30;
+
             let startInitialInterval = () => {
               initialIntervalId = setInterval(() => {
                 console.log('Interval running...');
@@ -116,6 +117,7 @@ const initializeSocket = (
               clearInterval(initialIntervalId);
               console.log('initial Interval stopped.');
             }, 30000);
+
             // After 30 seconds, Show answers & begin next timer
             setTimeout(() => {
               QUIPLASH_GAMES[eventId].promptGiven = false;
@@ -127,8 +129,8 @@ const initializeSocket = (
                 .emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
 
               let intervalId: NodeJS.Timeout;
-
               let timer = 15;
+
               let startInterval = () => {
                 intervalId = setInterval(() => {
                   console.log('Interval running...');
@@ -141,7 +143,7 @@ const initializeSocket = (
 
               startInterval();
 
-              // Stop the interval after 5 seconds
+              // Stop the interval after 15 seconds
               setTimeout(() => {
                 clearInterval(intervalId);
                 console.log('Interval stopped.');
@@ -162,45 +164,37 @@ const initializeSocket = (
                     totalVotes[QUIPLASH_GAMES[eventId].votes[i]] += 1;
                   }
                 }
-                // At the end of the loop, check who has the highest vote.
+                // SET THE WINNER
                 for (let key in totalVotes) {
                   let currentContestant = [key, totalVotes[key]];
-                  // if there is no winner (the first iteration)
                   if (winner[1] < currentContestant[1]) {
-                    // set the winner to the first guy
                     winner = currentContestant;
                   }
                 }
-                let falsyBool = false;
-                let truthyBool = true;
-                QUIPLASH_GAMES[eventId].votes.length = 0; // reset votes
-                // clear answers
-                for (const prop of Object.getOwnPropertyNames(
-                  QUIPLASH_GAMES[eventId].answers
-                )) {
+
+                // reset all properties
+                const falsyBool = false;
+                const truthyBool = true;
+                QUIPLASH_GAMES[eventId].votes.length = 0;
+                for (const prop of Object.getOwnPropertyNames(QUIPLASH_GAMES[eventId].answers)){
                   delete QUIPLASH_GAMES[eventId].answers[prop];
                 }
-                // allow a new prompt
                 QUIPLASH_GAMES[eventId].promptGiven = false;
+
                 socket.nsp
                   .to(`Quiplash room: ${socket.data.eventId}`)
                   .emit(`showWinner`, { winner, falsyBool, truthyBool });
+
               }, 15000);
+
             }, 30000);
           },
-        };
-        // if a game already exists, let server know we succeeded test #1
-      } else {
-        console.log(`a game for room ${eventId} already exists, adding player`);
-      }
-      // A game should already exist at this point regardless of whether or not it did before
-      // add the player to the correct game by eventId, a quiplash player to the players object. their key is their username
+        }; // END OF QUIPLASH GAME OBJECT
+      } // END OF IF STATEMENT
+
+      // if a game already exists, add the player to it
       QUIPLASH_GAMES[eventId].players[user.username] = quiplashPlayer;
-      // increase the current player count from zero to 1
       QUIPLASH_GAMES[eventId].playerCount += 1;
-      console.log(QUIPLASH_LIST, 'quiplash list');
-      console.log(QUIPLASH_GAMES, 'ONGOING QUIPLASH GAMES');
-      let returnData = QUIPLASH_GAMES[eventId];
       socket.nsp
         .to(`Quiplash room: ${socket.data.eventId}`)
         .emit('ongoingPrompt', QUIPLASH_GAMES[eventId].promptGiven);

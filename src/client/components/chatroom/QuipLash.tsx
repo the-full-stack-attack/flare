@@ -90,7 +90,7 @@ function QuipLash() {
   const [winner, setWinner] = useState('');
   const uniqueId = useId;
   const [quiplashPrompt, setQuiplashPrompt] = useState('');
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState('0');
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -189,7 +189,11 @@ function QuipLash() {
 
   const test = (e) => {
     console.log('test is passing for onclick', e);
+    if(e === user.username){
+      console.log('you cannot vote for yourself!');
+    } else {
     socket.emit('vote', e);
+    }
   };
   return (
     <div
@@ -238,13 +242,13 @@ function QuipLash() {
               x={300}
               y={100}
             >
-            {/* {timer && <pixiText
-                    text={timer}
+            {timer && <pixiText
+                    text={`TIME: ${timer}`}
                     anchor={0.5}
-                    x={120}
-                    y={100}
+                    x={130}
+                    y={450}
                     style={style}
-                  />} */}
+                  />}
                   </pixiContainer>
         </Application>
         {promptGiven && <h6>{quiplashPrompt} </h6>}
