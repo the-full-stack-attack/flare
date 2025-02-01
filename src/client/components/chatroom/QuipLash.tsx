@@ -8,6 +8,7 @@ import React, {
   useId,
 } from 'react';
 import io from 'socket.io-client';
+
 import { Application, extend, useAssets } from '@pixi/react';
 import '@pixi/events';
 import {
@@ -57,7 +58,13 @@ const style = new TextStyle({
   breakWords: true,
 });
 
-function QuipLash() {
+
+function QuipLash({startTime}) {
+  var d = new Date(startTime);
+
+  // console.log(d.getUTCHours()); // Hours
+  // console.log(d.getUTCMinutes());
+  // console.log(d.getUTCSeconds());
   useAssets([
     {
       alias: 'bunny',
@@ -73,7 +80,7 @@ function QuipLash() {
     assets: [background],
     isSuccess,
   } = useAssets<Texture>([bartender]);
-
+  
   // LOGIC
   const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
@@ -90,13 +97,29 @@ function QuipLash() {
   const [winner, setWinner] = useState('');
   const uniqueId = useId;
   const [quiplashPrompt, setQuiplashPrompt] = useState('');
-  const [timer, setTimer] = useState('0');
+  const [timer, setTimer] = useState('30');
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
+  
   // QUIPLASH
+  let color = '#55ff00'
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
-
+ 
+  const style2 = new TextStyle({
+    align: 'left',
+    fontFamily: '\"Trebuchet MS\", Helvetica, sans-serif',
+    fontSize: 30,
+    fontWeight: 'bold',
+    fill: color,
+    stroke: '#000000',
+    strokeThickness: 10,
+    lineJoin: 'round',
+    letterSpacing: 4,
+    wordWrap: true,
+    wordWrapWidth: 150,
+    breakWords: true,
+  });
   // EXAMPLES
   const speechBubble = useCallback((graphics: unknown, element) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, 0, 270);
@@ -166,6 +189,10 @@ function QuipLash() {
     socket.on('countDown', (time) => {
       console.log('countdownrunning')
       console.log(time);
+      if(time < 10){
+        color = '#cf060a';
+      }
+      setTimer((time).toString())
     })
   }, []);
 
@@ -247,7 +274,7 @@ function QuipLash() {
                     anchor={0.5}
                     x={130}
                     y={450}
-                    style={style}
+                    style={style2}
                   />}
                   </pixiContainer>
         </Application>

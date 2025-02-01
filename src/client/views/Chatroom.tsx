@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback, useContext, useRef, ref } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
+import dayjs from 'dayjs';
 import {
   Container,
   Graphics,
@@ -23,7 +25,8 @@ import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
 import temporaryMap from '../assets/images/temporaryAImap.png' // test circle
 import { UserContext } from '../contexts/UserContext';
-import QuipLash from '../components/chatroom/QuipLash'
+import QuipLash from '../components/chatroom/QuipLash';
+import { Countdown } from '../components/chatroom/countdown';
 import {
   testJumper,
   spritesheet,
@@ -60,8 +63,8 @@ const style = new TextStyle({
 });
 
 function Chatroom() {
-
-
+  const location = useLocation();
+  const start_time = location.state;
   // LOAD ASSETS
   useAssets([
     {
@@ -242,6 +245,7 @@ function Chatroom() {
 
   return (
     <div>
+      <Countdown endTime={dayjs(start_time)}/>
       <div
         style={{
           display: 'flex',
@@ -309,7 +313,7 @@ function Chatroom() {
           </Application>
           <Button onClick={toggleQuiplash}>Play Quiplash</Button>
           {
-            isPlayingQuiplash && <QuipLash/>
+            isPlayingQuiplash && <QuipLash startTime={start_time}/>
           }
         </div>
       </div>
