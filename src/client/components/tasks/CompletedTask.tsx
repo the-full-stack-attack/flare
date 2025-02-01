@@ -28,13 +28,11 @@ function CompletedTask({ userTask }: CompletedTaskProps) {
     'MM/DD/YYYY'
   );
   return (
-    <div className="table-row-group">
-      <div className="table-row">
-        <div className="table-cell ...">{`${difficulty} ${type}`}</div>
-        <div className="table-cell ...">{description.slice(0, -1)}</div>
-        <div className="table-cell ...">{dateString}</div>
-      </div>
-    </div>
+    <tr className="border-b-2">
+      <td>{`${difficulty} ${type}`}</td>
+      <td>{description.slice(0, -1)}</td>
+      <td>{dateString}</td>
+    </tr>
   );
 }
 

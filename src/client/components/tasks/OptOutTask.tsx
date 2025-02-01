@@ -60,19 +60,17 @@ function OptOutTask({ userTask }: CompletedTaskProps) {
         cancelText="Cancel"
         confirmText="Retry"
       />
-      <div className="table-row-group">
-        <div className="table-row">
-          <div className="table-cell">{`${difficulty} ${type}`}</div>
-          <div className="table-cell">{description.slice(0, -1)}</div>
-        </div>
-        <Button
-          onClick={() => {
-            setIsOpen(true);
-          }}
-        >
-          Retry
-        </Button>
-      </div>
+      <tr className="border-b-2">
+        <td>{`${difficulty} ${type}`}</td>
+        <td>{description.slice(0, -1)}</td>
+      </tr>
+      <Button
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Retry
+      </Button>
     </>
   );
 }
