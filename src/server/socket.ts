@@ -102,7 +102,6 @@ const initializeSocket = (
 
             let startInitialInterval = () => {
               initialIntervalId = setInterval(() => {
-                console.log('Interval running...');
                 initialTimer -= 1;
                 socket.nsp
                   .to(`Quiplash room: ${socket.data.eventId}`)
@@ -115,8 +114,7 @@ const initializeSocket = (
             // Stop the interval after 30 seconds
             setTimeout(() => {
               clearInterval(initialIntervalId);
-              console.log('initial Interval stopped.');
-            }, 30000);
+            }, 31000);
 
             // After 30 seconds, Show answers & begin next timer
             setTimeout(() => {
@@ -129,11 +127,10 @@ const initializeSocket = (
                 .emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
 
               let intervalId: NodeJS.Timeout;
-              let timer = 15;
+              let timer = 16;
 
               let startInterval = () => {
                 intervalId = setInterval(() => {
-                  console.log('Interval running...');
                   timer -= 1;
                   socket.nsp
                     .to(`Quiplash room: ${socket.data.eventId}`)
@@ -146,8 +143,7 @@ const initializeSocket = (
               // Stop the interval after 15 seconds
               setTimeout(() => {
                 clearInterval(intervalId);
-                console.log('Interval stopped.');
-              }, 15000);
+              }, 17000);
 
               setTimeout(() => {
                 let totalVotes: { [key: string]: any } = {};
@@ -180,14 +176,17 @@ const initializeSocket = (
                   delete QUIPLASH_GAMES[eventId].answers[prop];
                 }
                 QUIPLASH_GAMES[eventId].promptGiven = false;
-
+                let restartTime = 30;
                 socket.nsp
                   .to(`Quiplash room: ${socket.data.eventId}`)
                   .emit(`showWinner`, { winner, falsyBool, truthyBool });
+                socket.nsp
+                  .to(`Quiplash room: ${socket.data.eventId}`)
+                  .emit(`countDown`, restartTime);
 
-              }, 15000);
+              }, 17000);
 
-            }, 30000);
+            }, 33000);
           },
         }; // END OF QUIPLASH GAME OBJECT
       } // END OF IF STATEMENT
@@ -216,7 +215,6 @@ const initializeSocket = (
       // after 90 seconds, the client can reactivate the button to access this socket for all players in the same room
       try {
         const result = await bartenderAI.generateContent(prompt);
-        console.log(result);
         socket.nsp
           .to(`Quiplash room: ${socket.data.eventId}`)
           .emit('receivePrompt', result);
@@ -246,13 +244,11 @@ const initializeSocket = (
     // Quiplash Answer Submissions
 
     socket.on('quiplashMessage', ({ message, eventId, user }) => {
-      console.log('received a quiplash message');
       QUIPLASH_GAMES[socket.data.eventId].answers[user.username] = message;
     });
 
     // VOTE
     socket.on('vote', (e) => {
-      console.log('vote received for ', e);
       QUIPLASH_GAMES[socket.data.eventId].votes.push(e);
     });
 
@@ -275,8 +271,6 @@ const initializeSocket = (
     });
 
     socket.on('message', ({ message, eventId }) => {
-      console.log(eventId, 'message id');
-      console.log(message, 'the message');
       PLAYER_LIST[socket.id].sentMessage = true;
       PLAYER_LIST[socket.id].currentMessage = message;
       socket.to(eventId).emit('message', message);
