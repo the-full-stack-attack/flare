@@ -29,6 +29,7 @@ const Venue = database.define('Venue', {
     crowded: { type: Sequelize.STRING },
     noise_level: { type: Sequelize.STRING },
     service_quality: { type: Sequelize.STRING },
+    img: { type: Sequelize.STRING },
 });
 
 

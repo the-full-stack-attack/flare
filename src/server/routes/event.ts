@@ -247,6 +247,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 }
             );
             venueData = await response.json();
+            console.log(JSON.stringify(venueData, null, 2));
         }
 
         // only get google data if venue doesnt exist or venue doesnt have a google place id
@@ -255,6 +256,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             gData = await runApifyActor(googlePlaceId); // warning: response can take 5-15 seconds
         }
 
+        console.log(gData);
 
         const [venue, created] = await Venue.findOrCreate({
             where: { fsq_id: fsqId },
@@ -283,6 +285,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 crowded: venueData?.features?.attributes?.crowded || null,
                 noise_level: venueData?.features?.attributes?.noisy || null,
                 service_quality: venueData?.features?.attributes?.service_quality || null,
+                img: `${venueData.photos[0]?.prefix}original${venueData.photos[0]?.suffix}` || gData[0]?.imageUrl || null,
             }
         }) as any;
 
@@ -383,22 +386,22 @@ eventRouter.get('/categories', async (req: Request, res: Response) => {
 
 
 // // get all venues in db
-// eventRouter.get('/venues', async (req: Request, res: Response) => {
-//     try {
-//         const venues = await Venue.findAll();
-//         const data = venues.map(venue => ({
-//             name: venue.dataValues.name,
-//             description: venue.dataValues.description,
-//             street_address: venue.dataValues.street_address,
-//             zip_code: venue.dataValues.zip_code,
-//             city_name: venue.dataValues.city_name,
-//             state_name: venue.dataValues.state_name,
-//         }));
-//         res.status(200).send(data);
-//     } catch (error) {
-//         console.error('Error fetching venues from DB', error);
-//         res.sendStatus(500);
-//     }
-// })
+eventRouter.get('/venues', async (req: Request, res: Response) => {
+    try {
+        const venues = await Venue.findAll();
+        const data = venues.map(venue => ({
+            name: venue.dataValues.name,
+            description: venue.dataValues.description,
+            street_address: venue.dataValues.street_address,
+            zip_code: venue.dataValues.zip_code,
+            city_name: venue.dataValues.city_name,
+            state_name: venue.dataValues.state_name,
+        }));
+        res.status(200).send(data);
+    } catch (error) {
+        console.error('Error fetching venues from DB', error);
+        res.sendStatus(500);
+    }
+})
 
 export default eventRouter;
