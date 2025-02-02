@@ -17,9 +17,8 @@ import Notification from './notifications';
 import User_Notification from './users_notifications';
 import Text from './texts';
 import Conversation from './conversations';
-import Venue_Tag from "./venue_tags";
-
-
+import Conversation_Session from './conversation_sessions';
+import Venue_Tag from './venue_tags';
 
 export default {
   User,
@@ -42,4 +41,5 @@ export default {
   User_Notification,
   Text,
   Conversation,
+  Conversation_Session,
 };
