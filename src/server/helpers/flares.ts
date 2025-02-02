@@ -5,31 +5,6 @@ import User_Flare from '../db/models/users_flares';
 import User_Notification from '../db/models/users_notifications';
 
 // This helper will be used to send users flare notifications
-/***
-1) Create notification
-* Set the message
-* Set send_time to x amount of time from now
-* Store the notification in a variable (notification)
-2) Give the user the flare
-* Create user_flare with:
-* UserId: user.id
-* FlareId: flare.id
-3) Create User_Notification
-* Create user_notification with:
-* UserId: user.id
-* NotificationId: notification.id
- */
-
-// What will be parameters of this function?
-// Function needs to locate the correct flare from the database: Need a value to do so
-// Think about when the function is gonna be used, what do we have access to?
-// How are we tracking if flares need to be sent? Where are the tests being performed?
-/***
- * I: Optional String of the flare name to be sent, user object
- * O: n/a
- * C: Give user correct flare and send notification
- * E: n/a
- */
 
 type UserType = {
   id: number;
@@ -49,7 +24,12 @@ type FlareType = {
   value: number;
   type: string | void;
 };
-// Function for checking if the user has earned a flare
+/*** Function checks if flares need to be sent and sends them if necessary
+ * I: Optional String of the flare name to be sent, user object
+ * O: n/a
+ * C: Give user correct flare and send notification
+ * E: n/a
+ */
 async function checkForFlares(user: UserType, flareName: string | void) {
   console.log('User: ', user);
   console.log('flareName: ', flareName);
@@ -63,6 +43,7 @@ async function checkForFlares(user: UserType, flareName: string | void) {
   }
   if (user.total_tasks_completed === 1) {
     sendFlare('Go Getter');
+    return;
   }
 // Helper Function for once we know which flare to send
 // Can take in the flare object if it was already found, or the name of the flare to get from the database
@@ -78,7 +59,7 @@ async function sendFlare(flare: FlareType | string) {
       const userFlare = await User_Flare.create({ UserId: userId, FlareId: flareId });
       // Create notification object and add it to the database
       const { achievement } = flareToSend;
-      // Create the sendTime for the notification to be sent 10 seconds from now
+      // Create the sendTime for the notification to be sent 3 seconds from now
       const now = Date.now();
       const sendTime = new Date(now + 3000);
       const newNotification = {
