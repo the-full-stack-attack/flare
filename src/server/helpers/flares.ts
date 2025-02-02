@@ -38,7 +38,7 @@ type UserType = {
   email?: string;
   full_name?: string;
   phone_number?: string;
-  tasks_complete?: number;
+  total_tasks_completed?: number;
   current_task_id?: number;
 };
 type FlareType = {
@@ -60,6 +60,9 @@ async function checkForFlares(user: UserType, flareName: string | void) {
   // If the flare name is given then we know what flare to send
   if (flareName) {
     sendFlare(flareName);
+  }
+  if (user.total_tasks_completed === 1) {
+    sendFlare('Go Getter');
   }
 // Helper Function for once we know which flare to send
 // Can take in the flare object if it was already found, or the name of the flare to get from the database
@@ -96,5 +99,6 @@ async function sendFlare(flare: FlareType | string) {
   }
 }
 };
+
 
 export default checkForFlares;

@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import dayjs from 'dayjs';
+import checkForFlares from '../helpers/flares';
 import User from '../db/models/users';
 import Task from '../db/models/tasks';
 import User_Task from '../db/models/users_tasks';
@@ -124,6 +125,7 @@ taskRouter.patch('/complete', async (req: any, res: Response) => {
       const newDate = dayjs(date);
       userTask.date_completed = newDate;
       await userTask.save();
+      checkForFlares(user);
       res.status(200).send(user);
     } else {
       console.error('user, task, or userTask was not found in PATCH');
