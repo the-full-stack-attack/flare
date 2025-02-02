@@ -17,7 +17,7 @@ import Notification from './notifications';
 import User_Notification from './users_notifications';
 import Text from './texts';
 import Conversation from './conversations';
-import Conversation_Session from './conversation_sessions';
+import Conversation_Session from './conversation_session';
 import Venue_Tag from './venue_tags';
 
 export default {
