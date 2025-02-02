@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-
+const webpack = require('webpack');
 const DIST_DIR = path.resolve(__dirname, 'dist');
 const SRC_DIR = path.resolve(__dirname, 'src');
 const CLIENT_DIR = path.resolve(__dirname, 'src', 'client');
@@ -64,7 +64,10 @@ module.exports = {
       filename: 'index.html',
       inject: true
     }),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_DEVELOPMENT_SOCKETS': JSON.stringify(process.env.REACT_APP_DEVELOPMENT_SOCKETS),
+    }),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.css'],
