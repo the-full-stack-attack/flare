@@ -247,7 +247,6 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 }
             );
             venueData = await response.json();
-            console.log(JSON.stringify(venueData, null, 2));
         }
 
         // only get google data if venue doesnt exist or venue doesnt have a google place id
@@ -256,7 +255,6 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             gData = await runApifyActor(googlePlaceId); // warning: response can take 5-15 seconds
         }
 
-        console.log(gData);
 
         const [venue, created] = await Venue.findOrCreate({
             where: { fsq_id: fsqId },
@@ -285,7 +283,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 crowded: venueData?.features?.attributes?.crowded || null,
                 noise_level: venueData?.features?.attributes?.noisy || null,
                 service_quality: venueData?.features?.attributes?.service_quality || null,
-                img: `${venueData.photos[0]?.prefix}original${venueData.photos[0]?.suffix}` || gData[0]?.imageUrl || null,
+                img: venueData?.photos?.[0] && venueData.photos[0].prefix && venueData.photos[0].suffix ? `${venueData.photos[0].prefix}original${venueData.photos[0].suffix}` : gData[0]?.imageUrl || null,
             }
         }) as any;
 
