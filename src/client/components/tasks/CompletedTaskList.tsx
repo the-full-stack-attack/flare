@@ -38,11 +38,20 @@ function CompletedTaskList() {
       });
   }, [user]);
   return (
-    <div className="grid-auto-flow: column">
-      {completedTasks.map((userTask) => (
-        <CompletedTask key={userTask.TaskId} userTask={userTask} />
-      ))}
-    </div>
+    <table className="w-full">
+      <thead>
+        <tr className="border-b-4">
+          <th className="text-left">Type</th>
+          <th className="text-left">Task</th>
+          <th className="text-left">Completed</th>
+        </tr>
+      </thead>
+      <tbody>
+        {completedTasks.map((userTask) => (
+          <CompletedTask key={userTask.TaskId} userTask={userTask} />
+        ))}
+      </tbody>
+    </table>
   );
 }
 

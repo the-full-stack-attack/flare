@@ -25,7 +25,7 @@ const MsgBox = ({ msg, user }) => {
         </div>
         <div className="flex flex-col overflow-hidden">
           <figcaption className="flex flex-row items-center whitespace-pre text-lg font-medium dark:text-white ">
-            <span className="text-sm sm:text-lg">Username</span>
+            <span className="text-sm sm:text-lg">{user}</span>
             <span className="mx-1">·</span>
             <span className="text-xs text-gray-500">timeStamp</span>
           </figcaption>

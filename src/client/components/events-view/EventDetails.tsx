@@ -153,7 +153,7 @@ function EventDetails({
         {category === 'attending' ? (
           <div className="grid grid-cols-2 gap-2">
             <Button>
-              <Link style={{ flex: 1 }} to={`/chatroom/${id}`}>
+              <Link state={ Category?.name , start_time} style={{ flex: 1 }} to={`/chatroom/${id}`}>
                 Enter Chatroom
               </Link>
             </Button>

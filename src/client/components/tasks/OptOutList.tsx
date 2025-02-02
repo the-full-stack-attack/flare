@@ -37,11 +37,19 @@ function OptOutList() {
       });
   }, [user]);
   return (
-    <ul>
-      {optedOutTasks.map((userTask) => (
-        <OptOutTask key={userTask.TaskId} userTask={userTask} />
-      ))}
-    </ul>
+    <table className="w-full lg:w-1/3">
+      <thead>
+        <tr className="border-b-4">
+          <th className="text-left">Type</th>
+          <th className="text-left">Task</th>
+        </tr>
+      </thead>
+      <tbody>
+        {optedOutTasks.map((userTask) => (
+          <OptOutTask key={userTask.TaskId} userTask={userTask} />
+        ))}
+      </tbody>
+    </table>
   );
 }
 

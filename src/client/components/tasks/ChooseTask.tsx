@@ -20,7 +20,7 @@ type TaskInfo = {
   date: dayjs.Dayjs;
   userId?: number;
 };
-const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection Therapy'];
+const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection'];
 const difficulties: number[] = [1, 2, 3, 4, 5];
 function ChooseTask() {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,23 +70,27 @@ function ChooseTask() {
         </CardHeader>
         <CardContent>
           Choose a Difficulty
-          {difficulties.map((difficulty) => (
-            <DifficultyButton
-              key={difficulty}
-              difficulty={difficulty}
-              taskInfo={taskInfo}
-              setTaskInfo={setTaskInfo}
-            />
-          ))}
-          <br />
-          {types.map((type) => (
-            <TypeButton
-              key={type}
-              type={type}
-              setTaskInfo={setTaskInfo}
-              taskInfo={taskInfo}
-            />
-          ))}
+          <div className="grid grid-cols-5 gap-1">
+            {difficulties.map((difficulty) => (
+              <DifficultyButton
+                key={difficulty}
+                difficulty={difficulty}
+                taskInfo={taskInfo}
+                setTaskInfo={setTaskInfo}
+              />
+            ))}
+          </div>
+          Choose a category
+          <div className="grid grid-cols-5 gap-0 lg:grid-cols-15">
+            {types.map((type) => (
+              <TypeButton
+                key={type}
+                type={type}
+                setTaskInfo={setTaskInfo}
+                taskInfo={taskInfo}
+              />
+            ))}
+          </div>
         </CardContent>
         <CardFooter>
           <Button
