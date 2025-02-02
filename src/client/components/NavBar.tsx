@@ -13,10 +13,9 @@ import {
 import cn from '../../../lib/utils';
 import { UserContext } from '../contexts/UserContext';
 
-
 function NavBar(): JSX.Element {
   const { user } = useContext(UserContext);
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -132,7 +131,7 @@ function NavBar(): JSX.Element {
               <motion.a
                 key={title}
                 href={url}
-                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-md flex items-center gap-3"
+                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-md items-center gap-3"
                 whileHover={{ x: 10 }}
                 onClick={() => setIsOpen(false)}
               >

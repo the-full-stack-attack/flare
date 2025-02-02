@@ -257,182 +257,177 @@ export default function AiConversations() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20">
+      {/* Background glow remains unchanged */}
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
+
+      {/* Main container */}
       <div className="relative z-10 container mx-auto px-4 pt-20 pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          {/* Conversation Tabs and Action Buttons */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {/* Render a button for each conversation session */}
-            {conversations.map((conv, index) => (
-              <Button
-                key={conv.createdAt.toISOString()}
-                onClick={() => setCurrentConversationIndex(index)}
-                variant={
-                  currentConversationIndex === index ? 'default' : 'ghost'
-                }
-              >
-                {`Conversation ${index + 1}`}
-              </Button>
-            ))}
-            {/* Button to start a new conversation */}
-            <Button onClick={handleNewConversation}>New Conversation</Button>
-            {/* Button to save the current conversation session */}
-            <Button onClick={handleSaveCurrentConversation}>
-              Save Conversation
+        {/* Conversation Tabs and Action Buttons */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {conversations.map((conv, index) => (
+            <Button
+              key={conv.createdAt.toISOString()}
+              onClick={() => setCurrentConversationIndex(index)}
+              variant={currentConversationIndex === index ? 'default' : 'ghost'}
+            >
+              {`Conversation ${index + 1}`}
             </Button>
-          </div>
+          ))}
+          <Button onClick={handleNewConversation}>New Conversation</Button>
+          <Button onClick={handleSaveCurrentConversation}>
+            Save Conversation
+          </Button>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {/* Main Chat Area - Full width on mobile, 9 cols on desktop */}
-            <div className="lg:col-span-9 flex flex-col">
-              {/* Title Card */}
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-yellow-500/20 mb-4"
+        {/* Main content grid: Two columns on large screens */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Chat Area: occupies 9 columns on large screens */}
+          <div className="lg:col-span-9 flex flex-col">
+            {/* Title Card */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-yellow-500/20 mb-4"
+            >
+              <h2 className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+                AI Assistant
+              </h2>
+              <p className="text-gray-300">
+                Ask me anything about events, planning, or get general
+                assistance.
+              </p>
+            </motion.div>
+
+            {/* Chat Container */}
+            <div className="backdrop-blur-lg bg-black/30 rounded-xl border border-orange-500/20 flex flex-col h-[870px] mb-4">
+              <div
+                ref={chatContainerRef}
+                className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-orange-500/20 hover:scrollbar-thumb-orange-500/30"
               >
-                <h2 className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
-                  AI Assistant
-                </h2>
-                <p className="text-gray-300">
-                  Ask me anything about events, planning, or get general
-                  assistance.
-                </p>
-              </motion.div>
-
-              {/* Fixed Height Chat Container */}
-              <div className="backdrop-blur-lg bg-black/30 rounded-xl border border-orange-500/20 flex flex-col h-[870px] mb-4">
-                {/* Messages Area with Scroll */}
-                <div
-                  ref={chatContainerRef}
-                  className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-orange-500/20 hover:scrollbar-thumb-orange-500/30"
-                >
-                  <AnimatePresence>
-                    {conversations[currentConversationIndex]?.messages.map(
-                      (msg) => (
-                        <motion.div
-                          key={
-                            msg.id
-                              ? msg.id
-                              : `${msg.timestamp.getTime()}-${msg.text}`
-                          }
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
+                <AnimatePresence>
+                  {conversations[currentConversationIndex]?.messages.map(
+                    (msg) => (
+                      <motion.div
+                        key={
+                          msg.id
+                            ? msg.id
+                            : `${msg.timestamp.getTime()}-${msg.text}`
+                        }
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className={cn(
+                          'mb-4 max-w-[80%] relative group',
+                          msg.sender === 'user' ? 'ml-auto' : 'mr-auto'
+                        )}
+                      >
+                        <div
                           className={cn(
-                            'mb-4 max-w-[80%] relative group',
-                            msg.sender === 'user' ? 'ml-auto' : 'mr-auto'
+                            'rounded-xl p-4',
+                            msg.sender === 'user'
+                              ? 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30'
+                              : 'bg-white/10 border border-yellow-500/20'
                           )}
                         >
-                          <div
-                            className={cn(
-                              'rounded-xl p-4',
-                              msg.sender === 'user'
-                                ? 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30'
-                                : 'bg-white/10 border border-yellow-500/20'
+                          <p className="text-gray-100">{msg.text}</p>
+                          <div className="flex justify-between items-center mt-2">
+                            <span className="text-xs text-gray-400">
+                              {new Date(msg.timestamp).toLocaleTimeString()}
+                            </span>
+                            {msg.sender === 'assistant' && (
+                              <div className="transition-transform hover:scale-110">
+                                <HeartButton
+                                  id={`heart-${msg.id ? msg.id : msg.timestamp.getTime()}`}
+                                  checked={msg.isFavorite}
+                                  onChange={() => {
+                                    // Find the index of this message within the current session
+                                    const idx = conversations[
+                                      currentConversationIndex
+                                    ].messages.findIndex(
+                                      (m) =>
+                                        m.timestamp.getTime() ===
+                                          msg.timestamp.getTime() &&
+                                        m.text === msg.text
+                                    );
+                                    toggleFavorite(idx);
+                                  }}
+                                />
+                              </div>
                             )}
-                          >
-                            <p className="text-gray-100">{msg.text}</p>
-                            <div className="flex justify-between items-center mt-2">
-                              <span className="text-xs text-gray-400">
-                                {new Date(msg.timestamp).toLocaleTimeString()}
-                              </span>
-                              {msg.sender === 'assistant' && (
-                                <div className="transition-transform hover:scale-110">
-                                  <HeartButton
-                                    id={`heart-${msg.id ? msg.id : msg.timestamp.getTime()}`}
-                                    checked={msg.isFavorite}
-                                    onChange={() => {
-                                      const idx = conversations[
-                                        currentConversationIndex
-                                      ].messages.findIndex(
-                                        (m) =>
-                                          m.timestamp.getTime() ===
-                                            msg.timestamp.getTime() &&
-                                          m.text === msg.text
-                                      );
-                                      toggleFavorite(idx);
-                                    }}
-                                  />
-                                </div>
-                              )}
-                            </div>
                           </div>
-                        </motion.div>
-                      )
-                    )}
-                  </AnimatePresence>
-
-                  {isLoading && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="flex gap-2 p-3"
-                    >
-                      <span className="w-2 h-2 bg-yellow-500 rounded-full animate-bounce" />
-                      <span
-                        className="w-2 h-2 bg-orange-500 rounded-full animate-bounce"
-                        style={{ animationDelay: '0.2s' }}
-                      />
-                      <span
-                        className="w-2 h-2 bg-pink-500 rounded-full animate-bounce"
-                        style={{ animationDelay: '0.4s' }}
-                      />
-                    </motion.div>
+                        </div>
+                      </motion.div>
+                    )
                   )}
-                </div>
+                </AnimatePresence>
 
-                {/* Input Area */}
-                <div className="p-4 border-t border-orange-500/20">
-                  <div className="flex gap-2">
-                    <Input
-                      value={userMessage}
-                      onChange={(e) => setUserMessage(e.target.value)}
-                      onKeyDown={(e) =>
-                        e.key === 'Enter' && handleSendMessage()
-                      }
-                      placeholder="How can I help?"
-                      className="flex-1 bg-black/50 border-transparent text-white placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-orange-500/50"
+                {isLoading && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex gap-2 p-3"
+                  >
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full animate-bounce" />
+                    <span
+                      className="w-2 h-2 bg-orange-500 rounded-full animate-bounce"
+                      style={{ animationDelay: '0.2s' }}
                     />
-                    <Button
-                      onClick={handleSendMessage}
-                      disabled={isLoading}
-                      className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white"
-                    >
-                      {isLoading ? (
-                        <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
-                      ) : (
-                        'Send'
-                      )}
-                    </Button>
-                  </div>
+                    <span
+                      className="w-2 h-2 bg-pink-500 rounded-full animate-bounce"
+                      style={{ animationDelay: '0.4s' }}
+                    />
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Input Area */}
+              <div className="p-4 border-t border-orange-500/20">
+                <div className="flex gap-2">
+                  <Input
+                    value={userMessage}
+                    onChange={(e) => setUserMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="How can I help?"
+                    className="flex-1 bg-black/50 border-transparent text-white placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-orange-500/50"
+                  />
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={isLoading}
+                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white"
+                  >
+                    {isLoading ? (
+                      <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
+                    ) : (
+                      'Send'
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Side Panel: Recommended Prompts and Saved Conversations (3 columns) */}
-            <div className="lg:col-span-3 grid grid-cols-1 gap-4">
-              {/* Recommended Prompts Panel */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-orange-500/20"
-              >
-                <HelpfulPrompts onSelectPrompt={handlePromptSelect} />
-              </motion.div>
+          {/* Side Panel: Recommended Prompts and Saved Conversations */}
+          <div className="lg:col-span-3 grid grid-cols-1 gap-4">
+            {/* Recommended Prompts Panel */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-orange-500/20"
+            >
+              <HelpfulPrompts onSelectPrompt={handlePromptSelect} />
+            </motion.div>
 
-              {/* Saved Conversations */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-yellow-500/20"
-              >
-                <SavedConversations
-                  conversations={savedConversations}
-                  onSelect={handleConversationSelect}
-                />
-              </motion.div>
-            </div>
+            {/* Saved Conversations Panel */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-yellow-500/20"
+            >
+              <SavedConversations
+                conversations={savedConversations}
+                onSelect={handleConversationSelect}
+              />
+            </motion.div>
           </div>
         </div>
       </div>
