@@ -50,10 +50,10 @@ const initializeSocket = (
   DEVELOPMENT: any,
 ) => {
   let io;
-  if(DEVELOPMENT === 'true'){
+  if(DEVELOPMENT === 'true'){ // environment variable based on development is passed in here
     io = new Server(server);
   } else {
-    // https://socket.io/docs/v4/handling-cors/
+    // https://socket.io/docs/v4/handling-cors/ <-- DOCS
     io = new Server(server, {
       cors: {
         origin: "DEPLOYMENT_SITE_HERE" // or with an array of origins  // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],

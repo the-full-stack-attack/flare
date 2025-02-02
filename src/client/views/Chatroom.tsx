@@ -53,7 +53,7 @@ extend({
 //  dotenv.config();
 
 let socket;
-
+// environment variables used on frontend must be prefixed with REACT_APP
 if (process.env.REACT_APP_DEVELOPMENT_SOCKETS === 'true') {
   socket = io('http://localhost:4000');
 } else {
