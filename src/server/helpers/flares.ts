@@ -80,7 +80,7 @@ async function sendFlare(flare: FlareType | string) {
       const { achievement } = flareToSend;
       // Create the sendTime for the notification to be sent 10 seconds from now
       const now = Date.now();
-      const sendTime = new Date(now + 1000 * 60 * 0.167);
+      const sendTime = new Date(now + 3000);
       const newNotification = {
         message: achievement,
         send_time: sendTime,
