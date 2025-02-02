@@ -51,6 +51,8 @@ type FlareType = {
 };
 // Function for checking if the user has earned a flare
 async function checkForFlares(user: UserType, flareName: string | void) {
+  console.log('User: ', user);
+  console.log('flareName: ', flareName);
   if (!user && !flareName) {
     console.error('User and flare were both undefined in sendFlare helper');
     return;
