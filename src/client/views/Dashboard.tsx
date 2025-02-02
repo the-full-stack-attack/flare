@@ -46,7 +46,7 @@ function Dashboard() {
       id: 'tasks',
       icon: FaTrophy,
       label: 'Tasks Completed',
-      value: user.tasks_complete || 0,
+      value: user.total_tasks_complete || 0,
       color: 'from-orange-500 to-pink-500',
     },
     {

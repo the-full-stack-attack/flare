@@ -13,7 +13,7 @@ type UserType = {
   email?: string;
   full_name?: string;
   phone_number?: string;
-  tasks_complete?: number;
+  total_tasks_complete?: number;
   current_task_id?: number;
 };
 
@@ -101,7 +101,7 @@ taskRouter.patch('/optOut/:id', async (req: any, res: Response) => {
  * Comes from TaskDisplay component 'complete' button click
  * Sets user's current_task id to null
  * Sets the corresponding use _task complete column to true
- * User's task_completed and task's completed_count are incremented
+ * User's total_tasks_completed and task's completed_count are incremented
  * User_task date_completed is updated
  */
 taskRouter.patch('/complete', async (req: any, res: Response) => {
