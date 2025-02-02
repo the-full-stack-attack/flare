@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Conversation from '../db/models/conversations';
+import Conversation_Session from '../db/models/conversation_session';
 
 dotenv.config();
 const aiConversationRouter = Router();
@@ -130,6 +131,29 @@ aiConversationRouter.get(
     } catch (error) {
       console.error('[getSavedConversations] Error:', error);
       res.status(500).send({ error: 'Failed to fetch saved conversations' });
+    }
+  }
+);
+
+// Save an entire conversation session to the database
+aiConversationRouter.post(
+  '/saveSession',
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { userId, conversation } = req.body;
+      if (!userId || !conversation) {
+        res.status(400).send({ error: 'Missing userId or conversation data' });
+      }
+
+      const newSession = await Conversation_Session.create({
+        user_id: userId,
+        session_data: conversation,
+      });
+
+      res.status(201).send(newSession);
+    } catch (error) {
+      console.error('Error saving conversation session:', error);
+      res.sendStatus(500);
     }
   }
 );
