@@ -74,6 +74,8 @@ function Event({ event, getEvents }: EventProps) {
 
   const { title, start_time, end_time, Users } = event;
 
+  const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-4 py-4 rounded-xl text-sm';
+
   const category = useMemo((): string => {
     const isAttending = Users?.reduce((acc, curr) => {
       if (curr.id === user.id && curr.User_Event.user_attending) {
@@ -127,11 +129,11 @@ function Event({ event, getEvents }: EventProps) {
   };
 
   return (
-    <div key={event.id} className="text-lg text-center p-[10px]">
-      <Card>
+    <div key={event.id} className="p-[10px]">
+      <Card className="isolate rounded-xl bg-white/10 shadow-lg ring-1 ring-black/5 border-transparent">
         <CardHeader>
-          <CardTitle className="text-lg text-center">{title}</CardTitle>
-          <CardDescription>{`${dayjs(start_time).format('MMMM D [--] h:mm A')} - ${dayjs(end_time).format('h:mm A')}`}</CardDescription>
+          <CardTitle className="text-xl text-white">{title}</CardTitle>
+          <CardDescription className="text-sm text-gray-200">{`${dayjs(start_time).format('MMMM D [--] h:mm A')} - ${dayjs(end_time).format('h:mm A')}`}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 place-content-center">
@@ -145,7 +147,7 @@ function Event({ event, getEvents }: EventProps) {
             <div>
               <Drawer>
                 <DrawerTrigger asChild>
-                  <Button>Details / RSVP</Button>
+                  <Button className={buttonColor}>Details / RSVP</Button>
                 </DrawerTrigger>
                 <DrawerContent className="mx-auto w-full max-w-md">
                   <EventDetails
@@ -157,17 +159,23 @@ function Event({ event, getEvents }: EventProps) {
                 </DrawerContent>
               </Drawer>
               <div className="p-2">
-                {user.id === event.created_by ? <b>Host</b> : null}
+                <p className="text-gray-100">
+                  {user.id === event.created_by ? <b>Host</b> : null}
+                </p>
               </div>
               
               {category === 'attending' ? (
                 <div className="p-2">
-                  <i>Attending</i>
+                  <p className="text-gray-300">
+                    <i>Attending</i>
+                  </p>
                 </div>
               ) : null}
               {category === 'bailed' ? (
                 <div className="p-2">
-                  <i>Bailed</i>
+                  <p className="text-gray-300">
+                    <i>Bailed</i>
+                  </p>
                 </div>
               ) : null}
             </div>
