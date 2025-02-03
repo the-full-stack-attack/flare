@@ -49,21 +49,21 @@ extend({
   Texture, // not worth it w/ useAssets...?
   Viewport,
 });
+import SOCKET_URL from '../../../config';
 
+let socket = SOCKET_URL;
 
-let socket;
-
-if (process.env.REACT_APP_DEVELOPMENT_SOCKETS === 'true') {
-  socket = io('http://localhost:4000');
-} else {
-  socket = io('https://slayer.events'); // NO COOKIES
+// if (process.env.REACT_APP_DEVELOPMENT_SOCKETS === 'true') {
+//   socket = io('http://localhost:4000');
+// } else {
+//   socket = io('https://slayer.events'); // NO COOKIES
   // socket = io("DEPLOYED SITE GOES HERE", { // WITH COOKIES
   //   withCredentials: true,
   //   extraHeaders: {
   //     "my-custom-header": "abcd" // IF WE NEED HEADERS
   //   }
   // });
-};
+// };
 
 
 const style = new TextStyle({
