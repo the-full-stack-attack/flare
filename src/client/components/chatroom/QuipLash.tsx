@@ -33,19 +33,12 @@ import bartender from '../../assets/images/bartender.jpg';
 import { UserContext } from '../../contexts/UserContext';
 
 
-let socket;
 
-if (process.env.REACT_APP_DEVELOPMENT_SOCKETS === 'true') {
-  socket = io('http://localhost:4000');
-} else {
-  socket = io("DEPLOYED SITE GOES HERE"); // NO COOKIES
-  // socket = io("DEPLOYED SITE GOES HERE", { // WITH COOKIES
-  //   withCredentials: true,
-  //   extraHeaders: {
-  //     "my-custom-header": "abcd" // IF WE NEED HEADERS
-  //   }
-  // });
-}
+
+  const socket = io("https://slayer.events", { // WITH COOKIES
+    withCredentials: true,
+   });
+
 
 extend({
   Container,
