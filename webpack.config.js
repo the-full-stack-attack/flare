@@ -65,8 +65,8 @@ module.exports = {
       inject: true
     }),
     new CleanWebpackPlugin(),
-    new webpack.DefinePlugin({
-      'process.env.REACT_APP_DEVELOPMENT_SOCKETS': JSON.stringify(process.env.REACT_APP_DEVELOPMENT_SOCKETS),
+    new webpack.EnvironmentPlugin({
+      REACT_APP_DEVELOPMENT_SOCKETS: "true" ,
     }), // this allows webpack to understand process env variables on front end
   ], 
   resolve: {
