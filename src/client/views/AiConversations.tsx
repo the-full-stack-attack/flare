@@ -11,7 +11,10 @@ import { toast, Toaster } from 'sonner';
 import { UserContext } from '../contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
 import HelpfulPrompts from './AiConversations/components/helpful-prompts';
-import SavedConversations from './AiConversations/components/saved-conversations';
+import SavedConversations, {
+  MessageWithFavorite,
+  SavedConversation,
+} from './AiConversations/components/saved-conversations';
 import cn from '../../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -21,21 +24,6 @@ interface ChatMessage {
   sender: 'user' | 'assistant';
   text: string;
   timestamp: Date;
-}
-
-interface MessageWithFavorite extends ChatMessage {
-  id?: number;
-  isFavorite: boolean;
-}
-
-interface SavedConversation {
-  id: number;
-  user_id: number;
-  session_data: {
-    messages: MessageWithFavorite[];
-    createdAt: string;
-  };
-  createdAt: string;
 }
 
 export default function AiConversations() {
@@ -236,9 +224,16 @@ export default function AiConversations() {
               >
                 <AnimatePresence>
                   {messages.map((msg) => {
+                    // Handle both string and Date timestamps
+                    const timestamp =
+                      typeof msg.timestamp === 'string'
+                        ? new Date(msg.timestamp)
+                        : msg.timestamp;
+
                     const key = msg.id
                       ? msg.id
-                      : `${msg.timestamp.getTime()}-${msg.text}`;
+                      : `${timestamp.getTime()}-${msg.text}`;
+
                     return (
                       <motion.div
                         key={key}

@@ -3,15 +3,22 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { Trash2 } from 'lucide-react';
 
+export interface ChatMessage {
+  sender: 'user' | 'assistant';
+  text: string;
+  timestamp: Date;
+}
+
+export interface MessageWithFavorite extends ChatMessage {
+  id?: number;
+  isFavorite: boolean;
+}
+
 interface SavedConversation {
   id: number;
   user_id: number;
   session_data: {
-    messages: {
-      sender: 'user' | 'assistant';
-      text: string;
-      timestamp: string;
-    }[];
+    messages: MessagesWithFavorite[];
     createdAt: string;
   };
   createdAt: string;
@@ -29,6 +36,13 @@ export default function SavedConversations({
   onDelete,
 }: SavedConversationsProps) {
   const [confirmingDelete, setConfirmingDelete] = useState<number | null>(null);
+
+  const handleKeyPress = (e: React.KeyboardEvent, callback: () => void) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      callback();
+    }
+  };
 
   return (
     <div className="space-y-3">
@@ -126,3 +140,4 @@ export default function SavedConversations({
     </div>
   );
 }
+
