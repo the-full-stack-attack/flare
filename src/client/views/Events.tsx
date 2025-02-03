@@ -14,6 +14,14 @@ import {
   TabsTrigger,
 } from '../../components/ui/tabs';
 
+import {
+  Tab,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels,
+} from '@headlessui/react';
+
 import { BackgroundGlow } from '@/components/ui/background-glow';
 
 import EventsList from '../components/events-view/EventsList';
@@ -275,34 +283,33 @@ function Events() {
             </div>
           )}
         </div>
-        <Tabs
+        <TabGroup
           defaultValue="upcoming"
           className="container mx-auto px-4 content-center pt-4"
         >
-          <TabsList>
-            <TabsTrigger value="upcoming">{`Upcoming (${events.length})`}</TabsTrigger>
-            <TabsTrigger value="attending">{`Attending (${attendingEvents.length})`}</TabsTrigger>
-            <TabsTrigger value="bailed">{`Bailed (${bailedEvents.length})`}</TabsTrigger>
-          </TabsList>
-          <TabsContent
-            value="upcoming"
-            className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
-          >
-            <EventsList events={events} getEvents={getEvents} />
-          </TabsContent>
-          <TabsContent
-            value="attending"
-            className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
-          >
-            <EventsList events={attendingEvents} getEvents={getEvents} />
-          </TabsContent>
-          <TabsContent
-            value="bailed"
-            className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
-          >
-            <EventsList events={bailedEvents} getEvents={getEvents} />
-          </TabsContent>
-        </Tabs>
+          <TabList>
+            <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Upcoming (${events.length})`}</Tab>
+            <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Attending (${attendingEvents.length})`}</Tab>
+            <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Bailed (${bailedEvents.length})`}</Tab>
+          </TabList>
+          <TabPanels className="mt-4">
+            <TabPanel
+              className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+            >
+              <EventsList events={events} getEvents={getEvents} />
+            </TabPanel>
+            <TabPanel
+              className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+            >
+              <EventsList events={attendingEvents} getEvents={getEvents} />
+            </TabPanel>
+            <TabPanel
+              className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+            >
+              <EventsList events={bailedEvents} getEvents={getEvents} />
+            </TabPanel>
+          </TabPanels>
+        </TabGroup>
       </div>
     </div>
   );
