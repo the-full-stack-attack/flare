@@ -53,7 +53,7 @@ const initializeSocket = (
     // https://socket.io/docs/v4/handling-cors/ <-- DOCS
   let io = new Server(server, {
       cors: {
-        origin: "https://slayer.events", // or with an array of origins  // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],
+        origin: "http://localhost:4000", // or with an array of origins  // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],
          credentials: true // IF WE USE COOKIES
       }
     });

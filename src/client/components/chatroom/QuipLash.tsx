@@ -35,7 +35,7 @@ import { UserContext } from '../../contexts/UserContext';
 
 
 
-  const socket = io("https://slayer.events", { // WITH COOKIES
+  const socket = io("http://localhost:4000", { // WITH COOKIES
     withCredentials: true,
    });
 

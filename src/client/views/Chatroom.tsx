@@ -53,8 +53,9 @@ extend({
 //  dotenv.config();
 
 // let socket = io("https://slayer.events"); // NO COOKIES
-  const socket = io("https://slayer.events", { // WITH COOKIES
+  const socket = io("http://localhost:4000", { // WITH COOKIES
      withCredentials: true,
+
    });
 
 

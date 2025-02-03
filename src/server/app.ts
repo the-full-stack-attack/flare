@@ -21,7 +21,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: 'https://slayer.events', // THIS WILL NEED TO CHANGE ON DEPLOYMENT...?
+    origin: 'http://localhost:4000', // THIS WILL NEED TO CHANGE ON DEPLOYMENT...?
     credentials: true,
   })
 );
