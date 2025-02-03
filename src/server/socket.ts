@@ -50,14 +50,19 @@ const initializeSocket = (
   DEVELOPMENT: any,
 ) => {
 
+  let io;
+  if(DEVELOPMENT === 'true'){ // environment variable based on development is passed in here
+    io = new Server(server);
+  } else {
     // https://socket.io/docs/v4/handling-cors/ <-- DOCS
-  let io = new Server(server, {
+    io = new Server(server, {
       cors: {
-        origin: "http://localhost:4000", // or with an array of origins  // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],
+        origin: "https://slayer.events", // or with an array of origins  // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],
+        // allowedHeaders: ["my-custom-header"], // IF WE USE COOKIES
          credentials: true // IF WE USE COOKIES
       }
     });
-
+  }
 
 
   io.on('connection', (socket) => {
