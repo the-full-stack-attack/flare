@@ -119,13 +119,9 @@ aiConversationRouter.get(
   async (req: Request, res: Response): Promise<void> => {
     try {
       const { userId } = req.params;
-      const savedConversations = await Conversation.findAll({
-        where: {
-          user_id: userId,
-          is_favorite: true,
-        },
+      const savedConversations = await Conversation_Session.findAll({
+        where: { user_id: userId },
         order: [['createdAt', 'DESC']],
-        limit: 10,
       });
       res.send(savedConversations);
     } catch (error) {
@@ -141,19 +137,32 @@ aiConversationRouter.post(
   async (req: Request, res: Response): Promise<void> => {
     try {
       const { userId, conversation } = req.body;
-      if (!userId || !conversation) {
-        res.status(400).send({ error: 'Missing userId or conversation data' });
-      }
 
-      const newSession = await Conversation_Session.create({
+      const savedSession = await Conversation_Session.create({
         user_id: userId,
         session_data: conversation,
       });
 
-      res.status(201).send(newSession);
+      res.status(201).send(savedSession);
     } catch (error) {
       console.error('Error saving conversation session:', error);
-      res.sendStatus(500);
+      res.status(500).send({ error: 'Failed to save conversation' });
+    }
+  }
+);
+
+aiConversationRouter.delete(
+  '/:id',
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      await Conversation_Session.destroy({
+        where: { id },
+      });
+      res.status(200).send({ message: 'Conversation deleted successfully' });
+    } catch (error) {
+      console.error('[deleteConversation] Error:', error);
+      res.status(500).send({ error: 'Failed to delete conversation' });
     }
   }
 );

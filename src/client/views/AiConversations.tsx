@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast, Toaster } from 'sonner';
 import { UserContext } from '../contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
 import HelpfulPrompts from './AiConversations/components/helpful-prompts';
@@ -29,8 +30,11 @@ interface MessageWithFavorite extends ChatMessage {
 
 interface SavedConversation {
   id: number;
-  prompt: string;
-  response: string;
+  user_id: number;
+  session_data: {
+    messages: MessageWithFavorite[];
+    createdAt: string;
+  };
   createdAt: string;
 }
 
@@ -79,7 +83,7 @@ export default function AiConversations() {
 
   // Send user message
   const handleSendMessage = async () => {
-    if (!userMessage.trim()) return;
+    if (!userMessage.trim() || isLoading) return;
     setIsLoading(true);
 
     const newUserMsg: MessageWithFavorite = {
@@ -97,12 +101,25 @@ export default function AiConversations() {
         userId: user.id,
         prompt: userMessage,
       });
-      const aiText =
-        data.structured?.advice || 'Unable to process at the moment.';
+
+      // Parse the response if it's a string
+      let aiResponse = '';
+      if (typeof data.structured === 'string') {
+        try {
+          const parsed = JSON.parse(data.structured);
+          aiResponse = parsed.advice;
+        } catch {
+          aiResponse = data.structured;
+        }
+      } else if (data.structured?.advice) {
+        aiResponse = data.structured.advice;
+      } else {
+        aiResponse = 'Unable to process response';
+      }
 
       const newAiMsg: MessageWithFavorite = {
         sender: 'assistant',
-        text: aiText,
+        text: aiResponse,
         timestamp: new Date(),
         isFavorite: false,
       };
@@ -138,10 +155,13 @@ export default function AiConversations() {
       await axios.post('/api/aiConversation/saveSession', conversationPayload);
       await fetchSavedConversations();
 
-      // Optionally clear the current messages after saving
+      toast.success('Conversation saved successfully');
       setMessages([]);
     } catch (error) {
       console.error('Failed to save conversation session:', error);
+      toast.error('Failed to save conversation');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -151,151 +171,168 @@ export default function AiConversations() {
   };
 
   const handleConversationSelect = (conv: SavedConversation) => {
-    const userMsg: MessageWithFavorite = {
-      sender: 'user',
-      text: conv.prompt,
-      timestamp: new Date(),
-      isFavorite: false,
-    };
-    const aiMsg: MessageWithFavorite = {
-      sender: 'assistant',
-      text: conv.response,
-      timestamp: new Date(),
-      isFavorite: false,
-    };
-    setMessages([userMsg, aiMsg]);
+    if (conv.session_data?.messages) {
+      setMessages(conv.session_data.messages);
+    }
   };
 
-  const firstMessageTimestamp =
-    messages.length > 0 ? messages[0].timestamp.getTime() : Date.now();
+  const handleDeleteConversation = async (id: number) => {
+    try {
+      await axios.delete(`/api/aiConversation/${id}`);
+      // Refresh the conversations list
+      await fetchSavedConversations();
+    } catch (error) {
+      console.error('Failed to delete conversation:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20">
+      <Toaster position="top-center" theme="dark" />
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
 
       {/* Container for the 3 columns in large, or stacked in small */}
-      <div className="relative z-10 container mx-auto px-4 pt-20 pb-8">
-        {/* For smaller devices: flex-col, for large screens: a grid with 3 columns */}
-        <div className="grid grid-cols-1 lg:grid lg:grid-cols-12 gap-4">
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        {/** Main Grid Container */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Saved Conversations on the Left => col-span-3 */}
-          <div className="lg:col-span-3">
-            {/* Wrap SavedConversations in a scrollable div to get infinite scrolling */}
-            <div className="h-[600px] overflow-y-auto p-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-orange-500/20 hover:scrollbar-thumb-orange-500/30">
-              <SavedConversations
-                conversations={savedConversations}
-                onSelect={handleConversationSelect}
-              />
+          <div className="order-2 lg:order-1 lg:col-span-3 md:col-span-6">
+            <div className="backdrop-blur-lg bg-white/5 rounded-xl border border-yellow-500/20 p-6">
+              <h2 className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent mb-2">
+                Saved Conversations
+              </h2>
+              <p className="text-sm text-gray-400 mb-2">
+                Your personal collection of helpful AI conversations. Reference
+                them anytime you need a refresh.
+              </p>
+              <div className="h-[650px] overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-orange-500/20 hover:scrollbar-thumb-orange-500/30">
+                <SavedConversations
+                  conversations={savedConversations}
+                  onSelect={handleConversationSelect}
+                  onDelete={handleDeleteConversation}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Center => AI Chat => col-span-6 */}
-          <div className="lg:col-span-6 flex flex-col">
-            {/* Chat Container */}
-            <div
-              ref={chatContainerRef}
-              className="flex-1 overflow-y-auto p-4 mb-2 backdrop-blur-lg bg-white/5 border border-white/10 rounded-xl"
-              style={{ height: '600px' }}
-            >
-              <AnimatePresence>
-                {messages.map((msg) => {
-                  const key = msg.id
-                    ? msg.id
-                    : `${msg.timestamp.getTime()}-${msg.text}`;
-                  const delay =
-                    ((msg.timestamp.getTime() - firstMessageTimestamp) / 1000) *
-                    0.05;
+          {/* Center - Chat Area */}
+          <div className="order-1 lg:order-2 lg:col-span-6">
+            <div className="backdrop-blur-lg bg-white/5 rounded-xl border border-orange-500/20 h-[820px] flex flex-col">
+              {/* Chat Title */}
+              <div className="p-6 border-b border-orange-500/20">
+                <h2 className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent mb-2">
+                  AI Assistant
+                </h2>
+                <p className="text-sm text-gray-400">
+                  Your personal AI guide for social events and planning. Ask
+                  anything!
+                </p>
+              </div>
 
-                  return (
-                    <motion.div
-                      key={key}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ delay }}
-                      className={cn(
-                        `mb-4 max-w-[80%] relative ${
-                          msg.sender === 'user'
-                            ? 'ml-auto text-right'
-                            : 'mr-auto text-left'
-                        }`
-                      )}
-                    >
-                      <div
+              {/* Chat Messages */}
+              <div
+                ref={chatContainerRef}
+                className="flex-1 overflow-y-auto p-6 h-[300px] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-orange-500/20 hover:scrollbar-thumb-orange-500/30"
+              >
+                <AnimatePresence>
+                  {messages.map((msg) => {
+                    const key = msg.id
+                      ? msg.id
+                      : `${msg.timestamp.getTime()}-${msg.text}`;
+                    return (
+                      <motion.div
+                        key={key}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
                         className={cn(
-                          'rounded-xl p-3',
-                          msg.sender === 'user'
-                            ? 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30'
-                            : 'bg-white/10 border border-yellow-500/20'
+                          'mb-4 max-w-[80%]',
+                          msg.sender === 'user' ? 'ml-auto' : 'mr-auto'
                         )}
                       >
-                        <p className="text-white">{msg.text}</p>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
+                        <div
+                          className={cn(
+                            'rounded-xl p-4',
+                            msg.sender === 'user'
+                              ? 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30'
+                              : 'bg-white/10 border border-yellow-500/20'
+                          )}
+                        >
+                          <p className="text-white">{msg.text}</p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
 
-              {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex gap-2 p-3"
-                >
-                  <span className="w-2 h-2 bg-yellow-500 rounded-full animate-bounce" />
-                  <span
-                    className="w-2 h-2 bg-orange-500 rounded-full animate-bounce"
-                    style={{ animationDelay: '0.2s' }}
-                  />
-                  <span
-                    className="w-2 h-2 bg-pink-500 rounded-full animate-bounce"
-                    style={{ animationDelay: '0.4s' }}
-                  />
-                </motion.div>
-              )}
-            </div>
-
-            {/* Row with: Input + Send Button + Save Heart + New Conversation */}
-            <div className="p-4 border-t border-orange-500/20">
-              <Input
-                className="flex gap-2"
-                value={userMessage}
-                onChange={(e) => setUserMessage(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="How can I help?"
-              />
-              <Button
-                onClick={handleSendMessage}
-                disabled={isLoading}
-                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white"
-              >
-                {isLoading ? (
-                  <div className="animate-spin w-5 h-5 border-4 border-white border-t-transparent rounded-full" />
-                ) : (
-                  'Send'
+                {isLoading && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex gap-2 p-3"
+                  >
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full animate-bounce" />
+                    <span className="w-2 h-2 bg-orange-500 rounded-full animate-bounce delay-100" />
+                    <span className="w-2 h-2 bg-pink-500 rounded-full animate-bounce delay-200" />
+                  </motion.div>
                 )}
-              </Button>
-              {/* Heart button that saves entire session */}
-              <Button
-                onClick={handleSaveSession}
-                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white"
-              >
-                💖
-              </Button>
-              {/* New conversation button */}
-              <Button
-                onClick={handleNewConversation}
-                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white"
-              >
-                New Chat
-              </Button>
+              </div>
+
+              {/* Input Area */}
+              <div className="p-4 border-t border-orange-500/20">
+                <div className="flex gap-2">
+                  <Input
+                    value={userMessage}
+                    onChange={(e) => setUserMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="How can I help?"
+                    className="flex-1 bg-black/50 border-transparent focus:ring-2 focus:ring-orange-500/50 text-white placeholder-gray-400"
+                  />
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={isLoading}
+                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600"
+                  >
+                    {isLoading ? (
+                      <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
+                    ) : (
+                      'Send'
+                    )}
+                  </Button>
+                  <Button
+                    onClick={handleSaveSession}
+                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500"
+                    title="Save Conversation"
+                  >
+                    💖
+                  </Button>
+                  <Button
+                    onClick={handleNewConversation}
+                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500"
+                  >
+                    New
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Right => Recommended Prompts => col-span-3 */}
-          <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
-            <HelpfulPrompts
-              onSelectPrompt={(prompt) => setUserMessage(prompt)}
-            />
+          {/* Right Sidebar - Recommended Prompts */}
+          <div className="order-3 lg:col-span-3 md:col-span-6">
+            <div className="backdrop-blur-lg bg-white/5 rounded-xl border border-pink-500/20 p-6">
+              <h2 className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent mb-2">
+                Recommended Prompts
+              </h2>
+              <p className="text-sm text-gray-400 mb-2">
+                Need inspiration? Try these conversation starters to get the
+                most out of your AI assistant.
+              </p>
+              <div className="h-[650px] overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-orange-500/20">
+                <HelpfulPrompts
+                  onSelectPrompt={(prompt) => setUserMessage(prompt)}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
