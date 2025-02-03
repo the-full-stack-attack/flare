@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Conversation from '../db/models/conversations';
+import Conversation_Session from '../db/models/conversation_session';
 
 dotenv.config();
 const aiConversationRouter = Router();
@@ -20,14 +21,11 @@ aiConversationRouter.post(
   async (req: Request, res: Response): Promise<void> => {
     try {
       const { userId, prompt } = req.body;
-      console.log('Received userId:', userId, 'Prompt:', prompt);
 
       const structuredInstruction = `
 You are a social emotional adviser specializing in social anxiety disorders.
 Knowledge base includes CBT, meditation, mindfulness, and therapeutic methods.
-
 Your purpose is to provide coaching, anxiety reduction strategies, and empathetic support.
-
 CRITICAL INSTRUCTION: Respond with ONLY a raw JSON object. Do not include markdown formatting, code blocks, or any other text.
 EXACT FORMAT REQUIRED (replace example text with your response):
 {"advice":"Your empathetic advice here","tips":["First specific tip","Second specific tip"]}`;
@@ -93,18 +91,37 @@ EXACT FORMAT REQUIRED (replace example text with your response):
   }
 );
 
+aiConversationRouter.post(
+  '/save/:conversationId',
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { conversationId } = req.params;
+      // Find the conversation by ID
+      const conversation = await Conversation.findByPk(conversationId);
+
+      if (!conversation) {
+        res.status(404).send({ error: 'Conversation not found' });
+        return;
+      }
+
+      // Update is_favorite to true
+      await conversation.update({ is_favorite: true });
+      res.send(conversation);
+    } catch (error) {
+      console.error('[saveConversation] Error:', error);
+      res.status(500).send({ error: 'Failed to save conversation' });
+    }
+  }
+);
+
 aiConversationRouter.get(
   '/saved/:userId',
   async (req: Request, res: Response): Promise<void> => {
     try {
       const { userId } = req.params;
-      const savedConversations = await Conversation.findAll({
-        where: {
-          user_id: userId,
-          is_favorite: true,
-        },
+      const savedConversations = await Conversation_Session.findAll({
+        where: { user_id: userId },
         order: [['createdAt', 'DESC']],
-        limit: 10,
       });
       res.send(savedConversations);
     } catch (error) {
@@ -114,23 +131,38 @@ aiConversationRouter.get(
   }
 );
 
+// Save an entire conversation session to the database
 aiConversationRouter.post(
-  '/save/:conversationId',
+  '/saveSession',
   async (req: Request, res: Response): Promise<void> => {
     try {
-      const { conversationId } = req.params;
-      const conversation = await Conversation.findByPk(conversationId);
+      const { userId, conversation } = req.body;
 
-      if (!conversation) {
-        res.status(404).send({ error: 'Conversation not found' });
-        return;
-      }
+      const savedSession = await Conversation_Session.create({
+        user_id: userId,
+        session_data: conversation,
+      });
 
-      await conversation.update({ is_favorite: true });
-      res.send(conversation);
+      res.status(201).send(savedSession);
     } catch (error) {
-      console.error('[saveConversation] Error:', error);
+      console.error('Error saving conversation session:', error);
       res.status(500).send({ error: 'Failed to save conversation' });
+    }
+  }
+);
+
+aiConversationRouter.delete(
+  '/:id',
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      await Conversation_Session.destroy({
+        where: { id },
+      });
+      res.status(200).send({ message: 'Conversation deleted successfully' });
+    } catch (error) {
+      console.error('[deleteConversation] Error:', error);
+      res.status(500).send({ error: 'Failed to delete conversation' });
     }
   }
 );

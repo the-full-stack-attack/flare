@@ -1,6 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+type HelpfulPromptsProps = {
+  onSelectPrompt: (prompt: string) => void;
+};
+
 const helpfulPrompts = [
   {
     category: 'Social Anxiety',
@@ -27,10 +31,6 @@ const helpfulPrompts = [
     ],
   },
 ];
-
-interface HelpfulPromptsProps {
-  onSelectPrompt: (prompt: string) => void;
-}
 
 function HelpfulPrompts({ onSelectPrompt }: HelpfulPromptsProps) {
   return (
