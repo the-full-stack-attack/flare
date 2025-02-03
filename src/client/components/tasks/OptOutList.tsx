@@ -70,6 +70,7 @@ function OptOutList() {
         console.error('Error retrying the task: ', err);
       });
   };
+
   return (
     <>
       <DialogBox
@@ -81,7 +82,7 @@ function OptOutList() {
         cancelText="Cancel"
         confirmText="Retry"
       />
-      <table className="w-full lg:w-1/3">
+      <table className="w-full">
         <thead>
           <tr className="border-b-4">
             <th className="text-left">Type</th>

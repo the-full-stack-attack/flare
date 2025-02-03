@@ -32,7 +32,7 @@ function OptOutTask({ userTask, setIsOpen, setRetryTask }: CompletedTaskProps) {
   }
   return (
     <>
-      <tr className="border-b-2" onClick={rowClick}>
+      <tr className="border-b-2 bg-blue-500 hover:bg-opacity-70" onClick={rowClick}>
         <td>{`${difficulty} ${type}`}</td>
         <td>{description.slice(0, -1)}</td>
       </tr>
