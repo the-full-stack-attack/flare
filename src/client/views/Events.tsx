@@ -76,6 +76,8 @@ function Events() {
 
   const [changeLocFilter, setChangeLocFilter] = useState(false);
 
+  const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-8 py-4 rounded-xl text-lg';
+
   const getGeoLocation = () => {
     const success = (position: GeoPosition) => {
       const { latitude, longitude } = position.coords;
@@ -212,18 +214,18 @@ function Events() {
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
       <div className="container mx-auto px-4 content-center">
         <div className="container mx-auto px-4">
-          <p>
+          <p className="text-gray-300 text-md">
             Upcoming Events from
             <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
           </p>
           {!changeLocFilter ? (
-            <Button className="mt-2" onClick={toggleChangeLocFilter}>
+            <Button className={`mt-2 ${buttonColor}`} onClick={toggleChangeLocFilter}>
               Change Location
             </Button>
           ) : (
             <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 gap-4">
               <Button
-                className="col-span-1"
+                className={`col-span-1 ${buttonColor}`}
                 onClick={({ target }: any) => {
                   if (target.innerText === 'Cancel') {
                     toggleChangeLocFilter();
@@ -258,7 +260,7 @@ function Events() {
                 }}
               />
               <Button
-                className="col-span-1"
+                className={`col-span-1 ${buttonColor}`}
                 onClick={({ target }: any) => {
                   if (target.innerText === 'Remove Filter') {
                     handleClearLocFilter();
@@ -275,7 +277,7 @@ function Events() {
         </div>
         <Tabs
           defaultValue="upcoming"
-          className="container mx-auto px-4 content-center"
+          className="container mx-auto px-4 content-center pt-4"
         >
           <TabsList>
             <TabsTrigger value="upcoming">{`Upcoming (${events.length})`}</TabsTrigger>
