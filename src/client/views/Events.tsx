@@ -84,7 +84,7 @@ function Events() {
 
   const [changeLocFilter, setChangeLocFilter] = useState(false);
 
-  const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-8 py-4 rounded-xl text-lg';
+  const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-4 py-4 rounded-xl text-md';
 
   const getGeoLocation = () => {
     const success = (position: GeoPosition) => {
@@ -222,7 +222,7 @@ function Events() {
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
       <div className="container mx-auto px-4 content-center">
         <div className="container mx-auto px-4">
-          <p className="text-gray-300 text-md">
+          <p className="text-gray-300 text-lg">
             Upcoming Events from
             <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
           </p>
