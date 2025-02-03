@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { Button } from '@headlessui/react';
 import { UserContext } from '../../contexts/UserContext';
 import DialogBox from './DialogBox';
 
@@ -63,7 +63,6 @@ function OptOutTask({ userTask }: CompletedTaskProps) {
       <tr className="border-b-2">
         <td>{`${difficulty} ${type}`}</td>
         <td>{description.slice(0, -1)}</td>
-      </tr>
       <Button
         onClick={() => {
           setIsOpen(true);
@@ -71,6 +70,7 @@ function OptOutTask({ userTask }: CompletedTaskProps) {
       >
         Retry
       </Button>
+      </tr>
     </>
   );
 }
