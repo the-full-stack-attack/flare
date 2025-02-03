@@ -65,9 +65,6 @@ module.exports = {
       inject: true
     }),
     new CleanWebpackPlugin(),
-    new webpack.EnvironmentPlugin({
-      REACT_APP_DEVELOPMENT_SOCKETS: "true" ,
-    }), // this allows webpack to understand process env variables on front end
   ], 
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.css'],
