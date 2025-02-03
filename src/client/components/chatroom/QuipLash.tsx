@@ -35,7 +35,7 @@ import SOCKET_URL from '../../../../config'
 
 
 
-let socket = SOCKET_URL;
+let socket = io(SOCKET_URL);
 
 // if (process.env. === 'true') {
 //   socket = io('http://localhost:4000');
