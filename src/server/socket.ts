@@ -47,8 +47,21 @@ const initializeSocket = (
   SOCKET_LIST: any,
   QUIPLASH_LIST: any,
   QUIPLASH_GAMES: any,
+  DEVELOPMENT: any,
 ) => {
-  const io = new Server(server);
+  let io;
+  if(DEVELOPMENT === 'true'){ // environment variable based on development is passed in here
+    io = new Server(server);
+  } else {
+    // https://socket.io/docs/v4/handling-cors/ <-- DOCS
+    io = new Server(server, {
+      cors: {
+        origin: "DEPLOYMENT_SITE_HERE" // or with an array of origins  // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],
+        // allowedHeaders: ["my-custom-header"], // IF WE USE COOKIES
+        // credentials: true // IF WE USE COOKIES
+      }
+    });
+  }
 
 
   io.on('connection', (socket) => {
