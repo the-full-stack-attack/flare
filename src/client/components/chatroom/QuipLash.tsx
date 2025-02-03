@@ -295,8 +295,9 @@ function QuipLash() {
         {promptGiven && <h6 class="text-white text-[22px]">{quiplashPrompt} </h6>}
         {promptGiven && !answersReceived && (
           <div>
-            <Label> Enter Your Quiplash! </Label>
+            <Label class="text-white"> Enter Your Quiplash! </Label>
             <Input
+              class="bg-white" 
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -327,7 +328,7 @@ function QuipLash() {
       </div>
     )}
     </div>
-    {showWinner && <h1>{winner}</h1>}
+    {showWinner && <h1 class="text-white">{winner}</h1>}
     <Button onClick={quitQuiplash}>QUIT</Button>
 
     </div>
