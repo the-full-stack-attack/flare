@@ -51,7 +51,7 @@ extend({
 });
 import SOCKET_URL from '../../../config';
 
-let socket = SOCKET_URL;
+let socket = io(SOCKET_URL);
 
 // if (process.env.REACT_APP_DEVELOPMENT_SOCKETS === 'true') {
 //   socket = io('http://localhost:4000');
