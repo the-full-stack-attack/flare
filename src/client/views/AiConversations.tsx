@@ -27,34 +27,12 @@ interface MessageWithFavorite extends ChatMessage {
   isFavorite: boolean;
 }
 
-// interface Conversation {
-//   id: number;
-//   prompt: string;
-//   response: string;
-//   createdAt: string;
-// }
-
-// interface AIResponse {
-//   conversation: Conversation;
-//   structured: {
-//     advice: string;
-//     tips: string[];
-//   };
-// }
-
 interface SavedConversation {
   id: number;
   prompt: string;
   response: string;
   createdAt: string;
 }
-
-// interface ConversationSession {
-//   id?: number;
-//   messages: MessageWithFavorite[];
-//   createdAt: Date;
-//   isSaved: boolean;
-// }
 
 export default function AiConversations() {
   const { user } = useContext(UserContext);
@@ -70,20 +48,6 @@ export default function AiConversations() {
   const [isLoading, setIsLoading] = useState(false);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
-
-  // const [conversations, setConversations] = useState<ConversationSession[]>([]);
-
-  // const [currentConversationIndex, setCurrentConversationIndex] =
-  //   useState<number>(0);
-
-  // useEffect(() => {
-  //   if (conversations.length === 0) {
-  //     setConversations([
-  //       { messages: [], createdAt: new Date(), isSaved: false },
-  //     ]);
-  //     setCurrentConversationIndex(0);
-  //   }
-  // }, [conversations]);
 
   // GET Saved Conversations from DB
   const fetchSavedConversations = useCallback(async () => {
@@ -210,13 +174,13 @@ export default function AiConversations() {
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
 
       {/* Container for the 3 columns in large, or stacked in small */}
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="relative z-10 container mx-auto px-4 pt-20 pb-8">
         {/* For smaller devices: flex-col, for large screens: a grid with 3 columns */}
-        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-4">
+        <div className="grid grid-cols-1 lg:grid lg:grid-cols-12 gap-4">
           {/* Saved Conversations on the Left => col-span-3 */}
           <div className="lg:col-span-3">
             {/* Wrap SavedConversations in a scrollable div to get infinite scrolling */}
-            <div className="h-[600px] overflow-auto border border-white/10 rounded-lg p-2">
+            <div className="h-[600px] overflow-y-auto p-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-orange-500/20 hover:scrollbar-thumb-orange-500/30">
               <SavedConversations
                 conversations={savedConversations}
                 onSelect={handleConversationSelect}
@@ -275,7 +239,7 @@ export default function AiConversations() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-white mt-2"
+                  className="flex gap-2 p-3"
                 >
                   <span className="w-2 h-2 bg-yellow-500 rounded-full animate-bounce" />
                   <span
@@ -291,30 +255,44 @@ export default function AiConversations() {
             </div>
 
             {/* Row with: Input + Send Button + Save Heart + New Conversation */}
-            <div className="flex gap-2 items-center">
+            <div className="p-4 border-t border-orange-500/20">
               <Input
-                className="flex-1"
+                className="flex gap-2"
                 value={userMessage}
                 onChange={(e) => setUserMessage(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="Ask the AI anything..."
+                placeholder="How can I help?"
               />
-              <Button onClick={handleSendMessage} disabled={isLoading}>
-                {isLoading ? '...' : 'Send'}
+              <Button
+                onClick={handleSendMessage}
+                disabled={isLoading}
+                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white"
+              >
+                {isLoading ? (
+                  <div className="animate-spin w-5 h-5 border-4 border-white border-t-transparent rounded-full" />
+                ) : (
+                  'Send'
+                )}
               </Button>
               {/* Heart button that saves entire session */}
-              <Button onClick={handleSaveSession} variant="ghost">
-                💖 Save Session
+              <Button
+                onClick={handleSaveSession}
+                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white"
+              >
+                💖
               </Button>
               {/* New conversation button */}
-              <Button onClick={handleNewConversation} variant="outline">
+              <Button
+                onClick={handleNewConversation}
+                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white"
+              >
                 New Chat
               </Button>
             </div>
           </div>
 
           {/* Right => Recommended Prompts => col-span-3 */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
             <HelpfulPrompts
               onSelectPrompt={(prompt) => setUserMessage(prompt)}
             />
