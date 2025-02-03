@@ -43,6 +43,7 @@
     "clean-webpack-plugin": "^4.0.0",
     "concurrently": "^9.1.2",
     "css-loader": "^7.1.2",
+    "dotenv-webpack": "^8.1.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",

@@ -29,7 +29,14 @@ if (process.env.DEVELOPMENT === 'true') {
         });
       } else {
         const server = http.createServer(app);
-        const io = initializeSocket(server, PLAYER_LIST, SOCKET_LIST, QUIPLASH_LIST, QUIPLASH_GAMES)
+        const io = initializeSocket(
+          server, 
+          PLAYER_LIST, 
+          SOCKET_LIST, 
+          QUIPLASH_LIST, 
+          QUIPLASH_GAMES, 
+          process.env.DEVELOPMENT,
+        )
         server.listen(4000, () => {
           console.log(`Listening on http://localhost:${PORT}`);
         });
@@ -56,7 +63,14 @@ if (process.env.DEVELOPMENT === 'true') {
     .sync({ alter: true })
     .then(() => {
       let httpsServer = https.createServer(options, app)
-      const io = initializeSocket(httpsServer, PLAYER_LIST, SOCKET_LIST, QUIPLASH_LIST, QUIPLASH_GAMES)
+      const io = initializeSocket(
+        httpsServer, 
+        PLAYER_LIST, 
+        SOCKET_LIST, 
+        QUIPLASH_LIST, 
+        QUIPLASH_GAMES, 
+        process.env.DEVELOPMENT,
+      )
       httpsServer.listen(443);
     });
   }
