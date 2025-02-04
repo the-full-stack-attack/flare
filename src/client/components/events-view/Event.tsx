@@ -149,7 +149,7 @@ function Event({ event, getEvents }: EventProps) {
                 <DrawerTrigger asChild>
                   <Button className={buttonColor}>Details / RSVP</Button>
                 </DrawerTrigger>
-                <DrawerContent className="mx-auto w-full max-w-md">
+                <DrawerContent className="mx-auto w-full max-w-md bg-gradient-to-br from-orange-800/40 via-yellow-700/60 to-red-600/40 isolate border-transparent">
                   <EventDetails
                     event={event}
                     category={category}
