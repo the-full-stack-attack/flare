@@ -20,7 +20,7 @@ const Event = database.define('Event', {
   hour_before_notif: { type: Sequelize.INTEGER },
 });
 
-Event.belongsTo(User, { foreignKey: 'created_by' });
+Event.belongsTo(User, { foreignKey: 'created_by', onDelete: 'CASCADE' });
 Event.belongsTo(Venue, { foreignKey: 'venue_id' });
 Event.belongsTo(Category, { foreignKey: 'category_id' });
 Category.hasMany(Event, { foreignKey: 'category_id' });

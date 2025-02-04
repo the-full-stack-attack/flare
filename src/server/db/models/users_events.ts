@@ -19,4 +19,7 @@ const User_Event = database.define('User_Event', {
 User.belongsToMany(Event, { through: User_Event });
 Event.belongsToMany(User, { through: User_Event });
 
+User_Event.belongsTo(User, { onDelete: 'CASCADE' });
+User_Event.belongsTo(Event, { onDelete: 'CASCADE' });
+
 export default User_Event;

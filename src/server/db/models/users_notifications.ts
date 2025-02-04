@@ -10,4 +10,7 @@ const User_Notification = database.define('User_Notification', {
 User.belongsToMany(Notification, { through: User_Notification });
 Notification.belongsToMany(User, { through: User_Notification });
 
+User_Notification.belongsTo(User, { onDelete: 'CASCADE' });
+User_Notification.belongsTo(Notification, { onDelete: 'CASCADE' });
+
 export default User_Notification;
