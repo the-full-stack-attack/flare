@@ -65,7 +65,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       });
   };
   return (
-    <div className="sm:w-full lg:w-1/2">
+    <div>
       <DialogBox
         isOpen={openOptOut}
         confirm={optOut}
