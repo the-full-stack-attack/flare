@@ -54,7 +54,7 @@ function ChooseTask() {
       });
   };
   return (
-    <>
+    <div className="w-1/2 sm:w-full">
       <DialogBox
         isOpen={isOpen}
         confirm={chooseTask}
@@ -103,7 +103,7 @@ function ChooseTask() {
           </Button>
         </CardFooter>
       </Card>
-    </>
+    </div>
   );
 }
 

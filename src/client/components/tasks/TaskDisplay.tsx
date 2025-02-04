@@ -65,7 +65,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       });
   };
   return (
-    <>
+    <div className="sm:w-full lg:w-1/2">
       <DialogBox
         isOpen={openOptOut}
         confirm={optOut}
@@ -100,7 +100,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
           </CardFooter>
         ) : null}
       </Card>
-    </>
+    </div>
   );
 }
 
