@@ -75,7 +75,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
         cancelText="Cancel"
         confirmText="Opt Out"
       />
-      <Card>
+      <Card className="bg-white/10 shadow-lg ring-1 ring-black/5 border-transparent text-white">
         <CardHeader>
           <CardTitle>Your Task</CardTitle>
         </CardHeader>
