@@ -83,11 +83,17 @@ function EventDetails({
 
   const { street_address, city_name, state_name, zip_code } = Venue;
 
+  const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
+
+  const warnDrawerButton = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-800 hover:to-orange-800 text-white';
+
+  const successDrawerButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white'
+
   return (
     <div className="mx-auto w-full max-w-sm">
       <DrawerHeader>
-        <DrawerTitle>{title}</DrawerTitle>
-        <DrawerDescription>{description}</DrawerDescription>
+        <DrawerTitle className="text-xl">{title}</DrawerTitle>
+        <DrawerDescription className="text-gray-700 text-md">{description}</DrawerDescription>
       </DrawerHeader>
       <div className="p-4 pb-0">
         <div className="grid grid-cols-2 gap-2">
@@ -148,18 +154,18 @@ function EventDetails({
       </div>
       <DrawerFooter>
         {category === 'upcoming' ? (
-          <Button onClick={postAttendEvent}>Attend</Button>
+          <Button className={successDrawerButton} onClick={postAttendEvent}>Attend</Button>
         ) : null}
         {category === 'attending' ? (
           <div className="grid grid-cols-2 gap-2">
-            <Button>
+            <Button className={normalDrawerButton}>
               <Link state={ Category?.name , start_time} style={{ flex: 1 }} to={`/chatroom/${id}`}>
                 Enter Chatroom
               </Link>
             </Button>
             <Dialog>
               <DialogTrigger asChild>
-                <Button>Schedule Text</Button>
+                <Button className={normalDrawerButton}>Schedule Text</Button>
               </DialogTrigger>
               <ScheduleTextDialog
                 eventId={event.id}
@@ -171,13 +177,13 @@ function EventDetails({
           </div>
         ) : null}
         {category === 'attending' ? (
-          <Button onClick={patchAttendingEvent}>Bail</Button>
+          <Button className={warnDrawerButton} onClick={patchAttendingEvent}>Bail</Button>
         ) : null}
         {category === 'bailed' ? (
-          <Button onClick={patchAttendingEvent}>Re-attend</Button>
+          <Button className={successDrawerButton} onClick={patchAttendingEvent}>Re-attend</Button>
         ) : null}
         <DrawerClose asChild>
-          <Button>Close</Button>
+          <Button className={normalDrawerButton}>Close</Button>
         </DrawerClose>
       </DrawerFooter>
     </div>
