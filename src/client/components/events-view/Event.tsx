@@ -74,7 +74,7 @@ function Event({ event, getEvents }: EventProps) {
 
   const { title, start_time, end_time, Users } = event;
 
-  const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-4 py-4 rounded-xl text-sm';
+  const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-2 py-2 rounded-xl text-sm';
 
   const category = useMemo((): string => {
     const isAttending = Users?.reduce((acc, curr) => {
