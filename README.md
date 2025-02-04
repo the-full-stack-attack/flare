@@ -15,8 +15,8 @@
     - [Install \& Setup 🛠️](#install--setup-️)
       - [Environment Variables \& Credentials](#environment-variables--credentials)
     - [Database Setup](#database-setup)
-    - [Feature Breakdown](#feature-breakdown)
-    - [Workers](#workers)
+    - [Feature Breakdown:](#feature-breakdown)
+    - [**Workers:**](#workers)
     - [**📈 Git Workflow for Teams:**](#-git-workflow-for-teams)
 
 
@@ -44,10 +44,11 @@
 | Category               | Technology                             |
 | ---------------------|----------------------------------------- |
 | Language             | TypeScript (ES6)                         |
-| ****Frontend****     | React 19.x, TailwindCSS, Shadcn/UI, etc. |
-| ****Backend****      | Node.js, Express.js, Socket.IO           |
+| ****Frontend****     | React 19.x, TailwindCSS, Shadcn/UI, Pixi.js, framer-motion |
+| ****Backend****      | Node.js, Express.js, Socket.IO, node.cron           |
 | ****Database****     | MySQL (Sequelize ORM)                    |
-| ****AI****           | Google Gemini API                        |
+| ****AI****           | Google Gemini API    
+**APIs**                    | FourSquare Places, Google Places, Google Maps, APIFY, Textbelt
 | ****Build****        | Webpack, Babel, ts-node, Jest (tests)    |
 | ****Version Ctrl**** | Git, GitHub                              |
 
