@@ -35,11 +35,15 @@ function Task() {
       </div>
       {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
       <div className="text-2xl font-semibold">Completed Tasks</div>
-      <div className="container overflow-auto border-2 px-1 rounded-lg max-h-80 lg:w-1/2">
-        <CompletedTaskList />
+      <div className="container overflow-auto border-2 px-1 rounded-lg min-h-80 max-h-80 lg:w-1/2">
+        {user.total_tasks_completed ? (
+          <CompletedTaskList />
+        ) : (
+          <center>You Have Not Completed Any Tasks</center>
+        )}
       </div>
       <div className="text-2xl font-semibold">Opted Out Tasks</div>
-      <div className="container overflow-auto border-2 px-1 rounded-lg max-h-80 lg:w-1/2">
+      <div className="container overflow-auto border-2 px-1 rounded-lg min-h-80 max-h-80 lg:w-1/2">
         <OptOutList />
       </div>
     </div>
