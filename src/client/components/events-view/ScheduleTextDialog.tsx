@@ -32,6 +32,12 @@ function ScheduleTextDialog({
   const [newTextMode, setNewTextMode] = useState<boolean>(true);
   const [updateMode, setUpdateMode] = useState<boolean>(false);
 
+  const normalDialogButton = 'bg-gradient-to-r from-gray-700 to-pink-700 hover:from-gray-900 hover:to-pink-900 text-white';
+
+  const warnDialogButton = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-800 hover:to-orange-800 text-white';
+
+  const successDialogButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white'
+
   const handleSendTimeSelect = useCallback(({ target }: any) => {
     setSendTime(target.value);
   }, []);
@@ -134,7 +140,7 @@ function ScheduleTextDialog({
   }, [getText]);
 
   return (
-    <DialogContent className="sm:max-w-[425px]">
+    <DialogContent className="sm:max-w-[425px] bg-black/80 text-white">
       <DialogHeader>
         <DialogTitle>Schedule a Check-In Text</DialogTitle>
         <DialogDescription>
@@ -151,6 +157,7 @@ function ScheduleTextDialog({
             <RadioGroupItem
               id="30-minutes"
               value="30-minutes"
+              className="focus:bg-white text-white"
               onClick={handleSendTimeSelect}
             />
             <Label htmlFor="30-minutes">30 minutes</Label>
@@ -159,6 +166,7 @@ function ScheduleTextDialog({
             <RadioGroupItem
               id="1-hour"
               value="1-hour"
+              className="focus:bg-white text-white"
               onClick={handleSendTimeSelect}
             />
             <Label htmlFor="1-hour">1 hour</Label>
@@ -167,6 +175,7 @@ function ScheduleTextDialog({
             <RadioGroupItem
               id="2-hours"
               value="2-hours"
+              className="focus:bg-white text-white"
               onClick={handleSendTimeSelect}
             />
             <Label htmlFor="2-hours">2 hours</Label>
@@ -188,17 +197,17 @@ function ScheduleTextDialog({
         {newTextMode ? (
           <div className="grid grid-cols-2 gap-2">
             <DialogClose asChild>
-              <Button type="submit" onClick={postPatchText}>
+              <Button type="submit" className={successDialogButton} onClick={postPatchText}>
                 Schedule Text
               </Button>
             </DialogClose>
-            {updateMode ? <Button onClick={getText}>Cancel</Button> : null}
+            {updateMode ? <Button className={normalDialogButton} onClick={getText}>Cancel</Button> : null}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2">
-            <Button onClick={handleUpdateModeTrue}>Update</Button>
+            <Button className={normalDialogButton} onClick={handleUpdateModeTrue}>Update</Button>
             <DialogClose asChild>
-              <Button onClick={deleteText}>Delete</Button>
+              <Button className={warnDialogButton} onClick={deleteText}>Delete</Button>
             </DialogClose>
           </div>
         )}
