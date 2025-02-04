@@ -14,6 +14,16 @@ import {
   TabsTrigger,
 } from '../../components/ui/tabs';
 
+import {
+  Tab,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels,
+} from '@headlessui/react';
+
+import { BackgroundGlow } from '@/components/ui/background-glow';
+
 import EventsList from '../components/events-view/EventsList';
 
 type GeoPosition = {
@@ -73,6 +83,8 @@ function Events() {
   const [bailedEvents, setBailedEvents] = useState<EventData[]>([]);
 
   const [changeLocFilter, setChangeLocFilter] = useState(false);
+
+  const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-4 py-4 rounded-xl text-md';
 
   const getGeoLocation = () => {
     const success = (position: GeoPosition) => {
@@ -206,97 +218,99 @@ function Events() {
   }, [locationFilter]);
 
   return (
-    <div className="container mx-auto px-4 pt-20 content-center">
-      <div className="container mx-auto px-4">
-        <p>
-          Upcoming Events from
-          <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
-        </p>
-        {!changeLocFilter ? (
-          <Button className="mt-2" onClick={toggleChangeLocFilter}>
-            Change Location
-          </Button>
-        ) : (
-          <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 gap-4">
-            <Button
-              className="col-span-1"
-              onClick={({ target }: any) => {
-                if (target.innerText === 'Cancel') {
-                  toggleChangeLocFilter();
-                }
-                if (target.innerText === 'Current Location') {
-                  handleResetLocFilter();
-                }
-              }}
-            >
-              {locationFilter.city === location.city && locationFilter.state === location.state ? 'Cancel' : 'Current Location'}
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
+      <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
+      <div className="container mx-auto px-4 content-center">
+        <div className="container mx-auto px-4">
+          <p className="text-gray-300 text-lg">
+            Upcoming Events from
+            <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
+          </p>
+          {!changeLocFilter ? (
+            <Button className={`mt-2 ${buttonColor}`} onClick={toggleChangeLocFilter}>
+              Change Location
             </Button>
-            <Input
-              className="col-span-2"
-              value={city}
-              placeholder="City Name"
-              onChange={handleCityInput}
-              onKeyUp={({ key }) => {
-                if (key === 'Enter') {
-                  handleSubmitLocFilter();
-                }
-              }}
-            />
-            <Input
-              className="col-span-2"
-              value={state}
-              placeholder="State Initials, XX"
-              onChange={handleStateInput}
-              onKeyUp={({ key }) => {
-                if (key === 'Enter') {
-                  handleSubmitLocFilter();
-                }
-              }}
-            />
-            <Button
-              className="col-span-1"
-              onClick={({ target }: any) => {
-                if (target.innerText === 'Remove Filter') {
-                  handleClearLocFilter();
-                }
-                if (target.innerText === 'Set Filter') {
-                  handleSubmitLocFilter();
-                }
-              }}
+          ) : (
+            <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 gap-4">
+              <Button
+                className={`col-span-1 ${buttonColor}`}
+                onClick={({ target }: any) => {
+                  if (target.innerText === 'Cancel') {
+                    toggleChangeLocFilter();
+                  }
+                  if (target.innerText === 'Current Location') {
+                    handleResetLocFilter();
+                  }
+                }}
+              >
+                {locationFilter.city === location.city && locationFilter.state === location.state ? 'Cancel' : 'Current Location'}
+              </Button>
+              <Input
+                className="col-span-2"
+                value={city}
+                placeholder="City Name"
+                onChange={handleCityInput}
+                onKeyUp={({ key }) => {
+                  if (key === 'Enter') {
+                    handleSubmitLocFilter();
+                  }
+                }}
+              />
+              <Input
+                className="col-span-2"
+                value={state}
+                placeholder="State Initials, XX"
+                onChange={handleStateInput}
+                onKeyUp={({ key }) => {
+                  if (key === 'Enter') {
+                    handleSubmitLocFilter();
+                  }
+                }}
+              />
+              <Button
+                className={`col-span-1 ${buttonColor}`}
+                onClick={({ target }: any) => {
+                  if (target.innerText === 'Remove Filter') {
+                    handleClearLocFilter();
+                  }
+                  if (target.innerText === 'Set Filter') {
+                    handleSubmitLocFilter();
+                  }
+                }}
+              >
+                {city === '' || state === '' ? 'Remove Filter' : 'Set Filter'}
+              </Button>
+            </div>
+          )}
+        </div>
+        <TabGroup
+          defaultValue="upcoming"
+          className="container mx-auto px-4 content-center pt-4"
+        >
+          <TabList>
+            <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Upcoming (${events.length})`}</Tab>
+            <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Attending (${attendingEvents.length})`}</Tab>
+            <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Bailed (${bailedEvents.length})`}</Tab>
+          </TabList>
+          <TabPanels className="mt-4">
+            <TabPanel
+              className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
             >
-              {city === '' || state === '' ? 'Remove Filter' : 'Set Filter'}
-            </Button>
-          </div>
-        )}
+              <EventsList events={events} getEvents={getEvents} />
+            </TabPanel>
+            <TabPanel
+              className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+            >
+              <EventsList events={attendingEvents} getEvents={getEvents} />
+            </TabPanel>
+            <TabPanel
+              className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+            >
+              <EventsList events={bailedEvents} getEvents={getEvents} />
+            </TabPanel>
+          </TabPanels>
+        </TabGroup>
       </div>
-      <Tabs
-        defaultValue="upcoming"
-        className="container mx-auto px-4 content-center"
-      >
-        <TabsList>
-          <TabsTrigger value="upcoming">{`Upcoming (${events.length})`}</TabsTrigger>
-          <TabsTrigger value="attending">{`Attending (${attendingEvents.length})`}</TabsTrigger>
-          <TabsTrigger value="bailed">{`Bailed (${bailedEvents.length})`}</TabsTrigger>
-        </TabsList>
-        <TabsContent
-          value="upcoming"
-          className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
-        >
-          <EventsList events={events} getEvents={getEvents} />
-        </TabsContent>
-        <TabsContent
-          value="attending"
-          className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
-        >
-          <EventsList events={attendingEvents} getEvents={getEvents} />
-        </TabsContent>
-        <TabsContent
-          value="bailed"
-          className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
-        >
-          <EventsList events={bailedEvents} getEvents={getEvents} />
-        </TabsContent>
-      </Tabs>
     </div>
   );
 }
