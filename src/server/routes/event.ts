@@ -228,7 +228,11 @@ const getGooglePlaceId = async (venueData: any) => {
 }
 
 const convertFSQPrice = (price: any): string | null => {
-    switch (price) {
+    if (typeof price === 'string' && price.startsWith('$')) {
+        return price;
+    }
+    const formatPrice = Number(price);
+    switch (formatPrice) {
         case 1:
             return '$1-10';
         case 2:
@@ -307,7 +311,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 website: gData?.[0].website || fsqData?.website || null,
                 rating: getVenueRating(fsqData, gData),
                 total_reviews: getVenueReviewCount(fsqData, gData),
-                price_range: getVenuePricing(test, test2),
+                price_range: gData[0]?.price || convertFSQPrice(fsqData?.price) || null,
                 outdoor_seating: getVenueOutdoorSeating(test, test2),
                 peak_hour: getVenuePeakHours(test, test2),
                 wheelchair_accessible: getVenueAccessibility(test, test2),
@@ -323,9 +327,6 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 google_place_id: googlePlaceId || null,
             }
         }
-
-
-
 
 
 
@@ -353,11 +354,6 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         };
 
 
-
-
-        const getVenueCity = (fsqData, gData) => {
-
-        }
 
 
         const formatState = (fsqData, gData) => {
