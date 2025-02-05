@@ -33,7 +33,12 @@ describe('Texts Server Handlers', () => {
     }
   })
 
-  test('2 + 2', () => {
-    expect(2 + 2).toBe(4);
+  test('POST /api/text stores text in Database', async () => {
+    const { dataValues: text }: any = await Text.findOne({ where: { user_id, event_id } });
+    expect(text.content).toBe('Test Text Message');
+    expect(text.time_from_start).toBe('30-minutes');
+    expect(text.user_id).toBe(user_id);
+    expect(text.event_id).toBe(event_id);
+    expect(text.send_time instanceof Date).toBe(true);
   });
 });
