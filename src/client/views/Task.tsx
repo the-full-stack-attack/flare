@@ -26,25 +26,27 @@ function Task() {
     }
   }, [user]);
   return (
-    <div>
-      <div className="pt-14">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12 text-white">
+      <div>
         <p>{`You completed ${last_week_task_count} tasks last week`}</p>
       </div>
       <div>
         <p>{`You've completed ${weekly_task_count} tasks so far this week`}</p>
       </div>
-      {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
-      <div className="text-2xl font-semibold">Completed Tasks</div>
-      <div className="container overflow-auto border-2 px-1 rounded-lg min-h-80 max-h-80 lg:w-1/2">
-        {user.total_tasks_completed ? (
-          <CompletedTaskList />
-        ) : (
-          <center>You Have Not Completed Any Tasks</center>
-        )}
-      </div>
-      <div className="text-2xl font-semibold">Opted Out Tasks</div>
-      <div className="container overflow-auto border-2 px-1 rounded-lg min-h-80 max-h-80 lg:w-1/2">
-        <OptOutList />
+      <div className="sm:w-full md:w-2/3">
+        {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
+        <div className="text-2xl font-semibold">Completed Tasks</div>
+        <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60">
+          {user.total_tasks_completed ? (
+            <CompletedTaskList />
+          ) : (
+            <center>You Have Not Completed Any Tasks</center>
+          )}
+        </div>
+        <div className="text-2xl font-semibold">Opted Out Tasks</div>
+        <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60">
+          <OptOutList />
+        </div>
       </div>
     </div>
   );
