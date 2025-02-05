@@ -299,10 +299,10 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         const buildVenue = {
                 name: fsqData?.name || gData?[0]?.title || null,
                 description: gData?.description || fsqData?.description || null,
-                category: getVenueCategory(/* pass in nested data */test, test2),
+                category: gData[0]?.categoryName || fsqData.categories[0].name || null,
                 street_address: gData?.[0].street || fsqData?.location?.address || null,
                 city_name: fsqData?.location?.dma || gData?.[0].city || null,
-                state_name: getVenueState(test, test2),
+                state_name: formatState(fsqData, gData);
                 phone: formatPhoneNumber(fsqData, gData),
                 website: gData?.[0].website || fsqData?.website || null,
                 rating: getVenueRating(test, test2),
@@ -354,8 +354,72 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
         }
 
-        const getVenueState = (fsqData, gData) => {
 
+        const formatState = (fsqData, gData) => {
+            let input;
+
+            if (fsqData?.location?.region) {
+                input = fsqData.location.region;
+            } else if (gData[0]?.state) {
+                input = gData[0]?.state;
+            } else {
+                return null;
+            }
+
+            const states = {
+                'arizona': 'AZ',
+                'alabama': 'AL',
+                'alaska': 'AK',
+                'arkansas': 'AR',
+                'california': 'CA',
+                'colorado': 'CO',
+                'connecticut': 'CT',
+                'delaware': 'DE',
+                'florida': 'FL',
+                'georgia': 'GA',
+                'hawaii': 'HI',
+                'idaho': 'ID',
+                'illinois': 'IL',
+                'indiana': 'IN',
+                'iowa': 'IA',
+                'kansas': 'KS',
+                'kentucky': 'KY',
+                'louisiana': 'LA',
+                'maine': 'ME',
+                'maryland': 'MD',
+                'massachusetts': 'MA',
+                'michigan': 'MI',
+                'minnesota': 'MN',
+                'mississippi': 'MS',
+                'missouri': 'MO',
+                'montana': 'MT',
+                'nebraska': 'NE',
+                'nevada': 'NV',
+                'new hampshire': 'NH',
+                'new jersey': 'NJ',
+                'new mexico': 'NM',
+                'new york': 'NY',
+                'north carolina': 'NC',
+                'north dakota': 'ND',
+                'ohio': 'OH',
+                'oklahoma': 'OK',
+                'oregon': 'OR',
+                'pennsylvania': 'PA',
+                'rhode island': 'RI',
+                'south carolina': 'SC',
+                'south dakota': 'SD',
+                'tennessee': 'TN',
+                'texas': 'TX',
+                'utah': 'UT',
+                'vermont': 'VT',
+                'virginia': 'VA',
+                'washington': 'WA',
+                'west virginia': 'WV',
+                'wisconsin': 'WI',
+                'wyoming': 'WY'
+            };
+            const normalizedInput = input.toLowerCase().trim();
+            return states[normalizedInput] || null
         }
 
         const formatPhoneNumber = (fsqData, gData) => {
