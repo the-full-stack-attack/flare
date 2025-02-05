@@ -8,6 +8,7 @@ const Venue = database.define('Venue', {
     description: { type: Sequelize.STRING },
     category: { type: Sequelize.STRING },
     street_address: { type: Sequelize.STRING },
+    zip_code: { type: Sequelize.INTEGER },
     city_name: { type: Sequelize.STRING },
     state_name: { type: Sequelize.STRING },
     phone: { type: Sequelize.STRING },
