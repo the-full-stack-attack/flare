@@ -9,6 +9,7 @@ import { Op } from 'sequelize';
 import { ApifyClient } from 'apify-client';
 import Venue_Tag from "../db/models/venue_tags";
 import Notification from '../db/models/notifications';
+import * as test from "node:test";
 
 const eventRouter = Router();
 
@@ -86,6 +87,9 @@ const removeDuplicateVenues = (venues: any) => {
         }
     })
 }
+
+
+
 
 
 // create event route
@@ -208,19 +212,264 @@ const runApifyActor = async (googlePlaceId: any) => {
 
 // google text search api request - receives venue name and street address, returns the goooglePlaceId
 const getGooglePlaceId = async (venueData: any) => {
-    if (!venueData.description) {
+
         try {
             const query = `"${venueData.name}" "${venueData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
             const googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${process.env.GOOGLE_PLACES_API_KEY}`
             const response = await fetch(googlePlacesUrl)
             const data = await response.json();
-            const googlePlaceId: any = data.results[0].place_id;
-            return googlePlaceId;
+            if (!data.results[0].place_id) console.error('Error getting Google Place Id for', query);
+            // const id: any = data.results[0].place_id;
+            return data.results[0].place_id;
         } catch (error) {
             console.error(`Error getting Google Place Id for Venue. ERROR: ${error}`);
         }
+
+}
+
+const convertFSQPrice = (price: any): string | null => {
+    switch (price) {
+        case 1:
+            return '$1-10';
+        case 2:
+            return '$10-20';
+        case 3:
+            return '$20-30';
+        case 4:
+            return '$30-40';
+        case 5:
+            return '$40-50';
+        default:
+            return null;
     }
 }
+
+
+eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
+    let fsqData;
+    let googlePlaceId;
+    let gData;
+    try {
+        // get fsqId needed to make api request
+        const { fsqId } = req.params;
+
+        // check if venue already exists in our DB with a fsqId
+        const hasFSQId = await Venue.findOne({ where: { fsq_id: fsqId }});
+
+        // if no venue with matching fsqId exists - call FSQ API
+        if (!hasFSQId) {
+            const response = await fetch(
+                `https://api.foursquare.com/v3/places/${fsqId}?fields=fsq_id,name,description,location,tel,website,tips,rating,hours,features,stats,price,photos,tastes,popularity,hours_popular,social_media,categories`, {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `${process.env.FOURSQUARE_API_KEY}`,
+                    },
+                }
+            );
+            fsqData = await response.json();
+        }
+
+        // check if venue has google place id and it is not null or an empty string
+        const hasGoogleId = await Venue.findOne({
+            where: {
+                google_place_id: {
+                    [Op.and]: {
+                        [Op.ne]: null,
+                        [Op.ne]: '',
+                    }
+                }
+            }
+        });
+
+        // if venue does not have valid google place id
+        if (!hasGoogleId) {
+            // verify we have necessary fsqData to build our query string
+            if (fsqData.name && fsqData.location.formatted_address) {
+                // format our api query
+                const query = `"${fsqData.name}" "${fsqData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
+                // send request to google text search api to get google place id
+                googlePlaceId = await getGooglePlaceId(query);
+                // scrape google my business page for google place id using Apify's SDK
+                gData = await runApifyActor(googlePlaceId); //! response time varies from 5-20 seconds
+            } else {
+                console.error('Error building Google Text Search query string');
+            }
+        };
+
+        const buildVenue = {
+                name: fsqData?.name || gData?[0]?.title || null,
+                description: gData?.description || fsqData?.description || null,
+                category: getVenueCategory(/* pass in nested data */test, test2),
+                street_address: gData?.[0].street || fsqData?.location?.address || null,
+                city_name: fsqData?.location?.dma || gData?.[0].city || null,
+                state_name: getVenueState(test, test2),
+                phone: getVenuePhone(test, test2),
+                website: gData?.[0].website || fsqData?.website || null,
+                rating: getVenueRating(test, test2),
+                total_reviews: getVenueReviewCount(test, test2),
+                price_range: getVenuePricing(test, test2),
+                outdoor_seating: getVenueOutdoorSeating(test, test2),
+                peak_hour: getVenuePeakHours(test, test2),
+                wheelchair_accessible: getVenueAccessibility(test, test2),
+                restroom: getVenueRestroom(test, test2),
+                ...getVenueParking(test, test2),
+                serves_alcohol: getVenueAlcohol(fsqData, gData),
+                cleanliness: getVenueCleanliness(test, test2),
+                crowded: getVenueCrowdiness(test, test2),
+                noise_level: getVenueNoiseLvl(test, test2),
+                service_quality: getVenueServiceQual(test, test2),
+
+                fsq_id: fsqId || null,
+                google_place_id: googlePlaceId || null,
+            }
+        }
+
+
+
+
+
+
+
+        const getVenueReviewCount = (fsqData, gData) => {
+        let count;
+        if (!fsqData?.stats?.total_ratings && !gData?[0]?.reviewsCount) {
+            count = fsqData.stats.total_ratings;
+        } else if (gData?[0].revi)
+
+
+        const getVenueCategory = (fsqData, gData) => {
+            if (gData?.[0]?.description) {
+                return gData.[0].description;
+            } else if (fsqData?.description) {
+                return fsqData.description;
+            } else {
+                return null;
+            }
+        };
+
+
+
+
+        const getVenueCity = (fsqData, gData) => {
+
+        }
+
+        const getVenueState = (fsqData, gData) => {
+
+        }
+
+        const getVenuePhone = (fsqData, gData) => {
+
+        }
+
+
+
+        const getVenueRating = (fsqData, gData) => {
+            if (fsqData?.rating && gData[0]?.totalScore) {
+                const fsqRating = fsqData?.rating * 0.5; // convert to same range as gData
+                const gRating = gData[0]?.totalScore;
+                return Number((fsqRating + gRating) / 2).toFixed(1); // return value matching gData rating format
+            } else if (fsqData?.rating && !gData[0]?.totalScore) {
+                const fsqRating = fsqData?.rating * 0.5;
+                return Number(fsqRating).toFixed(1);
+            } else if (!fsqData?.rating && gData[0]?.totalScore) {
+                return gData[0].totalScore;
+            } else {
+                return null;
+            }
+        }
+
+        const getVenueReviews = (fsqData, gData) => {
+
+        }
+
+        const getVenuePricing = (fsqData, gData) => {
+
+        }
+
+        const getVenueOutdoorSeating = (fsqData, gData) => {
+
+        }
+
+        const getVenuePeakHours = (fsqData, gData) => {
+
+        }
+
+        const getVenueAccessibility = (fsqData, gData) => {
+
+        }
+
+        const getVenueRestroom = (fsqData, gData) => {
+
+        }
+
+        const getVenuePrivateParking = (fsqData, gData) => {
+
+        }
+
+        const getVenueStreetParking = (fsqData, gData) => {
+
+        }
+
+        const getVenueAlcohol = (fsqData, gData) => {
+            // init array of search queries
+            const searchQueries = ['Cocktail', 'Bar', 'cocktails', 'full_bar', 'Great cocktails', 'Great wine list', 'Alcohol', 'Beer', 'Cocktails', 'Hard liquor', 'Wine', 'Bar onsite', ];
+            // direct search for potential quick exit
+            if (searchQueries.includes(fsqData?.categories?.[0].short_name) || gData[0]?.categories.includes('Bar')) return true;
+            // create obj of kvp's from objs that contain relevant data
+            const alcoholData = {
+                ...(fsqData?.features?.food_and_drink?.alcohol || {}),
+                ...(gData[0]?.additionalInfo?.Highlights || {}),
+                ...(gData[0]?.additionalInfo?.Offerings || {}),
+                ...(gData[0]?.additionalInfo?.Amenities || {}),
+                ...(fsqData?.categories?.[0] || {}),
+            }
+            // iterate through obj searching for a searchQuery that has true value
+            for (let key in alcoholData) {
+                if (searchQueries.includes(key) && alcoholData[key] === true) {
+                    return true;
+                }
+            }
+            return null;
+        };
+
+        const getVenueCleanliness = (fsqData, gData) => {
+
+        }
+
+        const getVenueCrowdiness = (fsqData, gData) => {
+
+        }
+
+        const getVenueNoiseLvl = (fsqData, gData) => {
+
+        }
+
+        const getVenueServiceQual = (fsqData, gData) => {
+
+        }
+
+        const getVenueImg = (fsqData, gData) => {
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+})
+
+
 
 
 
@@ -249,43 +498,93 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             venueData = await response.json();
         }
 
+
+        if (venueData?.price) {
+            console.log('about to convert veneuData.price');
+            venueData.price = convertFSQPrice(venueData.price);
+            console.log('just converted', venueData.price);
+        };
+
+
+
         // only get google data if venue doesnt exist or venue doesnt have a google place id
         if (!venueHasData || !(venueHasData as any).google_place_id) {
             googlePlaceId = await getGooglePlaceId(venueData); // google text search api
             gData = await runApifyActor(googlePlaceId); // warning: response can take 5-15 seconds
         }
-
+        console.log('-----START OF FSQ DATA HERE ------');
+        console.log(JSON.stringify(venueData, null, 2));
+        console.log('-----START OF GDATA HERE------')
+        console.log(JSON.stringify(gData, null, 2));
 
         const [venue, created] = await Venue.findOrCreate({
             where: { fsq_id: fsqId },
             defaults: {
-                name: venueData?.name || gData.title || null,
-                description: gData?.description || null,
-                street_address: venueData?.location?.address || gData?.street || null,
-                zip_code: venueData?.location?.postcode || gData?.postalCode || null,
-                city_name: venueData?.location?.locality || gData?.city || null,
-                state_name: venueData?.location?.region || gData?.state || null,
-                phone: gData?.phone || venueData?.tel || null,
-                website: venueData?.website || gData?.website || null,
-                rating: gData?.totalScore || venueData?.rating || null,
-                total_reviews: gData?.reviewsCount || venueData?.stats?.total_ratings || 0,
-                price_range: gData?.price || (venueData?.price ? `Level ${venueData.price}` : null),
+                name: venueData?.name || null,
+                description: null,
+                street_address: venueData?.location?.address || null,
+                zip_code: venueData?.location?.postcode || null,
+                city_name: venueData?.location?.locality || null,
+                state_name: venueData?.location?.region || null,
+                phone: venueData?.tel || null,
+                website: venueData?.website || null,
+                rating: venueData?.rating || null,
+                total_reviews: venueData?.stats?.total_ratings || 0,
+                price_range: venueData?.price ? venueData.price : null,
                 fsq_id: fsqId,
-                google_place_id: googlePlaceId,
-                outdoor_seating: gData?.additionalInfo?.['Service options']?.['Outdoor seating'] || venueData?.features?.amenities?.outdoor_seating || null,
+                google_place_id: null,
+                outdoor_seating: venueData?.features?.amenities?.outdoor_seating || null,
                 peak_hour: null,
-                wheelchair_accessible: gData?.additionalInfo?.wheelchair_accessible_entrance || gData?.additionalInfo?.wheelchair_accessible_restroom || gData?.additionalInfo?.wheelchair_accessible_seating || venueData?.features?.amenities?.wheelchair_accessible || null,
-                restroom: gData?.additionalInfo?.amenities?.restroom || venueData?.features?.amenities?.restroom || null,
-                private_parking: gData?.additionalInfo?.parking?.paid_parking_lot || gData?.additionalInfo?.parking?.free_parking_lot || null,
-                street_parking: gData?.additionalInfo?.parking?.free_street_parking || gData?.additionalInfo?.parking?.paid_street_parking || null,
-                serves_alcohol: gData?.additionalInfo?.offerings?.alcohol || gData?.additionalInfo?.offerings?.beer || gData?.additionalInfo?.offerings?.cocktails || venueData?.features?.food_and_drink?.alcohol?.cocktails || venueData?.features?.food_and_drink?.alcohol?.full_bar || null,
+                wheelchair_accessible: venueData?.features?.amenities?.wheelchair_accessible || null,
+                restroom: venueData?.features?.amenities?.restroom || null,
+                private_parking: null,
+                street_parking: null,
+                serves_alcohol: venueData?.features?.food_and_drink?.alcohol?.beer ||
+                    venueData?.features?.food_and_drink?.alcohol?.cocktails ||
+                    venueData?.features?.food_and_drink?.alcohol?.full_bar || null,
                 cleanliness: venueData?.features?.attributes?.clean || null,
                 crowded: venueData?.features?.attributes?.crowded || null,
                 noise_level: venueData?.features?.attributes?.noisy || null,
                 service_quality: venueData?.features?.attributes?.service_quality || null,
-                img: venueData?.photos?.[0] && venueData.photos[0].prefix && venueData.photos[0].suffix ? `${venueData.photos[0].prefix}original${venueData.photos[0].suffix}` : gData[0]?.imageUrl || null,
+                img: venueData?.photos?.[0] ? `${venueData.photos[0].prefix}original${venueData.photos[0].suffix}` : null,
             }
         }) as any;
+
+
+
+        // wait for gData to populate and then update venue
+        if (gData && gData[0]) {
+            await venue.update({
+                name: venueData?.name || gData?.[0]?.title || venue.name,
+                description: gData?.[0]?.description || venue.description,
+                street_address: venueData?.location?.address || gData?.[0]?.street || venue.street_address,
+                zip_code: venueData?.location?.postcode || gData?.[0]?.postalCode || venue.zip_code,
+                city_name: venueData?.location?.locality || gData?.[0]?.city || venue.city_name,
+                state_name: venueData?.location?.region || gData?.[0]?.state || venue.state_name,
+                phone: venueData?.tel || gData?.[0]?.phone || venue.phone,
+                website: venueData?.website || gData?.[0]?.website || venue.website,
+                rating: gData?.[0]?.totalScore || venueData?.rating || venue.rating,
+                total_reviews: gData?.[0]?.reviewsCount || venueData?.stats?.total_ratings || venue.total_reviews,
+                price_range: gData?.[0]?.price || (venueData?.price ? `Level ${venueData.price}` : null) || venue.price_range,
+                google_place_id: googlePlaceId,
+                accepted_payments: (gData?.[0]?.additionalInfo?.Payments?.[0]?.['Credit cards'] && 'Credit cards') || (gData?.[0]?.additionalInfo?.Payments?.[1]?.['Debit cards'] && 'Debit cards') || (gData?.[0]?.additionalInfo?.Payments?.[2]?.['NFC mobile payments'] && 'NFC mobile payments') || venue.accepted_payments,
+                outdoor_seating: gData?.[0]?.additionalInfo?.['Service options']?.[0]?.['Outdoor seating'] || venueData?.features?.amenities?.outdoor_seating || venue.outdoor_seating,
+                wheelchair_accessible: gData?.[0]?.additionalInfo?.Accessibility?.[0]?.['Wheelchair accessible entrance'] || gData?.[0]?.additionalInfo?.Accessibility?.[1]?.['Wheelchair accessible restroom'] || venue.wheelchair_accessible,
+                restroom: gData?.[0]?.additionalInfo?.Amenities?.[1]?.['Restroom'] || gData?.[0]?.additionalInfo?.Amenities?.[0]?.['Gender-neutral restroom'] || venue.restroom,
+                private_parking: gData?.[0]?.additionalInfo?.Parking?.[2]?.['Paid parking lot'] || gData?.[0]?.additionalInfo?.Parking?.[1]?.['Paid parking garage'] || venue.private_parking,
+                street_parking: gData?.[0]?.additionalInfo?.Parking?.[0]?.['Free street parking'] || gData?.[0]?.additionalInfo?.Parking?.[3]?.['Paid street parking'] || venue.street_parking,
+                serves_alcohol: venueData?.features?.food_and_drink?.alcohol?.beer || venueData?.features?.food_and_drink?.alcohol?.cocktails || venueData?.features?.food_and_drink?.alcohol?.full_bar || gData?.[0]?.additionalInfo?.Offerings?.[0]?.['Alcohol'] || venue.serves_alcohol,
+                cleanliness: (venueData?.tastes?.includes('clean') ? true : null) || venueData?.features?.attributes?.clean || venue.cleanliness,
+                crowded: (venueData?.features?.attributes?.dates_popular === "Average") || venue.crowded,
+                noise_level: venueData?.features?.attributes?.noisy || venue.noise_level,
+                service_quality: venueData?.features?.attributes?.service_quality || venue.service_quality,
+                img: (venueData?.photos?.[0] ? `${venueData.photos[0].prefix}original${venueData.photos[0].suffix}` : null) || gData?.[0]?.imageUrl || venue.img
+            });
+        }
+
+
+        if (venueData?.features?.amenities?.outdoor_seating)
+
 
 
         // convert google popular time histogram into most popular day and hour - may eventually want to change this to save more data in the future
