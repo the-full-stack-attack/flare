@@ -1,13 +1,12 @@
 import axios from 'axios';
 import Text from '../src/server/db/models/texts';
-import { constants } from 'node:fs';
 
 const PORT = globalThis.PORT;
 
 describe('Texts Server Handlers', () => {
   
-  const event_id = globalThis.event1.dataValues.id; // Event used for testing
-  const user_id = globalThis.user1.dataValues.id; // req.user
+  const event_id = globalThis.event1.id; // Event used for testing
+  const user_id = globalThis.user1.id; // req.user
   
   beforeEach(async () => {
     try {
@@ -36,7 +35,7 @@ describe('Texts Server Handlers', () => {
 
   test('POST /api/text stores text in Database', async () => {
     try {
-      const { dataValues: text }: any = await Text.findOne({ where: { user_id, event_id } });
+      const text: any = await Text.findOne({ where: { user_id, event_id } });
       
       expect(text.content).toBe('Test Text Message');
       expect(text.time_from_start).toBe('30-minutes');
@@ -85,5 +84,29 @@ describe('Texts Server Handlers', () => {
     } catch (error: unknown) {
       console.error('Failed to update text info with PATCH request', error);
     }
-  })
+  });
+
+  test('DELETE /api/text/:eventId deletes text from database', async () => {
+    try {
+      // Check that the text is there before deletion
+      const { data: text } = await axios.get(`http://localhost:${PORT}/api/text/${event_id}`);
+      expect(text.content).toBe('Test Text Message');
+      expect(text.time_from_start).toBe('30-minutes');
+      expect(text.user_id).toBe(user_id);
+      expect(text.event_id).toBe(event_id);
+      
+      // Send request to DELETE to the text
+      await axios.delete(`http://localhost:${PORT}/api/text/${event_id}`);
+      
+      // Check GET for deletedText
+      const { data: fetchedDeletedText } = await axios.get(`http://localhost:${PORT}/api/text/${event_id}`);
+      expect(fetchedDeletedText).toBe('');
+
+      // Check Database for deletedText
+      const isItDeleted = await Text.findOne({ where: { user_id, event_id } });
+      expect(isItDeleted).toBe(null);
+    } catch (error: unknown) {
+      console.error('Failed to DELETE /api/text/:eventId', error);
+    }
+  });
 });
