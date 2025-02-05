@@ -38,12 +38,12 @@ function Task() {
             <center>You Have Not Completed Any Tasks</center>
           )}
         </div>
-        <div className="text-2xl font-semibold">Opted Out Tasks</div>
+        <div className="text-xl font-semibold">Opted Out Tasks</div>
         <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60">
           <OptOutList />
         </div>
       </div>
-      <div className="col-span-1">
+      <div className="sm:col-span-1 md:col-span-1">
         <TaskSidebar />
       </div>
     </div>
