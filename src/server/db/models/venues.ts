@@ -12,19 +12,14 @@ const Venue = database.define('Venue', {
     state_name: { type: Sequelize.STRING },
     phone: { type: Sequelize.STRING },
     website: { type: Sequelize.STRING },
+    pricing: { type: Sequelize.STRING },
     rating: { type: Sequelize.INTEGER },
     total_reviews: { type: Sequelize.INTEGER },
-    popularTime: { type: Sequelize.STRING },
-    peak_hour: { type: Sequelize.DATE },
+    popularTime: { type: Sequelize.DATE },
     wheelchair_accessible: { type: Sequelize.BOOLEAN },
     serves_alcohol: { type: Sequelize.BOOLEAN },
-    img: { type: Sequelize.STRING },
-
     fsq_id: { type: Sequelize.STRING },
     google_place_id: { type: Sequelize.STRING },
-
-
-
 });
 
 
