@@ -1,4 +1,4 @@
-import {type VenueType, type VenueImage, type AlcoholData, type GoogleData, type FSQData, type VenueTag,}
+import {type VenueImage, type AlcoholData, type GoogleData, type FSQData, type VenueTag,}
     from '../src/types/Venues';
 import dayjs from 'dayjs';
 import {ApifyClient} from 'apify-client';
