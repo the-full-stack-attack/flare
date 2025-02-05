@@ -10,7 +10,6 @@ import Category from '../src/server/db/models/categories';
 import Venue from '../src/server/db/models/venues';
 import Event_Interest from '../src/server/db/models/events_interests';
 import Notification from '../src/server/db/models/notifications';
-import '../src/server/db/models/texts';
 
 export default async function () {
   const PORT = 8000;
@@ -151,6 +150,8 @@ export default async function () {
     globalThis.event2 = event2;
     globalThis.venue1 = venue1;
     globalThis.venue2 = venue2;
+    globalThis.notif1 = notif1;
+    globalThis.notif2 = notif2;
     globalThis.PORT = PORT;
   } catch (error: unknown) {
     console.error('Failed to start server for testing:', error);

@@ -17,6 +17,8 @@ export default async function () {
     globalThis.event2.destroy();
     globalThis.venue1.destroy();
     globalThis.venue2.destroy();
+    globalThis.notif1.destroy();
+    globalThis.notif2.destroy();
     // Close the server
     await promiseServerClose(globalThis.testServer);
   } catch (error: unknown) {
