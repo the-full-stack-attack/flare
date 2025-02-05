@@ -29,7 +29,7 @@ import { Label } from '../../../components/ui/label';
 import { Button } from '../../../components/ui/button';
 import MagicCard from '../../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../../components/ui/interactive-hover-button';
-import bartender from '../../assets/images/bartender.jpg';
+import bartender from '../../assets/images/chatImages/bartender.jpg';
 import { UserContext } from '../../contexts/UserContext';
 import SOCKET_URL from '../../../../config'
 

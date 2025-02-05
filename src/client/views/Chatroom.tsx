@@ -5,6 +5,12 @@ import { Application, extend, useAssets } from '@pixi/react';
 import dayjs from 'dayjs';
 import { Viewport } from 'pixi-viewport';
 import { BackgroundGlow } from '../../components/ui/background-glow';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { AnimatedList } from '../../components/ui/animated-list';
+import { Button } from '../../components/ui/button';
+import  { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
+import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import {
   Container,
   Graphics,
@@ -17,15 +23,9 @@ import {
   Spritesheet, // failing
   AnimatedSprite,
 } from 'pixi.js';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { AnimatedList } from '../../components/ui/animated-list';
-import { Button } from '../../components/ui/button';
-import  { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
-import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
-import temporaryMap from '../assets/images/temporaryAImap.png' // test circle
+import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' // test circle
 import { UserContext } from '../contexts/UserContext';
 import QuipLash from '../components/chatroom/QuipLash';
 import { Countdown } from '../components/chatroom/countdown';
@@ -106,6 +106,9 @@ function Chatroom() {
 
   // LOGIC
   const { user } = useContext(UserContext);
+  const appRef = useRef(null);
+  const [gameRatio, setGameRatio] = useState(window.innerWidth / window.innerHeight)
+  const [scaleFactor, setScaleFactor] = useState((gameRatio > 1.5) ? 0.8 : 1)
   const [allPlayers, setAllPlayers] = useState([]);
   const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   const [message, setMessage] = useState('');
@@ -144,7 +147,7 @@ function Chatroom() {
   // EXAMPLES
   const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
-    graphics?.scale.set(1.5, 0.5);
+    graphics?.scale.set(scaleFactor * 1.5, scaleFactor * .5);
   }, []);
 
   // CONTROLS
@@ -184,7 +187,7 @@ function Chatroom() {
       setGameRatio(window.innerWidth / window.innerHeight)
       setGameWidth(window.innerWidth);
       setGameHeight(window.innerHeight);
-      setScaleFactor((screenRatio > 1.5) ? 0.8 : 1)
+      setScaleFactor((gameRatio > 1.5) ? 0.8 : 1)
     };
 
     window.addEventListener('resize', handleResize);
@@ -263,21 +266,24 @@ function Chatroom() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
+    <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
    
       <div
+      
         style={{
           display: 'flex',
           justifyContent: 'center',
           marginTop: '20px',
         }}
       >
-        <div style={{ width: { gameWidth }, height: { gameHeight } }}>
+        <div>
         <div style={{
           display: 'flex',
           justifyContent: 'center',
           marginTop: '80px',
-        }} ><Countdown endTime={dayjs(start_time)}/></div>
+        }} >
+          <Countdown endTime={dayjs(start_time)}/>
+          </div>
              {/* <Viewport 
         app={app} // Pass the Pixi.js application instance to the Viewport
         width={800} 
@@ -286,30 +292,49 @@ function Chatroom() {
         pinchToZoom={true}
         wheel={true}
       > */}
-          <Application resizeTo={window}>
-            <pixiContainer x={100} y={200}>
-              <pixiGraphics draw={drawCircle} />
+          <Application 
+          resizeTo={appRef.current}
+          >
+            <pixiContainer 
+            x={100} 
+            y={200} 
+            >
+              <pixiGraphics 
+              draw={drawCircle} 
+              />
             </pixiContainer>
-            <pixiContainer>
+            <pixiContainer  
+            resizeTo={appRef.current} 
+            >
               {isSuccess && (
                 <pixiSprite
                   texture={texture}
                   x={0}
                   y={0}
-                  width={800}
-                  height={700}
+                 // scale={scaleFactor, scaleFactor} 
                 />
               )}
             </pixiContainer>
             {allPlayers.map((player) => (
-              <pixiContainer x={player.x} y={player.y} key={player.id}>
-                {player.sentMessage && <pixiGraphics draw={speechBubble} />}
+              <pixiContainer 
+              x={player.x} 
+              y={player.y} 
+              key={player.id} 
+              scale={scaleFactor, scaleFactor}
+              >
+                {player.sentMessage && (
+                  <pixiGraphics 
+                  draw={speechBubble} 
+                  scale={scaleFactor, scaleFactor}
+                />
+                )}
                 {player.sentMessage && (
                   <pixiText
                     text={player.currentMessage}
                     anchor={0.5}
                     x={70}
                     y={-50}
+                    scale={scaleFactor, scaleFactor}
                     style={style}
                   />
                 )}
@@ -317,6 +342,7 @@ function Chatroom() {
                   texture={Assets.get('bunny')}
                   x={0}
                   y={0}
+                  scale={scaleFactor, scaleFactor}
                   width={22}
                   height={22}
                   key={player.id}
@@ -324,6 +350,7 @@ function Chatroom() {
                 <pixiText
                   text={player.username}
                   anchor={0.5}
+                  scale={scaleFactor, scaleFactor}
                   x={0}
                   y={50}
                   style={style}
