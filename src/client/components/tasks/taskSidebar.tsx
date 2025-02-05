@@ -28,3 +28,5 @@ function TaskSidebar() {
     </div>
   );
 }
+
+export default TaskSidebar;
