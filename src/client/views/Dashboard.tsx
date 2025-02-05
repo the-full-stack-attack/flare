@@ -135,7 +135,9 @@ function Dashboard() {
         </motion.div>
 
         {/* Task Display */}
-        <TaskDisplay task={task} />
+        <div>
+          <TaskDisplay className="w-full" task={task} />
+        </div>
 
         {/* Achievements Section */}
         <motion.div
