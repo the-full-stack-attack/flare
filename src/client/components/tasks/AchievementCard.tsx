@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import cn from 'lib/utils';
+import cn from '../../../../lib/utils';
 import {
   FaTrophy,
   FaCalendarCheck,
@@ -12,20 +12,20 @@ import {
 import { IconType } from 'react-icons';
 
 type AchievementCardType = {
-  achievement: FlareType;
+  taskFlare: FlareType;
   index: number;
 };
 type FlareType = {
-  id?: number;
+  id: number;
   name: string;
   type: string | void;
-  icon: IconType;
+  icon: string;
   achievement: string;
-  value: number;
-  milestone: number | null;
+  milestone: string;
   description: string;
+  value: number;
 }
-function AchievementCard({ achievement, index }: AchievementCardType) {
+function AchievementCard({ taskFlare, index }: AchievementCardType) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -36,23 +36,24 @@ function AchievementCard({ achievement, index }: AchievementCardType) {
       )}
     >
       <div className="flex items-center mb-4">
-        <achievement.icon
-          className={cn(
-            'text-2xl mr-3',
-            'text-yellow-500'
-          )}
-        />
         <h3
           className={cn(
             'font-bold', 'text-white'
           )}
         >
-          {achievement.name}
+          {taskFlare.name}
         </h3>
       </div>
-      <p className="text-gray-400 text-sm">{achievement.description}</p>
+      <p className="text-gray-400 text-sm">{taskFlare.description}</p>
     </motion.div>
   );
 }
 
 export default AchievementCard;
+
+{/* <taskFlare.icon
+className={cn(
+  'text-2xl mr-3',
+  'text-yellow-500'
+)}
+/> */}
