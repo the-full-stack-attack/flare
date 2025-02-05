@@ -303,7 +303,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 street_address: gData?.[0].street || fsqData?.location?.address || null,
                 city_name: fsqData?.location?.dma || gData?.[0].city || null,
                 state_name: getVenueState(test, test2),
-                phone: getVenuePhone(test, test2),
+                phone: formatPhoneNumber(fsqData, gData),
                 website: gData?.[0].website || fsqData?.website || null,
                 rating: getVenueRating(test, test2),
                 total_reviews: getVenueReviewCount(test, test2),
@@ -358,8 +358,27 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
         }
 
-        const getVenuePhone = (fsqData, gData) => {
-
+        const formatPhoneNumber = (fsqData, gData) => {
+            let phoneNumber;
+            // reassign phoneNumber to api res value
+            if (fsqData?.tel) {
+                phoneNumber = fsqData.tel;
+            } else if (gData[0]?.phone) {
+                phoneNumber = gData[0].phone;
+            } else if (gData[0]?.phoneUnformatted) {
+                phoneNumber = gData[0].phoneUnformatted;
+            } else {
+                return null;
+            }
+            // remove non digit chars
+            const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+            // check the cleaned format to ensure its valid (optional leading 1, three digits, next three digits, and last four digits)
+            const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+            // if valid
+            if (match) {
+                return cleaned;
+            }
+            return null;
         }
 
 
