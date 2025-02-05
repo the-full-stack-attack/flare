@@ -1,0 +1,26 @@
+{
+  // Extend your base TypeScript configuration
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Use React's JSX transformation
+    "jsx": "react-jsx",
+    // Use CommonJS modules for Jest compatibility
+    "module": "CommonJS",
+    // Disable isolatedModules for testing
+    "isolatedModules": false,
+    // Add Jest and Testing Library types
+    "types": ["jest", "@testing-library/jest-dom"],
+    // Enable interop between CommonJS and ES Modules
+    "esModuleInterop": true
+  },
+  // Files to include in test compilation
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "jest.setup.ts"
+  ],
+  // Files to exclude
+  "exclude": [
+    "node_modules"
+  ]
+}
