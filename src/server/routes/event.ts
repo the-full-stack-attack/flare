@@ -6,7 +6,7 @@ import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
 import dayjs from 'dayjs';
 import {Op} from 'sequelize';
-import {ApifyClient} from 'apify-client';
+
 import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
 import Notification from '../db/models/notifications';
@@ -14,8 +14,8 @@ import Notification from '../db/models/notifications';
 // helper fns
 import { removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
     from '../../../utils/venue';
-import { type VenueType, type VenueImage, type AlcoholData, type GoogleData, type FSQData, type VenueTag, }
-    from '../../types/Venues';
+import { type VenueType, type GoogleData, } from '../../types/Venues';
+
 
 const eventRouter = Router();
 
