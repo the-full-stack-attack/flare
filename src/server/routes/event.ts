@@ -305,8 +305,8 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 state_name: formatState(fsqData, gData);
                 phone: formatPhoneNumber(fsqData, gData),
                 website: gData?.[0].website || fsqData?.website || null,
-                rating: getVenueRating(test, test2),
-                total_reviews: getVenueReviewCount(test, test2),
+                rating: getVenueRating(fsqData, gData),
+                total_reviews: getVenueReviewCount(fsqData, gData),
                 price_range: getVenuePricing(test, test2),
                 outdoor_seating: getVenueOutdoorSeating(test, test2),
                 peak_hour: getVenuePeakHours(test, test2),
@@ -331,10 +331,15 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
 
         const getVenueReviewCount = (fsqData, gData) => {
-        let count;
-        if (!fsqData?.stats?.total_ratings && !gData?[0]?.reviewsCount) {
-            count = fsqData.stats.total_ratings;
-        } else if (gData?[0].revi)
+            let count = 0;
+            if (fsqData?.stats?.total_ratings) {
+                count += fsqData.stats.total_ratings;
+            }
+            if (gData?.[0]?.reviewsCount) {
+                count += gData[0].reviewsCount;
+            }
+            return count || null; // return null if count is 0 (falsey)
+        }
 
 
         const getVenueCategory = (fsqData, gData) => {
