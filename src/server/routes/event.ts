@@ -20,7 +20,7 @@ import { type VenueType, type GoogleData, } from '../../types/Venues';
 const eventRouter = Router();
 
 
-eventRouter.get('/search', async (req: any, res: Response) => {
+eventRouter.get('/search', async (req: any, res: Response): Promise<void> => {
     try {
         // user venue selection from search input field
         const {searchInput} = req.query;
@@ -78,7 +78,7 @@ eventRouter.get('/search', async (req: any, res: Response) => {
 
 
 // create event route
-eventRouter.post('/', async (req: any, res: Response) => {
+eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
     try {
         const {
             title,
@@ -91,34 +91,47 @@ eventRouter.post('/', async (req: any, res: Response) => {
             category,
             venueDescription,
             streetAddress,
-            cityName,
             stateName,
             zipCode,
+            fsq_id
         } = req.body;
+        let { cityName } = req.body;
         const userId = req.user.id;
-
 
         // convert date time
         const start_time = dayjs(`${startDate} ${startTime}`).format('YYYY-MM-DD HH:mm:ss');
         const end_time = dayjs(`${startDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
 
+        // find or create venue based on user input
+        let eventVenue;
+        if (fsq_id) {
+            // if fsq_id exists, use existing venue
+            eventVenue = await Venue.findOne({
+                where: { fsq_id }
+            });
 
-        // create venue
-        const newVenue: any = await Venue.create({
-            name: venue,
-            description: venueDescription,
-            street_address: streetAddress,
-            zip_code: zipCode,
-            city_name: cityName,
-            state_name: stateName,
-        });
-
+            if (!eventVenue) {
+                return res.status(400).json({ error: 'Selected venue not found' });
+            }
+            cityName = eventVenue.city_name;
+        } else {
+            // create venue
+            eventVenue = await Venue.create({
+                name: venue,
+                description: venueDescription,
+                street_address: streetAddress,
+                zip_code: zipCode,
+                city_name: cityName,
+                state_name: stateName,
+            });
+        }
 
         const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
         const notification: any = await Notification.create({
             message: `The upcoming event you're attending, ${title}, starts soon at ${dayjs(`${startDate} ${startTime}`).format('h:mm A')}. Hope to see you there.`,
             send_time: oneHourBefore,
         });
+
         // then create the event
         const newEvent: any = await Event.create({
             title,
@@ -129,8 +142,8 @@ eventRouter.post('/', async (req: any, res: Response) => {
             created_by: userId,
         });
 
-        // add venue_id to new venue
-        await newEvent.setVenue(newVenue);
+        // add venue_id to event
+        await newEvent.setVenue(eventVenue);
 
         // find matching category
         const assignCategory: any = await Category.findOne({
@@ -172,6 +185,7 @@ eventRouter.post('/', async (req: any, res: Response) => {
 
 
 eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
+    console.log('STARTGINGGGGG');
     let fsqData;
     let googlePlaceId;
     let gData: GoogleData[] = [];
@@ -181,6 +195,10 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
         // check if venue already exists in our DB with a fsqId
         const hasFSQId = await Venue.findOne({where: {fsq_id: fsqId}});
+
+        if (hasFSQId) {
+            console.log('uh venue exists already? it prob shouldnt tho');
+        }
 
         // if no venue with matching fsqId exists - call FSQ API
         if (!hasFSQId) {
@@ -229,6 +247,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             description: gData?.[0]?.description || fsqData?.description || null,
             category: gData?.[0]?.categoryName || fsqData.categories[0]?.name || null,
             street_address: gData?.[0]?.street || fsqData?.location?.address || null,
+            zip_code: fsqData?.location?.postcode || gData?.[0]?.postalCode || null,
             city_name: fsqData?.location?.dma || gData?.[0]?.city || null,
             state_name: formatState(fsqData, gData),
             phone: formatPhoneNumber(fsqData, gData),
