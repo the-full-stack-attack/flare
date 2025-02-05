@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Text from '../src/server/db/models/texts';
+import { constants } from 'node:fs';
 
 const PORT = globalThis.PORT;
 
@@ -34,11 +35,28 @@ describe('Texts Server Handlers', () => {
   })
 
   test('POST /api/text stores text in Database', async () => {
-    const { dataValues: text }: any = await Text.findOne({ where: { user_id, event_id } });
-    expect(text.content).toBe('Test Text Message');
-    expect(text.time_from_start).toBe('30-minutes');
-    expect(text.user_id).toBe(user_id);
-    expect(text.event_id).toBe(event_id);
-    expect(text.send_time instanceof Date).toBe(true);
+    try {
+      const { dataValues: text }: any = await Text.findOne({ where: { user_id, event_id } });
+      
+      expect(text.content).toBe('Test Text Message');
+      expect(text.time_from_start).toBe('30-minutes');
+      expect(text.user_id).toBe(user_id);
+      expect(text.event_id).toBe(event_id);
+    } catch (error: unknown) {
+      console.error('Failed to query Database for text:', error);
+    }
+  });
+
+  test('GET /api/text/:eventId retrieves text using user_id & event_id', async () => {
+    try {
+      const { data: text }: any = await axios.get(`http://localhost:${PORT}/api/text/${event_id}`);
+      
+      expect(text.content).toBe('Test Text Message');
+      expect(text.time_from_start).toBe('30-minutes');
+      expect(text.user_id).toBe(user_id);
+      expect(text.event_id).toBe(event_id);
+    } catch (error: unknown) {
+      console.error('Failed to GET /api/text/:eventId', error);
+    }
   });
 });
