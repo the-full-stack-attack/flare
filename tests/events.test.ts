@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const PORT = 8000;
+const PORT = globalThis.PORT;
 
-describe('Event Server Handlers:', () => {
+describe('Events Server Handlers', () => {
   test('GET /api/events responds with an array of events', async () => {
     try {
       const { data: fetchedEvents } = await axios.get(`http://localhost:${PORT}/api/event`, {
@@ -31,7 +31,6 @@ describe('Event Server Handlers:', () => {
           }
         }
       });
-
       expect(fetchedEvents).toBeDefined();
       expect(Array.isArray(fetchedEvents)).toBe(true);
       expect(fetchedEvents.length).toBeGreaterThanOrEqual(1);
