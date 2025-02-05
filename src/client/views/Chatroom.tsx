@@ -83,6 +83,7 @@ function Chatroom() {
   const location = useLocation();
   const start_time = location.state;
   // LOAD ASSETS
+  
   useAssets([
     {
       alias: 'bunny',
@@ -93,7 +94,6 @@ function Chatroom() {
       src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
     },
   ]);
-
   const {
     assets: [texture],
     isSuccess,
@@ -181,8 +181,10 @@ function Chatroom() {
   // WINDOW SIZING
   useEffect(() => {
     const handleResize = () => {
+      setGameRatio(window.innerWidth / window.innerHeight)
       setGameWidth(window.innerWidth);
       setGameHeight(window.innerHeight);
+      setScaleFactor((screenRatio > 1.5) ? 0.8 : 1)
     };
 
     window.addEventListener('resize', handleResize);
@@ -284,7 +286,7 @@ function Chatroom() {
         pinchToZoom={true}
         wheel={true}
       > */}
-          <Application >
+          <Application resizeTo={window}>
             <pixiContainer x={100} y={200}>
               <pixiGraphics draw={drawCircle} />
             </pixiContainer>

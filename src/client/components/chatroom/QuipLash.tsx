@@ -248,7 +248,7 @@ function QuipLash() {
       }}
     >
       <div style={{ width: { gameWidth }, height: { gameHeight } }}>
-        <Application>
+        <Application resizeTo={window}>
           <pixiContainer>
             {isSuccess && (
               <pixiSprite
