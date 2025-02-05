@@ -9,17 +9,17 @@ const config: Config = {
 
   // How to handle different file types when importing
   moduleNameMapper: {
-    '^.+\\.(css|less|scss)$': 'identity-obj-proxy',
+    '^.+\\.(css)$': 'identity-obj-proxy',
 
     // Converts image imports to a mock file
-    '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': '<rotDir>/__mocks__/fileMock.ts',
+    '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.ts',
 
     // Handle path aliases if used in tsconfig
     '^@/(.*)$': '<rootDir>/src/$1'
   },
 
   // Files to run before test - sets up testing environment
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ys'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 
   // Patterns to ignore when looking for test files
   testPathIgnorePatterns: [
