@@ -47,6 +47,7 @@ type GoogleData = {
     city?: string;
     state?: string;
     phone?: string;
+    postalCode: number;
     phoneUnformatted?: string;
     website?: string;
     totalScore?: number;
@@ -89,6 +90,7 @@ type VenueType = {
     description?: string | null;
     category?: string | null;
     street_address?: string | null;
+    zip_code: number | null;
     city_name?: string | null;
     state_name?: string | null;
     phone?: string | null;
