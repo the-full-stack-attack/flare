@@ -62,7 +62,7 @@ export const getGooglePlaceId = async (query: any) => {
     }
 }
 
-
+// convert fsq price number range to match gData
 export const convertFSQPrice = (price: any): string | null => {
     if (typeof price === 'string' && price.startsWith('$')) {
         return price;
@@ -85,7 +85,7 @@ export const convertFSQPrice = (price: any): string | null => {
 }
 
 
-// collect venue hashtags from various locations in api res - saves the # of occurrences for each tag and combines them across data providers
+// collect venue hashtags from various locations in api res - saves the # of occurrences for each tag and combines them across data providers, deduplicates
 export const getVenueTags = (fsqData: FSQData, gData: GoogleData[]): VenueTag[] | null => {
     let tags: Array<VenueTag> = [];
     if (fsqData?.tastes) {
@@ -95,7 +95,6 @@ export const getVenueTags = (fsqData: FSQData, gData: GoogleData[]): VenueTag[] 
                 if (tags[i].tag === taste.toLowerCase()) {
                     tags[i].count += 1;
                     exists = true;
-                    break;
                 }
             }
             if (!exists) {
@@ -109,44 +108,48 @@ export const getVenueTags = (fsqData: FSQData, gData: GoogleData[]): VenueTag[] 
     }
     if (gData?.[0]?.reviewsTags) {
         gData[0].reviewsTags.forEach(reviewTag => {
-            let exists = false;
-            for (let i = 0; i < tags.length; i++) {
-                if (tags[i].tag === reviewTag.title.toLowerCase()) {
-                    tags[i].count += reviewTag.count;
-                    exists = true;
+            if (reviewTag.title && reviewTag.count) {
+                let exists = false;
+                for (let i = 0; i < tags.length; i++) {
+                    if (tags[i].tag === reviewTag.title.toLowerCase()) {
+                        tags[i].count += reviewTag.count;
+                        exists = true;
+                    }
                 }
-            }
-            if (!exists) {
-                tags.push({
-                    tag: reviewTag.title.toLowerCase(),
-                    source: 'google',
-                    count: reviewTag.count
-                });
+                if (!exists) {
+                    tags.push({
+                        tag: reviewTag.title.toLowerCase(),
+                        source: 'google',
+                        count: reviewTag.count
+                    });
+                }
             }
         });
     }
     if (gData?.[0]?.placesTags) {
         gData[0].placesTags.forEach(placeTag => {
-            let exists = false;
-            for (let i = 0; i < tags.length; i++) {
-                if (tags[i].tag === placeTag.title.toLowerCase()) {
-                    tags[i].count += placeTag.count;
-                    exists = true;
+            if (placeTag.title && placeTag.count) {
+                let exists = false;
+                for (let i = 0; i < tags.length; i++) {
+                    if (tags[i].tag === placeTag.title.toLowerCase()) {
+                        tags[i].count += placeTag.count;
+                        exists = true;
+                    }
                 }
-            }
-            if (!exists) {
-                tags.push({
-                    tag: placeTag.title.toLowerCase(),
-                    source: 'google',
-                    count: placeTag.count
-                });
+                if (!exists) {
+                    tags.push({
+                        tag: placeTag.title.toLowerCase(),
+                        source: 'google',
+                        count: placeTag.count
+                    });
+                }
             }
         });
     }
-    return tags.length > 0 ? tags : null;
+    return tags.length > 0 ? tags : null; // return
 }
 
-
+// format state to 2 char all cap format for saving to db
 export const formatState = (fsqData: FSQData, gData: GoogleData[]) => {
     let input;
     if (fsqData?.location?.region) {
@@ -213,7 +216,7 @@ export const formatState = (fsqData: FSQData, gData: GoogleData[]) => {
     return states[normalizedInput] || null
 }
 
-
+// search for alcohol data
 export const getVenueAlcohol = (fsqData: FSQData, gData: GoogleData[]): boolean | null => {
     // init array of search queries
     const searchQueries = ['Cocktail', 'Bar', 'cocktails', 'full_bar', 'Great cocktails', 'Great wine list', 'Alcohol', 'Beer', 'Cocktails', 'Hard liquor', 'Wine', 'Bar onsite', 'Great beer selection', 'Great cocktails', 'Spirits', 'Happy-hour drinks',];
@@ -236,7 +239,7 @@ export const getVenueAlcohol = (fsqData: FSQData, gData: GoogleData[]): boolean 
     return null;
 };
 
-
+// accumulate venue ratings from both apis
 export const getVenueRating = (fsqData: FSQData, gData: GoogleData[]) => {
     if (fsqData?.rating && gData[0]?.totalScore) {
         const fsqRating = fsqData?.rating * 0.5; // convert to same range as gData
@@ -285,7 +288,7 @@ export const getPopularTime = (gData: GoogleData[]) => {
     return null;
 }
 
-
+// format phone number to 1234567890 format
 export const formatPhoneNumber = (fsqData: FSQData, gData: GoogleData[]) => {
     let phoneNumber;
     // reassign phoneNumber to api res value
@@ -309,7 +312,7 @@ export const formatPhoneNumber = (fsqData: FSQData, gData: GoogleData[]) => {
     return null;
 }
 
-
+// check if gData has truthy accessibility values for wheelchair keys
 export const getVenueAccessibility = (gData: GoogleData[]) => {
     if (!gData?.[0]?.additionalInfo?.Accessibility) return null;
     for (let item of gData[0].additionalInfo.Accessibility) {
@@ -335,7 +338,7 @@ export const getVenueReviewCount = (fsqData: FSQData, gData: GoogleData[]) => {
     return count || null; // return null if count is 0 (falsey)
 }
 
-
+// accumulate venue images from api responses
 export const getVenueImages = (fsqData: FSQData, gData: GoogleData[]): VenueImage[] | null => {
     let images: VenueImage[] = [];
     if (fsqData?.photos) {
