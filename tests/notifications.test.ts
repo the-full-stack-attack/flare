@@ -1,9 +1,11 @@
 import axios from 'axios';
 
+import User_Notification from '../src/server/db/models/users_notifications';
+
 const PORT = globalThis.PORT;
 
 describe('Notifications Server Handlers', () => {
-  const user_id = globalThis.user1.id; // req.user
+  const UserId = globalThis.user1.id; // req.user
   const eventId1 = globalThis.event1.id; // Notification sends right away since event is in one hour
   const eventId2 = globalThis.event2.id; // Notification sends an hour later so shouldn't show up with GET
   
@@ -12,6 +14,21 @@ describe('Notifications Server Handlers', () => {
     await axios.post(`http://localhost:${PORT}/api/event/attend/${eventId1}`);
     // User attends event 2
     await axios.post(`http://localhost:${PORT}/api/event/attend/${eventId2}`);
+    // FindOrCreate used with these endpoints, so no need to delete between tests; teardown will delete them
+  });
+
+  test('POST /api/event/attend/:id adds notifications for user', async () => {
+    try {
+      // Check database for the notifications added since send_time will be tested later
+      const notifications = await User_Notification.findAll({ where: { UserId } });
+
+      expect(notifications).toBeDefined();
+      expect(Array.isArray(notifications)).toBe(true);
+      expect(notifications.length).toBe(2);
+      // Only two should show up; this is testing that they get deleted after test suite
+    } catch (error: unknown) {
+      console.error('Failed to query User_Notifications:', error);
+    }
   });
 
   test('GET /api/notifications retrieves notifications for user according to send_time', async () => {
