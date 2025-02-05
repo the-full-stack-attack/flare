@@ -8,6 +8,8 @@ import dotenv from 'dotenv';
 
 import { verifySessionApi, verifySessionView } from './verify';
 import apiRouter from './api';
+// Helper function will be used to give the user a flare (achievement) for signing up
+import checkForFlares from './helpers/flares';
 import User from './db/models/users';
 
 const app = express();
@@ -19,7 +21,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: 'http://localhost:4000',
+    origin: process.env.SITE_URL, // THIS WILL NEED TO CHANGE ON DEPLOYMENT...?
     credentials: true,
   })
 );
@@ -97,6 +99,8 @@ passport.use(
           User.create({
             google_id: profile.id,
             email: profile.emails[0].value,
+          }).then((user: any) => {
+              checkForFlares(user, 'Butterflare Effect');
           }).then(() => {
             done(null, profile);
           });

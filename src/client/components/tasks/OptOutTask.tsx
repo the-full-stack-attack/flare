@@ -1,16 +1,14 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
 import dayjs from 'dayjs';
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { UserContext } from '../../contexts/UserContext';
-import DialogBox from './DialogBox';
 
 type CompletedTaskProps = {
   userTask: UserTask;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setRetryTask: React.Dispatch<React.SetStateAction<UserTask>>;
 };
 type UserTask = {
   completed?: boolean;
-  overall_rating: number;
+  overall_rating?: number;
   date_completed: dayjs.Dayjs;
   opted_out?: boolean;
   UserId: number;
@@ -25,52 +23,19 @@ type Task = {
   date: dayjs.Dayjs | '';
   difficulty: number;
 };
-function OptOutTask({ userTask }: CompletedTaskProps) {
+function OptOutTask({ userTask, setIsOpen, setRetryTask }: CompletedTaskProps) {
   const { type, description, difficulty } = userTask.Task;
-  const { Task } = userTask;
-  const { user, getUser } = useContext(UserContext);
-  const [isOpen, setIsOpen] = useState(false);
-  // Function to allow a user to retry a task
-  const retryTask = () => {
-    // Grab the task id and the user id
-    const { UserId, TaskId } = userTask;
-    const config = {
-      ids: { UserId, TaskId },
-    };
-    axios
-      .patch('/api/task/retry', config)
-      .then(({ data }) => {
-        getUser();
-      })
-      .then(() => {
-        setIsOpen(false);
-      })
-      .catch((err) => {
-        console.error('Error retrying the task: ', err);
-      });
-  };
+
+  const rowClick = () => {
+    setIsOpen(true);
+    setRetryTask(userTask);
+  }
   return (
     <>
-      <DialogBox
-        isOpen={isOpen}
-        confirm={retryTask}
-        stateSetter={setIsOpen}
-        title="Retry Task"
-        content={`Do you want retry the task ${Task.description.slice(0, -1)}? This will opt you out of your current task if you already have one.`}
-        cancelText="Cancel"
-        confirmText="Retry"
-      />
-      <tr className="border-b-2">
+      <tr className="border-b-2 hover:bg-gray-500 hover:bg-opacity-50" onClick={rowClick}>
         <td>{`${difficulty} ${type}`}</td>
         <td>{description.slice(0, -1)}</td>
       </tr>
-      <Button
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        Retry
-      </Button>
     </>
   );
 }

@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
 import dayjs from 'dayjs';
 import { Viewport } from 'pixi-viewport';
+import { BackgroundGlow } from '../../components/ui/background-glow';
 import {
   Container,
   Graphics,
@@ -20,7 +21,7 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { AnimatedList } from '../../components/ui/animated-list';
 import { Button } from '../../components/ui/button';
-import MagicCard from '../../components/ui/magicCard';
+import  { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
@@ -49,8 +50,22 @@ extend({
   Texture, // not worth it w/ useAssets...?
   Viewport,
 });
+import SOCKET_URL from '../../../config';
 
-const socket = io('http://localhost:4000');
+let socket = io(SOCKET_URL);
+
+// if (process.env.REACT_APP_DEVELOPMENT_SOCKETS === 'true') {
+//   socket = io('http://localhost:4000');
+// } else {
+//   socket = io('https://slayer.events'); // NO COOKIES
+  // socket = io("DEPLOYED SITE GOES HERE", { // WITH COOKIES
+  //   withCredentials: true,
+  //   extraHeaders: {
+  //     "my-custom-header": "abcd" // IF WE NEED HEADERS
+  //   }
+  // });
+// };
+
 
 const style = new TextStyle({
   align: 'center',
@@ -246,7 +261,8 @@ function Chatroom() {
   };
 
   return (
-    <div className='bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12'>
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
+   
       <div
         style={{
           display: 'flex',
@@ -326,15 +342,6 @@ function Chatroom() {
             /> */}
           </Application>
           {/* </Viewport> */}
-          <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '10px',}}
-          ><Button onClick={toggleQuiplash}>Play Quiplash</Button></div>
-          {
-            isPlayingQuiplash && <QuipLash startTime={start_time}/>
-          }
         </div>
       </div>
       <div
@@ -344,13 +351,13 @@ function Chatroom() {
           marginTop: '20px',
         }}>
         <div onClick={typing}>
-          <Label class="text-white"> Send A Chat To the Chatroom! ayyye!</Label>
+          <Label class="text-white text-2xl rounded-md"> Send A Chat </Label>
           <Input
-            class="bg-white" 
+            class="bg-white rounded-md" 
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-          />
+            />
           <div
             style={{
               display: 'flex',
@@ -361,9 +368,19 @@ function Chatroom() {
               Send
             </InteractiveHoverButton>
           </div>
+          <div
+          class="rounded-md"
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '10px',}}
+            ><Button onClick={toggleQuiplash}>Play Quiplash</Button></div>
+            {
+              isPlayingQuiplash && <QuipLash startTime={start_time}/>
+            }
         </div>
       </div>
-        <MagicCard>
+        <Card class="bg-transparent flex items-center justify-center">
 
       <div
         style={{
@@ -372,14 +389,14 @@ function Chatroom() {
           
           width: '250px'
         }}>
-          <AnimatedList class="w-80 md:w-160 lg:w-2550">
+          <AnimatedList class="w-80 md:w-160 lg:w-300">
             {allMessages.map((msg) => (
               <MsgBox class="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} />
             ))}
           </AnimatedList>
       </div>
-        </MagicCard>
-
+        </Card>
+  
     </div>
   );
 }

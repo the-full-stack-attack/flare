@@ -4,6 +4,8 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Player, QuipLashPlayer } from '../client/assets/chatroom/chatAssets';
 import { useAnimationFrame } from 'framer-motion';
 
+dotenv.config()
+
 const googleGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const bartenderAI = googleGenAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 const modifiers = [
@@ -40,15 +42,29 @@ const modifiers = [
   'working in an office',
   'popular culture',
 ];
-
+import SOCKET_URL from '../../config';
 const initializeSocket = (
   server: any,
   PLAYER_LIST: any,
   SOCKET_LIST: any,
   QUIPLASH_LIST: any,
   QUIPLASH_GAMES: any,
+  DEVELOPMENT: any,
 ) => {
-  const io = new Server(server);
+
+  let io;
+  if(DEVELOPMENT === 'true'){ // environment variable based on development is passed in here
+    io = new Server(server);
+  } else {
+    // https://socket.io/docs/v4/handling-cors/ <-- DOCS
+    io = new Server(server, {
+      cors: {
+        origin: SOCKET_URL, // or with an array of origins  // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],
+        // allowedHeaders: ["my-custom-header"], // IF WE USE COOKIES
+         credentials: true // IF WE USE COOKIES
+      }
+    });
+  }
 
 
   io.on('connection', (socket) => {

@@ -11,8 +11,8 @@ const Text = database.define('Text', {
   event_id: { type: Sequelize.INTEGER },
 });
 
-Text.belongsTo(User, { foreignKey: 'user_id' });
+Text.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 User.hasMany(Text, { foreignKey: 'user_id' });
-Text.belongsTo(Event, { foreignKey: 'event_id' });
+Text.belongsTo(Event, { foreignKey: 'event_id', onDelete: 'CASCADE' });
 
 export default Text;

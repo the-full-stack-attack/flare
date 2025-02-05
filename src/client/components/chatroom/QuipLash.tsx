@@ -31,8 +31,24 @@ import MagicCard from '../../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../../components/ui/interactive-hover-button';
 import bartender from '../../assets/images/bartender.jpg';
 import { UserContext } from '../../contexts/UserContext';
+import SOCKET_URL from '../../../../config'
 
-const socket = io('http://localhost:4000');
+
+
+let socket = io(SOCKET_URL);
+
+// if (process.env. === 'true') {
+//   socket = io('http://localhost:4000');
+// } else {
+//   socket = io('https://slayer.events'); // NO COOKIES
+  // socket = io("DEPLOYED SITE GOES HERE", { // WITH COOKIES
+  //   withCredentials: true,
+  //   extraHeaders: {
+  //     "my-custom-header": "abcd" // IF WE NEED HEADERS
+  //   }
+  // });
+// }
+
 
 extend({
   Container,
@@ -281,9 +297,15 @@ function QuipLash() {
         </Application>
         {promptGiven && <h6 class="text-white text-[22px]">{quiplashPrompt} </h6>}
         {promptGiven && !answersReceived && (
-          <div>
-            <Label> Enter Your Quiplash! </Label>
+          <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '11px',
+          }}>
+            <Label class="text-white"> Enter Your Quiplash! </Label>
             <Input
+              class="bg-white" 
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -304,18 +326,18 @@ function QuipLash() {
       </div>
       <div
               style={{
-                display: 'inline-block',
+                display: 'flex',
                 justifyContent: 'center',
                 marginTop: '20px',
               }}
             >
-            {!promptGiven && (<div>
+            {!promptGiven && (<div >
       <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
       </div>
     )}
     </div>
-    {showWinner && <h1>{winner}</h1>}
     <Button onClick={quitQuiplash}>QUIT</Button>
+    {showWinner && <h1 class="text-white">{winner}</h1>}
 
     </div>
   );

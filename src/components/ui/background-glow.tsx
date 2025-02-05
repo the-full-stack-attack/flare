@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 interface BackgroundGlowProps {
   className?: string;
 }
 
-export const BackgroundGlow: React.FC<BackgroundGlowProps> = ({ className }) => {
+export const BackgroundGlow = memo(function BackgroundGlow({ className = '' }: BackgroundGlowProps) {
+
+  const orbPositions = useMemo(() =>
+  [...Array(5)].map(() => ({
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+  })), []
+  );
+
   return (
     <div className={`fixed inset-0 ${className}`}>
-      {/* Create multiple glowing orbs */}
-      {[...Array(5)].map((_, i) => (
+      {orbPositions.map((position, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full mix-blend-screen filter blur-xl pointer-events-none"
@@ -28,11 +35,11 @@ export const BackgroundGlow: React.FC<BackgroundGlowProps> = ({ className }) => 
             background: `radial-gradient(circle, rgba(255,165,0,0.4) 0%, rgba(255,69,0,0.1) 70%)`,
             width: `${100 + i * 50}px`,
             height: `${100 + i * 50}px`,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
+            left: position.left,
+            top: position.top,
           }}
         />
       ))}
     </div>
   );
-};
+});

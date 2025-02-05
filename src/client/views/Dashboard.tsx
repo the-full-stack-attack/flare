@@ -46,7 +46,7 @@ function Dashboard() {
       id: 'tasks',
       icon: FaTrophy,
       label: 'Tasks Completed',
-      value: user.tasks_complete || 0,
+      value: user.total_tasks_completed || 0,
       color: 'from-orange-500 to-pink-500',
     },
     {
@@ -135,7 +135,9 @@ function Dashboard() {
         </motion.div>
 
         {/* Task Display */}
-        <TaskDisplay task={task} />
+        <div>
+          <TaskDisplay className="w-full" task={task} />
+        </div>
 
         {/* Achievements Section */}
         <motion.div
