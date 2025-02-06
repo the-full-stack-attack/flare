@@ -9,6 +9,20 @@ import Interest from '../src/server/db/models/interests';
 import Category from '../src/server/db/models/categories';
 import Venue from '../src/server/db/models/venues';
 import Event_Interest from '../src/server/db/models/events_interests';
+import Notification from '../src/server/db/models/notifications';
+
+declare global {
+  var PORT: number;
+  var testServer: http.Server;
+  var user1: any;
+  var user2: any;
+  var event1: any;
+  var event2: any;
+  var venue1: any;
+  var venue2: any;
+  var notif1: any;
+  var notif2: any;
+};
 
 export default async function () {
   const PORT = 8000;
@@ -50,6 +64,7 @@ export default async function () {
     venue_id: 0,
     category_id: 0,
     created_by: 0,
+    hour_before_notif: 0,
   };
 
   const testEvent2 = {
@@ -61,6 +76,17 @@ export default async function () {
     venue_id: 0,
     category_id: 0,
     created_by: 0,
+    hour_before_notif: 0,
+  };
+
+  const testNotif1 = {
+    message: `The upcoming event ${testEvent1.title} is starting soon.`,
+    send_time: new Date(testEvent1.start_time.getTime() - 1000 * 60 * 60),
+  };
+
+  const testNotif2 = {
+    message: `The upcoming event ${testEvent2.title} is starting soon.`,
+    send_time: new Date(testEvent2.start_time.getTime() - 1000 * 60 * 60),
   };
 
   function promiseListen(exApp: Application): Promise<http.Server> {
@@ -83,6 +109,8 @@ export default async function () {
   let event2: any;
   let venue1: any;
   let venue2: any;
+  let notif1: any;
+  let notif2: any;
 
   try {
     // Sync database and add test user and test event
@@ -93,14 +121,18 @@ export default async function () {
     const categories: any[] = await Category.findAll();
     venue1 = await Venue.create(testVenue1);
     venue2 = await Venue.create(testVenue2);
+    notif1 = await Notification.create(testNotif1);
+    notif2 = await Notification.create(testNotif2);
 
     testEvent1.venue_id = venue1.id;
     testEvent1.category_id = categories[Math.floor(Math.random() * categories.length)].id;
     testEvent1.created_by = user1.id;
-
+    testEvent1.hour_before_notif = notif1.id;
+    
     testEvent2.venue_id = venue2.id;
     testEvent2.category_id = categories[Math.floor(Math.random() * categories.length)].id;
     testEvent2.created_by = user2.id;
+    testEvent2.hour_before_notif = notif2.id;
 
     event1 = await Event.create(testEvent1);
     event2 = await Event.create(testEvent2);
@@ -131,6 +163,8 @@ export default async function () {
     globalThis.event2 = event2;
     globalThis.venue1 = venue1;
     globalThis.venue2 = venue2;
+    globalThis.notif1 = notif1;
+    globalThis.notif2 = notif2;
     globalThis.PORT = PORT;
   } catch (error: unknown) {
     console.error('Failed to start server for testing:', error);
