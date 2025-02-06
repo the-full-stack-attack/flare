@@ -104,7 +104,7 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         const end_time = dayjs(`${startDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
 
         // find or create venue based on user input
-        let eventVenue;
+        let eventVenue: any;
         if (fsq_id) {
             // if fsq_id exists, use existing venue
             eventVenue = await Venue.findOne({
