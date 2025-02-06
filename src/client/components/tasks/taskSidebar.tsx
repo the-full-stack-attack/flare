@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { UserContext } from '@/client/contexts/UserContext';
-import AchievementCard from './AchievementCard';
+import AchievementCard from '../flares/AchievementCard';
 
 type FlareType = {
     id: number;
