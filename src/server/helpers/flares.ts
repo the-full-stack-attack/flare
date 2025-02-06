@@ -28,6 +28,10 @@ type FlareType = {
   value: number;
   type: string | void;
 };
+type UseFlareType = {
+  UserId: number;
+  FlareId: number;
+}
 /*** Function checks if flares need to be sent and sends them if necessary
  * I: Optional String of the flare name to be sent, user object
  * O: n/a
@@ -107,7 +111,8 @@ async function findFlare(type: string, milestone: number, user: UserType) {
 // Function to send the flare once the whole object is found and it is confirmed the user doesn't have the flare yet
 async function sendFlareObject(flare: FlareType, user: UserType) {
   try {
-    if (alreadyGiven(flare, user)) {
+    const userHasFlare: any = await alreadyGiven(flare, user);
+    if (userHasFlare) {
       console.log(`${user.username} was already given the ${flare.name} flare`);
       return;
     }
@@ -144,10 +149,10 @@ async function sendFlareObject(flare: FlareType, user: UserType) {
 }
 
 // Function makes sure the user doesn't already have the flare
-function alreadyGiven(flare: FlareType, user: UserType): boolean | void {
+function alreadyGiven(flare: FlareType, user: UserType): Promise<boolean | void> {
   const flareId = flare.id;
   const userId = user.id;
-  User_Flare.findOne({
+  return User_Flare.findOne({
     where: { UserId: userId, FlareId: flareId },
   })
     .then((userFlare) => {
