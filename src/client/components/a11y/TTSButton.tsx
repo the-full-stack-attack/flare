@@ -3,9 +3,11 @@ import { FaMicrophone } from "react-icons/fa";
 
 type TTSButtonProps = {
   text: string;
+  className?: string;
+  iconClassName?: string;
 };
 
-function TTSButton({ text }: TTSButtonProps) {
+function TTSButton({ text, className, iconClassName }: TTSButtonProps) {
   const [isTalking, setIsTalking] = useState<boolean>(false);
   const [stillTalking, setStillTalking] = useState<boolean>(false);
 
@@ -33,8 +35,8 @@ function TTSButton({ text }: TTSButtonProps) {
   }, [isTalking])
 
   return (
-    <button onClick={handleButtonClick}>
-      <FaMicrophone />
+    <button className={className} onClick={handleButtonClick}>
+      <FaMicrophone className={iconClassName} />
     </button>
   );
 }
