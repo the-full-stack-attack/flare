@@ -5,18 +5,25 @@ import Venue from '../db/models/venues';
 import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
 import dayjs from 'dayjs';
-import { Op } from 'sequelize';
-import { ApifyClient } from 'apify-client';
+import {Op} from 'sequelize';
+
 import Venue_Tag from "../db/models/venue_tags";
+import Venue_Image from '../db/models/venue_images';
 import Notification from '../db/models/notifications';
+
+// helper fns
+import { removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
+    from '../../../utils/venue';
+import { type VenueType, type GoogleData, } from '../../types/Venues';
+
 
 const eventRouter = Router();
 
 
-eventRouter.get('/search', async (req: any, res: Response) => {
+eventRouter.get('/search', async (req: any, res: Response): Promise<void> => {
     try {
         // user venue selection from search input field
-        const { searchInput } = req.query;
+        const {searchInput, latitude, longitude} = req.query;
 
         // find venues in db that match search input
         const dbVenues = await Venue.findAll({
@@ -30,8 +37,9 @@ eventRouter.get('/search', async (req: any, res: Response) => {
         // FSQ API CALL - retrieves venues for autocomplete results
         const searchParams = new URLSearchParams({
             query: searchInput,
-            limit: '10',
+            limit: '20',
             types: 'place',
+            11: `${latitude}, ${longitude}`,
         });
         const response = await fetch(
             `https://api.foursquare.com/v3/autocomplete?${searchParams}`,
@@ -57,7 +65,7 @@ eventRouter.get('/search', async (req: any, res: Response) => {
             fsq_id: result.place.fsq_id,
         }));
         // combine both venue results
-        const combinedResults = [...dbVenues, ...mappedData ]
+        const combinedResults = [...dbVenues, ...mappedData]
         // de-duplicate
         const uniqueResults = removeDuplicateVenues(combinedResults);
         res.json(uniqueResults);
@@ -67,29 +75,11 @@ eventRouter.get('/search', async (req: any, res: Response) => {
     }
 })
 
-// remove duplicate venues helper function - used to remove duplicates from user venue autocomplete search
-const removeDuplicateVenues = (venues: any) => {
-    // object to track venues using name and street address keys
-    const seen: any = {};
-    // return filtered array without duplicate venues
-    return venues.filter((venue: { name: any; street_address: any; }) => {
-        // check for duplicates by creating keys (name and street address of venue)
-        const key: any = `${venue.name} - ${venue.street_address}`;
-        // check if key has been added to our seen object
-        if (seen.hasOwnProperty(key)) {
-            // if seen object has venue key, return false - do not add to array
-            return false;
-        // if key is not found in seen, add it and set value to true
-        } else {
-            seen[key] = true;
-            return true;
-        }
-    })
-}
+
 
 
 // create event route
-eventRouter.post('/', async (req: any, res: Response) => {
+eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
     try {
         const {
             title,
@@ -102,34 +92,47 @@ eventRouter.post('/', async (req: any, res: Response) => {
             category,
             venueDescription,
             streetAddress,
-            cityName,
             stateName,
             zipCode,
+            fsq_id
         } = req.body;
+        let { cityName } = req.body;
         const userId = req.user.id;
-
 
         // convert date time
         const start_time = dayjs(`${startDate} ${startTime}`).format('YYYY-MM-DD HH:mm:ss');
         const end_time = dayjs(`${startDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
 
+        // find or create venue based on user input
+        let eventVenue;
+        if (fsq_id) {
+            // if fsq_id exists, use existing venue
+            eventVenue = await Venue.findOne({
+                where: { fsq_id }
+            });
 
-        // create venue
-        const newVenue: any = await Venue.create({
-            name: venue,
-            description: venueDescription,
-            street_address: streetAddress,
-            zip_code: zipCode,
-            city_name: cityName,
-            state_name: stateName,
-        });
-
+            if (!eventVenue) {
+                return res.status(400).json({ error: 'Selected venue not found' });
+            }
+            cityName = eventVenue.city_name;
+        } else {
+            // create venue
+            eventVenue = await Venue.create({
+                name: venue,
+                description: venueDescription,
+                street_address: streetAddress,
+                zip_code: zipCode,
+                city_name: cityName,
+                state_name: stateName,
+            });
+        }
 
         const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
         const notification: any = await Notification.create({
             message: `The upcoming event you're attending, ${title}, starts soon at ${dayjs(`${startDate} ${startTime}`).format('h:mm A')}. Hope to see you there.`,
             send_time: oneHourBefore,
         });
+
         // then create the event
         const newEvent: any = await Event.create({
             title,
@@ -140,8 +143,8 @@ eventRouter.post('/', async (req: any, res: Response) => {
             created_by: userId,
         });
 
-        // add venue_id to new venue
-        await newEvent.setVenue(newVenue);
+        // add venue_id to event
+        await newEvent.setVenue(eventVenue);
 
         // find matching category
         const assignCategory: any = await Category.findOne({
@@ -182,62 +185,21 @@ eventRouter.post('/', async (req: any, res: Response) => {
 
 
 
-
-// apify worker/actor that receives a Google Place Id and returns Google Business Data (scrapes data from Google My Business) - uses the Apify SDK
-const runApifyActor = async (googlePlaceId: any) => {
-    try {
-        const client = new ApifyClient({
-            token: process.env.APIFY_API_KEY,
-        })
-
-        // calls our Apify actor 'compass/google-places-api'
-        const run = await client.actor("compass/google-places-api").call({
-            // each Apify actor will receive different inputs - these are specific to our Apify actor
-            placeIds: [`place_id:${googlePlaceId}`]
-        });
-
-        // after our Apify actor runs, it returns various meta data - including defaultDatasetId - the results of our previous call
-        const { items } = await client.dataset(run.defaultDatasetId).listItems(); // retrieve results
-        return items; // return results
-
-    } catch (error) {
-        console.error('Error running Apify Actor', error);
-        return error;
-    }
-}
-
-// google text search api request - receives venue name and street address, returns the goooglePlaceId
-const getGooglePlaceId = async (venueData: any) => {
-    if (!venueData.description) {
-        try {
-            const query = `"${venueData.name}" "${venueData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
-            const googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${process.env.GOOGLE_PLACES_API_KEY}`
-            const response = await fetch(googlePlacesUrl)
-            const data = await response.json();
-            const googlePlaceId: any = data.results[0].place_id;
-            return googlePlaceId;
-        } catch (error) {
-            console.error(`Error getting Google Place Id for Venue. ERROR: ${error}`);
-        }
-    }
-}
-
-
-
-
-
 eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
+    let fsqData;
+    let googlePlaceId;
+    let gData: GoogleData[] = [];
     try {
-        const { fsqId } = req.params;
+        // get fsqId needed to make api request
+        const {fsqId} = req.params;
 
-        const venueHasData = await Venue.findOne({ where: { fsq_id: fsqId }});
-        let venueData: any;
-        let googlePlaceId;
-        let gData: any;
+        // check if venue already exists in our DB with a fsqId
+        const hasFSQId = await Venue.findOne({where: {fsq_id: fsqId}});
 
 
-        // if venue doesnt have fsq_id - fetch data from foursquare api
-        if (!venueHasData) {
+
+        // if no venue with matching fsqId exists - call FSQ API
+        if (!hasFSQId) {
             const response = await fetch(
                 `https://api.foursquare.com/v3/places/${fsqId}?fields=fsq_id,name,description,location,tel,website,tips,rating,hours,features,stats,price,photos,tastes,popularity,hours_popular,social_media,categories`, {
                     headers: {
@@ -246,125 +208,91 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                     },
                 }
             );
-            venueData = await response.json();
+            fsqData = await response.json();
         }
 
-        // only get google data if venue doesnt exist or venue doesnt have a google place id
-        if (!venueHasData || !(venueHasData as any).google_place_id) {
-            googlePlaceId = await getGooglePlaceId(venueData); // google text search api
-            gData = await runApifyActor(googlePlaceId); // warning: response can take 5-15 seconds
-        }
-
-
-        const [venue, created] = await Venue.findOrCreate({
-            where: { fsq_id: fsqId },
-            defaults: {
-                name: venueData?.name || gData.title || null,
-                description: gData?.description || null,
-                street_address: venueData?.location?.address || gData?.street || null,
-                zip_code: venueData?.location?.postcode || gData?.postalCode || null,
-                city_name: venueData?.location?.locality || gData?.city || null,
-                state_name: venueData?.location?.region || gData?.state || null,
-                phone: gData?.phone || venueData?.tel || null,
-                website: venueData?.website || gData?.website || null,
-                rating: gData?.totalScore || venueData?.rating || null,
-                total_reviews: gData?.reviewsCount || venueData?.stats?.total_ratings || 0,
-                price_range: gData?.price || (venueData?.price ? `Level ${venueData.price}` : null),
-                fsq_id: fsqId,
-                google_place_id: googlePlaceId,
-                outdoor_seating: gData?.additionalInfo?.['Service options']?.['Outdoor seating'] || venueData?.features?.amenities?.outdoor_seating || null,
-                peak_hour: null,
-                wheelchair_accessible: gData?.additionalInfo?.wheelchair_accessible_entrance || gData?.additionalInfo?.wheelchair_accessible_restroom || gData?.additionalInfo?.wheelchair_accessible_seating || venueData?.features?.amenities?.wheelchair_accessible || null,
-                restroom: gData?.additionalInfo?.amenities?.restroom || venueData?.features?.amenities?.restroom || null,
-                private_parking: gData?.additionalInfo?.parking?.paid_parking_lot || gData?.additionalInfo?.parking?.free_parking_lot || null,
-                street_parking: gData?.additionalInfo?.parking?.free_street_parking || gData?.additionalInfo?.parking?.paid_street_parking || null,
-                serves_alcohol: gData?.additionalInfo?.offerings?.alcohol || gData?.additionalInfo?.offerings?.beer || gData?.additionalInfo?.offerings?.cocktails || venueData?.features?.food_and_drink?.alcohol?.cocktails || venueData?.features?.food_and_drink?.alcohol?.full_bar || null,
-                cleanliness: venueData?.features?.attributes?.clean || null,
-                crowded: venueData?.features?.attributes?.crowded || null,
-                noise_level: venueData?.features?.attributes?.noisy || null,
-                service_quality: venueData?.features?.attributes?.service_quality || null,
-                img: venueData?.photos?.[0] && venueData.photos[0].prefix && venueData.photos[0].suffix ? `${venueData.photos[0].prefix}original${venueData.photos[0].suffix}` : gData[0]?.imageUrl || null,
-            }
-        }) as any;
-
-
-        // convert google popular time histogram into most popular day and hour - may eventually want to change this to save more data in the future
-        if (gData?.popularTimesHistogram) {
-            let mostBusy = 0;
-            let peakDay: any = '';
-            let peakHour = 0;
-
-            for (const day in gData.popularTimesHistogram) {
-                // get array of hours for current day
-                const hours = gData.popularTimesHistogram[day]
-                // iterate through each hour in day
-                hours.forEach((hourData: any) => {
-                    // update variables
-                    if (hourData.occupancyPercent > mostBusy) {
-                        mostBusy = hourData.occupancyPercent;
-                        peakDay = day;
-                        peakHour = hourData.hour;
-                    }
-                })
-            }
-            const date = dayjs().day(peakDay).hour(peakHour)
-            venue.peak_hour = date.toDate();
-        }
-
-
-        if (venueData?.tastes || gData?.reviewsTags) {
-
-            // collect tags and # of occurrences from foursquare response
-            if (venueData?.tastes && venueData.tastes !== null) {
-                for (const tag of venueData.tastes) {
-                    const existingTag = await Venue_Tag.findOne({
-                        where: {
-                            venue_id: venue.id,
-                            tag: tag,
-                        }
-                    }) as any;
-                    // if tag exists increment count
-                    if (existingTag) {
-                        await existingTag.update({
-                            count: existingTag.count + 1
-                        })
-                    } else {
-                        // init tag with count 1
-                        await Venue_Tag.create({
-                            venue_id: venue.id,
-                            tag: tag.title,
-                            source: 'foursquare', // keep track of source for historical comparisons between data
-                            count: 1,
-                        })
-                    }
+        // check if venue has google place id and it is not null or an empty string
+        const hasGoogleId = await Venue.findOne({
+            where: {
+                google_place_id: {
+                    [Op.and]: [
+                        { [Op.ne]: null },
+                        { [Op.ne]: '' }
+                    ]
                 }
             }
-            // add google tags
-            if (gData?.reviewsTags && venueData !== null) {
-                for (const tag of gData.reviewsTags) {
-                    await Venue_Tag.create({
-                        venue_id: venue.id,
-                        tag: tag.title,
-                        source: 'google', // keep track of source for historical comparisons between data
-                        count: tag.count // google gives us the count
-                    });
-                }
-            }
-        }
-
-        // return all data back to fe - venue + venue tags
-        const fullVenueData = await Venue.findOne({
-            where: { id: venue.id },
-            include: [
-                { model: Venue_Tag },
-            ]
         });
-        res.json(fullVenueData); // send back data
+
+
+        // if venue does not have valid google place id
+        if (!hasGoogleId) {
+            // verify we have necessary fsqData to build our query string
+            if (fsqData.name && fsqData.location.formatted_address) {
+                // format our api query
+                const query = `"${fsqData.name}" "${fsqData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
+                // send request to google text search api to get google place id
+                googlePlaceId = await getGooglePlaceId(query);
+                // scrape google my business page for google place id using Apify's SDK
+                gData = await runApifyActor(googlePlaceId) as GoogleData[]; //! response time varies from 5-20 seconds
+            } else {
+                console.error('Error building Google Text Search query string');
+            }
+        }
+
+        const buildVenue: VenueType = {
+            id: null,
+            name: fsqData?.name || gData?.[0]?.title || null,
+            description: gData?.[0]?.description || fsqData?.description || null,
+            category: gData?.[0]?.categoryName || fsqData.categories[0]?.name || null,
+            street_address: gData?.[0]?.street || fsqData?.location?.address || null,
+            zip_code: fsqData?.location?.postcode || gData?.[0]?.postalCode || null,
+            city_name: fsqData?.location?.dma || gData?.[0]?.city || null,
+            state_name: formatState(fsqData, gData),
+            phone: formatPhoneNumber(fsqData, gData),
+            website: gData?.[0]?.website || fsqData?.website || null,
+            rating: getVenueRating(fsqData, gData),
+            total_reviews: getVenueReviewCount(fsqData, gData),
+            pricing: gData?.[0]?.price || convertFSQPrice(fsqData?.price) || null,
+            popularTime: getPopularTime(gData) || null,
+            wheelchair_accessible: getVenueAccessibility(gData) || null,
+            serves_alcohol: getVenueAlcohol(fsqData, gData),
+            fsq_id: fsqId || null,
+            google_place_id: googlePlaceId || null,
+        };
+
+        // create new venue in db
+        const newVenue: any = await Venue.create(buildVenue);
+
+
+        // get tags from api responses
+        const newTags = getVenueTags(fsqData, gData);
+
+        // if function returned populated tags array
+        if (newTags) {
+            // create tags
+            await Venue_Tag.bulkCreate(newTags.map((tag) => ({
+                ...tag,
+                venue_id: newVenue.id
+            })));
+        }
+
+        // get image paths from api res
+        const newImages = getVenueImages(fsqData, gData);
+        // if function returned populated images array
+        if (newImages) {
+            // create images
+            await Venue_Image.bulkCreate(newImages.map(image => ({
+                ...image,
+                venue_id: newVenue.id
+            })));
+        }
+        res.json(newVenue);
     } catch (error) {
-        console.error(`Error fetching data for Venue from APIs. ERROR: ${error}`);
+        console.error('Error creating venue record in DB', error);
         res.sendStatus(500);
     }
 })
+
 
 
 // get all categories in db to populate form category options
@@ -383,7 +311,7 @@ eventRouter.get('/categories', async (req: Request, res: Response) => {
 });
 
 
-// // get all venues in db
+// get all venues in db
 eventRouter.get('/venues', async (req: Request, res: Response) => {
     try {
         const venues = await Venue.findAll();

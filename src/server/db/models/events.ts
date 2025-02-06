@@ -13,6 +13,7 @@ const Event = database.define('Event', {
   start_time: { type: Sequelize.DATE },
   end_time: { type: Sequelize.DATE },
   address: { type: Sequelize.STRING },
+  city: { type: Sequelize.STRING },
   description: { type: Sequelize.STRING },
   venue_id: { type: Sequelize.INTEGER },
   category_id: { type: Sequelize.INTEGER },

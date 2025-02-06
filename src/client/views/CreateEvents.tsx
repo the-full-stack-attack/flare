@@ -60,6 +60,21 @@ function CreateEvents() {
     const [filteredVenues, setFilteredVenues] = useState([]);
     const [step, setStep] = useState(1);
     const [isLoadingVenue, setIsLoadingVenue] = useState(false);
+    const [geoLocation, setGeoLocation] = useState();
+
+
+    // temp geolocation call to see if this fixes bug
+    const getUserLoc = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const { latitude, longitude } = position.coords;
+                setGeoLocation({ latitude, longitude });
+            })
+        } else {
+            console.error('Geolocation not allowed');
+        }
+    }
+
 
 
     // Venue search handling - filers based on user search input
@@ -69,6 +84,8 @@ function CreateEvents() {
             const response = await axios.get('/api/event/search', {
                 params: {
                     searchInput: searchTerm,
+                    latitude: geoLocation.latitude,
+                    longitude: geoLocation.longitude,
                 }
             });
             setFilteredVenues(response.data);
@@ -123,6 +140,8 @@ function CreateEvents() {
     // navigation handling
     function handlePrev() {
         if (step > 1) setStep((step) => step - 1);
+        console.log('um, ', geoLocation);
+        console.log('hello', localStorage.userLocation);
     }
     function handleNext() {
         if (step < 5) setStep((step) => step + 1);
@@ -223,10 +242,12 @@ function CreateEvents() {
         // noinspection JSIgnoredPromiseFromCall
         getCategories();
         // noinspection JSIgnoredPromiseFromCall
+        getUserLoc();
     },[]);
 
 
     return (
+        <div className='min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20'>
         <div
             className='min-h-screen pt-20 flex items-center justify-center'>
             <Card className='p-5 w-[550px] mx-auto bg-blue-500 p-4 px-8 rounded-lg'>
@@ -435,10 +456,10 @@ function CreateEvents() {
                             className='mt-10'>
                             <Separator>
                             </Separator>
-                            <div
-                                className='text-center my-5'>
-                                Or Create Your Own Venue [COMING SOON]!
-                            </div>
+                            {/*<div*/}
+                            {/*    className='text-center my-5'>*/}
+                            {/*    Or Create Your Own Venue [COMING SOON]!*/}
+                            {/*</div>*/}
                         </div>
                     </div>
                 )}
@@ -497,10 +518,13 @@ function CreateEvents() {
                 {/* BUTTONS BUTTONS BUTTONS AND BUTTONS! */}
 
 
+                <div className='flex flex-col justify-center items-center gap-4 '>
+
+
                 {step === 5 ? (
                     <Button
                         onClick={onSubmit}
-                        className='mb-3 bg-color-5 w-full h-12 flex items-center justify-center'
+                        className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'
                     >
                         <span className='text-lg font-medium text-black !normal-case'>
                             Submit Event
@@ -509,7 +533,7 @@ function CreateEvents() {
                 ) : (
                     <Button
                         onClick={handleNext}
-                        className='mb-3 bg-color-5 w-full h-12 flex items-center justify-center'
+                        className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'
                     >
                         <span className='text-lg font-medium text-black !normal-case'>
                             {step === 4 ? "Review" : "Continue"}
@@ -519,12 +543,14 @@ function CreateEvents() {
                 <Button
                     onClick={handlePrev}
                     disabled={step === 1}
-                    className='bg-color-5 w-full h-12 flex items-center justify-center'>
+                    className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'>
                     <span className='text-lg font-medium text-black !normal-case'>
                         Go Back
                     </span>
                 </Button>
+                </div>
             </Card>
+        </div>
         </div>
     )}
 
