@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaMicrophone } from "react-icons/fa";
 
 type TTSButtonProps = {
@@ -6,8 +6,28 @@ type TTSButtonProps = {
 }
 
 function TTSButton({ text }: TTSButtonProps) {
+  const [isTalking, setIsTalking] = useState<boolean>(false);
+
+  const readText = () => {
+    if (isTalking) {
+      const synth = window.speechSynthesis;
+      const sayThis = new SpeechSynthesisUtterance(text);
+
+      synth.speak(sayThis);
+      sayThis.onend = () => setIsTalking(false);
+    }
+  };
+
+  const handleButtonClick = () => {
+    setIsTalking(!isTalking);
+  };
+
+  useEffect(() => {
+    readText();
+  }, [isTalking])
+
   return (
-    <button>
+    <button onClick={handleButtonClick}>
       <FaMicrophone />
     </button>
   );
