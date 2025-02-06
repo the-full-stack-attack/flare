@@ -1,5 +1,18 @@
 import http from 'http';
 
+declare global {
+  var PORT: number;
+  var testServer: http.Server;
+  var user1: any;
+  var user2: any;
+  var event1: any;
+  var event2: any;
+  var venue1: any;
+  var venue2: any;
+  var notif1: any;
+  var notif2: any;
+};
+
 export default async function () {
   function promiseServerClose(server: http.Server): Promise<void> {
     return new Promise<void>((resolve) => {
