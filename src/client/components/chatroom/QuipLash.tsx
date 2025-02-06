@@ -297,7 +297,12 @@ function QuipLash() {
         </Application>
         {promptGiven && <h6 class="text-white text-[22px]">{quiplashPrompt} </h6>}
         {promptGiven && !answersReceived && (
-          <div>
+          <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '11px',
+          }}>
             <Label class="text-white"> Enter Your Quiplash! </Label>
             <Input
               class="bg-white" 
@@ -321,18 +326,18 @@ function QuipLash() {
       </div>
       <div
               style={{
-                display: 'inline-block',
+                display: 'flex',
                 justifyContent: 'center',
                 marginTop: '20px',
               }}
             >
-            {!promptGiven && (<div>
+            {!promptGiven && (<div >
       <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
       </div>
     )}
     </div>
-    {showWinner && <h1 class="text-white">{winner}</h1>}
     <Button onClick={quitQuiplash}>QUIT</Button>
+    {showWinner && <h1 class="text-white">{winner}</h1>}
 
     </div>
   );

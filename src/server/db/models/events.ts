@@ -24,10 +24,8 @@ Event.belongsTo(User, { foreignKey: 'created_by', onDelete: 'CASCADE' });
 Event.belongsTo(Venue, { foreignKey: 'venue_id' });
 Event.belongsTo(Category, { foreignKey: 'category_id' });
 Category.hasMany(Event, { foreignKey: 'category_id' });
-Event.belongsToMany(Interest, { through: Event_Interest });
-Interest.belongsToMany(Event, { through: Event_Interest });
 Event.hasOne(Chatroom, { foreignKey: 'event_id' });
-Chatroom.belongsTo(Event, { foreignKey: 'event_id' });
+Chatroom.belongsTo(Event, { foreignKey: 'event_id', onDelete: 'CASCADE' });
 Event.belongsTo(Notification, { foreignKey: 'hour_before_notif' });
 
 export default Event;
