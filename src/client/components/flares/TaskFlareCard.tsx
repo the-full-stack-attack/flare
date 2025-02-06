@@ -11,7 +11,7 @@ import {
 } from 'react-icons/fa';
 import { IconType } from 'react-icons';
 
-type AchievementCardType = {
+type TaskFlareCardType = {
   taskFlare: FlareType;
   index: number;
 };
@@ -25,7 +25,7 @@ type FlareType = {
   description: string;
   value: number;
 }
-function AchievementCard({ taskFlare, index }: AchievementCardType) {
+function TaskFlareCard({ taskFlare, index }: TaskFlareCardType) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -49,7 +49,7 @@ function AchievementCard({ taskFlare, index }: AchievementCardType) {
   );
 }
 
-export default AchievementCard;
+export default TaskFlareCard;
 
 {/* <taskFlare.icon
 className={cn(
