@@ -14,11 +14,11 @@ export interface MessageWithFavorite extends ChatMessage {
   isFavorite: boolean;
 }
 
-interface SavedConversation {
+export interface SavedConversation {
   id: number;
   user_id: number;
   session_data: {
-    messages: MessagesWithFavorite[];
+    messages: MessageWithFavorite[];
     createdAt: string;
   };
   createdAt: string;
