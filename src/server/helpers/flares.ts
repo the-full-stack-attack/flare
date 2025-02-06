@@ -3,6 +3,7 @@ import Notification from '../db/models/notifications';
 import Flare from '../db/models/flares';
 import User_Flare from '../db/models/users_flares';
 import User_Notification from '../db/models/users_notifications';
+import Conversation_Session from '../db/models/conversation_session';
 
 // This helper will be used to send users flare notifications
 // If we know the name use sendFlareByName(flareName)
@@ -34,6 +35,7 @@ type FlareType = {
  * E: n/a
  */
 async function checkForFlares(user: UserType, flareName: string | void) {
+  const { id } = user;
   if (!user && !flareName) {
     console.error('User and flare were both undefined in sendFlare helper');
     return;
@@ -46,9 +48,20 @@ async function checkForFlares(user: UserType, flareName: string | void) {
   if (user.total_tasks_completed === 1) {
     sendFlareByName('Go Getter');
     return;
-  } else if (user.total_tasks_completed % 5 === 0) {
+  } else if (user.total_tasks_completed % 5 === 0 && user.total_tasks_completed !== 0 ) {
     const tasksCompleted = user.total_tasks_completed;
     findFlare('Task Flare', tasksCompleted, user);
+    return;
+  }
+  try {
+    const savedConversations = await Conversation_Session.findAll( { where: { user_id: id } });
+    if (savedConversations.length === 3) {
+      sendFlareByName('Stored Thoughts(x3)');
+      return;
+    }
+  } catch (err) {
+    console.error ('Error finding Conversation_Sessions for user: ', err);
+    return;
   }
   // Helper Function for if we know the name of the flare to send before the object is received
   async function sendFlareByName(flare: string) {
@@ -59,17 +72,13 @@ async function checkForFlares(user: UserType, flareName: string | void) {
       if (flareToSend) {
         // Pass the flare and user into the sendFlareObject function
         sendFlareObject(flareToSend, user);
+        return;
       } else {
-        console.error(
-          'Could not find the flare using the name in sendFlare helper'
-        );
+        console.error('Could not find the flare using the name in sendFlare helper');
         return;
       }
     } catch (err) {
-      console.error(
-        'Error when trying to send the flare in sendFlare helper: ',
-        err
-      );
+      console.error('Error when trying to send the flare in sendFlare helper: ', err);
     }
   }
 }
@@ -81,6 +90,7 @@ async function findFlare(type: string, milestone: number, user: UserType) {
     });
     if (flareToSend) {
       sendFlareObject(flareToSend, user);
+      return;
     } else {
       console.error(
         `Flare of ${type} ${milestone} could not be found in findFlare`
@@ -125,16 +135,11 @@ async function sendFlareObject(flare: FlareType, user: UserType) {
         where: { UserId: userId, NotificationId: notificationId },
       });
     } else {
-      console.error(
-        'Could not find the flare using the name in sendFlare helper'
-      );
+      console.error('Could not find the flare using the name in sendFlare helper');
       return;
     }
   } catch (err) {
-    console.error(
-      'Error when trying to send the flare in sendFlare helper: ',
-      err
-    );
+    console.error('Error when trying to send the flare in sendFlare helper: ', err);
   }
 }
 
