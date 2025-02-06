@@ -2,14 +2,14 @@ import React from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-import { MdDeleteForever } from "react-icons/md";
-
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
 } from '../../../components/ui/card';
+
+import TTSButton from '../a11y/TTSButton';
 
 type NotificationProps = {
   notif: {
@@ -41,11 +41,14 @@ function Notification({ notif, getNotifications }: NotificationProps) {
         <CardTitle>
           <div className="grid grid-cols-12 gap-2">
             <div className="col-span-11">{notif.message}</div>
-            <MdDeleteForever size={20} onClick={deleteNotification} />
+            <button onClick={deleteNotification}>x</button>
           </div>
         </CardTitle>
         <CardDescription>
-          {dayjs(notif.send_time).format('h:mm a, MMM. D')}
+          <div>
+            {dayjs(notif.send_time).format('h:mm a, MMM. D')}
+          </div>
+          <TTSButton text="hello" />
         </CardDescription>
       </CardHeader>
     </Card>
