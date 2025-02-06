@@ -23,7 +23,7 @@ const eventRouter = Router();
 eventRouter.get('/search', async (req: any, res: Response): Promise<void> => {
     try {
         // user venue selection from search input field
-        const {searchInput} = req.query;
+        const {searchInput, latitude, longitude} = req.query;
 
         // find venues in db that match search input
         const dbVenues = await Venue.findAll({
@@ -37,8 +37,9 @@ eventRouter.get('/search', async (req: any, res: Response): Promise<void> => {
         // FSQ API CALL - retrieves venues for autocomplete results
         const searchParams = new URLSearchParams({
             query: searchInput,
-            limit: '10',
+            limit: '20',
             types: 'place',
+            11: `${latitude}, ${longitude}`,
         });
         const response = await fetch(
             `https://api.foursquare.com/v3/autocomplete?${searchParams}`,
@@ -185,7 +186,6 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
 
 
 eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
-    console.log('STARTGINGGGGG');
     let fsqData;
     let googlePlaceId;
     let gData: GoogleData[] = [];
@@ -196,9 +196,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         // check if venue already exists in our DB with a fsqId
         const hasFSQId = await Venue.findOne({where: {fsq_id: fsqId}});
 
-        if (hasFSQId) {
-            console.log('uh venue exists already? it prob shouldnt tho');
-        }
+
 
         // if no venue with matching fsqId exists - call FSQ API
         if (!hasFSQId) {
