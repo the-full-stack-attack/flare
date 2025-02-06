@@ -11,6 +11,19 @@ import Venue from '../src/server/db/models/venues';
 import Event_Interest from '../src/server/db/models/events_interests';
 import Notification from '../src/server/db/models/notifications';
 
+declare global {
+  var PORT: number;
+  var testServer: http.Server;
+  var user1: any;
+  var user2: any;
+  var event1: any;
+  var event2: any;
+  var venue1: any;
+  var venue2: any;
+  var notif1: any;
+  var notif2: any;
+};
+
 export default async function () {
   const PORT = 8000;
 
