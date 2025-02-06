@@ -7,7 +7,11 @@ declare global {
       // Add types for Testing Library's custom matchers
       toBeInTheDocument(): R;
       toHaveStyle(style: Record<string, any>): R;
-      // Add more custom matcher types as needed
+      toHaveTextContent(text: string | RegExp): R;
+      toHaveValue(value: string | string[] | number): R;
+      toBeVisible(): R;
+      toBeDisabled(): R;
+      toBeEnabled(): R;
     }
   }
 }

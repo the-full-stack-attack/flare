@@ -5,9 +5,7 @@
     // Use React's JSX transformation
     "jsx": "react-jsx",
     // Use CommonJS modules for Jest compatibility
-    "module": "CommonJS",
-    // Disable isolatedModules for testing
-    "isolatedModules": false,
+    "module": "ESNext",
     // Add Jest and Testing Library types
     "types": ["jest", "@testing-library/jest-dom"],
     // Enable interop between CommonJS and ES Modules
