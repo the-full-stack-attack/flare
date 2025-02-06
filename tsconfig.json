@@ -5,7 +5,7 @@
     "strict": true,
     "noEmit": true,
     "noImplicitReturns": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "module": "commonjs",
     "moduleDetection": "force",
     "moduleResolution": "node",

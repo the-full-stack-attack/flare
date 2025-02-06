@@ -54,7 +54,7 @@ function ChooseTask() {
       });
   };
   return (
-    <>
+    <div>
       <DialogBox
         isOpen={isOpen}
         confirm={chooseTask}
@@ -64,7 +64,7 @@ function ChooseTask() {
         cancelText="Cancel"
         confirmText="Confirm"
       />
-      <Card>
+      <Card className="bg-white/10 shadow-lg ring-1 ring-black/5 border-transparent text-white">
         <CardHeader>
           <CardTitle>Choose A Task</CardTitle>
         </CardHeader>
@@ -103,7 +103,7 @@ function ChooseTask() {
           </Button>
         </CardFooter>
       </Card>
-    </>
+    </div>
   );
 }
 
