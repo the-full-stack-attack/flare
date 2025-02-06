@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { UserContext } from '@/client/contexts/UserContext';
-import AchievementCard from '../flares/AchievementCard';
+import TaskFlareCard from '../flares/TaskFlareCard';
 
 type FlareType = {
     id: number;
@@ -38,7 +38,7 @@ function TaskSidebar() {
       <div className="text-2xl">{`This week task count: ${user.weekly_task_count}`}</div>
       {completedTaskFlares.map((taskFlare, index) => {
         return (
-          <AchievementCard
+          <TaskFlareCard
             key={taskFlare.id}
             index={index}
             taskFlare={taskFlare}
