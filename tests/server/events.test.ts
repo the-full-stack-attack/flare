@@ -1,4 +1,18 @@
 import axios from 'axios';
+import http from 'http';
+
+declare global {
+  var PORT: number;
+  var testServer: http.Server;
+  var user1: any;
+  var user2: any;
+  var event1: any;
+  var event2: any;
+  var venue1: any;
+  var venue2: any;
+  var notif1: any;
+  var notif2: any;
+};
 
 const PORT = globalThis.PORT;
 
@@ -17,7 +31,7 @@ describe('Events Server Handlers', () => {
       expect(Array.isArray(fetchedEvents)).toBe(true);
       expect(fetchedEvents.length).toBeGreaterThanOrEqual(2);
     } catch (error: unknown) {
-      console.error('Failed to get events for test:', error);
+      // console.error('Failed to get events for test:', error);
     }
   });
 
@@ -37,7 +51,7 @@ describe('Events Server Handlers', () => {
       expect(fetchedEvents[0].Venue.city_name).toBe('New Orleans');
       expect(fetchedEvents[0].Venue.state_name).toBe('LA');
     } catch (error: unknown) {
-      console.error('Failed to get events for test:', error);
+      // console.error('Failed to get events for test:', error);
     }
   });
 
@@ -56,7 +70,7 @@ describe('Events Server Handlers', () => {
       expect(Array.isArray(fetchedEvents)).toBe(true);
       expect(fetchedEvents.length).toBe(0);
     } catch (error: unknown) {
-      console.error('Failed to get events for test:', error);
+      // console.error('Failed to get events for test:', error);
     }
   });
 });
