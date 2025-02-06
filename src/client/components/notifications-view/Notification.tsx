@@ -48,7 +48,7 @@ function Notification({ notif, getNotifications }: NotificationProps) {
           <div>
             {dayjs(notif.send_time).format('h:mm a, MMM. D')}
           </div>
-          <TTSButton text="hello" />
+          <TTSButton text={notif.message} />
         </CardDescription>
       </CardHeader>
     </Card>

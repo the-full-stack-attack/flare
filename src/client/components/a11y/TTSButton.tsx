@@ -3,18 +3,24 @@ import { FaMicrophone } from "react-icons/fa";
 
 type TTSButtonProps = {
   text: string;
-}
+};
 
 function TTSButton({ text }: TTSButtonProps) {
   const [isTalking, setIsTalking] = useState<boolean>(false);
+  const [stillTalking, setStillTalking] = useState<boolean>(false);
 
   const readText = () => {
-    if (isTalking) {
+    if (isTalking && !stillTalking) {
+      setStillTalking(true);
+
       const synth = window.speechSynthesis;
       const sayThis = new SpeechSynthesisUtterance(text);
 
       synth.speak(sayThis);
-      sayThis.onend = () => setIsTalking(false);
+      sayThis.onend = () => {
+        setIsTalking(false);
+        setStillTalking(false);
+      };
     }
   };
 
