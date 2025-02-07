@@ -33,13 +33,23 @@ type EventsListProps = {
 };
 
 function EventsList({ events, getEvents }: EventsListProps) {
-  return (
-    <>
-      {events.map((event) => (
-        <Event key={event.id} event={event} getEvents={getEvents} />
-      ))}
-    </>
-  );
+  if (events.length === 0) {
+    return (
+      <div className="lg:col-span-3 md:col-span-2 sm:col-span-1">
+        <p className="text-center text-white text-xl italic">No events available...</p>
+      </div>
+    );
+  }
+
+  else {
+    return (
+      <>
+        {events.map((event) => (
+          <Event key={event.id} event={event} getEvents={getEvents} />
+        ))}
+      </>
+    );
+  }
 }
 
 export default EventsList;
