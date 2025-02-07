@@ -64,47 +64,68 @@ function CategoryInterest({handleCategoryInterests}) {
 
 
     return (
-        <div>
-            <div className='mb-5 text-2xl font-semibold'>
-                Connect through what you love most
+        <div className="flex-1">
+            <div className="p-6 border-b border-orange-500/20">
+                <h2 className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent mb-2">
+                    Categories & Interests
+                </h2>
+                <p className="text-sm text-gray-400">
+                    Connect through what you love most
+                </p>
             </div>
-            <Separator className='my-5 bg-color-5'/>
 
-            <Select
-                value={selectedCategory}
-                onValueChange={selectCategory}
-            >
-                <SelectTrigger>
-                    <SelectValue placeholder="Select A Category"/>
-                </SelectTrigger>
-                <SelectContent>
-                    {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.name}>
-                            {category.name}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-
-            <div className="my-5 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {interests.map((interest, index) => (
-                    <Toggle
-                        key={index}
-                        pressed={selectedInterests.includes(interest)}
-                        onPressedChange={() => toggleInterest(interest)}
-                        variant="outline"
-                        size="lg"
-                        className='h-12 w-26'
+            <div className="p-6 space-y-6">
+                <div className="space-y-4">
+                    <Select
+                        value={selectedCategory}
+                        onValueChange={selectCategory}
                     >
-                        {interest}
-                    </Toggle>
-                ))}
-            </div>
+                        <SelectTrigger
+                            className="bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white">
+                            <SelectValue placeholder="Select A Category"/>
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-900/95 border-orange-500/30">
+                            {categories.map((category) => (
+                                <SelectItem
+                                    key={category.id}
+                                    value={category.name}
+                                    className="text-white hover:bg-orange-500/30 focus:bg-orange-500/30"
+                                >
+                                    {category.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
 
-            <div className='my-5 font-semibold text-center'>
-                Where shared interests become shared moments
+                <Separator className="border-orange-500/20"/>
+
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                    {interests.map((interest, index) => (
+                        <Toggle
+                            key={index}
+                            pressed={selectedInterests.includes(interest)}
+                            onPressedChange={() => toggleInterest(interest)}
+                            variant="outline"
+                            size="lg"
+                            className={`h-12 border-orange-500/30 hover:bg-orange-500/30 
+                                ${selectedInterests.includes(interest)
+                                ? 'bg-orange-500/40 text-white font-medium'
+                                : 'text-gray-100'}`}
+                        >
+                            {interest}
+                        </Toggle>
+                    ))}
+                </div>
+
+                <div className="text-center">
+                    <p className="text-sm bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent font-semibold">
+                        Where shared interests become shared moments
+                    </p>
+                </div>
             </div>
         </div>
+
     )
 };
 

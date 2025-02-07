@@ -5,43 +5,57 @@ import {Separator} from '@/components/ui/seperator';
 function DateTime({formInfo, handleChange}) {
 
     return (
-        <div>
-            <div className='mb-5 text-2xl font-semibold'>
-                Pick your perfect moment to connect
+        <div className="flex-1">
+            <div className="p-6 border-b border-orange-500/20">
+                <h2 className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent mb-2">
+                    Date & Time
+                </h2>
+                <p className="text-sm text-gray-400">
+                    Pick your perfect moment to connect
+                </p>
             </div>
-            <Separator
-                className='my-5 bg-color-5'>
-            </Separator>
 
+            <div className="p-6 space-y-6">
+                <div className="space-y-2">
+                    <label className="block text-sm text-gray-200 font-medium">Date</label>
+                    <Input
+                        name="startDate"
+                        type="date"
+                        value={formInfo.startDate}
+                        onChange={handleChange}
+                        className="bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white placeholder-gray-400"
+                    />
+                </div>
 
-            <label className="block text-sm font-medium mb-1">Date</label>
-            <Input
-                name="startDate"
-                type="date"
-                value={formInfo.startDate}
-                onChange={handleChange}
-                className='mb-5'
-            />
+                <div className="space-y-2">
+                    <label className="block text-sm text-gray-200 font-medium">Start Time</label>
+                    <Input
+                        name="startTime"
+                        type="time"
+                        value={formInfo.startTime}
+                        onChange={handleChange}
+                        className="bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white placeholder-gray-400"
+                    />
+                </div>
 
+                <div className="space-y-2">
+                    <label className="block text-sm text-gray-200 font-medium">End Time</label>
+                    <Input
+                        name="endTime"
+                        type="time"
+                        value={formInfo.endTime}
+                        onChange={handleChange}
+                        className="bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white placeholder-gray-400"
+                    />
+                </div>
 
-            <label className="block text-sm font-medium mb-1">Start Time</label>
-            <Input
-                name="startTime"
-                type="time"
-                value={formInfo.startTime}
-                onChange={handleChange}
-                className='mb-5'
-            />
-            <label className="block text-sm font-medium mb-1">End Time</label>
-            <Input
-                name="endTime"
-                type="time"
-                value={formInfo.endTime}
-                onChange={handleChange}
-            />
-            <div
-                className='my-5 font-semibold text-center'>
-                Set the stage for connection - your moment, your pace, your Flare.
+                <Separator className="border-orange-500/20"/>
+
+                <div className="text-center">
+                    <p className="text-sm bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent font-semibold">
+                        Set the stage for connection - your moment, your pace, your Flare.
+                    </p>
+                </div>
             </div>
         </div>
     )

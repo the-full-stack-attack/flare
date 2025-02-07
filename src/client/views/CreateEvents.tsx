@@ -10,6 +10,7 @@ import CategoryInterest from '../components/event-form/CategoryInterest';
 import FormStart from '../components/event-form/FormStart'
 import Review from '../components/event-form/Review';
 import {UserContext} from "@/client/contexts/UserContext";
+import { BackgroundGlow } from '../../components/ui/background-glow';
 
 type EventData = {
     title: string;
@@ -157,7 +158,7 @@ function CreateEvents() {
                 category: '',
             });
         } catch (error) {
-            console.error('Error creating event:', error.response?.data || error);
+            console.error('Error creating event:', error);
         }
     };
 
@@ -168,90 +169,74 @@ function CreateEvents() {
 
     return (
         <div
-            className='min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20'>
-            <div
-                className='min-h-screen pt-20 flex items-center justify-center'>
-                <Card className='p-5 w-[550px] mx-auto bg-blue-500 p-4 px-8 rounded-lg'>
+            className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20">
+            <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none"/>
 
+            <div className="relative z-10 container mx-auto px-4 py-8">
+                <Card className="backdrop-blur-lg bg-white/5 rounded-xl border border-orange-500/20 max-w-2xl mx-auto">
+                    <div className="flex flex-col h-full">
+                        <div className="flex-1">
+                            {step === 1 && (
+                                <FormStart formInfo={formInfo} handleChange={handleChange}/>
+                            )}
+                            {step === 2 && (
+                                <CategoryInterest
+                                    handleCategoryInterests={({category, interests}) => {
+                                        setFormInfo(prev => ({
+                                            ...prev,
+                                            category: category,
+                                            interests: interests,
+                                        }));
+                                    }}
+                                />
+                            )}
+                            {step === 3 && (
+                                <DateTime
+                                    formInfo={formInfo}
+                                    handleChange={handleChange}
+                                />
+                            )}
+                            {step === 4 && (
+                                <div>
+                                    <VenueSearch handleVenueSelect={handleVenueSelect}/>
+                                    <Separator className="my-6"/>
+                                </div>
+                            )}
+                            {step === 5 && (
+                                <Review
+                                    formInfo={formInfo}
+                                    nullFields={nullFields}
+                                    handleFieldChange={handleFieldChange}
+                                />
+                            )}
+                        </div>
 
-                    {/* BEGINNING OF FORM */}
-                    {step === 1 && (
-                        <FormStart formInfo={formInfo} handleChange={handleChange}/>
-                    )}
-
-
-                    {/* CATEGORY AND INTERESTS SELECTION */}
-                    {step === 2 && (
-                        <CategoryInterest
-                            handleCategoryInterests={({category, interests}) => {
-                                setFormInfo(prev => ({
-                                    ...prev,
-                                    category: category,
-                                    interests: interests,
-                                }));
-                            }}
-                        />
-                    )}
-
-
-                    {/* TIME AND DATE INFORMATION */}
-                    {step === 3 && (
-                        <DateTime
-                            formInfo={formInfo}
-                            handleChange={handleChange}
-                        />
-                    )}
-
-
-                    {/* VENUE SELECTION */}
-                    {step === 4 && (
-                        <div>
-                            <VenueSearch
-                                handleVenueSelect={handleVenueSelect}
-                            />
-                            <div className='mt-10'>
-                                <Separator/>
+                        <div className="p-6 border-t border-orange-500/20">
+                            <div className="flex flex-col gap-4">
+                                {step === 5 ? (
+                                    <Button
+                                        onClick={onSubmit}
+                                        className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black"
+                                    >
+                                        Submit Event
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        onClick={handleNext}
+                                        className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black"
+                                    >
+                                        {step === 4 ? "Review" : "Continue"}
+                                    </Button>
+                                )}
+                                <Button
+                                    onClick={handlePrev}
+                                    disabled={step === 1}
+                                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black"
+                                >
+                                    Go Back
+                                </Button>
                             </div>
                         </div>
-                    )}
-
-
-                    {/* CONFIRM DETAILS */}
-                    {step === 5 && (
-                        <Review formInfo={formInfo} nullFields={nullFields}
-                                handleFieldChange={handleFieldChange}/>
-                    )}
-
-
-                    {/* BUTTONS */}
-                    <div className='flex flex-col justify-center items-center gap-4 '>
-                        {step === 5 ? (
-                            <Button
-                                onClick={onSubmit}
-                                className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'
-                            >
-                        <span className='text-lg font-medium text-black !normal-case'>
-                            Submit Event
-                        </span>
-                            </Button>
-                        ) : (
-                            <Button
-                                onClick={handleNext}
-                                className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'
-                            >
-                        <span className='text-lg font-medium text-black !normal-case'>
-                            {step === 4 ? "Review" : "Continue"}
-                        </span>
-                            </Button>
-                        )}
-                        <Button
-                            onClick={handlePrev}
-                            disabled={step === 1}
-                            className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'>
-                    <span className='text-lg font-medium text-black !normal-case'>
-                        Go Back
-                    </span>
-                        </Button>
                     </div>
                 </Card>
             </div>
