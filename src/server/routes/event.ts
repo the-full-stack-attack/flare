@@ -6,6 +6,7 @@ import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
 import dayjs from 'dayjs';
 import {Op} from 'sequelize';
+import checkForFlares from '../helpers/flares';
 
 import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
@@ -313,6 +314,9 @@ eventRouter.put('/venue/:id/accessibility', async (req: any, res: Response) => {
         const { id } = req.params;
         const { wheelchair_accessible } = req.body;
         await Venue.update({ wheelchair_accessible }, { where: { id } });
+
+        await checkForFlares(req.user, 'Venue Virtuoso');
+        
         res.sendStatus(200);
     } catch (error) {
         console.error('Error updating venue accessibility', error);
