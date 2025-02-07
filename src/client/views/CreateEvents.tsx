@@ -12,6 +12,7 @@ import {Toggle, toggleVariants} from '../../components/ui/toggle';
 import dayjs from 'dayjs';
 import VenueSearch from '../components/event-form/VenueSearch';
 import DateTime from '../components/event-form/DateTime';
+import CategoryInterest from '../components/event-form/CategoryInterest';
 type EventData = {
     title: string;
     description: string;
@@ -110,31 +111,31 @@ function CreateEvents() {
     }
 
 
-    // handling toggle selection for interests
-    const toggleInterest = (interest: string) => {
-        // filter through interests to see which one is checked
-        setSelectedInterests(prev =>
-            prev.includes(interest)
-                ? prev.filter(i => i !== interest)
-                : [...prev, interest]
-        );
-
-        // update form data with mew interests
-        setFormInfo(prev => ({
-            ...prev,
-            interests: formInfo.interests.includes(interest)
-                ? formInfo.interests.filter(i => i !== interest)
-                : [...formInfo.interests, interest]
-        }));
-    };
-
-    // handle category selection
-    const selectCategory = (value: string) => {
-        // update form info
-        setFormInfo(prev => ({
-            ...prev, category: value
-        }));
-    }
+    // // handling toggle selection for interests
+    // const toggleInterest = (interest: string) => {
+    //     // filter through interests to see which one is checked
+    //     setSelectedInterests(prev =>
+    //         prev.includes(interest)
+    //             ? prev.filter(i => i !== interest)
+    //             : [...prev, interest]
+    //     );
+    //
+    //     // update form data with mew interests
+    //     setFormInfo(prev => ({
+    //         ...prev,
+    //         interests: formInfo.interests.includes(interest)
+    //             ? formInfo.interests.filter(i => i !== interest)
+    //             : [...formInfo.interests, interest]
+    //     }));
+    // };
+    //
+    // // handle category selection
+    // const selectCategory = (value: string) => {
+    //     // update form info
+    //     setFormInfo(prev => ({
+    //         ...prev, category: value
+    //     }));
+    // }
 
 
     // generic handle change for zip code
@@ -168,7 +169,21 @@ function CreateEvents() {
             };
             await axios.post('/api/event', formattedData);
             setStep(1);
-            setFormInfo('');
+            setFormInfo({
+                title: '',
+                description: '',
+                startDate: '',
+                startTime: '',
+                endTime: '',
+                venue: '',
+                venueDescription: '',
+                streetAddress: '',
+                cityName: '',
+                stateName: '',
+                zipCode: null,
+                interests: [],
+                category: '',
+            });
         } catch (error) {
             console.error('Error creating event:', error.response?.data || error);
         }
@@ -176,33 +191,13 @@ function CreateEvents() {
 
 
 
-    // get interests from db
-    const getInterests = async () => {
-        try {
-            const allInterests = await axios.get('/api/signup/interests');
-            setInterests(allInterests.data);
-        } catch (error) {
-            console.error('Error getting interests from DB', error);
-        }
-    };
 
 
-    // get categories from db
-    const getCategories = async () => {
-        try {
-            const allCategories = await axios.get('/api/event/categories');
-            setCategories(allCategories.data);
-        } catch (error) {
-            console.error('Error getting categories from DB', error);
-        }
-    };
+
+
 
 
     useEffect(() => {
-        // noinspection JSIgnoredPromiseFromCall
-        getInterests();
-        // noinspection JSIgnoredPromiseFromCall
-        getCategories();
         // noinspection JSIgnoredPromiseFromCall
         getUserLoc();
     },[]);
@@ -252,52 +247,15 @@ function CreateEvents() {
 
 
                 {step === 2 && (
-                    <div>
-                        <div className='mb-5 text-2xl font-semibold'>
-                            Connect through what you love most
-                        </div>
-                        <Separator
-                            className='my-5 bg-color-5'>
-                        </Separator>
-                        <Select
-                            value={formInfo.category}
-                            onValueChange={selectCategory}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select A Category"/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                {categories.map((category) => (
-                                    <SelectItem key={category.id} value={category.name}>
-                                        {category.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-
-
-                        {/* MAP OVER INTERESTS */}
-
-
-                        <div className="my-5 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                            {interests.map((interest, index) => (
-                                <Toggle
-                                    key={index}
-                                    pressed={selectedInterests.includes(interest)}
-                                    onPressedChange={() => toggleInterest(interest)}
-                                    variant="outline"
-                                    size="lg"
-                                    className='h-12 w-26'
-                                >
-                                    {interest}
-                                </Toggle>
-                            ))}
-                        </div>
-                        <div
-                            className='my-5 font-semibold text-center'>
-                            Where shared interests become shared moments
-                        </div>
-                    </div>
+                    <CategoryInterest
+                        handleCategoryInterests={({ category, interests }) => {
+                            setFormInfo(prev => ({
+                                ...prev,
+                                category: category,
+                                interests: interests,
+                            }));
+                        }}
+                    />
                 )}
 
 
