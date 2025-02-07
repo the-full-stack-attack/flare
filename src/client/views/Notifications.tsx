@@ -1,5 +1,6 @@
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 import { Button } from '../../components/ui/button';
 
@@ -14,6 +15,8 @@ function Notifications() {
   const { getUser } = useContext(UserContext);
 
   const [notifs, setNotifs] = useState<any>([]);
+
+  const [newNotifsText, setNewNotifsText] = useState<string>('You currently have no new notifications.')
 
   const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-4 py-4 rounded-xl text-md';
 
@@ -46,11 +49,29 @@ function Notifications() {
       });
   };
 
+  const createNewNotifsText = () => {
+    // Get new notifications
+    const newNotifs = notifs.filter((notif: { User_Notification: { seen: boolean } }) => !notif.User_Notification.seen);
+
+    if (newNotifs.length) {
+      let text = `You currently have ${newNotifs.length} new notifications,`;
+
+      newNotifs.forEach((notif: any, index: number) => {
+        text += `Notification number ${index + 1}: Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}: ${notif.message},`;
+      });
+
+      text += 'This is the end of your new notifications.';
+
+      setNewNotifsText(text);
+    }
+  };
+
   useEffect(() => {
     getNotifications();
   }, [getNotifications]);
 
   useEffect(() => {
+    createNewNotifsText();
     patchNotificationsSeenAll();
   }, [notifs]);
 
@@ -65,14 +86,7 @@ function Notifications() {
           <TTSButton
             buttonType="Button"
             className={buttonColor}
-            text={`Back off, I'll take you on
-Headstrong to take on anyone
-I know that you are wrong
-Headstrong, we're Headstrong
-Back off, I'll take you on
-Headstrong to take on anyone
-I know that you are wrong
-And this is not where you belong`}
+            text={newNotifsText}
             buttonName="Read New Notifications"
           />
         </div>
