@@ -328,19 +328,21 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 })
 
 
-eventRouter.put('/venue/:id/accessibility', async (req: any, res: Response) => {
+eventRouter.put('/venue/:id/:field', async (req: any, res: Response) => {
     try {
-        const { id } = req.params;
-        const { wheelchair_accessible, userId } = req.body;
-        await Venue.update({ wheelchair_accessible }, { where: { id } });
+        const { id, field } = req.params;
+        const { userId } = req.body;
+        const updateData = { [field]: req.body[field] };
+
+        await Venue.update(updateData, { where: { id } });
 
         const user: any = await User.findByPk(userId);
-        if (user) {
-            await checkForFlares(user, 'Venue Virtuoso');
-        }
+
+        await checkForFlares(user, 'Venue Virtuoso');
+
         res.sendStatus(200);
     } catch (error) {
-        console.error('Error updating venue accessibility', error);
+        console.error('Error updating venue field:', error);
         res.sendStatus(500);
     }
 });
