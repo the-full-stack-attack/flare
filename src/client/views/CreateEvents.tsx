@@ -4,11 +4,12 @@ import axios from 'axios';
 import {Button} from "../../components/ui/button";
 import {Card} from '../../components/ui/card';
 import {Separator} from '../../components/ui/seperator';
-import dayjs from 'dayjs';
 import VenueSearch from '../components/event-form/VenueSearch';
 import DateTime from '../components/event-form/DateTime';
 import CategoryInterest from '../components/event-form/CategoryInterest';
 import FormStart from '../components/event-form/FormStart'
+import Review from '../components/event-form/Review';
+
 type EventData = {
     title: string;
     description: string;
@@ -41,18 +42,9 @@ function CreateEvents() {
         interests: [],
         category: '',
     });
-    const [venues, setVenues] = useState<Array<{
-        name: string;
-        description: string;
-        street_address: string;
-        zip_code: number;
-        city_name: string;
-        state_name: string;
-    }>>([]);
 
 
     const [step, setStep] = useState(1);
-
     const [geoLocation, setGeoLocation] = useState();
 
 
@@ -60,17 +52,13 @@ function CreateEvents() {
     const getUserLoc = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
-                const { latitude, longitude } = position.coords;
-                setGeoLocation({ latitude, longitude });
+                const {latitude, longitude} = position.coords;
+                setGeoLocation({latitude, longitude});
             })
         } else {
             console.error('Geolocation not allowed');
         }
     }
-
-
-
-
 
 
     const handleVenueSelect = async (venue) => {
@@ -91,17 +79,15 @@ function CreateEvents() {
         }
     };
 
+
     // navigation handling
     function handlePrev() {
         if (step > 1) setStep((step) => step - 1);
-        console.log('um, ', geoLocation);
-        console.log('hello', localStorage.userLocation);
     }
+
     function handleNext() {
         if (step < 5) setStep((step) => step + 1);
     }
-
-
 
 
     // generic handle change for zip code
@@ -155,165 +141,101 @@ function CreateEvents() {
         }
     };
 
-
-
-
-
-
-
-
-
     useEffect(() => {
-        // noinspection JSIgnoredPromiseFromCall
         getUserLoc();
-    },[]);
+    }, []);
 
 
     return (
-        <div className='min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20'>
         <div
-            className='min-h-screen pt-20 flex items-center justify-center'>
-            <Card className='p-5 w-[550px] mx-auto bg-blue-500 p-4 px-8 rounded-lg'>
+            className='min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20'>
+            <div
+                className='min-h-screen pt-20 flex items-center justify-center'>
+                <Card className='p-5 w-[550px] mx-auto bg-blue-500 p-4 px-8 rounded-lg'>
 
 
-                {/* BEGINNING OF FORM */}
+                    {/* BEGINNING OF FORM */}
+                    {step === 1 && (
+                        <FormStart formInfo={formInfo} handleChange={handleChange}/>
+                    )}
 
 
-                {step === 1 && (
-                    <FormStart formInfo={formInfo} handleChange={handleChange} />
-                )}
-
-
-                {/* CATEGORY AND INTERESTS SELECTION */}
-
-
-                {step === 2 && (
-                    <CategoryInterest
-                        handleCategoryInterests={({ category, interests }) => {
-                            setFormInfo(prev => ({
-                                ...prev,
-                                category: category,
-                                interests: interests,
-                            }));
-                        }}
-                    />
-                )}
-
-
-                {/* TIME AND DATE INFORMATION */}
-
-
-                {step === 3 && (
-                    <DateTime
-                        formInfo={formInfo}
-                        handleChange={handleChange}
-                    />
-                )}
-
-
-                {/* VENUE SELECTION */}
-
-
-
-                {step === 4 && (
-                    <div>
-                        <VenueSearch
-                            handleVenueSelect={handleVenueSelect}
+                    {/* CATEGORY AND INTERESTS SELECTION */}
+                    {step === 2 && (
+                        <CategoryInterest
+                            handleCategoryInterests={({category, interests}) => {
+                                setFormInfo(prev => ({
+                                    ...prev,
+                                    category: category,
+                                    interests: interests,
+                                }));
+                            }}
                         />
-                        <div className='mt-10'>
-                            <Separator />
-                        </div>
-                    </div>
-                )}
+                    )}
 
 
-                {/* CONFIRM DETAILS */}
+                    {/* TIME AND DATE INFORMATION */}
+                    {step === 3 && (
+                        <DateTime
+                            formInfo={formInfo}
+                            handleChange={handleChange}
+                        />
+                    )}
 
 
-                {step === 5 && (
-                    <div className="mb-5 space-y-6">
-                        <h2 className="text-2xl font-semibold">Confirm Your Event Details</h2>
-                        <div className="space-y-4">
-                            <div className="border rounded-lg p-4">
-                                <h3 className="font-semibold mb-2">Event Information</h3>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <p className="text-gray-600">Title:</p>
-                                    <p>{formInfo.title}</p>
-                                    <p className="text-gray-600">Description:</p>
-                                    <p>{formInfo.description}</p>
-                                    <p className="text-gray-600">Category:</p>
-                                    <p>{formInfo.category}</p>
-                                    <p className="text-gray-600">Interests:</p>
-                                    <p>{formInfo.interests.join(', ')}</p>
-                                    <p className="text-gray-600">Start Date:</p>
-                                    <p>{dayjs(formInfo.startDate).format("MMM D, YYYY")}</p>
-                                    <p className="text-gray-600">Start Time:</p>
-                                    <p>{dayjs(`2024-01-01T${formInfo.startTime}`).format("h:mm A")}</p>
-                                    <p className="text-gray-600">End Time:</p>
-                                    <p>{dayjs(`2024-01-01T${formInfo.endTime}`).format("h:mm A")}</p>
-                                </div>
-                            </div>
-                            <div className="border rounded-lg p-4">
-                                <h3 className="font-semibold mb-2">Venue Information</h3>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <p className="text-gray-600">Venue Name:</p>
-                                    <p>{formInfo.venue}</p>
-                                    <>
-                                        <p className="text-gray-600">Description:</p>
-                                        <p>{formInfo.venueDescription}</p>
-                                        <p className="text-gray-600">Address:</p>
-                                        <p>{formInfo.streetAddress}</p>
-                                        <p className="text-gray-600">City:</p>
-                                        <p>{formInfo.cityName}</p>
-                                        <p className="text-gray-600">State:</p>
-                                        <p>{formInfo.stateName}</p>
-                                        <p className="text-gray-600">Zip Code:</p>
-                                        <p>{formInfo.zipCode}</p>
-                                    </>
-                                </div>
+                    {/* VENUE SELECTION */}
+                    {step === 4 && (
+                        <div>
+                            <VenueSearch
+                                handleVenueSelect={handleVenueSelect}
+                            />
+                            <div className='mt-10'>
+                                <Separator/>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
 
-                {/* BUTTONS BUTTONS BUTTONS AND BUTTONS! */}
+                    {/* CONFIRM DETAILS */}
+                    {step === 5 && (
+                        <Review formInfo={formInfo}/>
+                    )}
 
 
-                <div className='flex flex-col justify-center items-center gap-4 '>
-
-
-                {step === 5 ? (
-                    <Button
-                        onClick={onSubmit}
-                        className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'
-                    >
+                    {/* BUTTONS */}
+                    <div className='flex flex-col justify-center items-center gap-4 '>
+                        {step === 5 ? (
+                            <Button
+                                onClick={onSubmit}
+                                className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'
+                            >
                         <span className='text-lg font-medium text-black !normal-case'>
                             Submit Event
                         </span>
-                    </Button>
-                ) : (
-                    <Button
-                        onClick={handleNext}
-                        className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'
-                    >
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={handleNext}
+                                className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'
+                            >
                         <span className='text-lg font-medium text-black !normal-case'>
                             {step === 4 ? "Review" : "Continue"}
                         </span>
-                    </Button>
-                )}
-                <Button
-                    onClick={handlePrev}
-                    disabled={step === 1}
-                    className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'>
+                            </Button>
+                        )}
+                        <Button
+                            onClick={handlePrev}
+                            disabled={step === 1}
+                            className='bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl'>
                     <span className='text-lg font-medium text-black !normal-case'>
                         Go Back
                     </span>
-                </Button>
-                </div>
-            </Card>
+                        </Button>
+                    </div>
+                </Card>
+            </div>
         </div>
-        </div>
-    )}
+    )
+}
 
 export default CreateEvents;
