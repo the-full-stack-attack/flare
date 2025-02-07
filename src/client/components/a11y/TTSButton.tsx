@@ -5,9 +5,10 @@ type TTSButtonProps = {
   text: string;
   className?: string;
   iconClassName?: string;
+  buttonName?: string;
 };
 
-function TTSButton({ text, className, iconClassName }: TTSButtonProps) {
+function TTSButton({ text, className, iconClassName, buttonName }: TTSButtonProps) {
   const [isTalking, setIsTalking] = useState<boolean>(false);
   const [stillTalking, setStillTalking] = useState<boolean>(false);
 
@@ -36,7 +37,8 @@ function TTSButton({ text, className, iconClassName }: TTSButtonProps) {
 
   return (
     <button className={className} onClick={handleButtonClick}>
-      <FaMicrophone className={iconClassName} />
+      {buttonName ? `${buttonName} ` : ''}
+      <FaMicrophone className={'inline ' + iconClassName} />
     </button>
   );
 }
