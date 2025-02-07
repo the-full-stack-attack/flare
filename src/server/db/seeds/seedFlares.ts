@@ -1,19 +1,35 @@
-import fs from 'fs';
-import s3 from '../../../../webpack.config';
+import fs, { ReadStream } from 'fs';
+import s3Client from '../../../../aws-config';
 import path from 'path';
+import dotenv from 'dotenv';
 import Flares from '../models/flares';
+import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 
+dotenv.config();
+
+const { S3_BUCKET_NAME } = process.env;
+
+if (!S3_BUCKET_NAME) {
+  throw new Error('S3_BUCKET_NAME environment variable is not set.');
+}
 type FlareType = {
   id?: number;
   name: string;
   type: string | void;
-  icon: string | null;
+  icon: string;
   achievement: string;
   value: number;
   milestone: number | null;
   description: string;
 };
 type FlareArr = any[];
+type UploadParams = {
+  Bucket: string,
+  Key: string,
+  Body: ReadStream,
+  ACL?:  'public-read',
+  ContentType: string,
+}
 // Function to create flare achievements and input them into the database
 
 // Use a class to build flares and pass in arrays?
@@ -55,7 +71,7 @@ const theSpark: FlareArr = ['The Spark', 'Event Flare', '', 'Attended your first
 const multiTasker: FlareArr = ['Multitasker', 'Task Flare', '', 'You\'ve completed 5 tasks!', 0, 5, 'Complete 5 tasks'];
 const partyAnimal: FlareArr = ['Party Animal', 'Event Flare', '', 'You\'ve attended 5 events!', 0, 5, 'Attend 5 events'];
 // flareArrays.push(butterFlareEffect, goGetter, theHost, chattyCathy, theSpark, multiTasker, partyAnimal);
-const testFlare = ['Teest Bucket', 'Testing Flare', path.join('..', '..', '..', 'client', 'assets', 'logo', 'phoenix.png' ), 'Inserted into the bucket', 0, null, 'Seed images'];
+const testFlare = ['Test Bucket', 'Testing Flare', path.join(__dirname, '..', '..', '..', 'client', 'assets', 'logo', 'phoenix.png' ), 'Inserted into the bucket', 0, null, 'Seed images'];
 flareArrays.push(testFlare);
 
 // Create an object using the arrays above and push the object onto the flares array
@@ -76,5 +92,34 @@ const seedFlares = async () => {
     console.error('Error seeding flares in the database: ', err);
   }
 };
+const testFlareObj = new Flare(testFlare);
+async function uploadImage(flare: FlareType): Promise<string | null>{
+  try {
+    // Create a read stream with the image path
+    const fileBuffer = await fs.promises.readFile(flare.icon);
+    const imageKey: string = `/flare/${path.basename(flare.icon)}`; // Plucks the filename from the path
+    if (!S3_BUCKET_NAME || !s3Client) {
+      console.error('S3_BUCKET_NAME or s3Client was undefined');
+      return null;
+    }
+    const uploadParams: PutObjectCommandInput = {
+        Bucket: S3_BUCKET_NAME,
+        Key: imageKey,
+        Body: fileBuffer,
+        ContentType: 'image/png', // Specify the content type
+    };
+    // Configure the command with the uploadParams
+    const putCommand = new PutObjectCommand(uploadParams);
+    const image = await s3Client.send(putCommand);
+    console.log('Successful upload');
+    console.log(typeof image);
+    return imageKey; // Store this in database on flare.icon
+  } catch (err) {
+    console.error(`Error uploading file for ${flare.name}`, err);
+    return null;
+  }
+};
+
+uploadImage(testFlareObj);
 
 export default seedFlares;
