@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 import {
   DialogContent,
@@ -170,7 +171,7 @@ function ScheduleTextDialog({
                   className="focus:bg-white text-white"
                   onClick={handleSendTimeSelect}
                 />
-                <Label htmlFor="30-minutes">30 minutes</Label>
+                <Label htmlFor="30-minutes">{`30 minutes [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 30)).format('h:mm A')}]`}</Label>
               </div>
             ) : null
           }
@@ -185,7 +186,7 @@ function ScheduleTextDialog({
                   className="focus:bg-white text-white"
                   onClick={handleSendTimeSelect}
                 />
-                <Label htmlFor="1-hour">1 hour</Label>
+                <Label htmlFor="1-hour">{`1 hour [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 1)).format('h:mm A')}]`}</Label>
               </div>
             ) : null
           }
@@ -200,7 +201,7 @@ function ScheduleTextDialog({
                   className="focus:bg-white text-white"
                   onClick={handleSendTimeSelect}
                 />
-                <Label htmlFor="2-hours">2 hours</Label>
+                <Label htmlFor="2-hours">{`2 hours [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 2)).format('h:mm A')}]`}</Label>
               </div>
             ) : null
           }
