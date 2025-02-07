@@ -264,6 +264,8 @@ function QuipLash() {
             {isSuccess && (
               <pixiSprite
                 texture={background}
+                width={Math.floor(640)}
+    height={Math.floor(360)}
                 x={0}
                 y={0}
               />
@@ -276,8 +278,9 @@ function QuipLash() {
                 onPointerDown={() => {
                   test(tupleAnswer[0]);
                 }}
-                x={50}
-                y={150 + i * 150}
+                scale={0.7, 0.7}
+                x={35}
+                y={30 + i * 150}
                 key={ useId }
               >
                 <pixiGraphics draw={speechBubble}>
@@ -292,14 +295,14 @@ function QuipLash() {
               </pixiContainer>
             ))}
             <pixiContainer
-              x={300}
-              y={100}
+              x={0}
+              y={0}
             >
             {timer && <pixiText
                     text={`TIME: ${timer}`}
                     anchor={0.5}
-                    x={130}
-                    y={450}
+                    x={350}
+                    y={330}
                     style={style2}
                   />}
                   </pixiContainer>

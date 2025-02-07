@@ -332,16 +332,6 @@ function Chatroom() {
       <div>
         <img src={ TILES['1'] } alt='' />
         </div>
-    {/* <div
-      
-      className="flex justify-center items-center"
-      // style={{
-        //   display: 'flex',
-        //   justifyContent: 'center',
-        //   marginTop: '20px',
-        // }}
-        >
-        <div> */}
         <div style={{
           display: 'flex',
           justifyContent: 'center',
@@ -349,10 +339,6 @@ function Chatroom() {
           }} >
           <Countdown endTime={dayjs(start_time)}/>
           </div> 
-          {/* <div class="demoWrapper"> */}
-          {/* <div class="py-60 static justify-items-center border border-orange-600"> 
-          <div class="aspect-w-16 aspect-h-9  justify-items-center">
-          <Card className="aspect-w-16 aspect-h-9 justify-items-center border border-orange-600 overflow-hidden" ref={appRef}> */}
           <div class="p-4">
           <div class="card  aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
           <div class="p-2">
@@ -398,17 +384,17 @@ function Chatroom() {
                     anchor={0.5}
                     x={70}
                     y={-30}
-                    scale={scaleFactor * .5, scaleFactor}
+                    scale={ 1.1, 1.1}
                     style={new TextStyle({
                       align: 'center',
                       fontFamily: 'sans-serif',
-                      fontSize: 8,
+                      fontSize: 10,
                       fontWeight: 'bold',
                       fill: '#000000',
                       stroke: '#eef1f5',
-                      letterSpacing: 5,
+                      letterSpacing: 2,
                       wordWrap: true,
-                      wordWrapWidth: 100,
+                      wordWrapWidth: 80,
                     })}
                   />
                 )}
@@ -424,20 +410,20 @@ function Chatroom() {
                 <pixiText
                   text={player.username}
                   anchor={0.5}
-                  scale={scaleFactor, scaleFactor}
+                  
                   x={10}
                   y={40}
                   style={  
                     new TextStyle({
                     align: 'center',
                     fontFamily: 'sans-serif',
-                    fontSize: 15 * scaleFactor,
+                    fontSize: 15 ,
                     fontWeight: 'bold',
                     fill: '#000000',
                     stroke: '#eef1f5',
                     letterSpacing: 5,
                     wordWrap: true,
-                    wordWrapWidth: 250 * scaleFactor,
+                    wordWrapWidth: 250,
                   }) }
                 />
               </pixiContainer>
@@ -447,11 +433,6 @@ function Chatroom() {
           </div>
           </div>
           </div>
-           {/* </Card> 
-          </div>
-            </div>  */}
-       {/* </div>
-      </div>*/} 
       <div
         style={{
           display: 'flex',
