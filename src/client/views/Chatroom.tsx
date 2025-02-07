@@ -134,7 +134,7 @@ function Chatroom() {
   }, [anim]);
   const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
-    graphics?.scale.set(scaleFactor * 1.5, scaleFactor * .5);
+    graphics?.scale.set(1.5, .56);
   }, []);
   // CONTROLS
   const keyPress = ({ key }: Element) => {
@@ -245,8 +245,9 @@ function Chatroom() {
           {/* <div class="py-60 static justify-items-center border border-orange-600"> 
           <div class="aspect-w-16 aspect-h-9  justify-items-center">
           <Card className="aspect-w-16 aspect-h-9 justify-items-center border border-orange-600 overflow-hidden" ref={appRef}> */}
-          <div class="card  aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
-          <div class="p-5">
+          <div class="p-4">
+          <div class="card  aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+          <div class="p-2">
           <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
           <Application 
           resizeTo={appRef}
@@ -275,7 +276,7 @@ function Chatroom() {
                 {player.sentMessage && (
                   <pixiGraphics 
                   draw={speechBubble} 
-                  scale={scaleFactor, scaleFactor}
+                  
                 />
                 )}
                 {player.sentMessage && (
@@ -284,8 +285,18 @@ function Chatroom() {
                     anchor={0.5}
                     x={70}
                     y={-50}
-                    scale={scaleFactor, scaleFactor}
-                    style={style}
+                    scale={scaleFactor * .5, scaleFactor}
+                    style={new TextStyle({
+                      align: 'center',
+                      fontFamily: 'sans-serif',
+                      fontSize: 15 * 1 / scaleFactor,
+                      fontWeight: 'bold',
+                      fill: '#000000',
+                      stroke: '#eef1f5',
+                      letterSpacing: 5,
+                      wordWrap: true,
+                      wordWrapWidth: 200 * 1 / scaleFactor,
+                    })}
                   />
                 )}
                 <pixiSprite
@@ -301,9 +312,20 @@ function Chatroom() {
                   text={player.username}
                   anchor={0.5}
                   scale={scaleFactor, scaleFactor}
-                  x={0}
-                  y={50}
-                  style={style}
+                  x={10}
+                  y={40}
+                  style={  
+                    new TextStyle({
+                    align: 'center',
+                    fontFamily: 'sans-serif',
+                    fontSize: 15 * scaleFactor,
+                    fontWeight: 'bold',
+                    fill: '#000000',
+                    stroke: '#eef1f5',
+                    letterSpacing: 5,
+                    wordWrap: true,
+                    wordWrapWidth: 250 * scaleFactor,
+                  }) }
                 />
               </pixiContainer>
             ))} 
@@ -311,11 +333,12 @@ function Chatroom() {
           </div>
           </div>
           </div>
+          </div>
            {/* </Card> 
           </div>
             </div>  */}
        {/* </div>
-      </div>
+      </div>*/} 
       <div
         style={{
           display: 'flex',
@@ -346,13 +369,15 @@ function Chatroom() {
             display: 'flex',
             justifyContent: 'center',
             marginTop: '10px',}}
-            ><Button onClick={toggleQuiplash}>Play Quiplash</Button></div>
+            >
+            <Button onClick={toggleQuiplash}>Play Quiplash</Button>
+            </div>
             {
               isPlayingQuiplash && <QuipLash startTime={start_time}/>
             }
         </div>
       </div>
-        <Card class="bg-transparent flex items-center justify-center">
+      */}  <Card class="bg-transparent flex items-center justify-center">
       <div
         style={{
           display: 'flex',
@@ -365,7 +390,7 @@ function Chatroom() {
             ))}
           </AnimatedList>
       </div>
-      </Card> */}
+      </Card> 
       </div>
   );
 }
