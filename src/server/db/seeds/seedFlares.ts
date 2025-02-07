@@ -46,7 +46,8 @@ const chattyCathy: FlareArr = ['Stored Thoughts(x3)', 'AI Flare', '', 'Saved 3 A
 const theSpark: FlareArr = ['The Spark', 'Event Flare', '', 'Attended your first ever event!', 0, null, 'Attend your first event'];
 const multiTasker: FlareArr = ['Multitasker', 'Task Flare', '', 'You\'ve completed 5 tasks!', 0, 5, 'Complete 5 tasks'];
 const partyAnimal: FlareArr = ['Party Animal', 'Event Flare', '', 'You\'ve attended 5 events!', 0, 5, 'Attend 5 events'];
-flareArrays.push(butterFlareEffect, goGetter, theHost, chattyCathy, theSpark, multiTasker, partyAnimal);
+const venueVirtuoso: FlareArr = ['Venue Virtuoso', 'Venue Flare', '', 'Added information to a venue!', 0, null, 'Input venue data'];
+flareArrays.push(butterFlareEffect, goGetter, theHost, chattyCathy, theSpark, multiTasker, partyAnimal, venueVirtuoso);
 
 // Create an object using the arrays above and push the object onto the flares array
 flareArrays.forEach((flareInfo) => {
