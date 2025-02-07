@@ -54,7 +54,7 @@ function Notifications() {
     const newNotifs = notifs.filter((notif: { User_Notification: { seen: boolean } }) => !notif.User_Notification.seen);
 
     if (newNotifs.length) {
-      let text = `You currently have ${newNotifs.length} new notifications,`;
+      let text = `You currently have ${newNotifs.length} new notification${newNotifs.length === 1 ? '' : 's'}:`;
 
       newNotifs.forEach((notif: any, index: number) => {
         text += `Notification number ${index + 1}: Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}: ${notif.message},`;
@@ -92,7 +92,7 @@ function Notifications() {
         </div>
         <NotificationList notifs={notifs} getNotifications={getNotifications} />
         {notifs.length === 0 ? (
-          <p>You currently have no notifications...</p>
+          <p className="text-white text-lg">You currently have no notifications...</p>
         ) : null}
       </div>
     </div>
