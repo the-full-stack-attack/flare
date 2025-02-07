@@ -28,8 +28,8 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                             <div>
                                 <p className="text-gray-600">Wheelchair Accessible:</p>
                                 <select
-                                    value={formInfo.wheelchair_accessible}
-                                    onChange={(e) => handleFieldChange('wheelchair_accessible', e.target.value === 'true')}
+                                    value={formInfo.wheelchair_accessible ? "1" : "0"}
+                                    onChange={(e) => handleFieldChange('wheelchair_accessible', e.target.value === "1")}
                                 >
                                     <option value="1">Yes</option>
                                     <option value="0">No</option>
