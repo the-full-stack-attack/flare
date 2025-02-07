@@ -104,7 +104,7 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         const end_time = dayjs(`${startDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
 
         // find or create venue based on user input
-        let eventVenue;
+        let eventVenue: any;
         if (fsq_id) {
             // if fsq_id exists, use existing venue
             eventVenue = await Venue.findOne({
@@ -214,6 +214,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         // check if venue has google place id and it is not null or an empty string
         const hasGoogleId = await Venue.findOne({
             where: {
+                fsq_id: fsqId,
                 google_place_id: {
                     [Op.and]: [
                         { [Op.ne]: null },
@@ -224,8 +225,10 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         });
 
 
+
         // if venue does not have valid google place id
         if (!hasGoogleId) {
+
             // verify we have necessary fsqData to build our query string
             if (fsqData.name && fsqData.location.formatted_address) {
                 // format our api query
@@ -239,11 +242,12 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             }
         }
 
+
         const buildVenue: VenueType = {
             id: null,
             name: fsqData?.name || gData?.[0]?.title || null,
             description: gData?.[0]?.description || fsqData?.description || null,
-            category: gData?.[0]?.categoryName || fsqData.categories[0]?.name || null,
+            category: gData?.[0]?.categoryName || fsqData?.categories[0]?.name || null,
             street_address: gData?.[0]?.street || fsqData?.location?.address || null,
             zip_code: fsqData?.location?.postcode || gData?.[0]?.postalCode || null,
             city_name: fsqData?.location?.dma || gData?.[0]?.city || null,
@@ -264,6 +268,10 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         const newVenue: any = await Venue.create(buildVenue);
 
 
+        const nullFields: any = {};
+        if (buildVenue.wheelchair_accessible === null) {
+            nullFields.wheelchair_accessible = null;
+        }
         // get tags from api responses
         const newTags = getVenueTags(fsqData, gData);
 
@@ -286,13 +294,31 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 venue_id: newVenue.id
             })));
         }
-        res.json(newVenue);
+
+        const buildResponse = {
+            venue: newVenue,
+            nullFields,
+        }
+
+        res.json(buildResponse);
     } catch (error) {
         console.error('Error creating venue record in DB', error);
         res.sendStatus(500);
     }
 })
 
+
+eventRouter.put('/venue/:id/accessibility', async (req: any, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { wheelchair_accessible } = req.body;
+        await Venue.update({ wheelchair_accessible }, { where: { id } });
+        res.sendStatus(200);
+    } catch (error) {
+        console.error('Error updating venue accessibility', error);
+        res.sendStatus(500);
+    }
+});
 
 
 // get all categories in db to populate form category options
