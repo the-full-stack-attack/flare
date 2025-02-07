@@ -11,7 +11,8 @@
     "start": "nodemon ./src/server/index.ts",
     "update": "rimraf node_modules && rm package-lock.json && npm install && exit 1",
     "seed": "ts-node ./src/server/db/seeds/index.ts",
-    "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts"
+    "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts",
+    "seedFlares": "ts-node ./src/server/db/seeds/seedFlares.ts"
   },
   "repository": {
     "type": "git",
