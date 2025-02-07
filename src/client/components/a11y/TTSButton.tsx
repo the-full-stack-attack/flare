@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { FaMicrophone } from "react-icons/fa";
 
+import { Button } from '@/components/ui/button';
+
 type TTSButtonProps = {
   text: string;
   className?: string;
   iconClassName?: string;
+  buttonName?: string;
+  buttonType?: string;
 };
 
-function TTSButton({ text, className, iconClassName }: TTSButtonProps) {
+function TTSButton({ text, className, iconClassName, buttonName, buttonType }: TTSButtonProps) {
   const [isTalking, setIsTalking] = useState<boolean>(false);
   const [stillTalking, setStillTalking] = useState<boolean>(false);
 
@@ -34,11 +38,21 @@ function TTSButton({ text, className, iconClassName }: TTSButtonProps) {
     readText();
   }, [isTalking])
 
-  return (
-    <button className={className} onClick={handleButtonClick}>
-      <FaMicrophone className={iconClassName} />
-    </button>
-  );
+  if (buttonType === 'Button') {
+    return (
+      <Button className={className} onClick={handleButtonClick}>
+        {buttonName ? `${buttonName} ` : ''}
+        <FaMicrophone className={'inline ' + iconClassName} />
+      </Button>
+    );
+  } else {
+    return (
+      <button className={className} onClick={handleButtonClick}>
+        {buttonName ? `${buttonName} ` : ''}
+        <FaMicrophone className={'inline ' + iconClassName} />
+      </button>
+    );
+  }
 }
 
 export default TTSButton;
