@@ -14,7 +14,7 @@ function DateTime({ formInfo, handleChange }) {
             </Separator>
 
 
-            
+
             <label className="block text-sm font-medium mb-1">Date</label>
             <Input
                 name="startDate"
