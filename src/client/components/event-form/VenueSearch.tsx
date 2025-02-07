@@ -42,6 +42,7 @@ function VenueSearch({ handleVenueSelect }) {
                     longitude: geoLocation?.longitude || null,
                 }
             });
+
             setFilteredVenues(response.data);
             } catch (error) {
             console.error('Error searching venues: ', error);
