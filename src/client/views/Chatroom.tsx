@@ -240,7 +240,7 @@ function Chatroom() {
   }, [anim]);
   const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
-    graphics?.scale.set(1.5, .56);
+    graphics?.scale.set(.75, .26);
   }, []);
   // CONTROLS
   const keyPress = ({ key }: Element) => {
@@ -371,9 +371,9 @@ function Chatroom() {
             objLay.tiles.map((objTiles) => ( 
                 <pixiSprite
                   texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
-                  x={32 * (objTiles.x) }
-                  y={32 * (objTiles.y) }
-                 
+                  x={32 * (objTiles.x) * 1.22 }
+                  y={32 * (objTiles.y) * 1.22 }
+                 scale={ 1.22, 1.22}
                 />
             ))
             }
@@ -385,12 +385,11 @@ function Chatroom() {
               x={player.x} 
               y={player.y} 
               key={player.id} 
-              scale={scaleFactor, scaleFactor}
+              scale={ 1.22, 1.22}
               >
                 {player.sentMessage && (
                   <pixiGraphics 
                   draw={speechBubble} 
-                  
                 />
                 )}
                 {player.sentMessage && (
@@ -398,18 +397,18 @@ function Chatroom() {
                     text={player.currentMessage}
                     anchor={0.5}
                     x={70}
-                    y={-50}
+                    y={-30}
                     scale={scaleFactor * .5, scaleFactor}
                     style={new TextStyle({
                       align: 'center',
                       fontFamily: 'sans-serif',
-                      fontSize: 15 * 1 / scaleFactor,
+                      fontSize: 8,
                       fontWeight: 'bold',
                       fill: '#000000',
                       stroke: '#eef1f5',
                       letterSpacing: 5,
                       wordWrap: true,
-                      wordWrapWidth: 200 * 1 / scaleFactor,
+                      wordWrapWidth: 100,
                     })}
                   />
                 )}
