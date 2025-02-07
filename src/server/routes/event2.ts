@@ -93,7 +93,11 @@ event2Router.post('/attend/:id', async (req: any, res: Response) => {
   try {
     const UserId = req.user.id;
     const EventId = req.params.id;
-    const NotificationId = req.body.event.notificationId;
+
+    const event: any = await Event.findByPk(EventId);
+
+    const NotificationId = event.hour_before_notif;
+
     await User_Event.findOrCreate({
       where: { UserId, EventId },
       defaults: { UserId, EventId },
