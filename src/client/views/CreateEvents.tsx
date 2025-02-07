@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Button} from "../../components/ui/button";
@@ -9,6 +9,7 @@ import DateTime from '../components/event-form/DateTime';
 import CategoryInterest from '../components/event-form/CategoryInterest';
 import FormStart from '../components/event-form/FormStart'
 import Review from '../components/event-form/Review';
+import {UserContext} from "@/client/contexts/UserContext";
 
 type EventData = {
     title: string;
@@ -43,6 +44,7 @@ function CreateEvents() {
         category: '',
     });
 
+    const { user } = useContext(UserContext);
 
     const [step, setStep] = useState(1);
     const [geoLocation, setGeoLocation] = useState();
@@ -76,6 +78,7 @@ function CreateEvents() {
 
     const handleVenueSelect = async (venueData) => {
         const { venue, nullFields } = venueData;
+        console.log('this is user');
         try {
 
             setFormInfo(prev => ({
