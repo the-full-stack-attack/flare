@@ -64,17 +64,9 @@ export const Logo = ({ className, animate = true, size = "lg" }: LogoProps) => {
               "object-contain w-auto",
               sizes[size]
             )}
-            style={{ 
+            style={{
               filter: 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.5))'
             }}
-            animate={animate ? {
-              scale: [1, 1.05, 1],
-              transition: {
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }
-            } : {}}
           />
         </motion.div>
       </div>

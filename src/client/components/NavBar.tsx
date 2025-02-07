@@ -59,7 +59,7 @@ export const NavBar = () => {
         <div className="flex justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <Logo 
+            <Logo
               size="navbar"
               animate={true}
               className="py-2"
