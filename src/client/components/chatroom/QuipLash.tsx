@@ -89,7 +89,6 @@ function QuipLash() {
     {
       alias: 'background',
       src:  bartender
-
     }
   ]);
 
@@ -306,7 +305,6 @@ function QuipLash() {
                   </pixiContainer>
         </Application>
         </div>        
-             
         </div>  
         </div>
         </div>
