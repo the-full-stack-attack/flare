@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 
 import {
@@ -27,7 +27,7 @@ function ScheduleTextDialog({
   endTime,
   eventTitle,
 }: ScheduleTextDialogProps) {
-  const [sendTime, setSendTime] = useState<string>('30-minutes');
+  const [sendTime, setSendTime] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [newTextMode, setNewTextMode] = useState<boolean>(true);
   const [updateMode, setUpdateMode] = useState<boolean>(false);
@@ -37,6 +37,12 @@ function ScheduleTextDialog({
   const warnDialogButton = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-800 hover:to-orange-800 text-white';
 
   const successDialogButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white'
+
+  const { startDateNum, endDateNum, now } = useMemo(() => ({
+    startDateNum: new Date(startTime).getTime(),
+    endDateNum: new Date(endTime).getTime(),
+    now: Date.now(),
+  }), [startTime, endTime]);
 
   const handleSendTimeSelect = useCallback(({ target }: any) => {
     setSendTime(target.value);
@@ -154,7 +160,9 @@ function ScheduleTextDialog({
         </Label>
         <RadioGroup defaultValue={sendTime} disabled={!newTextMode}>
           {
-            true ? (
+            (
+              now < startDateNum + 1000 * 60 * 30
+            ) ? (
               <div className="flex items-center space-x-2">
                 <RadioGroupItem
                   id="30-minutes"
@@ -167,7 +175,9 @@ function ScheduleTextDialog({
             ) : null
           }
           {
-            true ? (
+            (
+              now < startDateNum + 1000 * 60 * 60 * 1
+            ) ? (
               <div className="flex items-center space-x-2">
                 <RadioGroupItem
                   id="1-hour"
@@ -180,7 +190,9 @@ function ScheduleTextDialog({
             ) : null
           }
           {
-            true ? (
+            (
+              now < startDateNum + 1000 * 60 * 60 * 2
+            ) ? (
               <div className="flex items-center space-x-2">
                 <RadioGroupItem
                   id="2-hours"
@@ -209,7 +221,7 @@ function ScheduleTextDialog({
         {newTextMode ? (
           <div className="grid grid-cols-2 gap-2">
             <DialogClose asChild>
-              <Button type="submit" className={successDialogButton} onClick={postPatchText}>
+              <Button type="submit" className={successDialogButton} disabled={!!sendTime} onClick={postPatchText}>
                 Schedule Text
               </Button>
             </DialogClose>
