@@ -46,6 +46,7 @@ function CreateEvents() {
 
     const [step, setStep] = useState(1);
     const [geoLocation, setGeoLocation] = useState();
+    const [nullFields, setNullFields] = useState({});
 
 
     // temp geolocation call to see if this fixes bug
@@ -60,9 +61,23 @@ function CreateEvents() {
         }
     }
 
-
-    const handleVenueSelect = async (venue) => {
+    const handleFieldChange = async (field, value) => {
         try {
+            const venue = formInfo.venue;
+            await axios.put(`/api/event/venue/${formInfo.venueId}/accessibility`, {
+                wheelchair_accessible: value
+            });
+            setFormInfo(prev => ({...prev, [field]: value}));
+        } catch (error) {
+            console.error('Error updating accessibility:', error);
+        }
+    };
+
+
+    const handleVenueSelect = async (venueData) => {
+        const { venue, nullFields } = venueData;
+        try {
+
             setFormInfo(prev => ({
                 ...prev,
                 venue: venue.name,
@@ -71,8 +86,10 @@ function CreateEvents() {
                 zipCode: venue.zip_code,
                 cityName: venue.city_name,
                 stateName: venue.state_name,
-                fsq_id: venue.fsq_id
+                fsq_id: venue.fsq_id,
+                venueId: venue.id,
             }));
+            setNullFields(nullFields);
             setStep(5);
         } catch (error) {
             console.error('Error updating form with venue:', error);
@@ -198,7 +215,8 @@ function CreateEvents() {
 
                     {/* CONFIRM DETAILS */}
                     {step === 5 && (
-                        <Review formInfo={formInfo}/>
+                        <Review formInfo={formInfo} nullFields={nullFields}
+                                handleFieldChange={handleFieldChange}/>
                     )}
 
 
