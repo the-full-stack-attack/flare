@@ -1,6 +1,20 @@
 import axios from 'axios';
+import http from 'http';
 
-import User_Notification from '../src/server/db/models/users_notifications';
+import User_Notification from '../../src/server/db/models/users_notifications';
+
+declare global {
+  var PORT: number;
+  var testServer: http.Server;
+  var user1: any;
+  var user2: any;
+  var event1: any;
+  var event2: any;
+  var venue1: any;
+  var venue2: any;
+  var notif1: any;
+  var notif2: any;
+};
 
 const PORT = globalThis.PORT;
 

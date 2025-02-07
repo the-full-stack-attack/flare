@@ -18,7 +18,7 @@ function NotificationList({ notifs, getNotifications }: NotificationListProps) {
   return (
     <>
       {notifs.map((notif: any) => (
-        <div key={notif.id}>
+        <div key={notif.id} className="sm:w-screen md:w-2/3 lg:w-2/3">
           <Notification notif={notif} getNotifications={getNotifications} />
         </div>
       ))}
