@@ -1,12 +1,12 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { Toggle } from '@/components/ui/toggle';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { Separator } from '@/components/ui/seperator';
+import {useState, useEffect} from 'react';
+import {Toggle} from '@/components/ui/toggle';
+import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem} from '@/components/ui/select';
+import {Separator} from '@/components/ui/seperator';
 import axios from 'axios';
 
 
-function CategoryInterest({ handleCategoryInterests }) {
+function CategoryInterest({handleCategoryInterests}) {
     const [categories, setCategories] = useState([]);
     const [interests, setInterests] = useState([]);
     const [selectedInterests, setSelectedInterests] = useState([]);
@@ -63,7 +63,6 @@ function CategoryInterest({ handleCategoryInterests }) {
     };
 
 
-
     return (
         <div>
             <div className='mb-5 text-2xl font-semibold'>
@@ -108,9 +107,6 @@ function CategoryInterest({ handleCategoryInterests }) {
         </div>
     )
 };
-
-
-
 
 
 export default CategoryInterest;

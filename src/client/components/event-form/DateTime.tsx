@@ -1,8 +1,8 @@
 import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/seperator';
+import {Input} from '@/components/ui/input';
+import {Separator} from '@/components/ui/seperator';
 
-function DateTime({ formInfo, handleChange }) {
+function DateTime({formInfo, handleChange}) {
 
     return (
         <div>
@@ -12,7 +12,6 @@ function DateTime({ formInfo, handleChange }) {
             <Separator
                 className='my-5 bg-color-5'>
             </Separator>
-
 
 
             <label className="block text-sm font-medium mb-1">Date</label>
