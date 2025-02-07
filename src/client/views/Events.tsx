@@ -7,6 +7,8 @@ import { Button } from '../../components/ui/button';
 
 import { Input } from '../../components/ui/input';
 
+import { Toaster } from 'sonner';
+
 import {
   Tabs,
   TabsContent,
@@ -311,6 +313,12 @@ function Events() {
           </TabPanels>
         </TabGroup>
       </div>
+      <Toaster
+        toastOptions={{
+          className: 'isolate rounded-xl bg-gray-300/50 shadow-lg ring-1 ring-black/5 border-transparent text-white'
+        }}
+        position="top-center"
+      />
     </div>
   );
 }
