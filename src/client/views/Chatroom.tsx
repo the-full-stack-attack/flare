@@ -222,8 +222,8 @@ function Chatroom() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   return (
-    // <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
-    <div>
+     <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
+    
     {/* <div
       
       className="flex justify-center items-center"
@@ -233,14 +233,14 @@ function Chatroom() {
         //   marginTop: '20px',
         // }}
         >
-        <div>
+        <div> */}
         <div style={{
           display: 'flex',
           justifyContent: 'center',
           marginTop: '80px',
           }} >
           <Countdown endTime={dayjs(start_time)}/>
-          </div> */}
+          </div> 
           {/* <div class="demoWrapper"> */}
           {/* <div class="py-60 static justify-items-center border border-orange-600"> 
           <div class="aspect-w-16 aspect-h-9  justify-items-center">
