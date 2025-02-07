@@ -165,7 +165,7 @@ function EventDetails({
             </Button>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className={normalDrawerButton}>Schedule Text</Button>
+                <Button className={successDrawerButton}>Schedule Text</Button>
               </DialogTrigger>
               <ScheduleTextDialog
                 eventId={event.id}

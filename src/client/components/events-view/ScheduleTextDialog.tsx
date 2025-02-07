@@ -37,7 +37,7 @@ function ScheduleTextDialog({
 
   const warnDialogButton = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-800 hover:to-orange-800 text-white';
 
-  const successDialogButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white'
+  const successDialogButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white';
 
   const { startTimeNum, endTimeNum, now } = useMemo(() => ({
     startTimeNum: new Date(startTime).getTime(),
