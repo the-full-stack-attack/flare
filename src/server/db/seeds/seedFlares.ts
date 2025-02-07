@@ -1,4 +1,6 @@
-import User from '../models/users';
+import fs from 'fs';
+import s3 from '../../../../webpack.config';
+import path from 'path';
 import Flares from '../models/flares';
 
 type FlareType = {
@@ -35,7 +37,13 @@ class Flare {
     this.description = description;
   }
 }
-
+/* PLAN
+* Get images for the Flares
+* Add the image paths to the Flare Arrays
+* Update seed to store the images within the s3 bucket
+* - Need to use path.basename() to create the image key (This will be stored on the Flare)
+* - Once all image keys are created and added to the Flare objects => create the flares
+*/
 const flares: FlareType[] = [];
 const flareArrays: any[] = [];
 // Create individual flare arrays and push them onto the flareArrays
