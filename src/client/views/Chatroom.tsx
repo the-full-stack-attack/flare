@@ -17,6 +17,7 @@ import QuipLash from '../components/chatroom/QuipLash';
 import MsgBox from '../components/chatroom/MsgBox';
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
+import mapPack from '../assets/chatroom/mapPack'
 import {
   Container,
   Graphics,
@@ -35,7 +36,7 @@ import {
   testJumper,
   spritesheet,
 } from '../assets/chatroom/spritesheets/sprites';
-
+import nightClubTileSet from '../assets/chatroom/tileSet';
 extend({
   Container,
   Graphics,
@@ -362,17 +363,23 @@ function Chatroom() {
           height={Math.floor(360)}
           backgroundColor={' #FFFFFF'}
          >
-             <pixiContainer  
-            >
-
+          {
+            mapPack.layers.map((objLay) => (
+              <pixiContainer  
+              >
+            { 
+            objLay.tiles.map((objTiles) => ( 
                 <pixiSprite
-                  texture={Assets.get(variable)}
-                  x={0}
-                  y={0}
+                  texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
+                  x={32 * (objTiles.x) }
+                  y={32 * (objTiles.y) }
                  
                 />
- 
+            ))
+            }
             </pixiContainer>
+          ))
+            }
             {allPlayers.map((player) => (
               <pixiContainer 
               x={player.x} 
