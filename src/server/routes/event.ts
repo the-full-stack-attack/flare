@@ -118,15 +118,15 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             }
             cityName = eventVenue.city_name;
         } else {
-            // create venue
-            eventVenue = await Venue.create({
-                name: venue,
-                description: venueDescription,
-                street_address: streetAddress,
-                zip_code: zipCode,
-                city_name: cityName,
-                state_name: stateName,
-            });
+            // // create venue
+            // eventVenue = await Venue.create({
+            //     name: venue,
+            //     description: venueDescription,
+            //     street_address: streetAddress,
+            //     zip_code: zipCode,
+            //     city_name: cityName,
+            //     state_name: stateName,
+            // });
         }
 
         const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
@@ -270,11 +270,28 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         const newVenue: any = await Venue.create(buildVenue);
 
 
+        // const nullFields: any = {};
+        // if (buildVenue.wheelchair_accessible === null) {
+        //     console.log('venue wheelchair is null');
+        //     nullFields.wheelchair_accessible = null;
+        // }
+
         const nullFields: any = {};
-        if (buildVenue.wheelchair_accessible === null) {
-            console.log('venue wheelchair is null');
-            nullFields.wheelchair_accessible = null;
-        }
+
+        if (newVenue) {
+            if (newVenue.name === null) nullFields.name = null;
+            if (newVenue.description === null) nullFields.description = null;
+            if (newVenue.category === null) nullFields.category = null;
+            if (newVenue.street_address === null) nullFields.street_address = null;
+            if (newVenue.zip_code === null) nullFields.zip_code = null;
+            if (newVenue.city_name === null) nullFields.city_name = null;
+            if (newVenue.state_name === null) nullFields.state_name = null;
+            if (newVenue.phone === null) nullFields.phone = null;
+            if (newVenue.website === null) nullFields.website = null;
+            if (newVenue.pricing === null) nullFields.pricing = null;
+            if (newVenue.wheelchair_accessible === null) nullFields.wheelchair_accessible = null;
+            if (newVenue.serves_alcohol === null) nullFields.serves_alcohol = null;
+        };
         // get tags from api responses
         const newTags = getVenueTags(fsqData, gData);
 

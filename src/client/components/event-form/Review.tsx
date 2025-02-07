@@ -57,6 +57,27 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                                 </Select>
                             </>
                         )}
+
+                        {nullFields?.serves_alcohol === null && (
+                            <>
+                                <p className="text-gray-400">Serves Alcohol:</p>
+                                <Select
+                                    value={formInfo.serves_alcohol ? "1" : "0"}
+                                    onValueChange={(value) => handleFieldChange('serves_alcohol', value === "1")}
+                                >
+                                    <SelectTrigger
+                                        className="bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white">
+                                        <SelectValue/>
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-gray-900/95 border-orange-500/30">
+                                        <SelectItem value="1"
+                                                    className="text-white hover:bg-orange-500/30">Yes</SelectItem>
+                                        <SelectItem value="0"
+                                                    className="text-white hover:bg-orange-500/30">No</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </>
+                        )}
                     </div>
                 </div>
 
@@ -67,8 +88,12 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                     <div className="grid grid-cols-2 gap-4">
                         <p className="text-gray-400">Venue Name:</p>
                         <p className="text-white">{formInfo.venue}</p>
-                        <p className="text-gray-400">Description:</p>
-                        <p className="text-white">{formInfo.venueDescription}</p>
+                        {!nullFields?.description && (
+                            <>
+                                <p className="text-gray-400">Description:</p>
+                                <p className="text-white">{formInfo.venueDescription}</p>
+                            </>
+                        )}
                         <p className="text-gray-400">Address:</p>
                         <p className="text-white">{formInfo.streetAddress}</p>
                         <p className="text-gray-400">City:</p>
