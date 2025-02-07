@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 
-function Review({formInfo}) {
+function Review({formInfo, nullFields, handleFieldChange}) {
 
     return (
         <div className="mb-5 space-y-6">
@@ -24,6 +24,18 @@ function Review({formInfo}) {
                         <p>{dayjs(`2024-01-01T${formInfo.startTime}`).format("h:mm A")}</p>
                         <p className="text-gray-600">End Time:</p>
                         <p>{dayjs(`2024-01-01T${formInfo.endTime}`).format("h:mm A")}</p>
+                        {nullFields?.wheelchair_accessible === null && (
+                            <div>
+                                <p className="text-gray-600">Wheelchair Accessible:</p>
+                                <select
+                                    value={formInfo.wheelchair_accessible || false}
+                                    onChange={(e) => handleFieldChange('wheelchair_accessible', e.target.value === 'true')}
+                                >
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className="border rounded-lg p-4">
