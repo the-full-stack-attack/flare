@@ -11,6 +11,11 @@ import { AnimatedList } from '../../components/ui/animated-list';
 import { Button } from '../../components/ui/button';
 import  { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
+import { UserContext } from '../contexts/UserContext';
+import { Countdown } from '../components/chatroom/countdown';
+import QuipLash from '../components/chatroom/QuipLash';
+import MsgBox from '../components/chatroom/MsgBox';
+import SOCKET_URL from '../../../config';
 import {
   Container,
   Graphics,
@@ -23,20 +28,12 @@ import {
   Spritesheet, // failing
   AnimatedSprite,
 } from 'pixi.js';
-import MsgBox from '../components/chatroom/MsgBox';
 import axios from 'axios';
-import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' // test circle
-import { UserContext } from '../contexts/UserContext';
-import QuipLash from '../components/chatroom/QuipLash';
-import { Countdown } from '../components/chatroom/countdown';
+import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' 
 import {
   testJumper,
   spritesheet,
 } from '../assets/chatroom/spritesheets/sprites';
-// 'extend' is unique to the beta version of pixi.js
-// With this beta version, everything you import from pixijs
-// must be passed into extend. Then you can utilize them as components
-// prefixed with pixi ex. <pixiContainer/> <pixiGraphics/>
 
 extend({
   Container,
@@ -50,10 +47,8 @@ extend({
   Texture, // not worth it w/ useAssets...?
   Viewport,
 });
-import SOCKET_URL from '../../../config';
 
 let socket = io(SOCKET_URL);
-
 // if (process.env.REACT_APP_DEVELOPMENT_SOCKETS === 'true') {
 //   socket = io('http://localhost:4000');
 // } else {
@@ -65,8 +60,6 @@ let socket = io(SOCKET_URL);
   //   }
   // });
 // };
-
-
 const style = new TextStyle({
   align: 'center',
   fontFamily: 'sans-serif',
@@ -83,7 +76,6 @@ function Chatroom() {
   const location = useLocation();
   const start_time = location.state;
   // LOAD ASSETS
-  
   useAssets([
     {
       alias: 'bunny',
@@ -93,17 +85,19 @@ function Chatroom() {
       alias: 'speech',
       src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
     },
+    {
+      alias: 'temporaryMap',
+      src: temporaryMap,
+    },
   ]);
-  const {
-    assets: [texture],
-    isSuccess,
-  } = useAssets<Texture>([temporaryMap]);
-
+  // const {
+  //   assets: [texture],
+  //   isSuccess,
+  // } = useAssets<Texture>([temporaryMap]);
   // Collision Detection testing *relies on tilemaps, NOT READY
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
-
   // LOGIC
   const { user } = useContext(UserContext);
   const appRef = useRef(null);
@@ -121,16 +115,12 @@ function Chatroom() {
   };
   // QUIPLASH
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
-  // useEffect(() => {
-
-  // }, [isPlayingQuipLash])
   const toggleQuiplash = () => {
     console.log('clicked')
     isPlayingQuiplash ? setIsPlayingQuiplash(false) : setIsPlayingQuiplash(true);
   }
   // TESTING //
   let anim = useRef(false);
-
   useEffect(() => {
 
     (async () => {
@@ -142,14 +132,10 @@ function Chatroom() {
       }
     })();
   }, [anim]);
-  // TESTING //
-
-  // EXAMPLES
   const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
     graphics?.scale.set(scaleFactor * 1.5, scaleFactor * .5);
   }, []);
-
   // CONTROLS
   const keyPress = ({ key }: Element) => {
     if (isTyping === false) {
@@ -164,55 +150,25 @@ function Chatroom() {
       }
     }
   };
-
   const keyUp = ({ key }: Element) => {
     if (key === 'ArrowUp' || key === 'w') {
-      // Up
       socket.emit('keyPress', { inputId: 'Up', state: false });
     } else if (key === 'ArrowDown' || key === 's') {
-      // Down
       socket.emit('keyPress', { inputId: 'Down', state: false });
     } else if (key === 'ArrowLeft' || key === 'a') {
-      // Left
       socket.emit('keyPress', { inputId: 'Left', state: false });
     } else if (key === 'ArrowRight' || key === 'd') {
-      // Right
       socket.emit('keyPress', { inputId: 'Right', state: false });
     }
   };
-
-  // WINDOW SIZING
-  useEffect(() => {
-    const handleResize = () => {
-      setGameRatio(window.innerWidth / window.innerHeight)
-      setGameWidth(window.innerWidth);
-      setGameHeight(window.innerHeight);
-      setScaleFactor((gameRatio > 1.5) ? 0.8 : 1)
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
+  let variable = 'temporaryMap'
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
     axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
     socket.emit('joinChat', { user, eventId });
-    /**
-     *  When client joins the chat, be assigned a room.
-     *
-     *  Send a get request to 'chatroom' along with the current path endpoint as a param
-     *
-     *  The get request will return a chatroom map. set the state to the current room map
-     *
-     * 
-     *
-     * */
     socket.on('message', (msg) => {
-      displayMessage(msg);
-      // Update UI with the new message
+    displayMessage(msg);
     });
-    // Update state of all players and their respective positions
     socket.on('newPositions', (data) => {
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
@@ -231,7 +187,6 @@ function Chatroom() {
       setAllPlayers(allPlayerInfo);
     });
   }, []);
-
   // EVENT LISTENERS FOR TYPING
   useEffect(() => {
     if (isTyping === false) {
@@ -246,74 +201,69 @@ function Chatroom() {
       document.removeEventListener('keyup', keyUp);
     };
   }, [isTyping]);
-
   const typing = async () => {
     await setIsTyping(!isTyping);
   };
-
   const sendMessage = () => {
     console.log(message);
     socket.emit('message', { message, eventId });
     displayMessage({message: message, username: user?.username });
     setMessage('');
   };
-
-  // test circle
-  const drawCircle = (graphics: unknown) => {
-    graphics?.clear();
-    graphics?.circle(100, 100, 50);
-    graphics?.fill('red');
+  // WINDOW SIZING
+  const handleResize = () => {
+    setGameRatio(window.innerWidth / window.innerHeight)
+    setGameWidth(window.innerWidth);
+    setGameHeight(window.innerHeight);
+    setScaleFactor((gameRatio > 1.3) ? 0.75 : 1)
   };
-
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
-    <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
-   
-      <div
+    // <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
+    <div>
+    {/* <div
       
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '20px',
-        }}
-      >
+      className="flex justify-center items-center"
+      // style={{
+        //   display: 'flex',
+        //   justifyContent: 'center',
+        //   marginTop: '20px',
+        // }}
+        >
         <div>
         <div style={{
           display: 'flex',
           justifyContent: 'center',
           marginTop: '80px',
-        }} >
+          }} >
           <Countdown endTime={dayjs(start_time)}/>
-          </div>
-             {/* <Viewport 
-        app={app} // Pass the Pixi.js application instance to the Viewport
-        width={800} 
-        height={600}
-        drag={true}
-        pinchToZoom={true}
-        wheel={true}
-      > */}
+          </div> */}
+          {/* <div class="demoWrapper"> */}
+          {/* <div class="py-60 static justify-items-center border border-orange-600"> 
+          <div class="aspect-w-16 aspect-h-9  justify-items-center">
+          <Card className="aspect-w-16 aspect-h-9 justify-items-center border border-orange-600 overflow-hidden" ref={appRef}> */}
+          <div class="card  aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
+          <div class="p-5">
+          <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
           <Application 
-          resizeTo={appRef.current}
-          >
-            <pixiContainer 
-            x={100} 
-            y={200} 
+          resizeTo={appRef}
+          width={Math.floor(640)}
+          height={Math.floor(360)}
+          backgroundColor={' #FFFFFF'}
+         >
+             <pixiContainer  
             >
-              <pixiGraphics 
-              draw={drawCircle} 
-              />
-            </pixiContainer>
-            <pixiContainer  
-            resizeTo={appRef.current} 
-            >
-              {isSuccess && (
+
                 <pixiSprite
-                  texture={texture}
+                  texture={Assets.get(variable)}
                   x={0}
                   y={0}
-                 // scale={scaleFactor, scaleFactor} 
+                 
                 />
-              )}
+ 
             </pixiContainer>
             {allPlayers.map((player) => (
               <pixiContainer 
@@ -355,23 +305,16 @@ function Chatroom() {
                   y={50}
                   style={style}
                 />
-
               </pixiContainer>
-            ))}
-            {/* <pixiAnimatedSprite
-
-              anchor={0.5}
-              textures={anim}
-              isPlaying={true}
-              initialFrame={0}
-              animationSpeed={0.1666}
-              x={35}
-              y={50}
-              loop={true}
-            /> */}
+            ))} 
           </Application>
-          {/* </Viewport> */}
-        </div>
+          </div>
+          </div>
+          </div>
+           {/* </Card> 
+          </div>
+            </div>  */}
+       {/* </div>
       </div>
       <div
         style={{
@@ -410,12 +353,10 @@ function Chatroom() {
         </div>
       </div>
         <Card class="bg-transparent flex items-center justify-center">
-
       <div
         style={{
           display: 'flex',
           justifyContent: 'center',
-          
           width: '250px'
         }}>
           <AnimatedList class="w-80 md:w-160 lg:w-300">
@@ -424,9 +365,8 @@ function Chatroom() {
             ))}
           </AnimatedList>
       </div>
-        </Card>
-  
-    </div>
+      </Card> */}
+      </div>
   );
 }
 
