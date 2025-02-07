@@ -32,10 +32,10 @@ import {
 } from 'pixi.js';
 import axios from 'axios';
 import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' 
-import {
-  testJumper,
-  spritesheet,
-} from '../assets/chatroom/spritesheets/sprites';
+// import {
+//   testJumper,
+//   spritesheet,
+// } from '../assets/chatroom/spritesheets/sprites';
 import nightClubTileSet from '../assets/chatroom/tileSet';
 extend({
   Container,
