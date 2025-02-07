@@ -35,21 +35,21 @@ function Notification({ notif, getNotifications }: NotificationProps) {
 
   return (
     <Card
-      className={`ml-4 mr-4 mb-4 ${notif.User_Notification.seen ? '' : ' bg-cyan-100'}`}
+      className={`isolate rounded-xl bg-white/10 shadow-lg ring-1 ring-black/5 ml-4 mr-4 mb-4 ${notif.User_Notification.seen ? 'border-transparent' : ' bg-sky-300/30'}`}
     >
       <CardHeader>
         <CardTitle>
           <div className="grid grid-cols-12 gap-2">
-            <div className="col-span-11">{notif.message}</div>
-            <button onClick={deleteNotification}>x</button>
+            <div className="col-span-11 text-gray-200">{notif.message}</div>
+            <button className="text-gray-200 hover:text-gray-400 text-lg" onClick={deleteNotification}>x</button>
           </div>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-gray-400">
           {dayjs(notif.send_time).format('h:mm a, MMM. D')}
           <TTSButton
             className="pl-2"
-            iconClassName="text-blue-500"
-            text={`Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}, ${notif.message}`}
+            iconClassName="text-orange-500 hover:text-orange-700 text-lg"
+            text={`Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}: ${notif.message}`}
           />
         </CardDescription>
       </CardHeader>
