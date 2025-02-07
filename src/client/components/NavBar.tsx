@@ -2,19 +2,21 @@ import React, { useState, useEffect, useContext, JSX } from 'react';
 import { motion } from 'framer-motion';
 import { Transition } from '@headlessui/react';
 import {
-  FaCalendarAlt, // Events
-  FaCalendarPlus, // Create Event
-  FaRobot, // AI
-  FaTasks, // Task
-  FaStickyNote, // Notifications
-  FaChartLine, // Dashboard
-  FaSignOutAlt, // Logout
-  FaCog // Settings
+  FaCalendarAlt,
+  FaCalendarPlus,
+  FaRobot,
+  FaTasks,
+  FaStickyNote,
+  FaChartLine,
+  FaSignOutAlt,
+  FaCog
 } from 'react-icons/fa';
 import cn from '../../../lib/utils';
 import { UserContext } from '../contexts/UserContext';
+import { Logo } from './Logo';
+import { Link } from 'react-router-dom';
 
-function NavBar(): JSX.Element {
+export const NavBar = () => {
   const { user } = useContext(UserContext);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -54,19 +56,15 @@ function NavBar(): JSX.Element {
       )}
     >
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-20">
           {/* Logo */}
-          <motion.div
-            className="flex items-center"
-            whileHover={{ scale: 1.05 }}
-          >
-            <a
-              href="/"
-              className="text-2xl font-bold bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 text-transparent bg-clip-text"
-            >
-              Flare
-            </a>
-          </motion.div>
+          <Link to="/" className="flex items-center">
+            <Logo 
+              size="navbar"
+              animate={true}
+              className="py-2"
+            />
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -146,6 +144,4 @@ function NavBar(): JSX.Element {
       </Transition>
     </nav>
   );
-}
-
-export default NavBar;
+};
