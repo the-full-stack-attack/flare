@@ -140,10 +140,10 @@ function ScheduleTextDialog({
   }, [getText]);
 
   return (
-    <DialogContent className="sm:max-w-[425px] bg-black/80 text-white">
+    <DialogContent className="sm:max-w-[425px] bg-gray-600/80 text-white">
       <DialogHeader>
         <DialogTitle>Schedule a Check-In Text</DialogTitle>
-        <DialogDescription>
+        <DialogDescription className="text-gray-200">
           Schedule a text to be sent during the event. This is a way to provide
           an out if you need to leave.
         </DialogDescription>
@@ -153,33 +153,45 @@ function ScheduleTextDialog({
           Send a Text In
         </Label>
         <RadioGroup defaultValue={sendTime} disabled={!newTextMode}>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem
-              id="30-minutes"
-              value="30-minutes"
-              className="focus:bg-white text-white"
-              onClick={handleSendTimeSelect}
-            />
-            <Label htmlFor="30-minutes">30 minutes</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem
-              id="1-hour"
-              value="1-hour"
-              className="focus:bg-white text-white"
-              onClick={handleSendTimeSelect}
-            />
-            <Label htmlFor="1-hour">1 hour</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem
-              id="2-hours"
-              value="2-hours"
-              className="focus:bg-white text-white"
-              onClick={handleSendTimeSelect}
-            />
-            <Label htmlFor="2-hours">2 hours</Label>
-          </div>
+          {
+            true ? (
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  id="30-minutes"
+                  value="30-minutes"
+                  className="focus:bg-white text-white"
+                  onClick={handleSendTimeSelect}
+                />
+                <Label htmlFor="30-minutes">30 minutes</Label>
+              </div>
+            ) : null
+          }
+          {
+            true ? (
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  id="1-hour"
+                  value="1-hour"
+                  className="focus:bg-white text-white"
+                  onClick={handleSendTimeSelect}
+                />
+                <Label htmlFor="1-hour">1 hour</Label>
+              </div>
+            ) : null
+          }
+          {
+            true ? (
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  id="2-hours"
+                  value="2-hours"
+                  className="focus:bg-white text-white"
+                  onClick={handleSendTimeSelect}
+                />
+                <Label htmlFor="2-hours">2 hours</Label>
+              </div>
+            ) : null
+          }
         </RadioGroup>
       </div>
       <div className="grid gap-4 py-4">
