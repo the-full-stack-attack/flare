@@ -63,9 +63,9 @@ function CreateEvents() {
 
     const handleFieldChange = async (field, value) => {
         try {
-            const venue = formInfo.venue;
             await axios.put(`/api/event/venue/${formInfo.venueId}/accessibility`, {
-                wheelchair_accessible: value
+                wheelchair_accessible: value,
+                userId: user.id
             });
             setFormInfo(prev => ({...prev, [field]: value}));
         } catch (error) {

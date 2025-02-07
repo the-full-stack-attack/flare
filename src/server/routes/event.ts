@@ -2,6 +2,7 @@ import {Router, Request, Response} from 'express';
 import Category from '../db/models/categories';
 import Event from '../db/models/events';
 import Venue from '../db/models/venues';
+import User from '../db/models/users';
 import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
 import dayjs from 'dayjs';
@@ -271,6 +272,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 
         const nullFields: any = {};
         if (buildVenue.wheelchair_accessible === null) {
+            console.log('venue wheelchair is null');
             nullFields.wheelchair_accessible = null;
         }
         // get tags from api responses
@@ -312,11 +314,13 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
 eventRouter.put('/venue/:id/accessibility', async (req: any, res: Response) => {
     try {
         const { id } = req.params;
-        const { wheelchair_accessible } = req.body;
+        const { wheelchair_accessible, userId } = req.body;
         await Venue.update({ wheelchair_accessible }, { where: { id } });
 
-        await checkForFlares(req.user, 'Venue Virtuoso');
-        
+        const user: any = await User.findByPk(userId);
+        if (user) {
+            await checkForFlares(user, 'Venue Virtuoso');
+        }
         res.sendStatus(200);
     } catch (error) {
         console.error('Error updating venue accessibility', error);
