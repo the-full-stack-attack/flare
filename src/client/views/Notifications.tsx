@@ -15,6 +15,8 @@ function Notifications() {
 
   const [notifs, setNotifs] = useState<any>([]);
 
+  const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-4 py-4 rounded-xl text-md';
+
   const getNotifications = useCallback(() => {
     axios
       .get('/api/notifications')
@@ -56,12 +58,13 @@ function Notifications() {
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
       <div className="container flex flex-col items-center">
-        <div className="grid gap-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 w-md">
-          <Button className="mb-5" onClick={deleteAllNotifications}>
+        <div className="grid gap-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 w-md mb-5">
+          <Button className={buttonColor} onClick={deleteAllNotifications}>
             Clear All Notifications
           </Button>
           <TTSButton
             buttonType="Button"
+            className={buttonColor}
             text={`Back off, I'll take you on
 Headstrong to take on anyone
 I know that you are wrong
@@ -70,7 +73,7 @@ Back off, I'll take you on
 Headstrong to take on anyone
 I know that you are wrong
 And this is not where you belong`}
-            buttonName="Headstrong"
+            buttonName="Read New Notifications"
           />
         </div>
         <NotificationList notifs={notifs} getNotifications={getNotifications} />
