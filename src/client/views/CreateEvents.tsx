@@ -1,18 +1,14 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-import {Textarea} from '../../components/ui/textarea';
-import {Input} from '../../components/ui/input';
 import {Button} from "../../components/ui/button";
-import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem,} from '../../components/ui/select';
 import {Card} from '../../components/ui/card';
 import {Separator} from '../../components/ui/seperator';
-import { Ripple } from '../../components/ui/ripple'
-import {Toggle, toggleVariants} from '../../components/ui/toggle';
 import dayjs from 'dayjs';
 import VenueSearch from '../components/event-form/VenueSearch';
 import DateTime from '../components/event-form/DateTime';
 import CategoryInterest from '../components/event-form/CategoryInterest';
+import FormStart from '../components/event-form/FormStart'
 type EventData = {
     title: string;
     description: string;
@@ -53,15 +49,10 @@ function CreateEvents() {
         city_name: string;
         state_name: string;
     }>>([]);
-    // const [date, setDate] = React.useState<Date>()
-    const [categories, setCategories] = useState([]); // Categories from DB
-    const [interests, setInterests] = useState([]); // Interests from DB
-    const [selectedInterests, setSelectedInterests] = useState<string[]>([]); // User selected Interests
-    // const [isNewVenue, setIsNewVenue] = useState(false);
-    const [venueSearch, setVenueSearch] = useState('');
-    const [filteredVenues, setFilteredVenues] = useState([]);
+
+
     const [step, setStep] = useState(1);
-    const [isLoadingVenue, setIsLoadingVenue] = useState(false);
+
     const [geoLocation, setGeoLocation] = useState();
 
 
@@ -111,31 +102,6 @@ function CreateEvents() {
     }
 
 
-    // // handling toggle selection for interests
-    // const toggleInterest = (interest: string) => {
-    //     // filter through interests to see which one is checked
-    //     setSelectedInterests(prev =>
-    //         prev.includes(interest)
-    //             ? prev.filter(i => i !== interest)
-    //             : [...prev, interest]
-    //     );
-    //
-    //     // update form data with mew interests
-    //     setFormInfo(prev => ({
-    //         ...prev,
-    //         interests: formInfo.interests.includes(interest)
-    //             ? formInfo.interests.filter(i => i !== interest)
-    //             : [...formInfo.interests, interest]
-    //     }));
-    // };
-    //
-    // // handle category selection
-    // const selectCategory = (value: string) => {
-    //     // update form info
-    //     setFormInfo(prev => ({
-    //         ...prev, category: value
-    //     }));
-    // }
 
 
     // generic handle change for zip code
@@ -214,32 +180,7 @@ function CreateEvents() {
 
 
                 {step === 1 && (
-                    <div>
-                        <div className='mb-5 text-2xl font-semibold'>
-                            Your next favorite memory starts with this moment.
-                        </div>
-                        <Separator
-                            className='my-5 bg-color-5'>
-                        </Separator>
-                        <Input
-                            className='bg-color-0 mb-5'
-                            name="title"
-                            placeholder="Event Title"
-                            value={formInfo.title}
-                            onChange={handleChange}
-                        />
-                        <Textarea
-                            className='bg-color-10 mb-5'
-                            name="description"
-                            placeholder="Description"
-                            value={formInfo.description}
-                            onChange={handleChange}
-                        />
-                        <div
-                            className='mb-5 font-semibold text-center'>
-                            Remember, everyone here started exactly where you are.
-                        </div>
-                    </div>
+                    <FormStart formInfo={formInfo} handleChange={handleChange} />
                 )}
 
 
