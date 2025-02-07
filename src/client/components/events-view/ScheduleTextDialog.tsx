@@ -38,9 +38,9 @@ function ScheduleTextDialog({
 
   const successDialogButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white'
 
-  const { startDateNum, endDateNum, now } = useMemo(() => ({
-    startDateNum: new Date(startTime).getTime(),
-    endDateNum: new Date(endTime).getTime(),
+  const { startTimeNum, endTimeNum, now } = useMemo(() => ({
+    startTimeNum: new Date(startTime).getTime(),
+    endTimeNum: new Date(endTime).getTime(),
     now: Date.now(),
   }), [startTime, endTime]);
 
@@ -161,7 +161,7 @@ function ScheduleTextDialog({
         <RadioGroup defaultValue={sendTime} disabled={!newTextMode}>
           {
             (
-              now < startDateNum + 1000 * 60 * 30
+              now < startTimeNum + 1000 * 60 * 30 && endTimeNum - startTimeNum >= 1000 * 60 * 45
             ) ? (
               <div className="flex items-center space-x-2">
                 <RadioGroupItem
@@ -176,7 +176,7 @@ function ScheduleTextDialog({
           }
           {
             (
-              now < startDateNum + 1000 * 60 * 60 * 1
+              now < startTimeNum + 1000 * 60 * 60 * 1 && endTimeNum - startTimeNum >= 1000 * 60 * 60 * 1.25
             ) ? (
               <div className="flex items-center space-x-2">
                 <RadioGroupItem
@@ -191,7 +191,7 @@ function ScheduleTextDialog({
           }
           {
             (
-              now < startDateNum + 1000 * 60 * 60 * 2
+              now < startTimeNum + 1000 * 60 * 60 * 2 && endTimeNum - startTimeNum >= 1000 * 60 * 60 * 2.25
             ) ? (
               <div className="flex items-center space-x-2">
                 <RadioGroupItem
@@ -221,7 +221,7 @@ function ScheduleTextDialog({
         {newTextMode ? (
           <div className="grid grid-cols-2 gap-2">
             <DialogClose asChild>
-              <Button type="submit" className={successDialogButton} disabled={!!sendTime} onClick={postPatchText}>
+              <Button type="submit" className={successDialogButton} onClick={postPatchText}>
                 Schedule Text
               </Button>
             </DialogClose>
