@@ -372,12 +372,12 @@ function Chatroom() {
             >
             <Button onClick={toggleQuiplash}>Play Quiplash</Button>
             </div>
+        </div>
+      </div>
             {
               isPlayingQuiplash && <QuipLash startTime={start_time}/>
             }
-        </div>
-      </div>
-      */}  <Card class="bg-transparent flex items-center justify-center">
+      <Card class="bg-transparent flex items-center justify-center">
       <div
         style={{
           display: 'flex',
