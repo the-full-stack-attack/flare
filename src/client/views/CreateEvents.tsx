@@ -11,6 +11,7 @@ import { Ripple } from '../../components/ui/ripple'
 import {Toggle, toggleVariants} from '../../components/ui/toggle';
 import dayjs from 'dayjs';
 import VenueSearch from '../components/event-form/VenueSearch';
+import DateTime from '../components/event-form/DateTime';
 type EventData = {
     title: string;
     description: string;
@@ -304,47 +305,10 @@ function CreateEvents() {
 
 
                 {step === 3 && (
-                    <div>
-                        <div className='mb-5 text-2xl font-semibold'>
-                            Pick your perfect moment to connect
-                        </div>
-                        <Separator
-                            className='my-5 bg-color-5'>
-                        </Separator>
-
-
-                        {/* DATE INPUT FIELD */}
-                        <label className="block text-sm font-medium mb-1">Date</label>
-                        <Input
-                            name="startDate"
-                            type="date"
-                            value={formInfo.startDate}
-                            onChange={handleChange}
-                            className='mb-5'
-                        />
-
-
-                        {/* TIME INPUT FIELDS */}
-                        <label className="block text-sm font-medium mb-1">Start Time</label>
-                        <Input
-                            name="startTime"
-                            type="time"
-                            value={formInfo.startTime}
-                            onChange={handleChange}
-                            className='mb-5'
-                        />
-                        <label className="block text-sm font-medium mb-1">End Time</label>
-                        <Input
-                            name="endTime"
-                            type="time"
-                            value={formInfo.endTime}
-                            onChange={handleChange}
-                        />
-                        <div
-                            className='my-5 font-semibold text-center'>
-                            Set the stage for connection - your moment, your pace, your Flare.
-                        </div>
-                    </div>
+                    <DateTime
+                        formInfo={formInfo}
+                        handleChange={handleChange}
+                    />
                 )}
 
 
