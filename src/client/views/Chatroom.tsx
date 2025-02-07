@@ -16,6 +16,7 @@ import { Countdown } from '../components/chatroom/countdown';
 import QuipLash from '../components/chatroom/QuipLash';
 import MsgBox from '../components/chatroom/MsgBox';
 import SOCKET_URL from '../../../config';
+import TILES from '../assets/chatroom/tiles/index';
 import {
   Container,
   Graphics,
@@ -223,7 +224,9 @@ function Chatroom() {
   }, []);
   return (
      <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
-    
+      <div>
+        <img src={ TILES['1'] } alt='' />
+        </div>
     {/* <div
       
       className="flex justify-center items-center"
