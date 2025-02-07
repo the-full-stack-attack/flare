@@ -18,7 +18,10 @@ import User_Notification from './users_notifications';
 import Text from './texts';
 import Conversation from './conversations';
 import Conversation_Session from './conversation_session';
-import Venue_Tag from './venue_tags';
+import Venue_Tag from "./venue_tags";
+import Venue_Image from './venue_images';
+
+
 
 export default {
   User,
@@ -32,6 +35,7 @@ export default {
   User_Event,
   Venue,
   Venue_Tag,
+  Venue_Image,
   Chatroom,
   Chat,
   Category,

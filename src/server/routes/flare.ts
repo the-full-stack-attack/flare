@@ -4,6 +4,21 @@ import Flare from '../db/models/flares';
 
 const flareRouter = Router();
 
+flareRouter.get('/:id', (req: any, res: Response) => {
+  const { id } = req.params;
+  User_Flare.findAll({ where: { UserId: id }, include: [Flare] })
+    .then((userFlares) => {
+      const flares = userFlares.map((userFlare) => {
+        return userFlare.dataValues.Flare;
+      })
+      res.status(200).send(flares);
+    })
+    .catch((err) => {
+      console.error('Error in GET to /api/flare/:id: ', err);
+      res.sendStatus(500);
+    })
+})
+
 // GET req to /api/flare/completed/tasks/:id
 flareRouter.get('/completed/tasks/:id', (req: any, res: Response) => {
   const { id } = req.params;
@@ -25,6 +40,7 @@ flareRouter.get('/completed/tasks/:id', (req: any, res: Response) => {
     })
     .catch((err) => {
       console.error("Error GEtting user's flares: ", err);
+      res.sendStatus(500);
     });
 });
 

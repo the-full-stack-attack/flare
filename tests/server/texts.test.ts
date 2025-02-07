@@ -1,5 +1,19 @@
 import axios from 'axios';
-import Text from '../src/server/db/models/texts';
+import http from 'http';
+import Text from '../../src/server/db/models/texts';
+
+declare global {
+  var PORT: number;
+  var testServer: http.Server;
+  var user1: any;
+  var user2: any;
+  var event1: any;
+  var event2: any;
+  var venue1: any;
+  var venue2: any;
+  var notif1: any;
+  var notif2: any;
+};
 
 const PORT = globalThis.PORT;
 

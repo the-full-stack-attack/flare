@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Conversation from '../db/models/conversations';
 import Conversation_Session from '../db/models/conversation_session';
+import checkForFlares from '../helpers/flares';
 
 dotenv.config();
 const aiConversationRouter = Router();
@@ -134,7 +135,7 @@ aiConversationRouter.get(
 // Save an entire conversation session to the database
 aiConversationRouter.post(
   '/saveSession',
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: any, res: Response): Promise<void> => {
     try {
       const { userId, conversation } = req.body;
 
@@ -142,7 +143,7 @@ aiConversationRouter.post(
         user_id: userId,
         session_data: conversation,
       });
-
+      checkForFlares(req.user);
       res.status(201).send(savedSession);
     } catch (error) {
       console.error('Error saving conversation session:', error);
