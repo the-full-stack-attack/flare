@@ -51,17 +51,14 @@ async function checkForFlares(user: UserType, flareName: string | void) {
   }
   if (user.total_tasks_completed === 1) {
     sendFlareByName('Go Getter');
-    return;
   } else if (user.total_tasks_completed % 5 === 0 && user.total_tasks_completed !== 0 ) {
     const tasksCompleted = user.total_tasks_completed;
     findFlare('Task Flare', tasksCompleted, user);
-    return;
   }
   try {
     const savedConversations = await Conversation_Session.findAll( { where: { user_id: id } });
     if (savedConversations.length === 3) {
       sendFlareByName('Stored Thoughts(x3)');
-      return;
     }
   } catch (err) {
     console.error ('Error finding Conversation_Sessions for user: ', err);
