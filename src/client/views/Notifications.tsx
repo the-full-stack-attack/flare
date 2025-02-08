@@ -1,6 +1,7 @@
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { Toaster, toast } from 'sonner';
 
 import { Button } from '../../components/ui/button';
 
@@ -46,6 +47,9 @@ function Notifications() {
     axios
       .delete('/api/notifications/all')
       .then(getNotifications)
+      .then(() => {
+        toast('All notifications have been deleted.')
+      })
       .catch((err: unknown) => {
         console.error('Failed to deleteAllNotifications:', err);
       });
@@ -106,6 +110,12 @@ function Notifications() {
           <p className="text-white text-lg">You currently have no notifications...</p>
         ) : null}
       </div>
+      <Toaster
+        toastOptions={{
+          className: 'isolate rounded-xl backdrop-blur-sm bg-gray-800/50 shadow-lg ring-1 ring-black/5 border-transparent text-white'
+        }}
+        position="top-center"
+      />
     </div>
   );
 }
