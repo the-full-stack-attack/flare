@@ -15,14 +15,15 @@ flareRouter.get('/:id', async (req: any, res: Response) => {
     const flares = userFlares.map((userFlare) => {
       return userFlare.dataValues.Flare;
     });
-    flares.forEach(async (flare) => {
+    for (let i = 0; i < flares.length; i++) {
+      const flare = flares[i];
       const imageKey = flare.dataValues.icon;
       console.log('Image key: ', imageKey);
       const imageUrl: string = await getImageUrl(imageKey);
       console.log('image url: ', imageUrl);
       flare.dataValues.icon = imageUrl;
       console.log('Changed flare: ', flare);
-    })
+      }
     res.status(200).send(flares);
   } catch (err) {
     console.error('Error in GET to /api/flare/:id: ', err);
