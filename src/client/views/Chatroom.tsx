@@ -429,7 +429,7 @@ function Chatroom() {
               </pixiContainer>
             ))} 
           </Application>
- } 
+            } 
           </div>
           </div>
           </div>
