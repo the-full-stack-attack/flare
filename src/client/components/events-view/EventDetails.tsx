@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '../../../components/ui/button';
 
+import { toast } from 'sonner';
+
 import {
   DrawerHeader,
   DrawerTitle,
@@ -165,7 +167,7 @@ function EventDetails({
             </Button>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className={normalDrawerButton}>Schedule Text</Button>
+                <Button className={successDrawerButton}>Schedule Text</Button>
               </DialogTrigger>
               <ScheduleTextDialog
                 eventId={event.id}
@@ -180,7 +182,10 @@ function EventDetails({
           <Button className={warnDrawerButton} onClick={patchAttendingEvent}>Bail</Button>
         ) : null}
         {category === 'bailed' ? (
-          <Button className={successDrawerButton} onClick={patchAttendingEvent}>Re-attend</Button>
+          <Button className={successDrawerButton} onClick={() => {
+            patchAttendingEvent();
+            toast(`You've just re-attended!`);
+          }}>Re-attend</Button>
         ) : null}
         <DrawerClose asChild>
           <Button className={normalDrawerButton}>Close</Button>
