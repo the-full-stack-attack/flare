@@ -5,7 +5,7 @@ import TaskDisplay from '../components/tasks/TaskDisplay';
 import ChooseTask from '../components/tasks/ChooseTask';
 import CompletedTaskList from '../components/tasks/CompletedTaskList';
 import OptOutList from '../components/tasks/OptOutList';
-import TaskSidebar from '../components/tasks/taskSidebar';
+import TaskSidebar from '../components/tasks/TaskSidebar';
 
 function Task() {
   const { user } = useContext(UserContext);
