@@ -459,7 +459,7 @@ function Chatroom() {
               justifyContent: 'center',
               marginTop: '20px',
             }}>
-            <InteractiveHoverButton onClick={sendMessage}>
+            <InteractiveHoverButton className="from-yellow-500 via-orange-500 to-pink-500" onClick={sendMessage}>
               Send
             </InteractiveHoverButton>
           </div>

@@ -105,6 +105,7 @@ function QuipLash({wantsToPlay}) {
   const [quiplashPrompt, setQuiplashPrompt] = useState('');
   const [timer, setTimer] = useState('30');
   const [gameRatio, setGameRatio] = useState(window.innerWidth / window.innerHeight)
+  const [showReady, setShowReadyy] = useState(true);
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -193,6 +194,7 @@ function QuipLash({wantsToPlay}) {
       setWinner(winner);
       setTimeout(() => {
         setShowWinner(falsyBool);
+        setShowReady(true);
       }, 5000);
     });
 
@@ -225,6 +227,7 @@ function QuipLash({wantsToPlay}) {
   }
   const readyForQuiplash = () => {
     socket.emit('generatePrompt');
+    setShowReady(false);
   };
   const sendMessage = () => {
     console.log(message);
@@ -243,8 +246,8 @@ function QuipLash({wantsToPlay}) {
   return (
    
     <div>
-      { quit && <div className="flex justify-center" ><Button onClick={toggleQuit}>Play Quiplash</Button></div> } }
-      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-black" onClick={quitQuiplash}>QUIT</Button> </div>}
+      { quit && <div className="flex justify-center" ><Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={toggleQuit}>Play Quiplash</Button></div> } }
+      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700" onClick={quitQuiplash}>QUIT</Button> </div>}
       { !quit &&
     <div className="p-4">
     <div className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
@@ -350,7 +353,7 @@ function QuipLash({wantsToPlay}) {
               }}
             >
             {!promptGiven && !quit && (<div >
-      <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
+      <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
       </div>
     )}
     </div>
