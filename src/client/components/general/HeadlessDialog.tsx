@@ -7,6 +7,8 @@ import {
   DialogTitle,
 } from '@headlessui/react';
 
+import TTSButton from '../a11y/TTSButton';
+
 type HeadlessDialogProps = {
   open: boolean;
   close: () => void;
@@ -80,6 +82,10 @@ function HeadlessDialog({
               >
                 {actionButtonName}
               </Button>
+              <TTSButton
+                text={`${title}: ${description}`}
+                iconClassName="text-gray-500 hover:text-gray-300 text-lg"
+              />
             </div>
           </DialogPanel>
         </div>
