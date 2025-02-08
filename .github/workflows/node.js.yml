@@ -14,6 +14,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+        DB_HOST: localhost
+        DB_USER: root
+        DB_PASSWORD: root
+        DB_NAME: flare
+
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
@@ -26,23 +32,21 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Configure MySQL
+    - name: Install dependencies
+      run: npm install
+    - name: Start MySQL
+      uses: actions/setup-mysql@v3
+      with: 
+        mysql-version: '8.0'
+        root-password: 'root'
+    - name: Configure mySQL
       run: |
-        sudo systemctl start mysql
-        ALTER USER 'root'@'localhost' identified with mysql_native_password by '';
-        CREATE DATABASE IF NOT EXISTS $DB_NAME;
-      env: 
-        DB_NAME: flare
-        DB_USER: root
-        DB_PASSWORD: ""
+        sudo /etc/init.d/mysql start
+        mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" -u$DB_USER -p$DB_PASSWORD
     - run: npm ci
-    - run: npm run prod:build --if-present
+    - name: Run Build
+      run: npm run prod:build --if-present
     - name: Seed DB with Data
       run: npm run seed
     - name: Run tests
       run: npm test
-      env:
-        DB_HOST: localhost
-        DB_USER: root
-        DB_PASSWORD: ""
-        DB_NAME: flare
