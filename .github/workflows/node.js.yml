@@ -26,8 +26,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Start MySQL Service
-      run: sudo /etc/init.d/mysql start
     - name: Configure MySQL
       run: |
         sudo /etc/init.d/mysql start
