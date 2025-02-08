@@ -139,6 +139,7 @@ function CreateEvents() {
                 zipCode: Number(formInfo.zipCode),
                 cityName: formInfo.cityName,
                 stateName: formInfo.stateName.toUpperCase(),
+                fsq_id: formInfo.fsq_id,
             };
             await axios.post('/api/event', formattedData);
             setStep(1);
