@@ -7,7 +7,7 @@ import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
 import dayjs from 'dayjs';
 import {Op} from 'sequelize';
-import checkForFlares from '../helpers/flares';
+import { checkForFlares } from '../helpers/flares';
 
 import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
