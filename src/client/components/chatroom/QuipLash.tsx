@@ -20,7 +20,6 @@ import {
   NineSliceSprite, // failing
   Text,
   TextStyle,
-  Spritesheet, // failing
   AnimatedSprite,
   Rectangle,
 } from 'pixi.js';
@@ -36,18 +35,6 @@ import SOCKET_URL from '../../../../config'
 
 
 let socket = io(SOCKET_URL);
-
-// if (process.env. === 'true') {
-//   socket = io('http://localhost:4000');
-// } else {
-//   socket = io('https://slayer.events'); // NO COOKIES
-  // socket = io("DEPLOYED SITE GOES HERE", { // WITH COOKIES
-  //   withCredentials: true,
-  //   extraHeaders: {
-  //     "my-custom-header": "abcd" // IF WE NEED HEADERS
-  //   }
-  // });
-// }
 
 
 extend({
@@ -259,6 +246,7 @@ function QuipLash() {
     width={Math.floor(640)}
     height={Math.floor(360)}
     backgroundColor={' #FFFFFF'}
+    scale={0.9, 0.9}
    >
           <pixiContainer>
             {isSuccess && (
