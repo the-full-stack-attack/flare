@@ -446,7 +446,7 @@ function Chatroom() {
           marginTop: '20px',
         }}>
         <div onClick={typing}>
-          <Label className="text-white text-2xl rounded-md"> Send A Chat </Label>
+          <Label className="flex justify-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-2xl rounded-md"> Send A Chat </Label>
           <Textarea
             className="bg-white rounded-md" 
             type="text"
@@ -459,7 +459,7 @@ function Chatroom() {
               justifyContent: 'center',
               marginTop: '20px',
             }}>
-            <InteractiveHoverButton className="from-yellow-500 via-orange-500 to-pink-500" onClick={sendMessage}>
+            <InteractiveHoverButton onClick={sendMessage}>
               Send
             </InteractiveHoverButton>
           </div>

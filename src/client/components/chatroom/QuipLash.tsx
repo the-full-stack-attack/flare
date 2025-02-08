@@ -272,6 +272,24 @@ function QuipLash({wantsToPlay}) {
                 y={0}
               />
             )}
+             {promptGiven && !answersReceived && !quit && (
+                 <pixiContainer
+                scale={0.7, 0.7}
+                x={350}
+                y={30}
+              
+              >
+                <pixiGraphics draw={speechBubble}>
+                  <pixiText
+                    text={quiplashPrompt}
+                    anchor={0.5}
+                    x={120}
+                    y={100}
+                    style={style}
+                  />
+                </pixiGraphics>
+              </pixiContainer>)
+                  }
           </pixiContainer>
           {answersReceived && 
             Object.entries(playerAnswers).map((tupleAnswer, i) => (
@@ -314,7 +332,7 @@ function QuipLash({wantsToPlay}) {
         </div>  
         </div>
         </div> }
-        {promptGiven && !quit && <h6 className="text-white text-[22px]">{quiplashPrompt} </h6>}
+        
         {promptGiven && !answersReceived && !quit && (
           <div
           style={{
@@ -358,7 +376,7 @@ function QuipLash({wantsToPlay}) {
     )}
     </div>
     
-    {showWinner && <h1 className="text-white">{winner}</h1>}
+    {showWinner && <VelocityScroll >{winner}</VelocityScroll>}
   
     </div>
   );
