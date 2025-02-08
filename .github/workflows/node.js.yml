@@ -30,7 +30,7 @@ jobs:
       run: sudo /etc/init.d/mysql start
     - name: Configure MySQL
       run: |
-        sudo systemctl start mysql
+        sudo /etc/init.d/mysql start
         mysql -e "ALTER USER 'root'@'localhost' identified with mysql_native_password by ''"
         mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" -u$DB_USER -p$DB_PASSWORD
       env: 
