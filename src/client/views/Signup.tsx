@@ -25,6 +25,7 @@ function Signup() {
 
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
+  const [avatarUri, setAvatarUri] = useState('');
 
   const [avatarItems, setAvatarItems] = useState({
     seed: 'Felix',
@@ -45,7 +46,7 @@ function Signup() {
       `username ${userName}, \n full name ${full_Name}, \n phone ${phone}, \n selected Interests ${selectedInterests}`
     );
     axios
-      .post('api/signup/', { userName, phone, selectedInterests, full_Name })
+      .post('api/signup/', { userName, phone, selectedInterests, full_Name, avatarItems,  })
       .then(() => {
         navigate('/Dashboard');
       })
@@ -127,7 +128,10 @@ function Signup() {
               <CardContent>
                 <Avatar
                 avatarItems={avatarItems}
-                setAvatarItems={setAvatarItems}/>
+                setAvatarItems={setAvatarItems}
+                setAvatarUri={setAvatarUri}
+                avatarUri={avatarUri}
+                  />
               </CardContent>
 
               <CardContent>

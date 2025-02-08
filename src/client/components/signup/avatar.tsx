@@ -10,8 +10,8 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-function Avatar({ avatarItems, setAvatarItems }) {
-    const [avatarUri, setAvatarUri] = useState('');
+function Avatar({ avatarItems, setAvatarItems, setAvatarUri, avatarUri }) {
+
     const [previewUris, setPreviewUris] = useState({
         skin: {},
         hair: {},
