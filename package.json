@@ -11,7 +11,7 @@
     "prod:build": "webpack",
     "start": "nodemon ./src/server/index.ts",
     "update": "rimraf node_modules && rm package-lock.json && npm install && exit 1",
-    "seed": "ts-node ./src/server/db/seeds/index.ts",
+    "seed": "ts-node ./src/server/db/seeds/index.ts && exit 1",
     "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts",
     "seedFlares": "ts-node ./src/server/db/seeds/seedFlares.ts"
   },
