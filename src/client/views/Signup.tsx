@@ -46,7 +46,7 @@ function Signup() {
       `username ${userName}, \n full name ${full_Name}, \n phone ${phone}, \n selected Interests ${selectedInterests}`
     );
     axios
-      .post('api/signup/', { userName, phone, selectedInterests, full_Name, avatarItems,  })
+      .post('api/signup/', { userName, phone, selectedInterests, full_Name, avatarItems, avatarUri,  })
       .then(() => {
         navigate('/Dashboard');
       })
@@ -55,28 +55,16 @@ function Signup() {
       });
   };
 
-  const handleInterestClick = (e) => {
-    const value = e.target.innerText;
-    e.target.name !== 'selectedInterest'
-        ? addToSelectedInterests(value)
-        : removeSelectedInterests(value);
-  };
 
 
   const addToSelectedInterests = (value: string) => {
     setSelectedInterests([...selectedInterests, value]);
+    setInterests(interests.filter(interest => interest !== value));
   };
 
-  const removeSelectedInterests = async (value: string) => {
-    let backToInterests;
-    const updatedInterests = selectedInterests.filter((item, i) => {
-      if (item === value) {
-        backToInterests = value;
-      }
-      return item !== value;
-    });
-    setInterests([...interests, backToInterests]);
-    await setSelectedInterests(updatedInterests);
+  const removeSelectedInterests = (value: string) => {
+    setSelectedInterests(selectedInterests.filter(interest => interest !== value));
+    setInterests([...interests, value]);
   };
 
   // Hides components (Does not work with animated buttons sadly)
@@ -176,7 +164,7 @@ function Signup() {
                         {interests.map((interest, index) => (
                             <Button
                                 key={`interest-${index}`}
-                                onClick={handleInterestClick}
+                                onClick={() => addToSelectedInterests(interest)}
                                 type="button"
                                 className="bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30"
                             >
@@ -193,7 +181,7 @@ function Signup() {
                             <Button
                                 key={`selected-${index}`}
                                 name="selectedInterest"
-                                onClick={handleInterestClick}
+                                onClick={() => removeSelectedInterests(interest)}
                                 type="button"
                                 className="bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50"
                             >
