@@ -1,4 +1,5 @@
 import database from '../../src/server/db';
+import '../../src/server/db/models/index';
 import http from 'http';
 import express, { Application } from 'express';
 

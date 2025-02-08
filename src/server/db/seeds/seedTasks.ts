@@ -90,4 +90,6 @@ Take into consideration that most places are not within walking distance for man
   });
 };
 
+seedTasks();
+
 export default seedTasks;
