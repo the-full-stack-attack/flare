@@ -2,7 +2,6 @@ import seedCategories from './seedCategories';
 import seedInterests from './seedInterests';
 import seedTasks from './seedTasks';
 import seedVenues from './seedVenues';
-import seedFlares from './seedFlares';
 
 /***
  * Run this file with npm run seed
@@ -18,7 +17,6 @@ async function seedDb() {
   await seedCategories();
   await seedInterests();
   await seedTasks();
-  seedFlares();
 }
 
 seedDb();
