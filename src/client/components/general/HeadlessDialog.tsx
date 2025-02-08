@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Button,
   Dialog,
@@ -34,6 +34,18 @@ function HeadlessDialog({
 
   const badButtonStyle = "inline-flex items-center gap-2 rounded-md bg-red-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-red-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-red-700";
 
+  const actionButtonStyle = useMemo(() => {
+    if (type === 'good') {
+      return goodButtonStyle;
+    }
+    else if (type === 'bad') {
+      return badButtonStyle;
+    } 
+    else {
+      return neutralButtonStyle;
+    }
+  }, [type]);
+
   return (
     <Dialog
       open={open}
@@ -51,15 +63,21 @@ function HeadlessDialog({
             <DialogTitle as="h3" className="text-base/7 font-medium text-white">
               {title}
             </DialogTitle>
-            <p className="mt-2 text-sm/6 text-white/50">
+            <p className="mt-2 mb-4 text-sm/6 text-white/50">
               {description}
             </p>
-            <div className="mt-4">
+            <div className="mt-4 inline flex space-x-4">
               <Button
-                className={badButtonStyle}
+                className={neutralButtonStyle}
                 onClick={close}
               >
                 Cancel
+              </Button>
+              <Button
+                className={actionButtonStyle}
+                onClick={action}
+              >
+                {actionButtonName}
               </Button>
             </div>
           </DialogPanel>
