@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createAvatar } from '@dicebear/core';
 import { adventurer } from '@dicebear/collection';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+
 
 function Avatar() {
   const [avatarUri, setAvatarUri] = useState('');
@@ -17,7 +21,7 @@ function Avatar() {
   });
 
   const avatarOptions = {
-    seed: ['Felix', 'Aneka'],
+    seed: ['Felix'],
     skinColor: ['9e5622', '763900', 'ecad80', 'f2d3b1'],
     hair: [
       'long01', 'long02', 'long03', 'long04', 'long05', 'long06', 'long07',
@@ -57,12 +61,6 @@ function Avatar() {
     earrings: ['variant01', 'variant02', 'variant03', 'variant04', 'variant05', 'variant06']
   };
 
-  const changeHair = () => {
-    setAvatarItems({
-      ...avatarItems,
-      hair
-    })
-  }
 
 
 
@@ -92,73 +90,170 @@ function Avatar() {
   }, [avatarItems]);
 
   return (
-      <div>
-        <img src={avatarUri}/>
+      <Card className="backdrop-blur-lg bg-white/5 border border-orange-500/20">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+            Customize Your Avatar
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col space-y-6">
+            <div className="flex justify-center">
+              <img
+                  src={avatarUri}
+                  className="w-32 h-32 rounded-full border-2 border-orange-500/30"
+              />
+            </div>
 
-        <div>Hair:
-          {avatarOptions.hair.map(hairStyle => (
-              <button onClick={() => setAvatarItems({...avatarItems, hair: [hairStyle]})}>
-                {hairStyle}
-              </button>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <Label className="text-gray-200 block">Skin Color</Label>
+              <div className="flex flex-wrap gap-2">
+                {avatarOptions.skinColor.map((color) => (
+                    <Button
+                        key={color}
+                        onClick={() => setAvatarItems({ ...avatarItems, skinColor: [color] })}
+                        className={`
+                    ${avatarItems.skinColor[0] === color
+                            ? 'bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border-orange-500/50'
+                            : 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border-orange-500/30'}
+                    hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30
+                    border text-sm py-1
+                  `}
+                    >
+                      {color}
+                    </Button>
+                ))}
+              </div>
+            </div>
 
-        <div>Hair Color:
-          {avatarOptions.hairColor.map(color => (
-              <button onClick={() => setAvatarItems({...avatarItems, hairColor: [color]})}>
-                {color}
-              </button>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <Label className="text-gray-200 block">Hair Style</Label>
+              <div className="flex flex-wrap gap-2">
+                {avatarOptions.hair.map((style) => (
+                    <Button
+                        key={style}
+                        onClick={() => setAvatarItems({ ...avatarItems, hair: [style] })}
+                        className={`
+                    ${avatarItems.hair[0] === style
+                            ? 'bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border-orange-500/50'
+                            : 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border-orange-500/30'}
+                    hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30
+                    border text-sm py-1
+                  `}
+                    >
+                      {style}
+                    </Button>
+                ))}
+              </div>
+            </div>
 
-        <div>Skin:
-          {avatarOptions.skinColor.map(color => (
-              <button onClick={() => setAvatarItems({...avatarItems, skinColor: [color]})}>
-                {color}
-              </button>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <Label className="text-gray-200 block">Hair Color</Label>
+              <div className="flex flex-wrap gap-2">
+                {avatarOptions.hairColor.map((color) => (
+                    <Button
+                        key={color}
+                        onClick={() => setAvatarItems({ ...avatarItems, hairColor: [color] })}
+                        className={`
+                    ${avatarItems.hairColor[0] === color
+                            ? 'bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border-orange-500/50'
+                            : 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border-orange-500/30'}
+                    hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30
+                    border text-sm py-1
+                  `}
+                    >
+                      {color}
+                    </Button>
+                ))}
+              </div>
+            </div>
 
-        <div>Eyes:
-          {avatarOptions.eyes.map(style => (
-              <button onClick={() => setAvatarItems({...avatarItems, eyes: [style]})}>
-                {style}
-              </button>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <Label className="text-gray-200 block">Eyes</Label>
+              <div className="flex flex-wrap gap-2">
+                {avatarOptions.eyes.map((style) => (
+                    <Button
+                        key={style}
+                        onClick={() => setAvatarItems({ ...avatarItems, eyes: [style] })}
+                        className={`
+                    ${avatarItems.eyes[0] === style
+                            ? 'bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border-orange-500/50'
+                            : 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border-orange-500/30'}
+                    hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30
+                    border text-sm py-1
+                  `}
+                    >
+                      {style}
+                    </Button>
+                ))}
+              </div>
+            </div>
 
-        <div>Eyebrows:
-          {avatarOptions.eyebrows.map(style => (
-              <button onClick={() => setAvatarItems({...avatarItems, eyebrows: [style]})}>
-                {style}
-              </button>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <Label className="text-gray-200 block">Eyebrows</Label>
+              <div className="flex flex-wrap gap-2">
+                {avatarOptions.eyebrows.map((style) => (
+                    <Button
+                        key={style}
+                        onClick={() => setAvatarItems({ ...avatarItems, eyebrows: [style] })}
+                        className={`
+                    ${avatarItems.eyebrows[0] === style
+                            ? 'bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border-orange-500/50'
+                            : 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border-orange-500/30'}
+                    hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30
+                    border text-sm py-1
+                  `}
+                    >
+                      {style}
+                    </Button>
+                ))}
+              </div>
+            </div>
 
-        <div>Mouth:
-          {avatarOptions.mouth.map(style => (
-              <button onClick={() => setAvatarItems({...avatarItems, mouth: [style]})}>
-                {style}
-              </button>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <Label className="text-gray-200 block">Mouth</Label>
+              <div className="flex flex-wrap gap-2">
+                {avatarOptions.mouth.map((style) => (
+                    <Button
+                        key={style}
+                        onClick={() => setAvatarItems({ ...avatarItems, mouth: [style] })}
+                        className={`
+                    ${avatarItems.mouth[0] === style
+                            ? 'bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border-orange-500/50'
+                            : 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border-orange-500/30'}
+                    hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30
+                    border text-sm py-1
+                  `}
+                    >
+                      {style}
+                    </Button>
+                ))}
+              </div>
+            </div>
 
-        <div>Glasses:
-          {avatarOptions.glasses.map(style => (
-              <button onClick={() => setAvatarItems({...avatarItems, glasses: [style]})}>
-                {style}
-              </button>
-          ))}
-        </div>
-
-        <div>Earrings:
-          {avatarOptions.earrings.map(style => (
-              <button onClick={() => setAvatarItems({...avatarItems, earrings: [style]})}>
-                {style}
-              </button>
-          ))}
-        </div>
-      </div>
+            <div className="space-y-2">
+              <Label className="text-gray-200 block">Earrings</Label>
+              <div className="flex flex-wrap gap-2">
+                {avatarOptions.earrings.map((style) => (
+                    <Button
+                        key={style}
+                        onClick={() => setAvatarItems({ ...avatarItems, earrings: [style] })}
+                        className={`
+                    ${avatarItems.earrings[0] === style
+                            ? 'bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border-orange-500/50'
+                            : 'bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border-orange-500/30'}
+                    hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30
+                    border text-sm py-1
+                  `}
+                    >
+                      {style}
+                    </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
   );
 }
 
