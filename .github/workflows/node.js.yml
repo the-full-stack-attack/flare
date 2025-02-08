@@ -33,12 +33,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - name: Install dependencies
-      run: npm install
+      run: npm ci
     - name: Configure mySQL
       run: |
         sudo /etc/init.d/mysql start
         mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" -u$DB_USER -p$DB_PASSWORD
-    - run: npm ci
     - name: Run Build
       run: npm run prod:build --if-present
     - name: Seed DB with Data
