@@ -41,7 +41,7 @@ eventRouter.get('/search', async (req: any, res: Response): Promise<void> => {
             query: searchInput,
             limit: '20',
             types: 'place',
-            ll: `${latitude}, ${longitude}`,
+            // ll: `${latitude}, ${longitude}`,
         });
         const response = await fetch(
             `https://api.foursquare.com/v3/autocomplete?${searchParams}`,
