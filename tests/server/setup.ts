@@ -1,15 +1,15 @@
-import database from '../src/server/db';
+import database from '../../src/server/db';
 import http from 'http';
 import express, { Application } from 'express';
 
-import apiRouter from '../src/server/api';
-import User from '../src/server/db/models/users';
-import Event from '../src/server/db/models/events';
-import Interest from '../src/server/db/models/interests';
-import Category from '../src/server/db/models/categories';
-import Venue from '../src/server/db/models/venues';
-import Event_Interest from '../src/server/db/models/events_interests';
-import Notification from '../src/server/db/models/notifications';
+import apiRouter from '../../src/server/api';
+import User from '../../src/server/db/models/users';
+import Event from '../../src/server/db/models/events';
+import Interest from '../../src/server/db/models/interests';
+import Category from '../../src/server/db/models/categories';
+import Venue from '../../src/server/db/models/venues';
+import Event_Interest from '../../src/server/db/models/events_interests';
+import Notification from '../../src/server/db/models/notifications';
 
 declare global {
   var PORT: number;
@@ -114,7 +114,7 @@ export default async function () {
 
   try {
     // Sync database and add test user and test event
-    await database.sync();
+    await database.sync({ alter: true });
     user1 = await User.create(testUser1);
     user2 = await User.create(testUser2);
     const interests: any[] = await Interest.findAll();
