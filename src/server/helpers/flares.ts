@@ -120,7 +120,7 @@ async function sendFlareObject(flare: FlareType, user: UserType) {
     const userId = user.id;
     if (flare) {
       // Create user_flare row
-      const userFlare = await User_Flare.create({
+     await User_Flare.create({
         UserId: userId,
         FlareId: flareId,
       });

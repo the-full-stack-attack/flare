@@ -70,6 +70,8 @@ const storedThoughts: FlareArr = ['Stored Thoughts(x3)', 'AI Flare', path.join(_
 const theSpark: FlareArr = ['The Spark', 'Event Flare', '', 'Attended your first ever event!', 0, null, 'Attend your first event'];
 const multiTasker: FlareArr = ['Multitasker', 'Task Flare', '', 'You\'ve completed 5 tasks!', 0, 5, 'Complete 5 tasks'];
 const partyAnimal: FlareArr = ['Party Animal', 'Event Flare', '', 'You\'ve attended 5 events!', 0, 5, 'Attend 5 events'];
+const venueVirtuoso: FlareArr = ['Venue Virtuoso', 'Venue Flare', '', 'Added information to a venue!', 0, null, 'Input venue data'];
+
 flareArrays.push(butterFlareEffect, goGetter, storedThoughts);
 // const testFlare = ['Test Bucket', 'Testing Flare', path.join(__dirname, '..', '..', '..', 'client', 'assets', 'logo', 'phoenix.png' ), 'Inserted into the bucket', 0, null, 'Seed images'];
 // flareArrays.push(testFlare);
