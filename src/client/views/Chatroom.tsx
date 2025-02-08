@@ -27,15 +27,11 @@ import {
   NineSliceSprite, // failing
   Text,
   TextStyle,
-  Spritesheet, // failing
   AnimatedSprite,
 } from 'pixi.js';
 import axios from 'axios';
 import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' 
-// import {
-//   testJumper,
-//   spritesheet,
-// } from '../assets/chatroom/spritesheets/sprites';
+
 import nightClubTileSet from '../assets/chatroom/tileSet';
 extend({
   Container,
@@ -225,19 +221,6 @@ function Chatroom() {
     console.log('clicked')
     isPlayingQuiplash ? setIsPlayingQuiplash(false) : setIsPlayingQuiplash(true);
   }
-  // TESTING //
-  let anim = useRef(false);
-  useEffect(() => {
-
-    (async () => {
-      try {
-        anim.current = new AnimatedSprite(spritesheet.animations.enemy); // failing
-        await anim.current.parse();
-      } catch (err) {
-        console.error('No parse of spritesheet', err);
-      }
-    })();
-  }, [anim]);
   const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
     graphics?.scale.set(.75, .26);
@@ -340,7 +323,7 @@ function Chatroom() {
           <Countdown endTime={dayjs(start_time)}/>
           </div> 
           <div class="p-4">
-          <div class="card  aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+          <div class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
           <div class="p-2">
           <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
           <Application 
@@ -357,9 +340,9 @@ function Chatroom() {
             objLay.tiles.map((objTiles) => ( 
                 <pixiSprite
                   texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
-                  x={32 * (objTiles.x) * 1.22 }
-                  y={32 * (objTiles.y) * 1.22 }
-                 scale={ 1.22, 1.22}
+                  x={32 * (objTiles.x) * 1.24 }
+                  y={32 * (objTiles.y) * 1.24 }
+                 scale={ 1.24, 1.24}
                 />
             ))
             }
@@ -371,7 +354,7 @@ function Chatroom() {
               x={player.x} 
               y={player.y} 
               key={player.id} 
-              scale={ 1.22, 1.22}
+              scale={ 1.24, 1.24}
               >
                 {player.sentMessage && (
                   <pixiGraphics 
