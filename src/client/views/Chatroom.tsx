@@ -323,7 +323,7 @@ function Chatroom() {
           <Countdown endTime={dayjs(start_time)}/>
           </div> 
           <div class="p-4">
-          <div class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+          <div class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
           <div class="p-2">
           <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
           <Application 
@@ -340,9 +340,9 @@ function Chatroom() {
             objLay.tiles.map((objTiles) => ( 
                 <pixiSprite
                   texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
-                  x={32 * (objTiles.x) * 1.24 }
-                  y={32 * (objTiles.y) * 1.24 }
-                 scale={ 1.24, 1.24}
+                  x={32 * (objTiles.x) * 1.25 }
+                  y={32 * (objTiles.y) * 1.25 }
+                 scale={ 1.25, 1.25}
                 />
             ))
             }
