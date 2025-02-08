@@ -34,11 +34,6 @@ jobs:
         cache: 'npm'
     - name: Install dependencies
       run: npm install
-    - name: Start MySQL
-      uses: actions/setup-mysql@v3
-      with: 
-        mysql-version: '8.0'
-        root-password: 'root'
     - name: Configure mySQL
       run: |
         sudo /etc/init.d/mysql start
