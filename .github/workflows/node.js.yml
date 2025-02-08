@@ -27,9 +27,17 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - name: Start MySQL Service
+      run: sudo /etc/init.d/mysql start
+    - name: Configure MySQL
       run: |
-        sudo systemctl start mysql
-        mysql -e 'CREATE DATABASE IF NOT EXISTS flare;'
+          mysql -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"
+          mysql -e "CREATE USER IF NOT EXISTS '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';"
+          mysql -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'localhost';"
+          mysql -e "FLUSH PRIVILEGES;"
+      env: 
+        DB_NAME: flare
+        DB_USER: root
+        DB_PASSWORD: ""
     - run: npm ci
     - run: npm run prod:build --if-present
     - name: Seed DB with Data
