@@ -63,7 +63,7 @@ const style = new TextStyle({
 });
 
 
-function QuipLash() {
+function QuipLash({wantsToPlay}) {
 
  useAssets([
     {
@@ -86,6 +86,7 @@ function QuipLash() {
     isSuccess,
   } = useAssets<Texture>([bartender]);
   
+  const [quit, setQuit] = useState(true)
   // LOGIC
   const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
@@ -216,9 +217,12 @@ function QuipLash() {
 
   const quitQuiplash = () => {
     socket.emit('quitQuiplash');
+    setQuit(true);
     console.log('the player has quit');
   };
-
+  const toggleQuit = () => {
+    setQuit(false);
+  }
   const readyForQuiplash = () => {
     socket.emit('generatePrompt');
   };
@@ -237,8 +241,11 @@ function QuipLash() {
     }
   };
   return (
+   
     <div>
-  
+      { quit && <div className="flex justify-center" ><Button onClick={toggleQuit}>Play Quiplash</Button></div> } }
+      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-black" onClick={quitQuiplash}>QUIT</Button> </div>}
+      { !quit &&
     <div className="p-4">
     <div className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
     <div className="p-2">
@@ -263,7 +270,7 @@ function QuipLash() {
               />
             )}
           </pixiContainer>
-          {answersReceived &&
+          {answersReceived && 
             Object.entries(playerAnswers).map((tupleAnswer, i) => (
               <pixiContainer
                 eventMode="static"
@@ -303,9 +310,9 @@ function QuipLash() {
         </div>        
         </div>  
         </div>
-        </div>
-        {promptGiven && <h6 className="text-white text-[22px]">{quiplashPrompt} </h6>}
-        {promptGiven && !answersReceived && (
+        </div> }
+        {promptGiven && !quit && <h6 className="text-white text-[22px]">{quiplashPrompt} </h6>}
+        {promptGiven && !answersReceived && !quit && (
           <div
           style={{
             display: 'flex',
@@ -342,13 +349,14 @@ function QuipLash() {
                 marginTop: '20px',
               }}
             >
-            {!promptGiven && (<div >
+            {!promptGiven && !quit && (<div >
       <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
       </div>
     )}
     </div>
-    <Button onClick={quitQuiplash}>QUIT</Button>
+    
     {showWinner && <h1 className="text-white">{winner}</h1>}
+  
     </div>
   );
 }

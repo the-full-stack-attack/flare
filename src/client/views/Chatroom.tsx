@@ -470,13 +470,13 @@ function Chatroom() {
             justifyContent: 'center',
             marginTop: '10px',}}
             >
-            <Button onClick={toggleQuiplash}>Play Quiplash</Button>
+           
             </div>
         </div>
       </div>
-            {
-              isPlayingQuiplash && <QuipLash startTime={start_time}/>
-            }
+            
+          <QuipLash startTime={start_time}/>
+            
       <Card className="bg-transparent flex items-center justify-center">
       <div
         style={{
