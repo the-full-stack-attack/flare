@@ -9,6 +9,7 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { AnimatedList } from '../../components/ui/animated-list';
 import { Button } from '../../components/ui/button';
+import { Textarea } from '../../components/ui/textarea';
 import  { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import { UserContext } from '../contexts/UserContext';
@@ -17,7 +18,7 @@ import QuipLash from '../components/chatroom/QuipLash';
 import MsgBox from '../components/chatroom/MsgBox';
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
-import mapPack from '../assets/chatroom/mapPack'
+import mapPack from '../assets/chatroom/mapPack';
 import {
   Container,
   Graphics,
@@ -73,8 +74,10 @@ const style = new TextStyle({
 function Chatroom() {
   const location = useLocation();
   const start_time = location.state;
+  const [gameLoaded, setGameLoaded] = useState(false);
   // LOAD ASSETS
-  useAssets([
+  // const { assets, successfulLoad } = 
+  const { assets, isSuccess }  = useAssets([
     {
       alias: 'bunny',
       src: 'https://pixijs.com/assets/bunny.png',
@@ -192,6 +195,7 @@ function Chatroom() {
     {  alias: '103', src: TILES['103'], }, 
     {  alias: '104', src: TILES['104'], }, 
   ]);
+
   // const {
   //   assets: [texture],
   //   isSuccess,
@@ -227,6 +231,7 @@ function Chatroom() {
   }, []);
   // CONTROLS
   const keyPress = ({ key }: Element) => {
+    
     if (isTyping === false) {
       if (key === 'ArrowUp' || key === 'w') {
         socket.emit('keyPress', { inputId: 'Up', state: true });
@@ -278,6 +283,7 @@ function Chatroom() {
   }, []);
   // EVENT LISTENERS FOR TYPING
   useEffect(() => {
+    
     if (isTyping === false) {
       document.addEventListener('keydown', keyPress);
       document.addEventListener('keyup', keyUp);
@@ -312,8 +318,12 @@ function Chatroom() {
   };
   useEffect(() => {
     window.addEventListener('resize', handleResize);
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+
+
   return (
      <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
       <div>
@@ -330,6 +340,8 @@ function Chatroom() {
           <div onClick={notTyping} class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
           <div class="p-2">
           <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
+          { !isSuccess && <div>LOADING</div> }
+          { isSuccess && 
           <Application 
           resizeTo={appRef}
           width={Math.floor(640)}
@@ -342,6 +354,7 @@ function Chatroom() {
               >
             { 
             objLay.tiles.map((objTiles) => ( 
+             
                 <pixiSprite
                   texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
                   x={32 * (objTiles.x) * 1.25 }
@@ -416,6 +429,7 @@ function Chatroom() {
               </pixiContainer>
             ))} 
           </Application>
+ } 
           </div>
           </div>
           </div>
@@ -428,7 +442,7 @@ function Chatroom() {
         }}>
         <div onClick={typing}>
           <Label class="text-white text-2xl rounded-md"> Send A Chat </Label>
-          <Input
+          <Textarea
             class="bg-white rounded-md" 
             type="text"
             value={message}
