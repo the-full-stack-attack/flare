@@ -63,16 +63,17 @@ class Flare {
 const flares: FlareType[] = [];
 const flareArrays: any[] = [];
 // Create individual flare arrays and push them onto the flareArrays
-const butterFlareEffect: FlareArr = ['Butterflare Effect', 'Special Flare', '', 'Started your journey with Flare!', 0, null, 'Signup for Flare'];
-const goGetter: FlareArr = ['Go Getter', 'Task Flare', '', 'Completed your first ever task!', 0, null, 'Complete your first task'];
+const butterFlareEffect: FlareArr = ['Butterflare Effect', 'Special Flare', path.join(__dirname, '.', 'flareImages', 'butterFlare.png' ), 'Started your journey with Flare!', 0, null, 'Signup for Flare'];
+const goGetter: FlareArr = ['Go Getter', 'Task Flare', path.join(__dirname, '.', 'flareImages', 'goGetter.png' ), 'Completed your first ever task!', 0, null, 'Complete your first task'];
 const theHost: FlareArr = ['The Host', 'Event Flare', '', 'Created an event for the first time!', 0, null, 'Create an event'];
-const chattyCathy: FlareArr = ['Stored Thoughts(x3)', 'AI Flare', '', 'Saved 3 AI conversations', 0, null, 'Talk to the AI'];
+const storedThoughts: FlareArr = ['Stored Thoughts(x3)', 'AI Flare', path.join(__dirname, '.', 'flareImages', 'storedThoughts.png' ), 'Saved 3 AI conversations', 0, null, 'Talk to the AI'];
 const theSpark: FlareArr = ['The Spark', 'Event Flare', '', 'Attended your first ever event!', 0, null, 'Attend your first event'];
 const multiTasker: FlareArr = ['Multitasker', 'Task Flare', '', 'You\'ve completed 5 tasks!', 0, 5, 'Complete 5 tasks'];
 const partyAnimal: FlareArr = ['Party Animal', 'Event Flare', '', 'You\'ve attended 5 events!', 0, 5, 'Attend 5 events'];
-// flareArrays.push(butterFlareEffect, goGetter, theHost, chattyCathy, theSpark, multiTasker, partyAnimal);
-const testFlare = ['Test Bucket', 'Testing Flare', path.join(__dirname, '..', '..', '..', 'client', 'assets', 'logo', 'phoenix.png' ), 'Inserted into the bucket', 0, null, 'Seed images'];
-flareArrays.push(testFlare);
+flareArrays.push(butterFlareEffect, goGetter, storedThoughts);
+// const testFlare = ['Test Bucket', 'Testing Flare', path.join(__dirname, '..', '..', '..', 'client', 'assets', 'logo', 'phoenix.png' ), 'Inserted into the bucket', 0, null, 'Seed images'];
+// flareArrays.push(testFlare);
+// const testFlareObj = new Flare(testFlare);
 
 // Create an object using the arrays above and push the object onto the flares array
 flareArrays.forEach((flareInfo) => {
@@ -86,21 +87,33 @@ const seedFlares = async () => {
     console.log('Destroying the existing flares');
     await Flares.destroy( { where: { value: 0 } });
   }
-   await Flares.bulkCreate(flares);
+} catch (err) {
+  console.error('Error seeding flares in the database: ', err);
+}
+  // Create an array to push the result of uploadImages onto
+  const flarePromises: Promise<FlareType>[] = [];
+  // Iterate over the flaresArray of Flares using forEach and push the return onto readyFlares
+  flares.forEach((flare) => {
+    flarePromises.push(uploadImage(flare));
+  });
+  Promise.all(flarePromises)
+  .then((flares) => {
+    Flares.bulkCreate(flares);
+  })
+  .catch((err) => {
+    console.error('Error in promise.all(): ', err);
+  })
    console.log('Flares created');
-  } catch (err) {
-    console.error('Error seeding flares in the database: ', err);
-  }
 };
-const testFlareObj = new Flare(testFlare);
-async function uploadImage(flare: FlareType): Promise<string | null>{
+
+async function uploadImage(flare: FlareType): Promise<FlareType> {
   try {
     // Create a read stream with the image path
     const fileBuffer = await fs.promises.readFile(flare.icon);
     const imageKey: string = `/flare/${path.basename(flare.icon)}`; // Plucks the filename from the path
     if (!S3_BUCKET_NAME || !s3Client) {
       console.error('S3_BUCKET_NAME or s3Client was undefined');
-      return null;
+      throw new Error;
     }
     const uploadParams: PutObjectCommandInput = {
         Bucket: S3_BUCKET_NAME,
@@ -112,14 +125,15 @@ async function uploadImage(flare: FlareType): Promise<string | null>{
     const putCommand = new PutObjectCommand(uploadParams);
     const image = await s3Client.send(putCommand);
     console.log('Successful upload');
-    console.log(typeof image);
-    return imageKey; // Store this in database on flare.icon
+    // Assign the image key to the flare icon
+    flare.icon = imageKey // This key is used to access the image from the bucket
+    return flare;
   } catch (err) {
     console.error(`Error uploading file for ${flare.name}`, err);
-    return null;
+    throw new Error;
   }
 };
 
-uploadImage(testFlareObj);
+seedFlares();
 
 export default seedFlares;
