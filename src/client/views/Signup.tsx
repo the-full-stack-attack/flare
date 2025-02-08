@@ -12,6 +12,7 @@ import {
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
+import Avatar from '../components/signup/avatar';
 
 import { BackgroundGlow } from '@/components/ui/background-glow';
 
@@ -104,6 +105,9 @@ function Signup() {
                     className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
                   Welcome To Flare
                 </CardTitle>
+                <div>
+                  <Avatar/>
+                </div>
                 <CardDescription className="text-gray-400">
                   Setup your account with Flare in one-click.
                 </CardDescription>
@@ -190,6 +194,8 @@ function Signup() {
             </Card>
           </div>
         </div>
+
+
       </div>
   );
 }
