@@ -179,12 +179,15 @@ function EventDetails({
           </div>
         ) : null}
         {category === 'attending' ? (
-          <Button className={warnDrawerButton} onClick={patchAttendingEvent}>Bail</Button>
+          <Button className={warnDrawerButton} onClick={() => {
+            patchAttendingEvent();
+            toast(`You've just bailed.`)
+          }}>Bail</Button>
         ) : null}
         {category === 'bailed' ? (
           <Button className={successDrawerButton} onClick={() => {
             patchAttendingEvent();
-            toast(`You've just re-attended!`);
+            toast(`You've just re-attended.`);
           }}>Re-attend</Button>
         ) : null}
         <DrawerClose asChild>
