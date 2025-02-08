@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useContext, useRef, ref } from 'react';
+import React, { useEffect, useState, useCallback, useContext, useRef, ref, useId } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
@@ -33,7 +33,6 @@ import {
 } from 'pixi.js';
 import axios from 'axios';
 import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' 
-
 import nightClubTileSet from '../assets/chatroom/tileSet';
 extend({
   Container,
@@ -337,10 +336,10 @@ function Chatroom() {
           }} >
           <Countdown endTime={dayjs(start_time)}/>
           </div> 
-          <div class="p-4">
-          <div onClick={notTyping} class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
-          <div class="p-2">
-          <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
+          <div className="p-4">
+          <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+          <div className="p-2">
+          <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
           { !isSuccess && <div className='p-15'><VelocityScroll >LOADING GAME</VelocityScroll></div> }
           { isSuccess && 
           <Application 
@@ -351,7 +350,8 @@ function Chatroom() {
          >
           {
             mapPack.layers.map((objLay) => (
-              <pixiContainer  
+              <pixiContainer 
+              key= {crypto.randomUUID()} 
               >
             { 
             objLay.tiles.map((objTiles) => ( 
@@ -361,6 +361,7 @@ function Chatroom() {
                   x={32 * (objTiles.x) * 1.25 }
                   y={32 * (objTiles.y) * 1.25 }
                  scale={ 1.25, 1.25}
+                 key= {crypto.randomUUID()}
                 />
             ))
             }
@@ -377,6 +378,7 @@ function Chatroom() {
                 {player.sentMessage && (
                   <pixiGraphics 
                   draw={speechBubble} 
+                  key= {crypto.randomUUID()}
                 />
                 )}
                 {player.sentMessage && (
@@ -385,6 +387,7 @@ function Chatroom() {
                     anchor={0.5}
                     x={70}
                     y={-30}
+                    key= {crypto.randomUUID()}
                     scale={ 1.1, 1.1}
                     style={new TextStyle({
                       align: 'center',
@@ -396,6 +399,7 @@ function Chatroom() {
                       letterSpacing: 2,
                       wordWrap: true,
                       wordWrapWidth: 80,
+                      
                     })}
                   />
                 )}
@@ -442,9 +446,9 @@ function Chatroom() {
           marginTop: '20px',
         }}>
         <div onClick={typing}>
-          <Label class="text-white text-2xl rounded-md"> Send A Chat </Label>
+          <Label className="text-white text-2xl rounded-md"> Send A Chat </Label>
           <Textarea
-            class="bg-white rounded-md" 
+            className="bg-white rounded-md" 
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -460,7 +464,7 @@ function Chatroom() {
             </InteractiveHoverButton>
           </div>
           <div
-          class="rounded-md"
+          className="rounded-md"
           style={{
             display: 'flex',
             justifyContent: 'center',
@@ -473,16 +477,16 @@ function Chatroom() {
             {
               isPlayingQuiplash && <QuipLash startTime={start_time}/>
             }
-      <Card class="bg-transparent flex items-center justify-center">
+      <Card className="bg-transparent flex items-center justify-center">
       <div
         style={{
           display: 'flex',
           justifyContent: 'center',
           width: '250px'
         }}>
-          <AnimatedList class="w-80 md:w-160 lg:w-300">
+          <AnimatedList className="w-80 md:w-160 lg:w-300">
             {allMessages.map((msg) => (
-              <MsgBox class="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} />
+              <MsgBox className="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} />
             ))}
           </AnimatedList>
       </div>
