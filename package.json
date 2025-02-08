@@ -12,7 +12,8 @@
     "start": "nodemon ./src/server/index.ts",
     "update": "rimraf node_modules && rm package-lock.json && npm install && exit 1",
     "seed": "ts-node ./src/server/db/seeds/index.ts",
-    "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts"
+    "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts",
+    "seedFlares": "ts-node ./src/server/db/seeds/seedFlares.ts"
   },
   "repository": {
     "type": "git",
@@ -77,6 +78,8 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.743.0",
+    "@aws-sdk/lib-storage": "^3.743.0",
     "@emotion/is-prop-valid": "^1.3.1",
     "@google/generative-ai": "^0.21.0",
     "@headlessui/react": "^2.2.0",
