@@ -239,10 +239,10 @@ function QuipLash() {
   return (
     <div>
   
-    <div class="p-4">
-    <div class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
-    <div class="p-2">
-    <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video bg-transparent">
+    <div className="p-4">
+    <div className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+    <div className="p-2">
+    <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video bg-transparent">
     { !isSuccess && <div className='p-15'><VelocityScroll >LOADING GAME</VelocityScroll></div> }
     { isSuccess && 
     <Application 
@@ -304,7 +304,7 @@ function QuipLash() {
         </div>  
         </div>
         </div>
-        {promptGiven && <h6 class="text-white text-[22px]">{quiplashPrompt} </h6>}
+        {promptGiven && <h6 className="text-white text-[22px]">{quiplashPrompt} </h6>}
         {promptGiven && !answersReceived && (
           <div
           style={{
@@ -312,9 +312,9 @@ function QuipLash() {
             justifyContent: 'center',
             marginTop: '11px',
           }}>
-            <Label class="text-white"> Enter Your Quiplash! </Label>
+            <Label className="text-white"> Enter Your Quiplash! </Label>
             <Input
-              class="bg-white" 
+              className="bg-white" 
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -348,7 +348,7 @@ function QuipLash() {
     )}
     </div>
     <Button onClick={quitQuiplash}>QUIT</Button>
-    {showWinner && <h1 class="text-white">{winner}</h1>}
+    {showWinner && <h1 className="text-white">{winner}</h1>}
     </div>
   );
 }
