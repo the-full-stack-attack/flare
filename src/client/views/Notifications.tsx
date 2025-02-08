@@ -10,11 +10,13 @@ import { BackgroundGlow } from '@/components/ui/background-glow';
 
 import TTSButton from '../components/a11y/TTSButton';
 import NotificationList from '../components/notifications-view/NotificationList';
+import HeadlessDialog from '../components/general/HeadlessDialog';
 
 function Notifications() {
   const { getUser } = useContext(UserContext);
 
   const [notifs, setNotifs] = useState<any>([]);
+  const [deleteAllNotifsDialogOpen, setDeleteAllNotifsDialogOpen] = useState<boolean>(false);
 
   const [newNotifsText, setNewNotifsText] = useState<string>('You currently have no new notifications.')
 
@@ -80,9 +82,18 @@ function Notifications() {
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
       <div className="container flex flex-col items-center">
         <div className="grid gap-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 w-md mb-5">
-          <Button className={buttonColor} onClick={deleteAllNotifications}>
+          <Button className={buttonColor} onClick={() => { setDeleteAllNotifsDialogOpen(true) }}>
             Clear All Notifications
           </Button>
+          <HeadlessDialog
+            open={deleteAllNotifsDialogOpen}
+            close={() => { setDeleteAllNotifsDialogOpen(false) }}
+            title="Delete All Notifications"
+            description="This will permanently delete all of your notifications. This action cannot be undone."
+            action={deleteAllNotifications}
+            actionButtonName="Delete All Notifications"
+            type="bad"
+          />
           <TTSButton
             buttonType="Button"
             className={buttonColor}
