@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '../../../components/ui/button';
 
-import { toast } from 'sonner';
-
 import {
   DrawerHeader,
   DrawerTitle,
@@ -84,8 +82,6 @@ function EventDetails({
   } = event;
 
   const { street_address, city_name, state_name, zip_code } = Venue;
-
-  const [bailedDialog, setBailedDialog] = useState<boolean>(false);
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
 

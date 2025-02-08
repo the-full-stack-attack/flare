@@ -111,6 +111,9 @@ function Event({ event, getEvents }: EventProps) {
         },
       })
       .then(getEvents)
+      .then(() => {
+        toast(`You are now attending the event ${title}.`)
+      })
       .catch((err: unknown) => {
         console.error('Failed to postAttendEvent:', err);
       });
