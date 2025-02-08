@@ -86,7 +86,7 @@ function Notifications() {
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
       <div className="container flex flex-col items-center">
         <div className="grid gap-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 w-md mb-5">
-          <Button className={buttonColor} onClick={() => { setDeleteAllNotifsDialogOpen(true) }}>
+          <Button disabled={!notifs.length} className={buttonColor} onClick={() => { setDeleteAllNotifsDialogOpen(true) }}>
             Clear All Notifications
           </Button>
           <HeadlessDialog
