@@ -144,7 +144,13 @@ const venueVirtuoso: FlareArr = [
   'Input venue data',
 ];
 
-flareArrays.push(butterFlareEffect, goGetter, storedThoughts, theHost, theSpark,);
+flareArrays.push(
+  butterFlareEffect,
+  goGetter,
+  storedThoughts,
+  theHost,
+  theSpark
+);
 
 // Create an object using the arrays above and push the object onto the flares array
 flareArrays.forEach((flareInfo) => {
@@ -154,10 +160,10 @@ flareArrays.forEach((flareInfo) => {
 const seedFlares = async () => {
   try {
     const foundFlares = await Flares.findAll();
-    // if (foundFlares) {
-    //   console.log('Destroying the existing flares');
-    //   await Flares.destroy( { where: { value: 0 } });
-    // }
+    if (foundFlares) {
+      console.log('Destroying the existing flares');
+      await Flares.destroy( { where: { value: 0 } });
+    }
   } catch (err) {
     console.error('Error seeding flares in the database: ', err);
   }
@@ -199,7 +205,9 @@ async function uploadImage(flare: FlareType): Promise<FlareType> {
     // This command will throw an error if the imageKey does not exist in the bucket
     await s3Client.send(headObjectCommand);
     // If the headObjectCommand is successful then the image already exists
-    console.log(`${flare.icon} already exists in the bucket`);
+    console.log(`${imageKey} already exists in the bucket`);
+    // Make sure the icon is still the imageKey
+    flare.icon = imageKey;
     return flare;
   } catch (error: any) {
     // Check to make sure the error was due to the object not being found
@@ -221,7 +229,7 @@ async function uploadImage(flare: FlareType): Promise<FlareType> {
     };
     // Configure the command with the uploadParams
     const putCommand = new PutObjectCommand(uploadParams);
-    const image = await s3Client.send(putCommand);
+    await s3Client.send(putCommand);
     console.log('Successful upload');
     // Assign the image key to the flare icon
     flare.icon = imageKey; // This key is used to access the image from the bucket
@@ -233,18 +241,21 @@ async function uploadImage(flare: FlareType): Promise<FlareType> {
 }
 
 // Function to delete image from bucket
-async function deleteFromBucket(imageKey: string): Promise<void> {
+async function deleteFromBucket(...imageKey: string[]): Promise<void> {
   try {
-    // Configure the command parameters
-    const deleteCommandParams: DeleteObjectCommandInput = {
-      Bucket: S3_BUCKET_NAME,
-      Key: imageKey,
-    };
-    // Create command with the parameters
-    const deleteCommand = new DeleteObjectCommand(deleteCommandParams);
-    // Send the command
-    await s3Client.send(deleteCommand);
-    console.log(`${imageKey} deleted from bucket`);
+    for (let i = 0; i < imageKey.length; i++) {
+      const key: string = imageKey[i];
+      // Configure the command parameters
+      const deleteCommandParams: DeleteObjectCommandInput = {
+        Bucket: S3_BUCKET_NAME,
+        Key: key,
+      };
+      // Create command with the parameters
+      const deleteCommand = new DeleteObjectCommand(deleteCommandParams);
+      // Send the command
+      await s3Client.send(deleteCommand);
+      console.log(`${imageKey} deleted from bucket`);
+    }
   } catch (error) {
     console.error(`Error in deleteFromBucket for key ${imageKey}`, error);
   }
