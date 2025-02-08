@@ -46,10 +46,10 @@ function Notifications() {
   const deleteAllNotifications = () => {
     axios
       .delete('/api/notifications/all')
-      .then(getNotifications)
       .then(() => {
         toast('All notifications have been deleted.')
       })
+      .then(getNotifications)
       .catch((err: unknown) => {
         console.error('Failed to deleteAllNotifications:', err);
       });
