@@ -14,9 +14,26 @@ type HeadlessDialogProps = {
   close: () => void;
   title: string;
   description: string;
+  action: () => void;
+  actionButtonName: string;
+  type: 'good' | 'bad' | 'neutral';
 }
 
-function HeadlessDialog({ open, close, title, description }: HeadlessDialogProps) {
+function HeadlessDialog({
+  open,
+  close,
+  title,
+  description,
+  action,
+  actionButtonName,
+  type,
+}: HeadlessDialogProps) {
+  const neutralButtonStyle = "inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700";
+
+  const goodButtonStyle = "inline-flex items-center gap-2 rounded-md bg-green-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-green-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-green-700";
+
+  const badButtonStyle = "inline-flex items-center gap-2 rounded-md bg-red-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-red-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-red-700";
+
   return (
     <Dialog
       open={open}
@@ -39,7 +56,7 @@ function HeadlessDialog({ open, close, title, description }: HeadlessDialogProps
             </p>
             <div className="mt-4">
               <Button
-                className="inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
+                className={badButtonStyle}
                 onClick={close}
               >
                 Cancel
