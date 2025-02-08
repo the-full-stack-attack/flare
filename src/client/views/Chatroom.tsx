@@ -291,8 +291,12 @@ function Chatroom() {
     };
   }, [isTyping]);
   const typing = async () => {
-    await setIsTyping(!isTyping);
+    await setIsTyping(true);
   };
+
+  const notTyping = async () =>{
+    await setIsTyping(false);
+  }
   const sendMessage = () => {
     console.log(message);
     socket.emit('message', { message, eventId });
@@ -323,7 +327,7 @@ function Chatroom() {
           <Countdown endTime={dayjs(start_time)}/>
           </div> 
           <div class="p-4">
-          <div class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+          <div onClick={notTyping} class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
           <div class="p-2">
           <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
           <Application 
