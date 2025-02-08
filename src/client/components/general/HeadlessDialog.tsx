@@ -5,8 +5,6 @@ import {
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
-  CloseButton,
-  useClose,
 } from '@headlessui/react';
 
 type HeadlessDialogProps = {
