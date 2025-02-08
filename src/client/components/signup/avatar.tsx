@@ -1,5 +1,8 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { createAvatar } from '@dicebear/core';
+import { adventurer } from '@dicebear/collection';
+
 
 function Avatar() {
   const [avatarItems, setAvatarItems] = useState({
@@ -33,10 +36,27 @@ function Avatar() {
     earrings: [ 'variant01', 'variant02', 'variant03', 'variant04', 'variant05', 'variant06', ],
   }
 
+  const newAvatar = async () => {
+    const avatar = createAvatar(adventurer, {
+      seed: 'Felix',
+      skinColor: '9e5622',
+      hair: 'long01',
+      hairColor: '0e0e0e',
+      eyebrows: 'variant01',
+      eyes: 'variant01',
+      mouth: 'variant01',
+      features: 'mustache',
+      glasses: 'variant01',
+      earrings: 'variant01',
+    })
+  }
+
 
   return (
-      <div>
+      <div className='py-5'>
         Hello!
+
+
       </div>
   )
 
