@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 
@@ -61,7 +61,7 @@ type EventDetailsProps = {
     };
   };
   postAttendEvent: () => void;
-  patchAttendingEvent: () => void;
+  patchAttendingEvent: (isAttending: boolean) => void;
   category: string;
 };
 
@@ -84,6 +84,8 @@ function EventDetails({
   } = event;
 
   const { street_address, city_name, state_name, zip_code } = Venue;
+
+  const [bailedDialog, setBailedDialog] = useState<boolean>(false);
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
 
@@ -180,14 +182,12 @@ function EventDetails({
         ) : null}
         {category === 'attending' ? (
           <Button className={warnDrawerButton} onClick={() => {
-            patchAttendingEvent();
-            toast(`You've just bailed.`)
+            patchAttendingEvent(false);
           }}>Bail</Button>
         ) : null}
         {category === 'bailed' ? (
           <Button className={successDrawerButton} onClick={() => {
-            patchAttendingEvent();
-            toast(`You've just re-attended.`);
+            patchAttendingEvent(true);
           }}>Re-attend</Button>
         ) : null}
         <DrawerClose asChild>
