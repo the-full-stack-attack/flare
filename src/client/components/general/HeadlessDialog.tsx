@@ -75,7 +75,10 @@ function HeadlessDialog({
               </Button>
               <Button
                 className={actionButtonStyle}
-                onClick={action}
+                onClick={() => {
+                  action();
+                  close();
+                }}
               >
                 {actionButtonName}
               </Button>
