@@ -7,7 +7,7 @@ import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
 import dayjs from 'dayjs';
 import {Op} from 'sequelize';
-import checkForFlares from '../helpers/flares';
+import { checkForFlares } from '../helpers/flares';
 
 import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
@@ -41,7 +41,7 @@ eventRouter.get('/search', async (req: any, res: Response): Promise<void> => {
             query: searchInput,
             limit: '20',
             types: 'place',
-            ll: `${latitude}, ${longitude}`,
+            // ll: `${latitude}, ${longitude}`,
         });
         const response = await fetch(
             `https://api.foursquare.com/v3/autocomplete?${searchParams}`,
