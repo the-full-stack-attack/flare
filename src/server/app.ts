@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 import { verifySessionApi, verifySessionView } from './verify';
 import apiRouter from './api';
 // Helper function will be used to give the user a flare (achievement) for signing up
-import checkForFlares from './helpers/flares';
+import { checkForFlares } from './helpers/flares';
 import User from './db/models/users';
 
 const app = express();

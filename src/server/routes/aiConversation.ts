@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Conversation from '../db/models/conversations';
 import Conversation_Session from '../db/models/conversation_session';
-import checkForFlares from '../helpers/flares';
+import { checkForFlares } from '../helpers/flares';
 
 dotenv.config();
 const aiConversationRouter = Router();
