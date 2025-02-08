@@ -10,6 +10,7 @@ import { Label } from '../../components/ui/label';
 import { AnimatedList } from '../../components/ui/animated-list';
 import { Button } from '../../components/ui/button';
 import { Textarea } from '../../components/ui/textarea';
+import { VelocityScroll } from '../../components/ui/scroll-based-velocity';
 import  { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import { UserContext } from '../contexts/UserContext';
@@ -340,7 +341,7 @@ function Chatroom() {
           <div onClick={notTyping} class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
           <div class="p-2">
           <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
-          { !isSuccess && <div>LOADING</div> }
+          { !isSuccess && <div className='p-15'><VelocityScroll >LOADING GAME</VelocityScroll></div> }
           { isSuccess && 
           <Application 
           resizeTo={appRef}
