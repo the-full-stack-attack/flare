@@ -105,13 +105,15 @@ function Signup() {
                     className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
                   Welcome To Flare
                 </CardTitle>
-                <div>
-                  <Avatar/>
-                </div>
+
                 <CardDescription className="text-gray-400">
                   Setup your account with Flare in one-click.
                 </CardDescription>
               </CardHeader>
+
+              <CardContent>
+                <Avatar />
+              </CardContent>
 
               <CardContent>
                 <form onSubmit={handleSignup}>
