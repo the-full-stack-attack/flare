@@ -28,9 +28,9 @@ jobs:
         cache: 'npm'
     - name: Configure MySQL
       run: |
-        sudo /etc/init.d/mysql start
-        mysql -e "ALTER USER 'root'@'localhost' identified with mysql_native_password by ''"
-        mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" -u$DB_USER -p$DB_PASSWORD
+        sudo systemctl start mysql
+        ALTER USER 'root'@'localhost' identified with mysql_native_password by '';
+        CREATE DATABASE IF NOT EXISTS $DB_NAME;
       env: 
         DB_NAME: flare
         DB_USER: root
