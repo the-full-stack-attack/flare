@@ -144,7 +144,7 @@ const venueVirtuoso: FlareArr = [
   'Input venue data',
 ];
 
-flareArrays.push(theHost, theSpark, venueVirtuoso);
+flareArrays.push(butterFlareEffect, goGetter, storedThoughts, theHost, theSpark,);
 
 // Create an object using the arrays above and push the object onto the flares array
 flareArrays.forEach((flareInfo) => {
@@ -199,7 +199,7 @@ async function uploadImage(flare: FlareType): Promise<FlareType> {
     // This command will throw an error if the imageKey does not exist in the bucket
     await s3Client.send(headObjectCommand);
     // If the headObjectCommand is successful then the image already exists
-    console.error(`${flare.icon} already exists in the bucket`);
+    console.log(`${flare.icon} already exists in the bucket`);
     return flare;
   } catch (error: any) {
     // Check to make sure the error was due to the object not being found
@@ -250,6 +250,7 @@ async function deleteFromBucket(imageKey: string): Promise<void> {
   }
 }
 
-deleteFromBucket('/flare/venueVirtuoso.png');
+seedFlares();
+// deleteFromBucket('/flare/venueVirtuoso.png');
 
 export default seedFlares;
