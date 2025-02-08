@@ -10,7 +10,7 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-function Avatar() {
+function Avatar({ avatarItems, setAvatarItems }) {
     const [avatarUri, setAvatarUri] = useState('');
     const [previewUris, setPreviewUris] = useState({
         skin: {},
@@ -22,15 +22,7 @@ function Avatar() {
         earrings: {},
     });
     const [openSection, setOpenSection] = useState('');
-    const [avatarItems, setAvatarItems] = useState({
-        seed: 'Felix',
-        skinColor: ['f2d3b1'],
-        hair: ['short04'],
-        hairColor: ['0e0e0e'],
-        eyebrows: ['variant07'],
-        eyes: ['variant04'],
-        mouth: ['variant05'],
-    });
+
 
 
 

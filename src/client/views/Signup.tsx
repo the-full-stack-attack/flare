@@ -25,6 +25,19 @@ function Signup() {
 
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
+
+  const [avatarItems, setAvatarItems] = useState({
+    seed: 'Felix',
+    skinColor: ['f2d3b1'],
+    hair: ['short04'],
+    hairColor: ['0e0e0e'],
+    eyebrows: ['variant07'],
+    eyes: ['variant04'],
+    mouth: ['variant05'],
+  });
+
+
+
   // when the user clicks submit, we handle the signup
   const handleSignup = (e: any) => {
     e.preventDefault();
@@ -112,7 +125,9 @@ function Signup() {
               </CardHeader>
 
               <CardContent>
-                <Avatar />
+                <Avatar
+                avatarItems={avatarItems}
+                setAvatarItems={setAvatarItems}/>
               </CardContent>
 
               <CardContent>
