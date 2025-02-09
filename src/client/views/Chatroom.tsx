@@ -231,8 +231,8 @@ function Chatroom() {
     graphics?.scale.set(.75, .26);
   }, []);
   // CONTROLS
-  const keyPress = ({ key }: Element) => {
-    
+  const keyPress = ({ key }: any) => {
+    console.log(key, 'key caught')
     if (isTyping === false) {
       if (key === 'ArrowUp' || key === 'w') {
         socket.emit('keyPress', { inputId: 'Up', state: true });
@@ -245,7 +245,7 @@ function Chatroom() {
       }
     }
   };
-  const keyUp = ({ key }: Element) => {
+  const keyUp = ({ key }: any) => {
     if (key === 'ArrowUp' || key === 'w') {
       socket.emit('keyPress', { inputId: 'Up', state: false });
     } else if (key === 'ArrowDown' || key === 's') {
@@ -348,6 +348,14 @@ function Chatroom() {
     wordWrapWidth: 250,
   })
 
+  const handlePointerDown = (e) => {
+    console.log(e.target.name)
+   keyPress({key: e.target.name})// Adjust the timeout as needed
+  };
+  
+  const handlePointerUp = (e) => {
+   keyUp({key: e.target.name})// Adjust the timeout as needed
+   };
   return (
      <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
       <div>
@@ -457,8 +465,25 @@ function Chatroom() {
           </div>
         </div>
       </div>
-      
-        { !isPlayingQuiplash && <div className="flex justify-center"> <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white" onClick={toggleQuiplash}>Ice-Breaker Games</RainbowButton></div>}
+      <Card className='w-50 block sm:hidden bg-transparent border-transparent'>
+      <div class="flex flex-col items-center">
+        <Button className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full mt-2 border border-black"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp} name='w'>↑</Button>
+          <div className="flex justify-center">
+         <Button  className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full border border-black"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp} name='a'>←</Button>
+         <Button className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full border border-black"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp} name='s'>↓</Button>
+         <Button  className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full border border-black"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp} name='d'>→</Button>
+        </div>
+        </div>
+      </Card>
+        { !isPlayingQuiplash && <div className="flex justify-center"> <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleQuiplash}>Ice-Breaker Games</RainbowButton></div>}
         
          { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
             

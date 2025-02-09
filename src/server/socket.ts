@@ -269,7 +269,7 @@ const initializeSocket = (
       QUIPLASH_GAMES[socket.data.eventId].votes.push(e);
     });
 
-    // chatroom
+    // Chatroom
 
     // Controls movement. Update their respective state via socket.id
     socket.on('keyPress', ({ inputId, state }) => {
