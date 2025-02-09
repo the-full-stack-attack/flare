@@ -33,5 +33,5 @@ export const Countdown: React.FC<CountdownProps> = ({ endTime }) => {
       setTime(timestamp);
     }, interval);
   }, [endTime]);
-  return <h4 class="text-white text-[34px]">{time}</h4>;
+  return <h4 className="text-white text-[34px]">{time}</h4>;
 };
