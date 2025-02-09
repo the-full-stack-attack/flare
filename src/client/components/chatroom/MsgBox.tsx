@@ -1,7 +1,23 @@
 import React from 'react';
 import cn from './../../../../lib/utils';
+import dayjs from 'dayjs';
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+import axios from 'axios';
 
-const MsgBox = ({ msg, user }) => {
+const MsgBox = ({ msg, user, eventId }) => {
+ let timeSent = dayjs().fromNow();
+// let formatted = timeSent.format('HH:mm:ss')
+
+useEffect(() => {
+  axios.post('/api/chatroom', { msg, user, eventId})
+  .then(() => {
+    console.log('success')
+  }).catch((err) => {
+    console.error(err);
+  })
+})
+
   return (
     <figure
       className={cn(
@@ -27,7 +43,7 @@ const MsgBox = ({ msg, user }) => {
           <figcaption className="flex flex-row items-center whitespace-pre text-lg font-medium dark:text-white ">
             <span className="text-sm sm:text-lg">{user}</span>
             <span className="mx-1">·</span>
-            <span className="text-xs text-gray-500">timeStamp</span>
+            <span className="text-xs text-gray-500">{timeSent}</span>
           </figcaption>
           <p className="text-sm font-normal dark:text-white/60">{msg}</p>
         </div>

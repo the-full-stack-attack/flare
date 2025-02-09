@@ -472,7 +472,7 @@ function Chatroom() {
           <AnimatedList className="w-80 md:w-160 lg:w-300">
             {allMessages.map((msg) => (
 
-              <MsgBox className="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} timeSent={dayJs.format('HH:mm:ss')} />
+              <MsgBox className="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} eventId={eventId} />
 
             ))}
           </AnimatedList>
