@@ -17,10 +17,14 @@ const Player = function (id: any, user: any, eventId: any): any {
     updatePosition() {
       // method for updating state of movement
       if (self.pressingRight) {
+        if( !(( self.data.x + self.maxSpd) > 620)) {
         self.data.x += self.maxSpd;
+        };
       }
       if (self.pressingLeft) {
+        if( !(( self.data.x - self.maxSpd) < 0)) {
         self.data.x -= self.maxSpd;
+        };
       }
       if (self.pressingUp) {
         if( !((self.data.y - self.maxSpd) < 0)) {
@@ -28,7 +32,9 @@ const Player = function (id: any, user: any, eventId: any): any {
         };
       }
       if (self.pressingDown) {
+        if( !((self.data.y + self.maxSpd) > 340)) {
         self.data.y += self.maxSpd;
+        };
       }
     },
   };
