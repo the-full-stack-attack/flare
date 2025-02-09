@@ -348,6 +348,13 @@ function Chatroom() {
     wordWrapWidth: 250,
   })
 
+  const handlePointerDown = (e) => {
+   console.log(e.target.name)// Adjust the timeout as needed
+  };
+  
+  const handlePointerUp = (e) => {
+    console.log(e.target.name)// Adjust the timeout as needed
+   };
   return (
      <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
       <div>
@@ -457,7 +464,20 @@ function Chatroom() {
           </div>
         </div>
       </div>
-      
+      <Card>
+        <Button 
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp} name='w'>UP</Button>
+         <Button 
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp} name='s'>DOWN</Button>
+         <Button 
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp} name='a'>LEFT</Button>
+         <Button 
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp} name='d'>RIGHT</Button>
+      </Card>
         { !isPlayingQuiplash && <div className="flex justify-center"> <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white" onClick={toggleQuiplash}>Ice-Breaker Games</RainbowButton></div>}
         
          { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
