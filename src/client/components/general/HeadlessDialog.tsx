@@ -50,7 +50,7 @@ function HeadlessDialog({
     <Dialog
       open={open}
       as="div"
-      className="relative backdrop-blur-xs z-10 focus:outline-none m-4"
+      className="relative backdrop-blur-xs z-50 focus:outline-none m-4"
       onClose={close}
     >
       <DialogBackdrop className="fixed inset-0 bg-black/50" />

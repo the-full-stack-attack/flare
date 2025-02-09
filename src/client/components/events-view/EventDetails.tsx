@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 
 import { Button } from '../../../components/ui/button';
-
-import { toast } from 'sonner';
 
 import {
   DrawerHeader,
@@ -61,7 +59,7 @@ type EventDetailsProps = {
     };
   };
   postAttendEvent: () => void;
-  patchAttendingEvent: () => void;
+  patchAttendingEvent: (isAttending: boolean) => void;
   category: string;
 };
 
@@ -179,12 +177,13 @@ function EventDetails({
           </div>
         ) : null}
         {category === 'attending' ? (
-          <Button className={warnDrawerButton} onClick={patchAttendingEvent}>Bail</Button>
+          <Button className={warnDrawerButton} onClick={() => {
+            patchAttendingEvent(false);
+          }}>Bail</Button>
         ) : null}
         {category === 'bailed' ? (
           <Button className={successDrawerButton} onClick={() => {
-            patchAttendingEvent();
-            toast(`You've just re-attended!`);
+            patchAttendingEvent(true);
           }}>Re-attend</Button>
         ) : null}
         <DrawerClose asChild>

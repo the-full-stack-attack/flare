@@ -148,7 +148,7 @@ function ScheduleTextDialog({
   }, [getText]);
 
   return (
-    <DialogContent className="sm:max-w-[425px] bg-gray-600/80 text-white">
+    <DialogContent className="sm:max-w-[425px] bg-gray-600/80 text-white rounded-xl border-transparent">
       <DialogHeader>
         <DialogTitle>Schedule a Check-In Text</DialogTitle>
         <DialogDescription className="text-gray-200">
