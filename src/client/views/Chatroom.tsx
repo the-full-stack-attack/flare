@@ -9,6 +9,7 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { AnimatedList } from '../../components/ui/animated-list';
 import { Button } from '../../components/ui/button';
+import { RainbowButton } from '../../components/ui/rainbowbutton';
 import { Textarea } from '../../components/ui/textarea';
 import { VelocityScroll } from '../../components/ui/scroll-based-velocity';
 import  { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
@@ -322,7 +323,30 @@ function Chatroom() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const styleMessage = new TextStyle({
+    align: 'center',
+    fontFamily: 'sans-serif',
+    fontSize: 10,
+    fontWeight: 'bold',
+    fill: '#000000',
+    stroke: '#eef1f5',
+    letterSpacing: 2,
+    wordWrap: true,
+    wordWrapWidth: 80,
+    
+  })
 
+  const styleUserName = new TextStyle({
+    align: 'center',
+    fontFamily: 'sans-serif',
+    fontSize: 15 ,
+    fontWeight: 'bold',
+    fill: '#000000',
+    stroke: '#eef1f5',
+    letterSpacing: 5,
+    wordWrap: true,
+    wordWrapWidth: 250,
+  })
 
   return (
      <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
@@ -389,18 +413,7 @@ function Chatroom() {
                     y={-30}
                     key= {crypto.randomUUID()}
                     scale={ 1.1, 1.1}
-                    style={new TextStyle({
-                      align: 'center',
-                      fontFamily: 'sans-serif',
-                      fontSize: 10,
-                      fontWeight: 'bold',
-                      fill: '#000000',
-                      stroke: '#eef1f5',
-                      letterSpacing: 2,
-                      wordWrap: true,
-                      wordWrapWidth: 80,
-                      
-                    })}
+                    style={styleMessage}
                   />
                 )}
                 <pixiSprite
@@ -418,18 +431,7 @@ function Chatroom() {
                   
                   x={10}
                   y={40}
-                  style={  
-                    new TextStyle({
-                    align: 'center',
-                    fontFamily: 'sans-serif',
-                    fontSize: 15 ,
-                    fontWeight: 'bold',
-                    fill: '#000000',
-                    stroke: '#eef1f5',
-                    letterSpacing: 5,
-                    wordWrap: true,
-                    wordWrapWidth: 250,
-                  }) }
+                  style={ styleUserName }
                 />
               </pixiContainer>
             ))} 
@@ -439,43 +441,26 @@ function Chatroom() {
           </div>
           </div>
           </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '20px',
-        }}>
+          <div className="flex justify-center mt-2">
         <div onClick={typing}>
           <Label className="flex justify-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-2xl rounded-md"> Send A Chat </Label>
-          <Textarea
-            className="bg-white rounded-md" 
+          <Textarea 
+            className="bg-white rounded-md w-64" 
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: '20px',
-            }}>
+          <div className="flex justify-center mt-2">
             <InteractiveHoverButton onClick={sendMessage}>
               Send
             </InteractiveHoverButton>
           </div>
-          <div
-          className="rounded-md"
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '10px',}}
-            >
-           
-            </div>
         </div>
       </div>
-            
-          <QuipLash startTime={start_time}/>
+      
+        { !isPlayingQuiplash && <div className="flex justify-center"> <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white" onClick={toggleQuiplash}>Ice-Breaker Games</RainbowButton></div>}
+        
+         { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
             
       <Card className="bg-transparent flex items-center justify-center">
       <div
@@ -486,7 +471,9 @@ function Chatroom() {
         }}>
           <AnimatedList className="w-80 md:w-160 lg:w-300">
             {allMessages.map((msg) => (
-              <MsgBox className="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} />
+
+              <MsgBox className="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} timeSent={dayJs.format('HH:mm:ss')} />
+
             ))}
           </AnimatedList>
       </div>
