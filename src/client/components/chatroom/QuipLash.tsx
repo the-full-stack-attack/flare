@@ -25,6 +25,7 @@ import {
 } from 'pixi.js';
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
+import { VelocityScroll } from '../../../components/ui/scroll-based-velocity';
 import { Button } from '../../../components/ui/button';
 import MagicCard from '../../../components/ui/magicCard';
 import { InteractiveHoverButton } from '../../../components/ui/interactive-hover-button';
@@ -62,9 +63,9 @@ const style = new TextStyle({
 });
 
 
-function QuipLash() {
+function QuipLash({wantsToPlay}) {
 
-  useAssets([
+ useAssets([
     {
       alias: 'bunny',
       src: 'https://pixijs.com/assets/bunny.png',
@@ -76,7 +77,8 @@ function QuipLash() {
     {
       alias: 'background',
       src:  bartender
-    }
+    },
+    
   ]);
 
   const {
@@ -84,6 +86,7 @@ function QuipLash() {
     isSuccess,
   } = useAssets<Texture>([bartender]);
   
+  const [quit, setQuit] = useState(true)
   // LOGIC
   const { user } = useContext(UserContext);
   const [allPlayers, setAllPlayers] = useState([]);
@@ -102,6 +105,7 @@ function QuipLash() {
   const [quiplashPrompt, setQuiplashPrompt] = useState('');
   const [timer, setTimer] = useState('30');
   const [gameRatio, setGameRatio] = useState(window.innerWidth / window.innerHeight)
+  const [showReady, setShowReadyy] = useState(true);
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -190,6 +194,7 @@ function QuipLash() {
       setWinner(winner);
       setTimeout(() => {
         setShowWinner(falsyBool);
+        setShowReady(true);
       }, 5000);
     });
 
@@ -214,11 +219,15 @@ function QuipLash() {
 
   const quitQuiplash = () => {
     socket.emit('quitQuiplash');
+    setQuit(true);
     console.log('the player has quit');
   };
-
+  const toggleQuit = () => {
+    setQuit(false);
+  }
   const readyForQuiplash = () => {
     socket.emit('generatePrompt');
+    setShowReady(false);
   };
   const sendMessage = () => {
     console.log(message);
@@ -235,12 +244,17 @@ function QuipLash() {
     }
   };
   return (
+   
     <div>
-  
-    <div class="p-4">
-    <div class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
-    <div class="p-2">
-    <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video bg-transparent">
+      { quit && <div className="flex justify-center" ><Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={toggleQuit}>Play Quiplash</Button></div> } }
+      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700" onClick={quitQuiplash}>QUIT</Button> </div>}
+      { !quit &&
+    <div className="p-4">
+    <div className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+    <div className="p-2">
+    <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video bg-transparent">
+    { !isSuccess && <div className='p-15'><VelocityScroll >LOADING GAME</VelocityScroll></div> }
+    { isSuccess && 
     <Application 
     resizeTo={appRef}
     width={Math.floor(640)}
@@ -258,8 +272,26 @@ function QuipLash() {
                 y={0}
               />
             )}
+             {promptGiven && !answersReceived && !quit && (
+                 <pixiContainer
+                scale={0.7, 0.7}
+                x={350}
+                y={30}
+              
+              >
+                <pixiGraphics draw={speechBubble}>
+                  <pixiText
+                    text={quiplashPrompt}
+                    anchor={0.5}
+                    x={120}
+                    y={100}
+                    style={style}
+                  />
+                </pixiGraphics>
+              </pixiContainer>)
+                  }
           </pixiContainer>
-          {answersReceived &&
+          {answersReceived && 
             Object.entries(playerAnswers).map((tupleAnswer, i) => (
               <pixiContainer
                 eventMode="static"
@@ -295,21 +327,22 @@ function QuipLash() {
                   />}
                   </pixiContainer>
         </Application>
+}
         </div>        
         </div>  
         </div>
-        </div>
-        {promptGiven && <h6 class="text-white text-[22px]">{quiplashPrompt} </h6>}
-        {promptGiven && !answersReceived && (
+        </div> }
+        
+        {promptGiven && !answersReceived && !quit && (
           <div
           style={{
             display: 'flex',
             justifyContent: 'center',
             marginTop: '11px',
           }}>
-            <Label class="text-white"> Enter Your Quiplash! </Label>
+            <Label className="text-white"> Enter Your Quiplash! </Label>
             <Input
-              class="bg-white" 
+              className="bg-white" 
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -337,13 +370,14 @@ function QuipLash() {
                 marginTop: '20px',
               }}
             >
-            {!promptGiven && (<div >
-      <Button onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
+            {!promptGiven && !quit && (<div >
+      <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
       </div>
     )}
     </div>
-    <Button onClick={quitQuiplash}>QUIT</Button>
-    {showWinner && <h1 class="text-white">{winner}</h1>}
+    
+    {showWinner && <VelocityScroll >{winner}</VelocityScroll>}
+  
     </div>
   );
 }
