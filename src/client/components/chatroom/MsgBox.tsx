@@ -9,14 +9,14 @@ const MsgBox = ({ msg, user, eventId }) => {
  let timeSent = dayjs().fromNow();
 // let formatted = timeSent.format('HH:mm:ss')
 
-useEffect(() => {
-  axios.post('/api/chatroom', { msg, user, eventId})
-  .then(() => {
-    console.log('success')
-  }).catch((err) => {
-    console.error(err);
-  })
-})
+// useEffect(() => {
+//   axios.post('/api/chatroom/chat', { msg, user, eventId})
+//   .then(() => {
+//     console.log('success')
+//   }).catch((err) => {
+//     console.error(err);
+//   })
+// })
 
   return (
     <figure
