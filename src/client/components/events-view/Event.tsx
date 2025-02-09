@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { toast } from 'sonner';
 
 import { Button } from '../../../components/ui/button';
 
@@ -110,12 +111,15 @@ function Event({ event, getEvents }: EventProps) {
         },
       })
       .then(getEvents)
+      .then(() => {
+        toast(`You are now attending the event ${title}.`)
+      })
       .catch((err: unknown) => {
         console.error('Failed to postAttendEvent:', err);
       });
   };
 
-  const patchAttendingEvent = () => {
+  const patchAttendingEvent = (isAttending: boolean) => {
     axios
       .patch(`/api/event/attending/${event.id}`, {
         event: {
@@ -123,6 +127,9 @@ function Event({ event, getEvents }: EventProps) {
         },
       })
       .then(getEvents)
+      .then(() => {
+        isAttending ? toast(`You've just re-attended.`) : toast(`You've just bailed.`);
+      })
       .catch((err: unknown) => {
         console.error('Failed to patchAttendingEvent', err);
       });

@@ -1,3 +1,5 @@
+import database from '../index';
+import '../models/index'
 import seedCategories from './seedCategories';
 import seedInterests from './seedInterests';
 import seedTasks from './seedTasks';
@@ -13,10 +15,11 @@ import seedVenues from './seedVenues';
  */
 
 async function seedDb() {
+  await database.sync({ alter: true });
   await seedVenues();
   await seedCategories();
   await seedInterests();
-  await seedTasks();
+  // await seedTasks();
 }
 
 seedDb();

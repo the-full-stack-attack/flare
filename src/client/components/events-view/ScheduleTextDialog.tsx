@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { toast } from 'sonner';
 
 import {
   DialogContent,
@@ -147,7 +148,7 @@ function ScheduleTextDialog({
   }, [getText]);
 
   return (
-    <DialogContent className="sm:max-w-[425px] bg-gray-600/80 text-white">
+    <DialogContent className="sm:max-w-[425px] bg-gray-600/80 text-white rounded-xl border-transparent">
       <DialogHeader>
         <DialogTitle>Schedule a Check-In Text</DialogTitle>
         <DialogDescription className="text-gray-200">
@@ -222,7 +223,10 @@ function ScheduleTextDialog({
         {newTextMode ? (
           <div className="grid grid-cols-2 gap-2">
             <DialogClose asChild>
-              <Button type="submit" className={successDialogButton} onClick={postPatchText}>
+              <Button type="submit" className={successDialogButton} onClick={() => {
+                postPatchText();
+                updateMode ? toast('Scheduled text has been updated.') : toast('A text message has been scheduled.');
+              }}>
                 Schedule Text
               </Button>
             </DialogClose>
@@ -232,7 +236,10 @@ function ScheduleTextDialog({
           <div className="grid grid-cols-2 gap-2">
             <Button className={normalDialogButton} onClick={handleUpdateModeTrue}>Update</Button>
             <DialogClose asChild>
-              <Button className={warnDialogButton} onClick={deleteText}>Delete</Button>
+              <Button className={warnDialogButton} onClick={() => {
+                deleteText();
+                toast('Scheduled text will no longer be sent.')
+              }}>Delete</Button>
             </DialogClose>
           </div>
         )}
