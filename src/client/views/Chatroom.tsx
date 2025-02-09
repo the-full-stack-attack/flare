@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useContext, useRef, ref } from 'react';
+import React, { useEffect, useState, useCallback, useContext, useRef, ref, useId } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
@@ -9,6 +9,9 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { AnimatedList } from '../../components/ui/animated-list';
 import { Button } from '../../components/ui/button';
+import { RainbowButton } from '../../components/ui/rainbowbutton';
+import { Textarea } from '../../components/ui/textarea';
+import { VelocityScroll } from '../../components/ui/scroll-based-velocity';
 import  { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
 import { UserContext } from '../contexts/UserContext';
@@ -17,7 +20,7 @@ import QuipLash from '../components/chatroom/QuipLash';
 import MsgBox from '../components/chatroom/MsgBox';
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
-import mapPack from '../assets/chatroom/mapPack'
+import mapPack from '../assets/chatroom/mapPack';
 import {
   Container,
   Graphics,
@@ -31,7 +34,6 @@ import {
 } from 'pixi.js';
 import axios from 'axios';
 import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' 
-
 import nightClubTileSet from '../assets/chatroom/tileSet';
 extend({
   Container,
@@ -73,8 +75,10 @@ const style = new TextStyle({
 function Chatroom() {
   const location = useLocation();
   const start_time = location.state;
+  const [gameLoaded, setGameLoaded] = useState(false);
   // LOAD ASSETS
-  useAssets([
+  // const { assets, successfulLoad } = 
+  const { assets, isSuccess }  = useAssets([
     {
       alias: 'bunny',
       src: 'https://pixijs.com/assets/bunny.png',
@@ -192,6 +196,7 @@ function Chatroom() {
     {  alias: '103', src: TILES['103'], }, 
     {  alias: '104', src: TILES['104'], }, 
   ]);
+
   // const {
   //   assets: [texture],
   //   isSuccess,
@@ -227,6 +232,7 @@ function Chatroom() {
   }, []);
   // CONTROLS
   const keyPress = ({ key }: Element) => {
+    
     if (isTyping === false) {
       if (key === 'ArrowUp' || key === 'w') {
         socket.emit('keyPress', { inputId: 'Up', state: true });
@@ -278,6 +284,7 @@ function Chatroom() {
   }, []);
   // EVENT LISTENERS FOR TYPING
   useEffect(() => {
+    
     if (isTyping === false) {
       document.addEventListener('keydown', keyPress);
       document.addEventListener('keyup', keyUp);
@@ -291,8 +298,12 @@ function Chatroom() {
     };
   }, [isTyping]);
   const typing = async () => {
-    await setIsTyping(!isTyping);
+    await setIsTyping(true);
   };
+
+  const notTyping = async () =>{
+    await setIsTyping(false);
+  }
   const sendMessage = () => {
     console.log(message);
     socket.emit('message', { message, eventId });
@@ -308,8 +319,35 @@ function Chatroom() {
   };
   useEffect(() => {
     window.addEventListener('resize', handleResize);
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const styleMessage = new TextStyle({
+    align: 'center',
+    fontFamily: 'sans-serif',
+    fontSize: 10,
+    fontWeight: 'bold',
+    fill: '#000000',
+    stroke: '#eef1f5',
+    letterSpacing: 2,
+    wordWrap: true,
+    wordWrapWidth: 80,
+    
+  })
+
+  const styleUserName = new TextStyle({
+    align: 'center',
+    fontFamily: 'sans-serif',
+    fontSize: 15 ,
+    fontWeight: 'bold',
+    fill: '#000000',
+    stroke: '#eef1f5',
+    letterSpacing: 5,
+    wordWrap: true,
+    wordWrapWidth: 250,
+  })
+
   return (
      <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
       <div>
@@ -322,10 +360,12 @@ function Chatroom() {
           }} >
           <Countdown endTime={dayjs(start_time)}/>
           </div> 
-          <div class="p-4">
-          <div class="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
-          <div class="p-2">
-          <div class="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
+          <div className="p-4">
+          <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+          <div className="p-2">
+          <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
+          { !isSuccess && <div className='p-15'><VelocityScroll >LOADING GAME</VelocityScroll></div> }
+          { isSuccess && 
           <Application 
           resizeTo={appRef}
           width={Math.floor(640)}
@@ -334,15 +374,18 @@ function Chatroom() {
          >
           {
             mapPack.layers.map((objLay) => (
-              <pixiContainer  
+              <pixiContainer 
+              key= {crypto.randomUUID()} 
               >
             { 
             objLay.tiles.map((objTiles) => ( 
+             
                 <pixiSprite
                   texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
                   x={32 * (objTiles.x) * 1.25 }
                   y={32 * (objTiles.y) * 1.25 }
                  scale={ 1.25, 1.25}
+                 key= {crypto.randomUUID()}
                 />
             ))
             }
@@ -359,6 +402,7 @@ function Chatroom() {
                 {player.sentMessage && (
                   <pixiGraphics 
                   draw={speechBubble} 
+                  key= {crypto.randomUUID()}
                 />
                 )}
                 {player.sentMessage && (
@@ -367,18 +411,9 @@ function Chatroom() {
                     anchor={0.5}
                     x={70}
                     y={-30}
+                    key= {crypto.randomUUID()}
                     scale={ 1.1, 1.1}
-                    style={new TextStyle({
-                      align: 'center',
-                      fontFamily: 'sans-serif',
-                      fontSize: 10,
-                      fontWeight: 'bold',
-                      fill: '#000000',
-                      stroke: '#eef1f5',
-                      letterSpacing: 2,
-                      wordWrap: true,
-                      wordWrapWidth: 80,
-                    })}
+                    style={styleMessage}
                   />
                 )}
                 <pixiSprite
@@ -396,74 +431,49 @@ function Chatroom() {
                   
                   x={10}
                   y={40}
-                  style={  
-                    new TextStyle({
-                    align: 'center',
-                    fontFamily: 'sans-serif',
-                    fontSize: 15 ,
-                    fontWeight: 'bold',
-                    fill: '#000000',
-                    stroke: '#eef1f5',
-                    letterSpacing: 5,
-                    wordWrap: true,
-                    wordWrapWidth: 250,
-                  }) }
+                  style={ styleUserName }
                 />
               </pixiContainer>
             ))} 
           </Application>
+            } 
           </div>
           </div>
           </div>
           </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '20px',
-        }}>
+          <div className="flex justify-center mt-2">
         <div onClick={typing}>
-          <Label class="text-white text-2xl rounded-md"> Send A Chat </Label>
-          <Input
-            class="bg-white rounded-md" 
+          <Label className="flex justify-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-2xl rounded-md"> Send A Chat </Label>
+          <Textarea 
+            className="bg-white rounded-md w-64" 
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: '20px',
-            }}>
+          <div className="flex justify-center mt-2">
             <InteractiveHoverButton onClick={sendMessage}>
               Send
             </InteractiveHoverButton>
           </div>
-          <div
-          class="rounded-md"
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '10px',}}
-            >
-            <Button onClick={toggleQuiplash}>Play Quiplash</Button>
-            </div>
         </div>
       </div>
-            {
-              isPlayingQuiplash && <QuipLash startTime={start_time}/>
-            }
-      <Card class="bg-transparent flex items-center justify-center">
+      
+        { !isPlayingQuiplash && <div className="flex justify-center"> <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white" onClick={toggleQuiplash}>Ice-Breaker Games</RainbowButton></div>}
+        
+         { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
+            
+      <Card className="bg-transparent flex items-center justify-center">
       <div
         style={{
           display: 'flex',
           justifyContent: 'center',
           width: '250px'
         }}>
-          <AnimatedList class="w-80 md:w-160 lg:w-300">
+          <AnimatedList className="w-80 md:w-160 lg:w-300">
             {allMessages.map((msg) => (
-              <MsgBox class="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} />
+
+              <MsgBox className="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} eventId={eventId} />
+
             ))}
           </AnimatedList>
       </div>

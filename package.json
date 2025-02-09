@@ -11,9 +11,10 @@
     "prod:build": "webpack",
     "start": "nodemon ./src/server/index.ts",
     "update": "rimraf node_modules && rm package-lock.json && npm install && exit 1",
-    "seed": "ts-node ./src/server/db/seeds/index.ts && exit 1",
+    "seed": "ts-node ./src/server/db/seeds/index.ts",
     "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts",
-    "seedFlares": "ts-node ./src/server/db/seeds/seedFlares.ts"
+    "seedFlares": "ts-node ./src/server/db/seeds/seedFlares.ts",
+    "seedTasks": "ts-node ./src/server/db/seeds/seedTasks.ts && exit 1"
   },
   "repository": {
     "type": "git",
@@ -114,7 +115,7 @@
     "framer-motion": "^12.0.6",
     "latest-version": "^9.0.0",
     "lucide-react": "^0.473.0",
-    "motion": "^12.0.6",
+    "motion": "^12.4.1",
     "mysql2": "^3.12.0",
     "next-themes": "^0.4.4",
     "node-cron": "^3.0.3",
