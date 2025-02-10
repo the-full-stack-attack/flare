@@ -26,12 +26,14 @@ chatroomRouter.get('/chatroom/:eventId', (req, res) => {
 });
 export default chatroomRouter;
 
-chatroomRouter.post('/chatroom/chat', (req, res) => {
+// chatroomRouter.post('/chatroom/chat', (req, res) => {
+//   const { eventId, username, msg } = req.body
+//   // get the table based on the incoming chatroom_id OR event_id
+//   Chatroom.findOne({
+//     where: 
+//   })
+//   // Create a [table: chats] that is linked with [table: chatroom] via row chatroom_id
 
-  // get the table based on the incoming chatroom_id OR event_id
+//   // send back nothing
 
-  // Create a [table: chats] that is linked with [table: chatroom] via row chatroom_id
-
-  // send back nothing
-
-});
+// });

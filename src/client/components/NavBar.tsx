@@ -67,7 +67,6 @@ export const NavBar = () => {
               />
             </Link>
           </div>
-
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map(({ title, url, icon: Icon }) => (
