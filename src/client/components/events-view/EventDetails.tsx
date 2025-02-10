@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
-import { Link } from 'react-router-dom';
-
-import { Button } from '../../../components/ui/button';
 
 import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
-  DrawerFooter,
-  DrawerClose,
 } from '../../../components/ui/drawer';
 
-import { Dialog, DialogTrigger } from '../../../components/ui/dialog';
-
-import ScheduleTextDialog from './ScheduleTextDialog';
+import { Button } from '@/components/ui/button';
 
 type EventDetailsProps = {
   event: {
@@ -72,17 +65,9 @@ type EventDetailsProps = {
       }[];
     };
   };
-  postAttendEvent: () => void;
-  patchAttendingEvent: (isAttending: boolean) => void;
-  category: string;
 };
 
-function EventDetails({
-  event,
-  category,
-  postAttendEvent,
-  patchAttendingEvent,
-}: EventDetailsProps) {
+function EventDetails({ event }: EventDetailsProps) {
   const {
     title,
     start_time,
@@ -97,14 +82,8 @@ function EventDetails({
 
   const { street_address, city_name, state_name, zip_code } = Venue;
 
-  const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
-
-  const warnDrawerButton = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-800 hover:to-orange-800 text-white';
-
-  const successDrawerButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white'
-
   return (
-    <div className="mx-auto w-full max-w-sm">
+    <>
       <DrawerHeader>
         <DrawerTitle className="text-xl">{title}</DrawerTitle>
         <DrawerDescription className="text-gray-700 text-md">{description}</DrawerDescription>
@@ -140,8 +119,8 @@ function EventDetails({
             <p>{Venue?.name}</p>
           </div>
           <div>
-            <b>Description:</b>
-            <p>{Venue?.description}</p>
+            <b>More Venue Details:</b>
+            <Button>Click Here</Button>
           </div>
           <div className="col-span-2">
             <b>Address:</b>
@@ -166,45 +145,7 @@ function EventDetails({
           </div>
         </div>
       </div>
-      <DrawerFooter>
-        {category === 'upcoming' ? (
-          <Button className={successDrawerButton} onClick={postAttendEvent}>Attend</Button>
-        ) : null}
-        {category === 'attending' ? (
-          <div className="grid grid-cols-2 gap-2">
-            <Button className={normalDrawerButton}>
-              <Link state={ Category?.name , start_time} style={{ flex: 1 }} to={`/chatroom/${id}`}>
-                Enter Chatroom
-              </Link>
-            </Button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className={successDrawerButton}>Schedule Text</Button>
-              </DialogTrigger>
-              <ScheduleTextDialog
-                eventId={event.id}
-                startTime={start_time}
-                endTime={end_time}
-                eventTitle={event.title}
-              />
-            </Dialog>
-          </div>
-        ) : null}
-        {category === 'attending' ? (
-          <Button className={warnDrawerButton} onClick={() => {
-            patchAttendingEvent(false);
-          }}>Bail</Button>
-        ) : null}
-        {category === 'bailed' ? (
-          <Button className={successDrawerButton} onClick={() => {
-            patchAttendingEvent(true);
-          }}>Re-attend</Button>
-        ) : null}
-        <DrawerClose asChild>
-          <Button className={normalDrawerButton}>Close</Button>
-        </DrawerClose>
-      </DrawerFooter>
-    </div>
+    </>
   );
 }
 
