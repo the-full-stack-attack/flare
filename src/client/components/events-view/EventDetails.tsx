@@ -138,7 +138,7 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
           </div>
           <div>
             <b>Time:</b>
-            <p>{`${dayjs.utc(start_time).format('h:mm A')}</p>
+            <p>{`${dayjs.utc(start_time).format('h:mm A')}`}</p>
 
           </div>
           <div>
