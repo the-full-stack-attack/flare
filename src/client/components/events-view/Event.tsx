@@ -22,7 +22,7 @@ import {
 
 import { UserContext } from '../../contexts/UserContext';
 
-import EventDetails from './EventDetails';
+import EventDrawerContent from './EventDrawerContent';
 
 type EventProps = {
   event: {
@@ -187,7 +187,7 @@ function Event({ event, getEvents }: EventProps) {
                   <Button className={buttonColor}>Details / RSVP</Button>
                 </DrawerTrigger>
                 <DrawerContent className="mx-auto w-full max-w-md bg-gradient-to-br from-orange-800/60 via-yellow-700/70 to-red-600/70 isolate border-transparent">
-                  <EventDetails
+                  <EventDrawerContent
                     event={event}
                     category={category}
                     postAttendEvent={postAttendEvent}
