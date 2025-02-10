@@ -48,14 +48,28 @@ type EventDetailsProps = {
       id: number;
       name: string;
     }[];
-    Venue?: {
+    Venue: {
       id: number;
       name: string;
-      description: string;
-      street_address: string;
-      city_name: string;
-      state_name: string;
-      zip_code: number;
+      description: string | null;
+      street_address: string | null;
+      city_name: string | null;
+      state_name: string | null;
+      zip_code: number | null;
+      category: string | null;
+      phone: string | null;
+      popularTime: Date | null;
+      pricing: string | null;
+      serves_alcohol: boolean | null;
+      website: string | null;
+      wheelchair_accessible: boolean | null;
+      Venue_Tags: {
+        count: number;
+        tag: string;
+      }[];
+      Venue_Images: {
+        path: string;
+      }[];
     };
   };
   postAttendEvent: () => void;
