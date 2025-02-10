@@ -19,7 +19,6 @@ async function seedDb() {
   await seedVenues();
   await seedCategories();
   await seedInterests();
-  await seedFlares();
 }
 
 seedDb();
