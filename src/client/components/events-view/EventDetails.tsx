@@ -124,7 +124,12 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
             <p>{Venue?.name}</p>
           </div>
           <div>
-            <Button className={normalDrawerButton}>Venue Details</Button>
+            <Button 
+              className={normalDrawerButton}
+              onClick={openVenueDetails}
+            >
+              Venue Details
+            </Button>
           </div>
           <div className="col-span-2">
             <b>Address:</b>
