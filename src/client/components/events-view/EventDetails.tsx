@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import dayjs from 'dayjs';
 
 import {
@@ -87,13 +87,38 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
 
+  const eventDetailsTTS = useMemo(() => {
+    let text = `
+      Event Title: ${title}
+      Event Description: ${description}
+      Date: ${dayjs(start_time).format('MMMM D, YYYY')}
+      Time: ${dayjs(start_time).format('h:mm A')} - ${dayjs(end_time).format('h:mm A')}
+      Category: ${Category ? Category.name : 'None'}
+      Interests: ${Interests.length > 0 
+        ? Interests?.reduce((acc, curr, i, arr) => {
+            acc += `${curr.name}, `;
+            if (i === arr.length - 1) {
+              return acc.slice(0, acc.length - 2);
+            }
+            return acc;
+          }, '') 
+        : 'None'}
+      Venue: ${Venue.name}
+      Click for more Venue Details.
+      Address: ${street_address
+        ? `${street_address}, ${city_name}, ${state_name} ${zip_code}`
+        : event.address}
+    `;
+    return text;
+  }, [event])
+
   return (
     <>
       <DrawerHeader>
         <DrawerTitle className="text-xl inline">
           {title}
           <TTSButton
-            text="Hello World!"
+            text={eventDetailsTTS}
             className="ml-2"
             iconClassName="text-lg text-black hover:text-gray-700"
           />
