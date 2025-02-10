@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 import {
   DrawerHeader,
@@ -136,10 +138,11 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
           </div>
           <div>
             <b>Time:</b>
-            <p>{`${dayjs(start_time).format('h:mm A')} - ${dayjs(end_time).format('h:mm A')}`}</p>
+            <p>{`${dayjs.utc(start_time).format('h:mm A')}</p>
+
           </div>
           <div>
-            <b>Category:</b>
+          <b>Category:</b>
             <p>{Category ? Category.name : 'None'}</p>
           </div>
           <div>
