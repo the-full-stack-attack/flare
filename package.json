@@ -15,7 +15,7 @@
     "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts",
     "seedFlares": "ts-node ./src/server/db/seeds/seedFlares.ts",
     "seedTasks": "ts-node ./src/server/db/seeds/seedTasks.ts && exit 1",
-    "deleteFiles": ".src/server/db/seeds/seedFlares.ts"
+    "deleteFiles": "./src/server/db/seeds/seedFlares.ts"
   },
   "repository": {
     "type": "git",
