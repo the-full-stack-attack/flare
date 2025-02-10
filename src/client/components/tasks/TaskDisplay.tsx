@@ -11,6 +11,7 @@ import {
 } from '../../../components/ui/card';
 import { UserContext } from '../../contexts/UserContext';
 import DialogBox from './DialogBox';
+import { FaTasks, FaCheckCircle } from 'react-icons/fa';
 
 // Define the props interface
 interface TaskDisplayProps {
@@ -75,31 +76,50 @@ function TaskDisplay({ task }: TaskDisplayProps) {
         cancelText="Cancel"
         confirmText="Opt Out"
       />
-      <Card className="bg-white/10 shadow-lg ring-1 ring-black/5 border-transparent text-white">
-        <CardHeader>
-          <CardTitle>Your Task</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {user.current_task_id
-            ? `Level ${task.difficulty} ${task.type} task  ${task.description}`
-            : 'You are not assigned a task. Go to the Task page to choose your task.'}
-        </CardContent>
-        {user.current_task_id ? (
-          <CardFooter>
-            <Button onClick={completeTask} variant="secondary">
-              Complete
-            </Button>
-            <Button
-              onClick={() => {
-                setOpenOptOut(true);
-              }}
-              variant="secondary"
-            >
-              Opt-Out
-            </Button>
-          </CardFooter>
-        ) : null}
-      </Card>
+      <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
+        <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
+
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <FaTasks className="text-2xl bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent" />
+                <h3 className="text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  Your Task
+                </h3>
+              </div>
+            </div>
+            <div className="text-white/70 mb-6">
+              {user.current_task_id ?
+                `Level ${task.difficulty} ${task.type} task ${task.description}` :
+                'You are not assigned a task. Go to the Task page to choose your task.'
+              }
+            </div>
+            {user.current_task_id && (
+              <div className="flex gap-3">
+                <button
+                  onClick={completeTask}
+                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium 
+                           hover:from-purple-600 hover:to-pink-600 transition-all duration-300
+                           flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <FaCheckCircle className="text-white" />
+                  Complete
+                </button>
+                <button
+                  onClick={() => setOpenOptOut(true)}
+                  className="px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-white/70 font-medium
+                           hover:bg-white/10 hover:text-white transition-all duration-300
+                           flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Opt-Out
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
