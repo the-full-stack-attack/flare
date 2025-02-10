@@ -153,6 +153,7 @@ function Events() {
       .get('/api/event', {
         params: {
           locationFilter,
+          now: Date.now(),
         },
       })
       .then(({ data }) => {

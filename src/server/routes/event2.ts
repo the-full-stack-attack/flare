@@ -17,11 +17,12 @@ const event2Router = Router();
 */
 event2Router.get('/', (req: any, res: Response) => {
   const { city, state } = req.query.locationFilter;
+  const now = req.query.now;
   // Query DB for all event objects & send them back to the user
   if (city && state) {
     Event.findAll({
       where: {
-        start_time: { [Op.gt]: new Date(Date.now()) },
+        start_time: { [Op.gt]: new Date(+now) },
         '$Venue.city_name$': city,
         '$Venue.state_name$': state,
       },
@@ -62,7 +63,7 @@ event2Router.get('/', (req: any, res: Response) => {
   } else {
     Event.findAll({
       where: {
-        start_time: { [Op.gt]: new Date(Date.now()) },
+        start_time: { [Op.gt]: new Date(+now) },
       },
       include: [
         {
