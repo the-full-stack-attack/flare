@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
-import { Trash2 } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export interface ChatMessage {
   sender: 'user' | 'assistant';
@@ -37,12 +37,47 @@ export default function SavedConversations({
 }: SavedConversationsProps) {
   const [confirmingDelete, setConfirmingDelete] = useState<number | null>(null);
 
-  const handleKeyPress = (e: React.KeyboardEvent, callback: () => void) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      callback();
-    }
-  };
+  const DeleteConfirmationModal = ({ id, onClose }: { id: number; onClose: () => void }) => (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.95 }}
+        className="bg-gray-900 border border-yellow-500/20 rounded-xl p-6 max-w-md w-full mx-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 className="text-lg font-medium text-white mb-2">
+          Delete Conversation
+        </h3>
+        <p className="text-gray-400 mb-4">
+          Are you sure you want to delete this conversation? This action cannot be undone.
+        </p>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => {
+              onDelete(id);
+              onClose();
+            }}
+            className="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
 
   return (
     <div className="space-y-3">
@@ -69,75 +104,48 @@ export default function SavedConversations({
                   onSelect(conversation);
                 }
               }}
-              className="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-orange-500/20 
-                       hover:border-orange-500/30 transition-all duration-200 cursor-pointer"
+              className="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-orange-500/20 hover:border-orange-500/30 transition-all duration-200 cursor-pointer"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1">
                   <p className="text-sm text-gray-200 group-hover:text-white">
-                    {conversation.session_data.messages[0]?.text ||
-                      'No message'}
+                    {conversation.session_data.messages[0]?.text || 'No message'}
                   </p>
                   <p className="text-xs text-gray-500 line-clamp-1 mt-1">
-                    {conversation.session_data.messages[1]?.text?.substring(
-                      0,
-                      60
-                    ) || ''}
-                    ...
+                    {conversation.session_data.messages[1]?.text?.substring(0, 60) || ''} ...
                   </p>
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="text-xs text-gray-500 group-hover:text-gray-400 transition-colors">
                     {format(new Date(conversation.createdAt), 'MMM d, yyyy')}
                   </span>
-
-                  {confirmingDelete === conversation.id ? (
-                    <div className="flex gap-2 mt-2">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDelete(conversation.id);
-                          setConfirmingDelete(null);
-                        }}
-                        className="text-xs bg-red-500/20 hover:bg-red-500/30 text-red-400 
-                                 px-2 py-1 rounded transition-colors"
-                      >
-                        Confirm
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setConfirmingDelete(null);
-                        }}
-                        className="text-xs bg-gray-500/20 hover:bg-gray-500/30 text-gray-400 
-                                 px-2 py-1 rounded transition-colors"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setConfirmingDelete(conversation.id);
-                      }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity
-                               text-red-500 hover:text-red-400 p-1 rounded"
-                      aria-label="Delete conversation"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setConfirmingDelete(conversation.id);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-500 hover:text-white p-1 rounded"
+                    aria-label="Delete conversation"
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
               </div>
             </div>
           </motion.div>
         ))
       )}
+
+      {/* Modal Portal */}
+      <AnimatePresence>
+        {confirmingDelete && (
+          <DeleteConfirmationModal
+            id={confirmingDelete}
+            onClose={() => setConfirmingDelete(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-
