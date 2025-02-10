@@ -3,7 +3,6 @@ import '../models/index'
 import seedCategories from './seedCategories';
 import seedInterests from './seedInterests';
 import seedVenues from './seedVenues';
-import seedFlares from './seedFlares';
 
 /***
  * Run this file with npm run seed
