@@ -5,9 +5,12 @@ import Venue from '../db/models/venues';
 import User from '../db/models/users';
 import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
-import dayjs from 'dayjs';
 import {Op} from 'sequelize';
 import { checkForFlares } from '../helpers/flares';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
+
 
 import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
@@ -105,8 +108,17 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         const userId = req.user.id;
 
         // convert date time
-        const start_time = dayjs(`${startDate} ${startTime}`).format('YYYY-MM-DD HH:mm:ss');
-        const end_time = dayjs(`${startDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
+        const start_time = dayjs(`${startDate}T${startTime}`).utc();
+        const end_time = dayjs(`${startDate}T${endTime}`).utc();
+
+        const oneHourBefore = new Date(`${startDate}T${startTime}`);
+        oneHourBefore.setHours(oneHourBefore.getHours() - 1);
+
+        const notification: any = await Notification.create({
+            message: `The upcoming event you're attending, ${title}, starts soon at ${startTime}. Hope to see you there.`,
+            send_time: oneHourBefore,
+        });
+
 
         // find or create venue based on user input
         let eventVenue: any;
@@ -132,11 +144,7 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             // });
         }
 
-        const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
-        const notification: any = await Notification.create({
-            message: `The upcoming event you're attending, ${title}, starts soon at ${dayjs(`${startDate} ${startTime}`).format('h:mm A')}. Hope to see you there.`,
-            send_time: oneHourBefore,
-        });
+
 
         // then create the event
         const newEvent: any = await Event.create({
