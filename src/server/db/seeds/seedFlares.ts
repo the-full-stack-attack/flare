@@ -128,7 +128,7 @@ const multiTasker: FlareArr = [
 const socialDynamo: FlareArr = [
   'Social Dynamo',
   'Event Flare',
-  path.join(__dirname, '.', 'flareImages', 'socialDynamo2.png'),
+  path.join(__dirname, '.', 'flareImages', 'socialDynamo.png'),
   "You've attended 5 events!",
   0,
   5,
