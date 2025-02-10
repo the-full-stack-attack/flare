@@ -9,6 +9,8 @@ import {
 
 import { Button } from '@/components/ui/button';
 
+import TTSButton from '../a11y/TTSButton';
+
 type EventDetailsProps = {
   event: {
     id: number;
@@ -88,8 +90,17 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
   return (
     <>
       <DrawerHeader>
-        <DrawerTitle className="text-xl">{title}</DrawerTitle>
-        <DrawerDescription className="text-gray-700 text-md">{description}</DrawerDescription>
+        <DrawerTitle className="text-xl inline">
+          {title}
+          <TTSButton
+            text="Hello World!"
+            className="ml-2"
+            iconClassName="text-lg text-black hover:text-gray-700"
+          />
+        </DrawerTitle>
+        <DrawerDescription className="text-gray-700 text-md">
+          {description}
+        </DrawerDescription>
       </DrawerHeader>
       <div className="p-4 pb-0">
         <div className="grid grid-cols-2 gap-2">

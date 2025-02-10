@@ -9,6 +9,8 @@ import {
   DrawerDescription,
 } from '@/components/ui/drawer';
 
+import TTSButton from '../a11y/TTSButton';
+
 type VenueDetailsProps = {
   venue: {
     id: number;
@@ -66,8 +68,13 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
       <DrawerHeader>
         <DrawerTitle className="text-xl">
           <div className="grid grid-cols-12">
-            <div className="col-span-11">
+            <div className="col-span-11 inline">
               {name}
+              <TTSButton
+                text="Hello World!"
+                className="ml-2"
+                iconClassName="text-lg text-black hover:text-gray-700"
+              />
             </div>
             <div>
               <button
