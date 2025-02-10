@@ -31,6 +31,7 @@ type EventDetailsProps = {
       id: number;
       username: string;
       full_name: string;
+      avatar_uri: string;
       User_Event: {
         user_attending: boolean;
       };
@@ -179,9 +180,16 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
             <b>Who is attending?</b>
             <div className="grid grid-cols-2 gap-4">
               {Users?.map((user) => {
-                const { username, full_name, User_Event } = user;
+                const { username, full_name, User_Event, avatar_uri } = user;
                 return User_Event.user_attending ? (
-                  <div key={Math.random().toString(36).slice(0, 7)}>
+                  <div
+                    key={Math.random().toString(36).slice(0, 7)}
+                    className="inline"
+                  >
+                    {/* <img
+                      className="h-5 w-5 object-contain"
+                      src={avatar_uri}
+                    /> */}
                     {full_name ? `${full_name} (${username})` : username}
                   </div>
                 ) : null;
