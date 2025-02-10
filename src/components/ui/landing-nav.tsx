@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaRocket } from 'react-icons/fa';
 import { Button } from '../ui/button';
 import { useAuth } from '../../client/contexts/AuthContext';
+import { Logo } from '../../client/components/Logo';
+import { Link } from 'react-router-dom';
 
 export function LandingNav() {
   const { isAuthenticated } = useAuth();
@@ -20,10 +21,7 @@ export function LandingNav() {
             className="flex items-center"
             whileHover={{ scale: 1.05 }}
           >
-            <FaRocket className="text-orange-500 mr-2 text-2xl" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
-              Flare
-            </span>
+            <Logo size="md" animate={true} className="py-2" />
           </motion.div>
         </div>
       </div>

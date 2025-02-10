@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, JSX } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Transition } from '@headlessui/react';
 import {
@@ -51,29 +51,31 @@ export const NavBar = () => {
       className={cn(
         'fixed w-full z-50 transition-all duration-300',
         scrolled
-          ? 'bg-black/50 backdrop-blur-lg border-b border-white/10'
-          : 'bg-transparent'
+          ? 'bg-black/50 backdrop-blur-lg border-b border-yellow-500/20'
+          : 'bg-transparent border-b border-white/10'
       )}
     >
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between h-20">
+      <div className="max-w-[2000px] mx-auto">
+        <div className="flex justify-between h-20 px-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <Logo
-              size="md"
-              animate={true}
-              className="py-2"
-            />
-          </Link>
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center">
+              <Logo
+                size="md"
+                animate={true}
+                className="py-2"
+              />
+            </Link>
+          </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-1">
             {navItems.map(({ title, url, icon: Icon }) => (
               <motion.a
                 key={title}
                 href={url}
-                className="text-gray-300 hover:text-white transition-colors flex items-center gap-2 group"
-                whileHover={{ scale: 1.1 }}
+                className="px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-2 group"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Icon className="text-yellow-500 group-hover:text-orange-500 transition-colors" />
@@ -84,10 +86,11 @@ export const NavBar = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
-            <button
+            <motion.button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 focus:outline-none transition-colors"
+              whileTap={{ scale: 0.95 }}
             >
               <span className="sr-only">Open main menu</span>
               <div className="w-6 h-6 relative">
@@ -110,38 +113,32 @@ export const NavBar = () => {
                   )}
                 />
               </div>
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
-      <Transition
-        show={isOpen}
-        enter="transition duration-300 ease-out"
-        enterFrom="transform scale-95 opacity-0"
-        enterTo="transform scale-100 opacity-100"
-        leave="transition duration-200 ease-in"
-        leaveFrom="transform scale-100 opacity-100"
-        leaveTo="transform scale-95 opacity-0"
+      {/* Enhanced Mobile Menu */}
+      <motion.div
+        initial={false}
+        animate={isOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
+        className="md:hidden overflow-hidden bg-black/90 backdrop-blur-lg border-t border-white/10"
       >
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-black/80 backdrop-blur-lg">
-            {navItems.map(({ title, url, icon: Icon }) => (
-              <motion.a
-                key={title}
-                href={url}
-                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-md items-center gap-3"
-                whileHover={{ x: 10 }}
-                onClick={() => setIsOpen(false)}
-              >
-                <Icon className="text-orange-500" />
-                {title}
-              </motion.a>
-            ))}
-          </div>
+        <div className="px-4 py-3 space-y-1">
+          {navItems.map(({ title, url, icon: Icon }) => (
+            <motion.a
+              key={title}
+              href={url}
+              className="block px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-3"
+              whileHover={{ x: 10 }}
+              onClick={() => setIsOpen(false)}
+            >
+              <Icon className="text-yellow-500" />
+              {title}
+            </motion.a>
+          ))}
         </div>
-      </Transition>
+      </motion.div>
     </nav>
   );
 };
