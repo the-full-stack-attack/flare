@@ -60,7 +60,7 @@ export const NavBar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <Logo
-              size="navbar"
+              size="md"
               animate={true}
               className="py-2"
             />
