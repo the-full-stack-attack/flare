@@ -65,6 +65,20 @@ type EventProps = {
       city_name: string;
       state_name: string;
       zip_code: number;
+      category: string;
+      phone: string;
+      popularTime: Date;
+      pricing: string;
+      serves_alcohol: boolean;
+      website: string;
+      wheelchair_accessible: boolean;
+      Venue_Tags: {
+        count: number;
+        tag: string;
+      }[];
+      Venue_Images: {
+        path: string;
+      }[];
     };
   };
   getEvents: () => void;
