@@ -63,6 +63,21 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
       .join(', ')
   ), [Venue_Tags]);
 
+  const venueDetailsTTS: string = useMemo(() => (
+    `
+      Venue Name: ${name}
+      Venue Description: ${description}
+      ${phone ? `Phone Number: ${phone.split('').join('-')}` : ''}
+      ${website ? `Website: ${website}` : ''}
+      ${category ? `Category: ${category}` : ''}
+      ${popularTime ? `Popular Time: ${dayjs(new Date(popularTime)).format('h:mm A')}` : ''}
+      ${pricing ? `Pricing: ${pricing}` : ''}
+      ${serves_alcohol !== null ? `Serves Alcohol? ${serves_alcohol ? 'Yes.' : 'No.'}` : ''}
+      ${wheelchair_accessible !== null ? `Wheelchair Accessible? ${wheelchair_accessible ? 'Yes.' : 'No.'}` : ''}
+      ${Venue_Tags.length > 0 ? `Tags: ${tags}` : ''}
+    `
+  ), [venue, tags])
+
   return (
     <>
       <DrawerHeader>
@@ -71,7 +86,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
             <div className="col-span-11 inline">
               {name}
               <TTSButton
-                text="Hello World!"
+                text={venueDetailsTTS}
                 className="ml-2"
                 iconClassName="text-lg text-black hover:text-gray-700"
               />
