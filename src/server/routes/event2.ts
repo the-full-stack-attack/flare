@@ -7,6 +7,8 @@ import User_Notification from '../db/models/users_notifications';
 import User from '../db/models/users';
 import Venue from '../db/models/venues';
 import Text from '../db/models/texts';
+import Venue_Tag from '../db/models/venue_tags';
+import Venue_Image from '../db/models/venue_images';
 
 const event2Router = Router();
 
@@ -29,6 +31,14 @@ event2Router.get('/', (req: any, res: Response) => {
         },
         {
           model: Venue,
+          include: [
+            {
+              model: Venue_Tag,
+            },
+            {
+              model: Venue_Image,
+            },
+          ],
         },
         {
           association: 'Category',
@@ -60,6 +70,14 @@ event2Router.get('/', (req: any, res: Response) => {
         },
         {
           model: Venue,
+          include: [
+            {
+              model: Venue_Tag,
+            },
+            {
+              model: Venue_Image,
+            },
+          ],
         },
         {
           association: 'Category',
@@ -137,6 +155,14 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
         },
         {
           model: Venue,
+          include: [
+            {
+              model: Venue_Tag,
+            },
+            {
+              model: Venue_Image,
+            },
+          ],
         },
         {
           association: 'Category',

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { toast } from 'sonner';
@@ -22,7 +22,7 @@ import {
 
 import { UserContext } from '../../contexts/UserContext';
 
-import EventDetails from './EventDetails';
+import EventDrawerContent from './EventDrawerContent';
 
 type EventProps = {
   event: {
@@ -57,14 +57,28 @@ type EventProps = {
       id: number;
       name: string;
     }[];
-    Venue?: {
+    Venue: {
       id: number;
       name: string;
-      description: string;
-      street_address: string;
-      city_name: string;
-      state_name: string;
-      zip_code: number;
+      description: string | null;
+      street_address: string | null;
+      city_name: string | null;
+      state_name: string | null;
+      zip_code: number | null;
+      category: string | null;
+      phone: string | null;
+      popularTime: Date | null;
+      pricing: string | null;
+      serves_alcohol: boolean | null;
+      website: string | null;
+      wheelchair_accessible: boolean | null;
+      Venue_Tags: {
+        count: number;
+        tag: string;
+      }[];
+      Venue_Images: {
+        path: string;
+      }[];
     };
   };
   getEvents: () => void;
@@ -73,7 +87,9 @@ type EventProps = {
 function Event({ event, getEvents }: EventProps) {
   const { user } = useContext(UserContext);
 
-  const { title, start_time, end_time, Users } = event;
+  const [venuePicIndex, setVenuePicIndex] = useState<number>(0);
+
+  const { title, start_time, end_time, Users, Venue } = event;
 
   const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-2 py-2 rounded-xl text-sm';
 
@@ -102,6 +118,10 @@ function Event({ event, getEvents }: EventProps) {
 
     return 'upcoming';
   }, [Users, user.id]);
+
+  const venuePics: string[] = useMemo(() => (
+    Venue?.Venue_Images.map((image) => image.path)
+  ), [Venue]);
 
   const postAttendEvent = () => {
     axios
@@ -135,6 +155,16 @@ function Event({ event, getEvents }: EventProps) {
       });
   };
 
+  const handleVenuePicChange = () => {
+    const nextPicIndex = venuePicIndex + 1;
+
+    if (nextPicIndex === venuePics.length) {
+      setVenuePicIndex(0);
+    } else {
+      setVenuePicIndex(nextPicIndex);
+    }
+  };
+
   return (
     <div key={event.id} className="p-[10px]">
       <Card className="isolate rounded-xl bg-white/10 shadow-lg ring-1 ring-black/5 border-transparent">
@@ -146,9 +176,9 @@ function Event({ event, getEvents }: EventProps) {
           <div className="grid grid-cols-2 gap-4 place-content-center">
             <div>
               <img
-                className="h-30 w-30 object-contain"
-                src="https://itseverythingdelicious.com/wp-content/uploads/2018/08/Cafe-Du-Monde-man-singing-outside-768x768.jpg"
-                alt="Cafe Du Monde"
+                className="h-30 w-30 object-contain cursor-pointer"
+                src={venuePics[venuePicIndex]}
+                onClick={handleVenuePicChange}
               />
             </div>
             <div>
@@ -157,7 +187,7 @@ function Event({ event, getEvents }: EventProps) {
                   <Button className={buttonColor}>Details / RSVP</Button>
                 </DrawerTrigger>
                 <DrawerContent className="mx-auto w-full max-w-md bg-gradient-to-br from-orange-800/60 via-yellow-700/70 to-red-600/70 isolate border-transparent">
-                  <EventDetails
+                  <EventDrawerContent
                     event={event}
                     category={category}
                     postAttendEvent={postAttendEvent}

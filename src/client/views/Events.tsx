@@ -49,6 +49,29 @@ type EventData = {
   User_Event?: {
     user_attending: boolean;
   };
+  Venue: {
+    id: number;
+    name: string;
+    description: string | null;
+    street_address: string | null;
+    city_name: string | null;
+    state_name: string | null;
+    zip_code: number | null;
+    category: string | null;
+    phone: string | null;
+    popularTime: Date | null;
+    pricing: string | null;
+    serves_alcohol: boolean | null;
+    website: string | null;
+    wheelchair_accessible: boolean | null;
+    Venue_Tags: {
+      count: number;
+      tag: string;
+    }[];
+    Venue_Images: {
+      path: string;
+    }[];
+  };
 };
 
 function Events() {
@@ -211,6 +234,8 @@ function Events() {
   useEffect(() => {
     getEvents();
   }, [locationFilter]);
+
+  console.log(events);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
