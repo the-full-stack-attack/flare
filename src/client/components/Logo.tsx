@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import cn from "../../../lib/utils";
 import React from "react";
-import GoldLogo from '../assets/logo/gold.png';
+import GradientLogo from '../assets/logo/gradient.png';
 
 interface LogoProps {
   className?: string;
@@ -9,14 +9,14 @@ interface LogoProps {
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "navbar";
 }
 
-export const Logo = ({ className, animate = true, size = "lg" }: LogoProps) => {
+export const Logo = ({ className, animate = true, size = "sm" }: LogoProps) => {
   const sizes = {
-    sm: "h-12",
+    sm: "h-5",
     md: "h-16",
     lg: "h-20",
     xl: "h-28",
     "2xl": "h-36",
-    navbar: "h-70"
+    navbar: "h-50"
   };
 
   const containerVariants = {
@@ -58,7 +58,7 @@ export const Logo = ({ className, animate = true, size = "lg" }: LogoProps) => {
             variants={glowVariants}
           />
           <motion.img
-            src={GoldLogo}
+            src={GradientLogo}
             alt="Flare Logo"
             className={cn(
               "object-contain w-auto",
