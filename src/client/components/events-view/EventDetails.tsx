@@ -82,6 +82,8 @@ function EventDetails({ event }: EventDetailsProps) {
 
   const { street_address, city_name, state_name, zip_code } = Venue;
 
+  const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
+
   return (
     <>
       <DrawerHeader>
@@ -100,18 +102,20 @@ function EventDetails({ event }: EventDetailsProps) {
           </div>
           <div>
             <b>Category:</b>
-            <p>{Category ? Category.name : ''}</p>
+            <p>{Category ? Category.name : 'None'}</p>
           </div>
           <div>
             <b>Interests:</b>
             <p>
-              {Interests?.reduce((acc, curr, i, arr) => {
-                acc += `${curr.name}, `;
-                if (i === arr.length - 1) {
-                  return acc.slice(0, acc.length - 2);
-                }
-                return acc;
-              }, '')}
+              {Interests.length > 0 
+                ? Interests?.reduce((acc, curr, i, arr) => {
+                    acc += `${curr.name}, `;
+                    if (i === arr.length - 1) {
+                      return acc.slice(0, acc.length - 2);
+                    }
+                    return acc;
+                  }, '') 
+                : 'None'}
             </p>
           </div>
           <div>
@@ -119,8 +123,7 @@ function EventDetails({ event }: EventDetailsProps) {
             <p>{Venue?.name}</p>
           </div>
           <div>
-            <b>More Venue Details:</b>
-            <Button>Click Here</Button>
+            <Button className={normalDrawerButton}>Venue Details</Button>
           </div>
           <div className="col-span-2">
             <b>Address:</b>
