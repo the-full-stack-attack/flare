@@ -67,14 +67,14 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
       </DrawerHeader>
       <div className="p-4 pb-0">
         <div className="grid grid-cols-2 gap-2">
-          <div className="col-span-2">
+          {/* <div className="col-span-2">
             <b>Address:</b>
             <p>
               {street_address
                 ? `${street_address}, ${city_name}, ${state_name} ${zip_code}`
                 : ''}
             </p>
-          </div>
+          </div> */}
           {
             phone ? (
               <div>
@@ -87,7 +87,14 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
             website ? (
               <div>
                 <b>Website:</b>
-                <a href={website}>{website}</a>
+                <br></br>
+                <a
+                  href={website}
+                  target="_blank"
+                  className="hover:underline"
+                >
+                  {website}
+                </a>
               </div>
             ) : null
           }
@@ -125,7 +132,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
           }
           {
             wheelchair_accessible !== null ? (
-              <div>
+              <div className="col-span-2">
                 <b>Wheelchair Accessible?</b>
                 <p>{wheelchair_accessible ? 'Yes' : 'No'}</p>
               </div>
