@@ -239,7 +239,7 @@ function Events() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
-      <div className="container mx-auto px-4 content-center">
+      <div className="container mx-auto px-4 content-center pt-5">
         <div className="container mx-auto px-4">
           <p className="text-gray-300 text-lg">
             Upcoming Events from
