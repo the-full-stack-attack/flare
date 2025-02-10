@@ -7,12 +7,7 @@ import { Button } from '../../components/ui/button';
 
 import { Input } from '../../components/ui/input';
 
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '../../components/ui/tabs';
+import { Toaster } from 'sonner';
 
 import {
   Tab,
@@ -53,6 +48,29 @@ type EventData = {
   hour_before_notif: number;
   User_Event?: {
     user_attending: boolean;
+  };
+  Venue: {
+    id: number;
+    name: string;
+    description: string | null;
+    street_address: string | null;
+    city_name: string | null;
+    state_name: string | null;
+    zip_code: number | null;
+    category: string | null;
+    phone: string | null;
+    popularTime: Date | null;
+    pricing: string | null;
+    serves_alcohol: boolean | null;
+    website: string | null;
+    wheelchair_accessible: boolean | null;
+    Venue_Tags: {
+      count: number;
+      tag: string;
+    }[];
+    Venue_Images: {
+      path: string;
+    }[];
   };
 };
 
@@ -217,6 +235,8 @@ function Events() {
     getEvents();
   }, [locationFilter]);
 
+  console.log(events);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
@@ -311,6 +331,12 @@ function Events() {
           </TabPanels>
         </TabGroup>
       </div>
+      <Toaster
+        toastOptions={{
+          className: 'isolate rounded-xl backdrop-blur-sm bg-gray-800/50 shadow-lg ring-1 ring-black/5 border-transparent text-white'
+        }}
+        position="top-center"
+      />
     </div>
   );
 }

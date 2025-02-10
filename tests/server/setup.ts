@@ -1,4 +1,5 @@
 import database from '../../src/server/db';
+import '../../src/server/db/models/index';
 import http from 'http';
 import express, { Application } from 'express';
 
@@ -114,7 +115,7 @@ export default async function () {
 
   try {
     // Sync database and add test user and test event
-    await database.sync();
+    await database.sync({ alter: true });
     user1 = await User.create(testUser1);
     user2 = await User.create(testUser2);
     const interests: any[] = await Interest.findAll();

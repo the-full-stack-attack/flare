@@ -3,11 +3,11 @@ import Interest from '../db/models/interests';
 import User_Interest from '../db/models/users_interests';
 import User from '../db/models/users';
 import Sequelize from 'sequelize';
-
+import User_Avatar from '../db/models/users_avatars';
 const signUpRouter = Router();
 
 signUpRouter.post('/', (req: any, res: any) => {
-  const { userName, phone, selectedInterests, full_Name } = req.body;
+  const { userName, phone, selectedInterests, full_Name, avatarItems, avatarUri, } = req.body;
 
   // Update the user who just signed up
   User.update(
@@ -15,6 +15,7 @@ signUpRouter.post('/', (req: any, res: any) => {
       username: userName,
       full_name: full_Name,
       phone_number: phone,
+        avatar_uri: avatarUri,
     },
     {
       where: {
@@ -51,6 +52,18 @@ signUpRouter.post('/', (req: any, res: any) => {
               //  });
                 console.log(selectedInterests[i], 'interest added');
               // }
+
+                await User_Avatar.create({
+                    skin: avatarItems.skinColor[0],
+                    hair: avatarItems.hair[0],
+                    hair_color: avatarItems.hairColor[0],
+                    eyebrows: avatarItems.eyebrows[0],
+                    eyes: avatarItems.eyes[0],
+                    mouth: avatarItems.mouth[0],
+                    UserId: newUser?.dataValues.id,
+                })
+
+
             } catch (err: any) {
               console.error(err, 'failed to connect interest to the user');
             }

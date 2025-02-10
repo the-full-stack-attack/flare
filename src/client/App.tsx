@@ -21,6 +21,8 @@ import '../styles/main.css';
 
 import { UserType, UserContext } from './contexts/UserContext';
 
+import { BackgroundGlow } from '@/components/ui/background-glow';
+
 export default function App() {
   const [user, setUser] = useState<UserType>({
     id: 0,
@@ -61,8 +63,16 @@ export default function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
-
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
+        <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
+        <div className="flex items-center justify-center w-screen pt-40">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+            Loading...
+          </h1>
+        </div>
+      </div>
+    );
   }
 
   return (
