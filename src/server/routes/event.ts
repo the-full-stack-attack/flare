@@ -2,10 +2,12 @@ import {Router, Request, Response} from 'express';
 import Category from '../db/models/categories';
 import Event from '../db/models/events';
 import Venue from '../db/models/venues';
+import User from '../db/models/users';
 import Chatroom from '../db/models/chatrooms';
 import Interest from '../db/models/interests';
 import dayjs from 'dayjs';
 import {Op} from 'sequelize';
+import { checkForFlares } from '../helpers/flares';
 
 import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
@@ -39,8 +41,11 @@ eventRouter.get('/search', async (req: any, res: Response): Promise<void> => {
             query: searchInput,
             limit: '20',
             types: 'place',
-            11: `${latitude}, ${longitude}`,
         });
+
+        if (latitude && longitude) {
+            searchParams.append('ll', `${latitude},${longitude}`);
+        }
         const response = await fetch(
             `https://api.foursquare.com/v3/autocomplete?${searchParams}`,
             {
@@ -116,15 +121,15 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             }
             cityName = eventVenue.city_name;
         } else {
-            // create venue
-            eventVenue = await Venue.create({
-                name: venue,
-                description: venueDescription,
-                street_address: streetAddress,
-                zip_code: zipCode,
-                city_name: cityName,
-                state_name: stateName,
-            });
+            // // create venue
+            // eventVenue = await Venue.create({
+            //     name: venue,
+            //     description: venueDescription,
+            //     street_address: streetAddress,
+            //     zip_code: zipCode,
+            //     city_name: cityName,
+            //     state_name: stateName,
+            // });
         }
 
         const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
@@ -214,6 +219,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         // check if venue has google place id and it is not null or an empty string
         const hasGoogleId = await Venue.findOne({
             where: {
+                fsq_id: fsqId,
                 google_place_id: {
                     [Op.and]: [
                         { [Op.ne]: null },
@@ -224,8 +230,10 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         });
 
 
+
         // if venue does not have valid google place id
         if (!hasGoogleId) {
+
             // verify we have necessary fsqData to build our query string
             if (fsqData.name && fsqData.location.formatted_address) {
                 // format our api query
@@ -239,11 +247,12 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             }
         }
 
+
         const buildVenue: VenueType = {
             id: null,
             name: fsqData?.name || gData?.[0]?.title || null,
             description: gData?.[0]?.description || fsqData?.description || null,
-            category: gData?.[0]?.categoryName || fsqData.categories[0]?.name || null,
+            category: gData?.[0]?.categoryName || fsqData?.categories[0]?.name || null,
             street_address: gData?.[0]?.street || fsqData?.location?.address || null,
             zip_code: fsqData?.location?.postcode || gData?.[0]?.postalCode || null,
             city_name: fsqData?.location?.dma || gData?.[0]?.city || null,
@@ -264,6 +273,28 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         const newVenue: any = await Venue.create(buildVenue);
 
 
+        // const nullFields: any = {};
+        // if (buildVenue.wheelchair_accessible === null) {
+        //     console.log('venue wheelchair is null');
+        //     nullFields.wheelchair_accessible = null;
+        // }
+
+        const nullFields: any = {};
+
+        if (newVenue) {
+            if (newVenue.name === null) nullFields.name = null;
+            if (newVenue.description === null) nullFields.description = null;
+            if (newVenue.category === null) nullFields.category = null;
+            if (newVenue.street_address === null) nullFields.street_address = null;
+            if (newVenue.zip_code === null) nullFields.zip_code = null;
+            if (newVenue.city_name === null) nullFields.city_name = null;
+            if (newVenue.state_name === null) nullFields.state_name = null;
+            if (newVenue.phone === null) nullFields.phone = null;
+            if (newVenue.website === null) nullFields.website = null;
+            if (newVenue.pricing === null) nullFields.pricing = null;
+            if (newVenue.wheelchair_accessible === null) nullFields.wheelchair_accessible = null;
+            if (newVenue.serves_alcohol === null) nullFields.serves_alcohol = null;
+        };
         // get tags from api responses
         const newTags = getVenueTags(fsqData, gData);
 
@@ -286,13 +317,38 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 venue_id: newVenue.id
             })));
         }
-        res.json(newVenue);
+
+        const buildResponse = {
+            venue: newVenue,
+            nullFields,
+        }
+
+        res.json(buildResponse);
     } catch (error) {
         console.error('Error creating venue record in DB', error);
         res.sendStatus(500);
     }
 })
 
+
+eventRouter.put('/venue/:id/:field', async (req: any, res: Response) => {
+    try {
+        const { id, field } = req.params;
+        const { userId } = req.body;
+        const updateData = { [field]: req.body[field] };
+
+        await Venue.update(updateData, { where: { id } });
+
+        const user: any = await User.findByPk(userId);
+
+        await checkForFlares(user, 'Venue Virtuoso');
+
+        res.sendStatus(200);
+    } catch (error) {
+        console.error('Error updating venue field:', error);
+        res.sendStatus(500);
+    }
+});
 
 
 // get all categories in db to populate form category options

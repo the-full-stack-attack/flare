@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import dayjs from 'dayjs';
-import checkForFlares from '../helpers/flares';
+import { checkForFlares } from '../helpers/flares';
 import User from '../db/models/users';
 import Task from '../db/models/tasks';
 import User_Task from '../db/models/users_tasks';
