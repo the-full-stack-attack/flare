@@ -21,9 +21,9 @@ type FlareType = {
 function FlareCard({ flare, index }: FlareCardType) {
   return (
   <div className="backdrop-blur-lg rounded-xl p-6 border', 'bg-white/10 border-yellow-500/30">
-    <div className="flex items-center mb-4">
-      <h3 className="font-bold', 'text-white">{flare.name}</h3>
-      <img src={flare.icon} />
+    <div>
+      <img className="rounded-full" src={flare.icon} />
+      <h3 className="font-bold my-2 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">{flare.name}</h3>
     </div>
     <p className="text-gray-400 text-sm">{flare.description}</p>
   </div>
