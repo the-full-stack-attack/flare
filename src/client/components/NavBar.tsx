@@ -24,16 +24,16 @@ export const NavBar = () => {
 
   // Navigation items with icons
   const navItems = [
+    { title: 'Dashboard', url: '/Dashboard', icon: FaChartLine },
     { title: 'Events', url: '/Events', icon: FaCalendarAlt },
     { title: 'Create Event', url: '/CreateEvents', icon: FaCalendarPlus },
+    { title: 'Tasks', url: '/Task', icon: FaTasks },
     { title: 'AI', url: '/AiConversations', icon: FaRobot },
-    { title: 'Task', url: '/Task', icon: FaTasks },
     {
       title: `Notifications${user.Notifications.length ? ` (${user.Notifications.length})` : ''}`,
       url: '/Notifications',
       icon: FaStickyNote,
     },
-    { title: 'Dashboard', url: '/Dashboard', icon: FaChartLine },
     { title: 'Settings', url: '/settings', icon: FaCog },
     { title: 'Logout', url: '/logout', icon: FaSignOutAlt },
   ];
