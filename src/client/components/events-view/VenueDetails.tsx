@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import dayjs from 'dayjs';
 
+import { IoArrowBack } from "react-icons/io5";
+
 import {
   DrawerHeader,
   DrawerTitle,
@@ -62,7 +64,22 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
   return (
     <>
       <DrawerHeader>
-        <DrawerTitle className="text-xl">{name}</DrawerTitle>
+        <DrawerTitle className="text-xl">
+          <div className="grid grid-cols-12">
+            <div className="col-span-11">
+              {name}
+            </div>
+            <div>
+              <button
+                onClick={closeVenueDetails}
+              >
+                <IoArrowBack
+                  className="text-black hover:text-gray-700"
+                />
+              </button>
+            </div>
+          </div>
+        </DrawerTitle>
         <DrawerDescription className="text-gray-700 text-md">{description}</DrawerDescription>
       </DrawerHeader>
       <div className="p-4 pb-0">
