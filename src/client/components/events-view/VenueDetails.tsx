@@ -31,9 +31,10 @@ type VenueDetailsProps = {
       path: string;
     }[];
   };
+  closeVenueDetails: () => void;
 }
 
-function VenueDetails({ venue }: VenueDetailsProps) {
+function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
   const {
     name,
     description,

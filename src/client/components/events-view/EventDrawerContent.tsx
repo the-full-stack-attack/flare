@@ -5,9 +5,6 @@ import { Link } from 'react-router-dom';
 import { Button } from '../../../components/ui/button';
 
 import {
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
   DrawerFooter,
   DrawerClose,
 } from '../../../components/ui/drawer';
@@ -86,19 +83,9 @@ function EventDrawerContent({
   postAttendEvent,
   patchAttendingEvent,
 }: EventDrawerContentProps) {
-  const {
-    title,
-    start_time,
-    end_time,
-    description,
-    Users,
-    Venue,
-    Category,
-    Interests,
-    id,
-  } = event;
+  const [showVenueDetails, setShowVenueDetails] = useState<boolean>(false);
 
-  const { street_address, city_name, state_name, zip_code } = Venue;
+  const { start_time, end_time, Venue, Category, id } = event;
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
 
@@ -106,9 +93,21 @@ function EventDrawerContent({
 
   const successDrawerButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white'
 
+  const openVenueDetails = () => {
+    setShowVenueDetails(true);
+  };
+
+  const closeVenueDetails = () => {
+    setShowVenueDetails(false);
+  };
+
   return (
     <div className="mx-auto w-full max-w-sm">
-      <EventDetails event={event} />
+      {
+        showVenueDetails
+          ? <VenueDetails venue={Venue} closeVenueDetails={closeVenueDetails} />
+          : <EventDetails event={event} openVenueDetails={openVenueDetails} />
+      }
       <DrawerFooter>
         {category === 'upcoming' ? (
           <Button className={successDrawerButton} onClick={postAttendEvent}>Attend</Button>

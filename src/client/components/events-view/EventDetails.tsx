@@ -65,9 +65,10 @@ type EventDetailsProps = {
       }[];
     };
   };
+  openVenueDetails: () => void;
 };
 
-function EventDetails({ event }: EventDetailsProps) {
+function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
   const {
     title,
     start_time,
