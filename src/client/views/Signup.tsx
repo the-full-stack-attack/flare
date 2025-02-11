@@ -268,7 +268,12 @@ function Signup() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white font-semibold"
+                    disabled={errors.length > 0}
+                    className={`w-full bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-semibold ${
+                      errors.length > 0
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600'
+                    }`}
                   >
                     Complete Signup
                   </Button>
