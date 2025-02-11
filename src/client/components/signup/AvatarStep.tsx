@@ -183,6 +183,7 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
     ],
   };
 
+  // function to generate previews for avatar selections - iterates through all variants and sets previews with previous selections
   const generatePreviews = async () => {
     try {
       const previews = {
@@ -254,6 +255,7 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
     }
   };
 
+  // dropdwon handling
   const toggleSection = (section) => {
     if (openSection === section) {
       setOpenSection('');
@@ -262,6 +264,7 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
     }
   };
 
+  // update avatar selection for formdata
   const updateAvatar = async () => {
     try {
       const avatar = createAvatar(adventurer, avatarItems);

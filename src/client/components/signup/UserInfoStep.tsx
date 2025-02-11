@@ -58,6 +58,21 @@ function UserInfoStep({ initialData, onSubmit }) {
     }
   };
 
+  // checks for errors on this current step
+  const handleContinue = () => {
+    if (!formData.userName || !formData.phone) {
+      const newErrors = [];
+      if (!formData.userName) {
+        newErrors.push('Username is required');
+      }
+      if (!formData.phone) {
+        newErrors.push('Phone number is required');
+      }
+      setErrors(newErrors);
+      return;
+    }
+  };
+
   return (
     <>
       <CardHeader>
@@ -133,6 +148,7 @@ function UserInfoStep({ initialData, onSubmit }) {
             <Button
               type="submit"
               disabled={errors.length > 0}
+              onClick={handleContinue}
               className={`w-full bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-semibold ${
                 errors.length > 0
                   ? 'opacity-50 cursor-not-allowed'
