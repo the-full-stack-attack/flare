@@ -141,8 +141,11 @@ function Signup() {
                       <Input
                           id="phone"
                           type="text"
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="9 digits no dashes"
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            setPhone(value);
+                          }}
+                          placeholder="Please enter your phone number"
                           className="bg-black/50 border-transparent focus:ring-2 focus:ring-orange-500/50 text-white placeholder-gray-400"
                       />
                     </div>
