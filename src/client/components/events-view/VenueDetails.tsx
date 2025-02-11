@@ -105,7 +105,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
         <DrawerDescription className="text-gray-700 text-md">{description}</DrawerDescription>
       </DrawerHeader>
       <div className="p-4 pb-0">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 flex-wrap">
           {/* <div className="col-span-2">
             <b>Address:</b>
             <p>
@@ -126,14 +126,14 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
             website ? (
               <div>
                 <b>Website:</b>
-                <br></br>
-                <a
-                  href={website}
-                  target="_blank"
-                  className="hover:underline"
-                >
-                  {website}
-                </a>
+                <p className="hover:underline truncate overflow-visible">
+                  <a
+                    href={website}
+                    target="_blank"
+                  >
+                    {website}
+                  </a>
+                </p>
               </div>
             ) : null
           }
@@ -171,7 +171,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
           }
           {
             wheelchair_accessible !== null ? (
-              <div className="col-span-2">
+              <div>
                 <b>Wheelchair Accessible?</b>
                 <p>{wheelchair_accessible ? 'Yes' : 'No'}</p>
               </div>

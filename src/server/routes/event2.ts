@@ -17,11 +17,17 @@ const event2Router = Router();
 */
 event2Router.get('/', (req: any, res: Response) => {
   const { city, state } = req.query.locationFilter;
+  
+  let now = Date.now();
+  
+  if (req.query.now) {
+    now = req.query.now;
+  }
   // Query DB for all event objects & send them back to the user
   if (city && state) {
     Event.findAll({
       where: {
-        start_time: { [Op.gt]: new Date(Date.now()) },
+        start_time: { [Op.gt]: new Date(+now) },
         '$Venue.city_name$': city,
         '$Venue.state_name$': state,
       },
@@ -62,7 +68,7 @@ event2Router.get('/', (req: any, res: Response) => {
   } else {
     Event.findAll({
       where: {
-        start_time: { [Op.gt]: new Date(Date.now()) },
+        start_time: { [Op.gt]: new Date(+now) },
       },
       include: [
         {
@@ -136,6 +142,12 @@ event2Router.post('/attend/:id', async (req: any, res: Response) => {
   GET /api/event/attend => Retrieve all events the user is attending from the User_Events table
 */
 event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
+  let now = Date.now();
+  
+  if (req.query.now) {
+    now = req.query.now;
+  }
+  
   let isAttending = true;
 
   if (req.params.isAttending === 'false') {
@@ -148,7 +160,7 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     },
     include: {
       model: Event,
-      where: { end_time: { [Op.gt]: new Date(Date.now()) } },
+      where: { end_time: { [Op.gt]: new Date(+now) } },
       include: [
         {
           model: User,

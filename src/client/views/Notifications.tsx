@@ -84,7 +84,7 @@ function Notifications() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
-      <div className="container flex flex-col items-center">
+      <div className="container flex flex-col items-center pt-5">
         <div className="grid gap-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 w-md mb-5">
           <Button disabled={!notifs.length} className={buttonColor} onClick={() => { setDeleteAllNotifsDialogOpen(true) }}>
             Clear All Notifications
