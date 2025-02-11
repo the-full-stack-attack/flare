@@ -105,7 +105,7 @@ function QuipLash({wantsToPlay}) {
   const [quiplashPrompt, setQuiplashPrompt] = useState('');
   const [timer, setTimer] = useState('30');
   const [gameRatio, setGameRatio] = useState(window.innerWidth / window.innerHeight)
-  const [showReady, setShowReadyy] = useState(true);
+  const [showReady, setShowReady] = useState(true);
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -189,6 +189,11 @@ function QuipLash({wantsToPlay}) {
 
     socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
       console.log(winner);
+      if(winner[0] === ''){
+        winner[0] = 'No Winner :c'
+        winner[1] = ''
+
+      }
       setAnswersReceived(falsyBool);
       setShowWinner(truthyBool);
       setWinner(winner);
@@ -370,13 +375,13 @@ function QuipLash({wantsToPlay}) {
                 marginTop: '20px',
               }}
             >
-            {!promptGiven && !quit && (<div >
+            {!promptGiven && !quit && showReady && (<div >
       <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={readyForQuiplash}>READY FOR NEXT QUIPLASH!</Button>
       </div>
     )}
     </div>
     
-    {showWinner && <VelocityScroll >{winner}</VelocityScroll>}
+    {showWinner && <VelocityScroll className="text-white">{winner}</VelocityScroll>}
   
     </div>
   );
