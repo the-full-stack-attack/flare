@@ -137,7 +137,7 @@ function QuipLash({wantsToPlay}) {
   }, []);
 
   function onTouchstart(param, e) {
-    console.log(e);
+    // console.log(e);
   }
 
   // WINDOW SIZING
@@ -156,7 +156,7 @@ function QuipLash({wantsToPlay}) {
 
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
-    console.log(user, 'quiplash user');
+    // console.log(user, 'quiplash user');
     socket.emit('joinQuiplash', { user, eventId });
     socket.on(
       'receivePrompt',
@@ -171,8 +171,8 @@ function QuipLash({wantsToPlay}) {
           ],
         },
       }) => {
-        console.log('next question has arrived!');
-        console.log(text);
+        // console.log('next question has arrived!');
+        // console.log(text);
         setQuiplashPrompt(text);
       }
     );
@@ -182,13 +182,13 @@ function QuipLash({wantsToPlay}) {
     });
 
     socket.on('showAnswers', (answers) => {
-      console.log(answers, 'the answers were received by client');
+      // console.log(answers, 'the answers were received by client');
       setAnswersReceived(true);
       setPlayerAnswers(answers);
     });
 
     socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
-      console.log(winner);
+      // console.log(winner);
       if(winner[0] === ''){
         winner[0] = 'No Winner :c'
         winner[1] = ''
@@ -204,7 +204,7 @@ function QuipLash({wantsToPlay}) {
     });
 
     socket.on('countDown', (time) => {
-      console.log('countdownrunning')
+      // console.log('countdownrunning')
       console.log(time);
       if(time >= 11 ){
         setColor('#55ff00');
@@ -235,15 +235,15 @@ function QuipLash({wantsToPlay}) {
     setShowReady(false);
   };
   const sendMessage = () => {
-    console.log(message);
+    // console.log(message);
     socket.emit('quiplashMessage', { message, eventId, user });
     setMessage('');
   };
 
   const test = (e) => {
-    console.log('test is passing for onclick', e);
+    // console.log('test is passing for onclick', e);
     if(e === user.username){
-      console.log('you cannot vote for yourself!');
+      // console.log('you cannot vote for yourself!');
     } else {
     socket.emit('vote', e);
     }
