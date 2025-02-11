@@ -8,7 +8,6 @@ import { Button } from '../../../components/ui/button';
 import {
   Card,
   CardHeader,
-  CardFooter,
   CardTitle,
   CardDescription,
   CardContent,
