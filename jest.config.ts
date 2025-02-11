@@ -31,7 +31,7 @@ const config: Config = {
 transformIgnorePatterns: ['/node_modules/(?!(lucide-react)/)'],
 automock: false,
 clearMocks: true,
-collectCoverage: true,
+collectCoverage: false,
 coverageDirectory: 'coverage',
 coveragePathIgnorePatterns: [
   '/node_modules',
