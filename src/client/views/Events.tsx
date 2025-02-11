@@ -124,7 +124,11 @@ function Events() {
 
   const getAttendEvents = () => {
     axios
-      .get('/api/event/attend/true')
+      .get('/api/event/attend/true', {
+        params: {
+          now: Date.now(),
+        },
+      })
       .then(({ data }) => {
         if (data) {
           setAttendingEvents(data);
@@ -137,7 +141,11 @@ function Events() {
 
   const getBailedEvents = () => {
     axios
-      .get('/api/event/attend/false')
+      .get('/api/event/attend/false', {
+        params: {
+          now: Date.now(),
+        },
+      })
       .then(({ data }) => {
         if (data) {
           setBailedEvents(data);
