@@ -35,6 +35,7 @@ import {
 import axios from 'axios';
 import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' 
 import nightClubTileSet from '../assets/chatroom/tileSet';
+import { ChartNoAxesColumnDecreasing } from 'lucide-react';
 extend({
   Container,
   Graphics,
@@ -217,13 +218,14 @@ function Chatroom() {
   const [allMessages, setAllMessages] = useState([]);
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
+  const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
+  const [avatarImage, setAvatarImage] = useState(null);
   const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   // QUIPLASH
-  const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
   const toggleQuiplash = () => {
-    console.log('clicked')
+    // console.log('clicked')
     isPlayingQuiplash ? setIsPlayingQuiplash(false) : setIsPlayingQuiplash(true);
   }
   const speechBubble = useCallback((graphics: unknown) => {
@@ -232,7 +234,7 @@ function Chatroom() {
   }, []);
   // CONTROLS
   const keyPress = ({ key }: any) => {
-    console.log(key, 'key caught')
+    // console.log(key, 'key caught')
     if (isTyping === false) {
       if (key === 'ArrowUp' || key === 'w') {
         socket.emit('keyPress', { inputId: 'Up', state: true });
@@ -297,6 +299,16 @@ function Chatroom() {
       document.removeEventListener('keyup', keyUp);
     };
   }, [isTyping]);
+  // MESSAGING
+  useEffect(() => {
+    axios.get('/api/chatroom/image')
+    .then((avatarURI) => {
+      // console.log('received successful pic', avatarURI);
+    }).catch((error) => {
+      console.error('ERROR GETTING PIC', error)
+    })
+  }, [avatarImage])
+
   const typing = async () => {
     await setIsTyping(true);
   };
@@ -305,7 +317,7 @@ function Chatroom() {
     await setIsTyping(false);
   }
   const sendMessage = () => {
-    console.log(message);
+    // console.log(message);
     socket.emit('message', { message, eventId });
     displayMessage({message: message, username: user?.username });
     setMessage('');
@@ -349,7 +361,7 @@ function Chatroom() {
   })
 
   const handlePointerDown = (e) => {
-    console.log(e.target.name)
+    // console.log(e.target.name)
    keyPress({key: e.target.name})// Adjust the timeout as needed
   };
   
@@ -466,7 +478,7 @@ function Chatroom() {
         </div>
       </div>
       <Card className='w-50 block sm:hidden bg-transparent border-transparent'>
-      <div class="flex flex-col items-center">
+      <div className="flex flex-col items-center">
         <Button className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full mt-2 border border-black"
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp} name='w'>↑</Button>
