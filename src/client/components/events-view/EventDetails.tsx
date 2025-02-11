@@ -92,8 +92,8 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
     let text = `
       Event Title: ${title}
       Event Description: ${description}
-      Date: ${dayjs(start_time).format('MMMM D, YYYY')}
-      Time: ${dayjs(start_time).format('h:mm A')} - ${dayjs(end_time).format('h:mm A')}
+      Date: ${dayjs(new Date(start_time)).format('MMMM D, YYYY')}
+      Time: ${dayjs(new Date(start_time)).format('h:mm A')} - ${dayjs(new Date(end_time)).format('h:mm A')}
       Category: ${Category ? Category.name : 'None'}
       Interests: ${Interests.length > 0 
         ? Interests?.reduce((acc, curr, i, arr) => {
@@ -132,11 +132,11 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
         <div className="grid grid-cols-2 gap-2">
           <div>
             <b>Date:</b>
-            <p>{dayjs(start_time).format('MMMM D, YYYY')}</p>
+            <p>{dayjs(new Date(start_time)).format('MMMM D, YYYY')}</p>
           </div>
           <div>
             <b>Time:</b>
-            <p>{`${dayjs(start_time).format('h:mm A')} - ${dayjs(end_time).format('h:mm A')}`}</p>
+            <p>{`${dayjs(new Date(start_time)).format('h:mm A')} - ${dayjs(new Date(end_time)).format('h:mm A')}`}</p>
           </div>
           <div>
             <b>Category:</b>

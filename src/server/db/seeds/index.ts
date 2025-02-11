@@ -15,7 +15,7 @@ import seedVenues from './seedVenues';
 
 async function seedDb() {
   await database.sync({ alter: true });
-  await seedVenues();
+  // await seedVenues();
   await seedCategories();
   await seedInterests();
 }
