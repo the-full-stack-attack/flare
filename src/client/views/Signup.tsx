@@ -13,6 +13,8 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
 import Avatar from '../components/signup/avatar';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 import { BackgroundGlow } from '@/components/ui/background-glow';
 
@@ -22,11 +24,9 @@ function Signup() {
   const [full_Name, setFull_Name] = useState('');
   const [phone, setPhone] = useState('');
   const [interests, setInterests] = useState<string[]>([]);
-
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-
+ const [errors, setErrors] = useState([]);
   const [avatarUri, setAvatarUri] = useState('');
-
   const [avatarItems, setAvatarItems] = useState({
     seed: 'Felix',
     skinColor: ['f2d3b1'],
@@ -36,6 +36,22 @@ function Signup() {
     eyes: ['variant04'],
     mouth: ['variant05'],
   });
+
+
+  // restrict usernames to be less than 15 chars
+  const handleUsernameChange = (e) => {
+    const value = e.target.value;
+    if (value.length > 15) {
+      // if error isnt already set add it
+      if (!errors.includes('Username cannot exceed 15 characters')) {
+        setErrors([...errors, 'Username cannot exceed 15 characters']);
+      }
+    } else {
+      // remove error if it is set
+      setErrors(errors.filter(error => !error.includes('Username cannot exceed 15 characters')))
+    }
+    setUserName(value);
+  }
 
 
 
