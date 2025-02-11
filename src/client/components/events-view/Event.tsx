@@ -169,7 +169,7 @@ function Event({ event, getEvents }: EventProps) {
       <Card className="isolate rounded-xl bg-white/10 shadow-lg ring-1 ring-black/5 border-transparent">
         <CardHeader>
           <CardTitle className="text-xl text-white">{title}</CardTitle>
-          <CardDescription className="text-sm text-gray-200">{`${dayjs(start_time).format('MMMM D [--] h:mm A')} - ${dayjs(end_time).format('h:mm A')}`}</CardDescription>
+          <CardDescription className="text-sm text-gray-200">{`${dayjs(new Date(start_time)).format('MMMM D [--] h:mm A')} - ${dayjs(new Date(end_time)).format('h:mm A')}`}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 place-content-center">
