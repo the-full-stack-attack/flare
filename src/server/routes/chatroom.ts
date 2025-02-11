@@ -24,6 +24,11 @@ chatroomRouter.get('/chatroom/:eventId', (req, res) => {
   // send the map back to the chatroom, along with the chatroom_id. 
 
 });
+
+chatroomRouter.get('/image', (req, res) => {
+  console.log(req.body);
+  res.send('aye').status(200);
+})
 export default chatroomRouter;
 
 // chatroomRouter.post('/chatroom/chat', (req, res) => {
