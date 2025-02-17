@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import dayjs from 'dayjs';
 import axios from 'axios';
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { Button } from '@headlessui/react';
 import {
   Card,
   CardHeader,
@@ -51,6 +51,10 @@ function ChooseTask() {
       })
       .catch((err) => {
         console.error('Error posting task: ', err);
+        // Check what what the error was
+        if (err.status === 409) {
+          setIsOpen(false);
+        }
       });
   };
   return (
