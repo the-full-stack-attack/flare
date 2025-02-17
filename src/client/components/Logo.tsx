@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import cn from "../../../lib/utils";
 import React from "react";
-import GradientLogo from '../assets/logo/gradient.png';
+import GoldDrip from '../assets/logo/gold-drip.png';
 
 interface LogoProps {
   className?: string;
@@ -58,7 +58,7 @@ export const Logo = ({ className, animate = true, size = "sm" }: LogoProps) => {
             variants={glowVariants}
           />
           <motion.img
-            src={GradientLogo}
+            src={GoldDrip}
             alt="Flare Logo"
             className={cn(
               "object-contain w-auto",
