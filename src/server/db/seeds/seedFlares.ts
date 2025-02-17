@@ -125,10 +125,10 @@ const multiTasker: FlareArr = [
   5,
   'Complete 5 tasks',
 ];
-const partyAnimal: FlareArr = [
-  'Party Animal',
+const socialDynamo: FlareArr = [
+  'Social Dynamo',
   'Event Flare',
-  '',
+  path.join(__dirname, '.', 'flareImages', 'socialDynamo.png'),
   "You've attended 5 events!",
   0,
   5,
@@ -149,7 +149,9 @@ flareArrays.push(
   goGetter,
   storedThoughts,
   theHost,
-  theSpark
+  theSpark,
+  venueVirtuoso,
+  socialDynamo,
 );
 
 // Create an object using the arrays above and push the object onto the flares array
@@ -242,6 +244,10 @@ async function uploadImage(flare: FlareType): Promise<FlareType> {
 
 // Function to delete image from bucket
 async function deleteFromBucket(...imageKey: string[]): Promise<void> {
+  if (!imageKey.length) {
+    console.error('Insert an imageKey to delete files from the bucket');
+    return;
+  }
   try {
     for (let i = 0; i < imageKey.length; i++) {
       const key: string = imageKey[i];
@@ -262,6 +268,8 @@ async function deleteFromBucket(...imageKey: string[]): Promise<void> {
 }
 
 seedFlares();
-// deleteFromBucket('/flare/venueVirtuoso.png');
+// If you ever want to delete files from the bucket insert the imageKey/imageKeys into this function and run the delete script
+// Image key can be found in the icon column of the flares table
+// deleteFromBucket();
 
 export default seedFlares;

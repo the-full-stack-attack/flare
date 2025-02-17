@@ -8,7 +8,7 @@ import Interest from '../db/models/interests';
 import dayjs from 'dayjs';
 import {Op} from 'sequelize';
 import { checkForFlares } from '../helpers/flares';
-
+import User_Notification from '../db/models/users_notifications';
 import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
 import Notification from '../db/models/notifications';
@@ -41,8 +41,11 @@ eventRouter.get('/search', async (req: any, res: Response): Promise<void> => {
             query: searchInput,
             limit: '20',
             types: 'place',
-            // ll: `${latitude}, ${longitude}`,
         });
+
+        if (latitude && longitude) {
+            searchParams.append('ll', `${latitude},${longitude}`);
+        }
         const response = await fetch(
             `https://api.foursquare.com/v3/autocomplete?${searchParams}`,
             {
@@ -133,6 +136,11 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         const notification: any = await Notification.create({
             message: `The upcoming event you're attending, ${title}, starts soon at ${dayjs(`${startDate} ${startTime}`).format('h:mm A')}. Hope to see you there.`,
             send_time: oneHourBefore,
+        });
+
+        await User_Notification.create({
+            UserId: userId,
+            NotificationId: notification.id
         });
 
         // then create the event

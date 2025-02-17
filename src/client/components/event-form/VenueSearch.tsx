@@ -31,25 +31,35 @@ function VenueSearch({ handleVenueSelect }) {
     }, []);
 
 
-    // handle venue selection from user search input
+
+// handle venue selection from user search input
     const handleVenueSearch = async (searchTerm) => {
         try {
             setVenueSearch(searchTerm);
-            const response = await axios.get('/api/event/search', {
-                params: {
-                    searchInput: searchTerm,
-                    latitude: geoLocation?.latitude || null,
-                    longitude: geoLocation?.longitude || null,
-                }
-            });
+            if (!geoLocation) {
+                return;
+            }
 
+
+            const params = {
+                searchInput: searchTerm
+            };
+
+            if (geoLocation) {
+                params.latitude = geoLocation.latitude;
+                params.longitude = geoLocation.longitude;
+            }
+
+            const response = await axios.get('/api/event/search', { params });
             setFilteredVenues(response.data);
-            } catch (error) {
+        } catch (error) {
             console.error('Error searching venues: ', error);
         } finally {
             setIsLoadingVenue(false);
         }
     };
+
+
 
     const onVenueSelect = async (venue) => {
         setIsLoadingVenue(true);

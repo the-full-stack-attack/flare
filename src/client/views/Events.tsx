@@ -49,6 +49,29 @@ type EventData = {
   User_Event?: {
     user_attending: boolean;
   };
+  Venue: {
+    id: number;
+    name: string;
+    description: string | null;
+    street_address: string | null;
+    city_name: string | null;
+    state_name: string | null;
+    zip_code: number | null;
+    category: string | null;
+    phone: string | null;
+    popularTime: Date | null;
+    pricing: string | null;
+    serves_alcohol: boolean | null;
+    website: string | null;
+    wheelchair_accessible: boolean | null;
+    Venue_Tags: {
+      count: number;
+      tag: string;
+    }[];
+    Venue_Images: {
+      path: string;
+    }[];
+  };
 };
 
 function Events() {
@@ -101,7 +124,11 @@ function Events() {
 
   const getAttendEvents = () => {
     axios
-      .get('/api/event/attend/true')
+      .get('/api/event/attend/true', {
+        params: {
+          now: Date.now(),
+        },
+      })
       .then(({ data }) => {
         if (data) {
           setAttendingEvents(data);
@@ -114,7 +141,11 @@ function Events() {
 
   const getBailedEvents = () => {
     axios
-      .get('/api/event/attend/false')
+      .get('/api/event/attend/false', {
+        params: {
+          now: Date.now(),
+        },
+      })
       .then(({ data }) => {
         if (data) {
           setBailedEvents(data);
@@ -130,6 +161,7 @@ function Events() {
       .get('/api/event', {
         params: {
           locationFilter,
+          now: Date.now(),
         },
       })
       .then(({ data }) => {
@@ -215,7 +247,7 @@ function Events() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
-      <div className="container mx-auto px-4 content-center">
+      <div className="container mx-auto px-4 content-center pt-5">
         <div className="container mx-auto px-4">
           <p className="text-gray-300 text-lg">
             Upcoming Events from
