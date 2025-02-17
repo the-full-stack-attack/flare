@@ -55,15 +55,23 @@ taskRouter.post('/', async (req: any, res: Response) => {
       // Change the user's current_task_id to the task id
       const user: any = await User.findByPk(userId);
       user.current_task_id = taskId;
-      await user.save();
-      await User_Task.findOrCreate({
+      const userTask = await User_Task.findOrCreate({
         where: { UserId: user.id, TaskId: taskId },
       });
-      res.status(201).send(task);
+      // Check if the userTask was found or created
+      if (userTask[1] === false) {
+        throw new Error('User already attempted task');
+      }
+      res.sendStatus(201);
+      await user.save();
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error in POST to /api/task: ', err);
-    res.sendStatus(500);
+    if (err.message === 'User already attempted task') {
+      res.sendStatus(409);
+    } else {
+      res.sendStatus(500);
+    }
   }
 });
 
