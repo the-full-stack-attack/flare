@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 import { Button } from '@/components/ui/button';
@@ -48,7 +48,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
 
   const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-4 py-4 rounded-xl text-md';
 
-  const getGeoLocation = () => {
+  const getGeoLocation = useCallback(() => {
     const success = (position: GeoPosition) => {
       const { latitude, longitude } = position.coords;
 
@@ -64,7 +64,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
     } else {
       navigator.geolocation.getCurrentPosition(success, error);
     }
-  };
+  }, []);
 
   const getLocation = () => {
     if (geoLocation.latitude && geoLocation.longitude) {
@@ -125,7 +125,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
 
   useEffect(() => {
     getGeoLocation();
-  }, []);
+  }, [getGeoLocation]);
 
   useEffect(() => {
     getLocation();
