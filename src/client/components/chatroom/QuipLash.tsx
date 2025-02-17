@@ -251,7 +251,17 @@ function QuipLash({wantsToPlay}) {
   return (
    
     <div>
-      { quit && <div className="flex justify-center" ><Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={toggleQuit}>Get Flamiliar!</Button></div> } }
+      { quit && 
+      <div>
+      <div className="flex justify-center items-center mt-2" >
+        <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={toggleQuit}>
+          Get Flamiliar!
+          </Button>
+          </div>
+          <div className="flex justify-center items-center">
+          <h1 className="text-white">TUTORIAL GOES HERE</h1>
+          </div>
+          </div> } 
       {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700" onClick={quitQuiplash}>QUIT</Button> </div>}
       { !quit &&
     <div className="p-4">

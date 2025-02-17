@@ -381,6 +381,23 @@ function Chatroom() {
           }} >
           <Countdown endTime={dayjs(start_time)}/>
           </div> 
+          { !isPlayingQuiplash && 
+        <div className="flex justify-center"> 
+        <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleQuiplash}>
+          Ice-Breaker Games
+          </RainbowButton>
+          </div> || 
+          <div className="flex justify-center"> 
+          <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleQuiplash}>
+            Chat-Room Lobby
+            </RainbowButton>
+            </div>
+          
+          }
+          
+        
+         { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
+          { !isPlayingQuiplash &&
           <div className="p-4">
           <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
           <div className="p-2">
@@ -461,7 +478,7 @@ function Chatroom() {
           </div>
           </div>
           </div>
-          </div>
+          </div> }
           <div className="flex justify-center mt-2">
         <div onClick={typing}>
           <Label className="flex justify-center  text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-2xl rounded-md"> 
@@ -492,6 +509,7 @@ function Chatroom() {
             {/* <em className="text-white">Allowed Characters</em> */}
         </div>
       </div>
+      { !isPlayingQuiplash &&
       <Card className='w-50 block sm:hidden bg-transparent border-transparent'>
       <div className="flex flex-col items-center">
         <Button className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full mt-2 border border-black"
@@ -510,9 +528,8 @@ function Chatroom() {
         </div>
         </div>
       </Card>
-        { !isPlayingQuiplash && <div className="flex justify-center"> <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleQuiplash}>Ice-Breaker Games</RainbowButton></div>}
-        
-         { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
+      }     
+       
             
       <Card className="bg-transparent border-transparent flex items-center justify-center">
       <div
