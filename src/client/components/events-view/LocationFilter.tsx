@@ -144,9 +144,9 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
           Change Location
         </Button>
       ) : (
-        <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 gap-4">
+        <div className="mt-2 grid grid-cols-2 gap-4">
           <Button
-            className={'col-span-1 ' + buttonColor}
+            className={'col-span-2 ' + buttonColor}
             onClick={({ target }: any) => {
               if (target.innerText === 'Cancel') {
                 toggleChangeLocFilter();
@@ -181,7 +181,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
             }}
           />
           <Button
-            className={'col-span-1 ' + buttonColor}
+            className={'col-span-2 ' + buttonColor}
             onClick={({ target }: any) => {
               if (target.innerText === 'Remove Filter') {
                 handleClearLocFilter();
