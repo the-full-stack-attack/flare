@@ -135,7 +135,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
 
   return (
     <div className="container mx-auto px-4">
-      <p>
+      <p className="text-gray-200">
         Upcoming Events from
         <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
       </p>
@@ -159,7 +159,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
             {locationFilter.city === location.city && locationFilter.state === location.state ? 'Cancel' : 'Current Location'}
           </Button>
           <Input
-            className="col-span-2"
+            className="col-span-2 text-gray-200"
             value={city}
             placeholder="City Name"
             onChange={handleCityInput}
@@ -170,7 +170,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
             }}
           />
           <Input
-            className="col-span-2"
+            className="col-span-2 text-gray-200"
             value={state}
             placeholder="State Initials, XX"
             onChange={handleStateInput}
