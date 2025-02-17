@@ -12,6 +12,7 @@ userTaskRouter.get('/complete/:id', async (req: any, res: Response) => {
   const { id } = req.params;
   User_Task.findAll({
     where: { UserId: id, completed: true },
+    order: [['createdAt', 'DESC']],
     include: [Task],
   })
     .then((userTasks) => {
@@ -33,6 +34,7 @@ userTaskRouter.get('/optOut/:id', async (req: any, res: Response) => {
   const { id } = req.params;
   User_Task.findAll({
     where: { UserId: id, opted_out: true },
+    order: [['createdAt', 'DESC']],
     include: [Task],
   })
     .then((userTasks) => {
