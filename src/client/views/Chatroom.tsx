@@ -532,20 +532,15 @@ function Chatroom() {
        
             
       <Card className="bg-transparent border-transparent flex items-center justify-center">
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          width: '250px'
-        }}>
+      <div className="h-[300px] overflow-y-auto">
           <AnimatedList className="w-80 md:w-160 lg:w-300">
             {allMessages.map((msg) => (
 
-              <MsgBox className="w-80 md:w-360 lg:w-2550" msg={msg.message} user={msg.username} eventId={eventId} />
+              <MsgBox className="w-80 md:w-360 lg:w-565" msg={msg.message} user={msg.username} eventId={eventId} />
 
             ))}
           </AnimatedList>
-      </div>
+        </div>
       </Card> 
       </div>
   );
