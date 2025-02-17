@@ -20,6 +20,8 @@ import {
 import { BackgroundGlow } from '@/components/ui/background-glow';
 
 import LocationFilter from '../components/events-view/LocationFilter';
+import CategoryFilter from '../components/events-view/CategoryFilter';
+
 import EventsList from '../components/events-view/EventsList';
 
 type Location = {
@@ -160,6 +162,7 @@ function Events() {
               locationFilter={locationFilter}
               handleSetLocationFilter={handleSetLocationFilter}
             />
+            <CategoryFilter />
           </div>
           <div className="lg:col-span-5 md:col-span-3">
             <TabGroup
