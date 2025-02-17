@@ -92,6 +92,16 @@ function CreateEvents() {
                 stateName: venue.state_name,
                 fsq_id: venue.fsq_id,
                 venueId: venue.id,
+                phone: venue.phone,
+                website: venue.website,
+                rating: venue.rating,
+                total_reviews: venue.total_reviews,
+                pricing: venue.pricing,
+                popularTime: venue.popularTime,
+                peak_hour: venue.peak_hour,
+                wheelchair_accessible: venue.wheelchair_accessible,
+                serves_alcohol: venue.serves_alcohol,
+                google_place_id: venue.google_place_id,
             }));
             setNullFields(nullFields);
             setStep(5);
