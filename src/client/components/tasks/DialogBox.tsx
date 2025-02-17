@@ -36,15 +36,25 @@ function DialogBox({
               {title}
             </DialogTitle>
             <p className="mt-2 text-sm/6 text-white/50">{content}</p>
-            <div className="mt-4">
+            <div className="mt-4 flex gap-2 justify-end">
               <Button
+                className="px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-white/70 font-medium
+                hover:bg-white/10 hover:text-white transition-all duration-300
+                flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
                 onClick={() => {
                   stateSetter(false);
                 }}
               >
                 {cancelText}
               </Button>
-              <Button onClick={confirm}>{confirmText}</Button>
+              <Button
+                className="px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-white/70 font-medium
+                hover:bg-white/10 hover:text-white transition-all duration-300
+                flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+                onClick={confirm}
+              >
+                {confirmText}
+              </Button>
             </div>
           </DialogPanel>
         </div>
