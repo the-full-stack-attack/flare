@@ -88,21 +88,40 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                     <div className="grid grid-cols-2 gap-4">
                         <p className="text-gray-400">Venue Name:</p>
                         <p className="text-white">{formInfo.venue}</p>
-                        {!nullFields?.description && (
-                            <>
-                                <p className="text-gray-400">Description:</p>
-                                <p className="text-white">{formInfo.venueDescription}</p>
-                            </>
-                        )}
+                        <p className="text-gray-400">Description:</p>
+                        <p className="text-white">{formInfo.venueDescription || 'null'}</p>
                         <p className="text-gray-400">Address:</p>
-                        <p className="text-white">{formInfo.streetAddress}</p>
+                        <p className="text-white">{formInfo.streetAddress || 'null'}</p>
                         <p className="text-gray-400">City:</p>
-                        <p className="text-white">{formInfo.cityName}</p>
+                        <p className="text-white">{formInfo.cityName || 'null'}</p>
                         <p className="text-gray-400">State:</p>
-                        <p className="text-white">{formInfo.stateName}</p>
+                        <p className="text-white">{formInfo.stateName || 'null'}</p>
                         <p className="text-gray-400">Zip Code:</p>
-                        <p className="text-white">{formInfo.zipCode}</p>
+                        <p className="text-white">{formInfo.zipCode || 'null'}</p>
+                        <p className="text-gray-400">Phone:</p>
+                        <p className="text-white">{formInfo.phone || 'null'}</p>
+                        <p className="text-gray-400">Website:</p>
+                        <p className="text-white">{formInfo.website || 'null'}</p>
+                        <p className="text-gray-400">Rating:</p>
+                        <p className="text-white">{formInfo.rating || 'null'}</p>
+                        <p className="text-gray-400">Total Reviews:</p>
+                        <p className="text-white">{formInfo.total_reviews || 'null'}</p>
+                        <p className="text-gray-400">Pricing:</p>
+                        <p className="text-white">{formInfo.pricing || 'null'}</p>
+                        <p className="text-gray-400">Popular Time:</p>
+                        <p className="text-white">{formInfo.popularTime ? dayjs(formInfo.popularTime).format("h:mm A") : 'null'}</p>
+                        <p className="text-gray-400">Peak Hour:</p>
+                        <p className="text-white">{formInfo.peak_hour ? dayjs(formInfo.peak_hour).format("h:mm A") : 'null'}</p>
+                        <p className="text-gray-400">Wheelchair Accessible:</p>
+                        <p className="text-white">{formInfo.wheelchair_accessible === null ? 'null' : formInfo.wheelchair_accessible ? 'Yes' : 'No'}</p>
+                        <p className="text-gray-400">Serves Alcohol:</p>
+                        <p className="text-white">{formInfo.serves_alcohol === null ? 'null' : formInfo.serves_alcohol ? 'Yes' : 'No'}</p>
+                        <p className="text-gray-400">Foursquare ID:</p>
+                        <p className="text-white">{formInfo.fsq_id || 'null'}</p>
+                        <p className="text-gray-400">Google Place ID:</p>
+                        <p className="text-white">{formInfo.google_place_id || 'null'}</p>
                     </div>
+                    
                 </div>
 
                 <Separator className="border-orange-500/20"/>
