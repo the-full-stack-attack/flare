@@ -54,11 +54,15 @@ export const getGooglePlaceId = async (query: any) => {
         const googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${process.env.GOOGLE_PLACES_API_KEY}`
         const response = await fetch(googlePlacesUrl)
         const data = await response.json();
-        if (!data.results[0].place_id) console.error('Error getting Google Place Id for', query);
-        // const id: any = data.results[0].place_id;
-        return data.results[0].place_id;
+        if (data.results && data.results.length > 0 && data.results[0].place_id) {
+            return data.results[0].place_id;
+        }
+        // if no results are found, log and return null
+        console.warn('No Google Place results found for query: ', query);
+        return null;
     } catch (error) {
         console.error(`Error getting Google Place Id for Venue. ERROR: ${error}`);
+        return null;
     }
 }
 
