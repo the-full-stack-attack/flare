@@ -8,15 +8,15 @@ import { FaPencilAlt, FaSave, FaTimes } from 'react-icons/fa';
 import FlareCard from '../components/flares/FlareCard';
 
 type FlareType = {
-    id: number;
-    name: string;
-    type: string | void;
-    icon: string;
-    achievement: string;
-    milestone: string;
-    description: string;
-    value: number;
-  };
+  id: number;
+  name: string;
+  type: string | void;
+  icon: string;
+  achievement: string;
+  milestone: string;
+  description: string;
+  value: number;
+};
 type FlareArr = FlareType[];
 function AccountSettings() {
   const { user, getUser } = useContext(UserContext);
@@ -97,14 +97,15 @@ function AccountSettings() {
   // Get the user's flares
   const getFlares = () => {
     const { id } = user;
-    axios.get(`/api/flare/${id}`)
-    .then(({ data }) => {
+    axios
+      .get(`/api/flare/${id}`)
+      .then(({ data }) => {
         setUserFlares(data);
-    })
-    .catch((err) => {
+      })
+      .catch((err) => {
         console.error('Error GETing user flares on AccountSettings: ', err);
-    })
-  }
+      });
+  };
 
   useEffect(() => {
     getInterests();
@@ -200,14 +201,20 @@ function AccountSettings() {
                 </Toggle>
               ))}
             </div>
-            <div className="text-xl my-2 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
-              Your Flares
-            </div>
-            <div className="my-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4  text-left">
-                {userFlares.map((flare, index) => {
-                    return <FlareCard key={flare.id} flare={flare} index={index}/>
-                })}
-            </div>
+            {!isEditing && (
+              <>
+                <div className="text-xl my-2 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+                  Your Flares
+                </div>
+                <div className="my-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4  text-left">
+                  {userFlares.map((flare, index) => {
+                    return (
+                      <FlareCard key={flare.id} flare={flare} index={index} />
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </div>
 
           {isEditing && (
