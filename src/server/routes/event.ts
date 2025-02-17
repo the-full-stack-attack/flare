@@ -219,6 +219,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 }
             );
             fsqData = await response.json();
+            console.log('LOOK HERE: ', fsqData);
         }
 
         // check if venue has google place id and it is not null or an empty string
