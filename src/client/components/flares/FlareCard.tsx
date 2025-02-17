@@ -23,7 +23,7 @@ function FlareCard({ flare, index }: FlareCardType) {
   <div className="backdrop-blur-lg rounded-xl p-6 border', 'bg-white/10 border-yellow-500/30">
     <div>
       <img className="rounded-full" src={flare.icon} />
-      <h3 className="font-bold my-2 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">{flare.name}</h3>
+      <h3 className="font-bold my-2 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent text-center">{flare.name}</h3>
     </div>
     <p className="text-gray-400 text-sm">{flare.description}</p>
   </div>
