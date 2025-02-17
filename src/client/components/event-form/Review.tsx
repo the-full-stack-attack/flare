@@ -121,7 +121,7 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                         <p className="text-gray-400">Google Place ID:</p>
                         <p className="text-white">{formInfo.google_place_id || 'null'}</p>
                     </div>
-                    
+
                 </div>
 
                 <Separator className="border-orange-500/20"/>
