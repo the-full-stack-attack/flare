@@ -1,13 +1,19 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+
 type Category = {
   name: string;
   id: number;
 };
 
+type ChangeEvent = React.ChangeEvent<HTMLInputElement>;
+
 function CategoryFilter() {
   const [catList, setCatList] = useState<Category[]>([]);
+
+  const [selectedCats, setSelectedCats] = useState<string[]>([]);
 
   const [changeCatFilter, setChangeCatFilter] = useState<boolean>(false);
 
@@ -21,6 +27,17 @@ function CategoryFilter() {
       });
   }, []);
 
+  const handleCheckboxChange = ({ target }: ChangeEvent) => {
+    const catName = target.value;
+    const isChecked = target.checked;
+
+    if (isChecked) {
+      setSelectedCats([...selectedCats, catName]);
+    } else {
+      setSelectedCats(selectedCats.filter((cat) => cat !== catName));
+    }
+  }
+
   useEffect(() => {
     getCategories();
   }, []);
@@ -32,7 +49,17 @@ function CategoryFilter() {
       </p>
       {
         catList.map((cat) => (
-          <div className="text-gray-200">{cat.name}</div>
+          <div key={cat.id}>
+            <label className="text-gray-200">
+              <input
+                type="checkbox"
+                value={cat.name}
+                checked={selectedCats.includes(cat.name)}
+                onChange={handleCheckboxChange}
+              />
+              {` ${cat.name}`}
+            </label>
+          </div>
         ))
       }
     </div>
