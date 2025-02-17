@@ -134,7 +134,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
   console.log()
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 mt-4">
       <p className="text-gray-200">
         Upcoming Events from
         <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
