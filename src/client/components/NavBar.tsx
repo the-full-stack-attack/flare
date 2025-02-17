@@ -28,7 +28,7 @@ export const NavBar = () => {
     { title: 'Events', url: '/Events', icon: FaCalendarAlt },
     { title: 'Create Event', url: '/CreateEvents', icon: FaCalendarPlus },
     { title: 'Tasks', url: '/Task', icon: FaTasks },
-    { title: 'AI', url: '/AiConversations', icon: FaRobot },
+    { title: 'AI Social Coach', url: '/AiConversations', icon: FaRobot },
     {
       title: `Notifications${user.Notifications.length ? ` (${user.Notifications.length})` : ''}`,
       url: '/Notifications',
