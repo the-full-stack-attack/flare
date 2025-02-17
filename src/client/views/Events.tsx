@@ -78,6 +78,8 @@ function Events() {
     state: '',
   });
 
+  const [catFilter, setCatFilter] = useState<string[] | null>(null);
+
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
 
@@ -127,6 +129,7 @@ function Events() {
       .get('/api/event', {
         params: {
           locationFilter,
+          catFilter,
           now: Date.now(),
         },
       })
@@ -142,7 +145,11 @@ function Events() {
 
   const handleSetLocationFilter = (loc: Location) => {
     setLocationFilter(loc);
-  }
+  };
+
+  const handleSetCatFilter = (cats: string[]) => {
+    setCatFilter(cats);
+  };
 
   useEffect(() => {
     getEvents();
@@ -162,7 +169,10 @@ function Events() {
               locationFilter={locationFilter}
               handleSetLocationFilter={handleSetLocationFilter}
             />
-            <CategoryFilter />
+            <CategoryFilter
+              catFilter={catFilter}
+              handleSetCatFilter={handleSetCatFilter}
+            />
           </div>
           <div className="lg:col-span-5 md:col-span-3">
             <TabGroup
