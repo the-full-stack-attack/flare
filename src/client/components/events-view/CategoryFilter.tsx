@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 
+import { toast } from 'sonner';
+
 import { Button } from '@/components/ui/button';
 
 type Category = {
@@ -50,7 +52,14 @@ function CategoryFilter({ catFilter, handleSetCatFilter }: CategoryFilterProps) 
   };
 
   const handleSetCatFilterClick = () => {
+    selectedCats.length === 0 ? toast('Category filter cleared.') : toast('Set category filter.');
     handleSetCatFilter(selectedCats);
+    setChangeCatFilter(false);
+  };
+
+  const handleClearCatFilter = () => {
+    toast('Category filter cleared.');
+    handleSetCatFilter([]);
     setChangeCatFilter(false);
   };
 
@@ -59,11 +68,7 @@ function CategoryFilter({ catFilter, handleSetCatFilter }: CategoryFilterProps) 
   }, []);
 
   useEffect(() => {
-    if (catFilter === null) {
-      setSelectedCats([]);
-    } else {
-      setSelectedCats(catFilter);
-    }
+    setSelectedCats(catFilter);
   }, [catFilter]);
 
   return (
@@ -80,13 +85,22 @@ function CategoryFilter({ catFilter, handleSetCatFilter }: CategoryFilterProps) 
               </Button>
             </div>
             <div>
-              <Button
-                className={buttonColor}
-                onClick={handleChangeCatFilterForm}
-              >
-                Cancel
-              </Button>
-
+              { catFilter.length === 0 ? (
+                  <Button
+                    className={buttonColor}
+                    onClick={handleChangeCatFilterForm}
+                  >
+                    Cancel
+                  </Button>
+                ) : (
+                  <Button
+                    className={buttonColor}
+                    onClick={handleClearCatFilter}
+                  >
+                    Clear
+                  </Button>
+                )
+              }
             </div>
           </div>
         ) : (
