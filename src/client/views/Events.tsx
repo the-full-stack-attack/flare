@@ -3,10 +3,6 @@ import axios from 'axios';
 
 import { UserContext } from '../contexts/UserContext';
 
-import { Button } from '../../components/ui/button';
-
-import { Input } from '../../components/ui/input';
-
 import { Toaster } from 'sonner';
 
 import {
@@ -78,7 +74,7 @@ function Events() {
     state: '',
   });
 
-  const [catFilter, setCatFilter] = useState<string[] | null>(null);
+  const [catFilter, setCatFilter] = useState<string[]>([]);
 
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
@@ -157,7 +153,7 @@ function Events() {
 
   useEffect(() => {
     getEvents();
-  }, [locationFilter]);
+  }, [locationFilter, catFilter]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
