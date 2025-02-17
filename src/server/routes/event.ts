@@ -197,7 +197,7 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
 
 eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
     let fsqData;
-    let googlePlaceId;
+    let googlePlaceId = null;
     let gData: GoogleData[] = [];
     try {
         // get fsqId needed to make api request
@@ -240,15 +240,22 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         if (!hasGoogleId) {
 
             // verify we have necessary fsqData to build our query string
-            if (fsqData.name && fsqData.location.formatted_address) {
-                // format our api query
-                const query = `"${fsqData.name}" "${fsqData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
-                // send request to google text search api to get google place id
-                googlePlaceId = await getGooglePlaceId(query);
-                // scrape google my business page for google place id using Apify's SDK
-                gData = await runApifyActor(googlePlaceId) as GoogleData[]; //! response time varies from 5-20 seconds
+            if (fsqData?.name && fsqData?.location?.formatted_address) {
+
+                try {
+                    // format our api query
+                    const query = `"${fsqData.name}" "${fsqData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
+                    // send request to google text search api to get google place id
+                    googlePlaceId = await getGooglePlaceId(query);
+                    if (googlePlaceId) {
+                        // scrape google my business page for google place id using Apify's SDK
+                        gData = await runApifyActor(googlePlaceId) as GoogleData[]; //! response time varies from 5-20 seconds
+                    }
+                } catch (error) {
+                    console.error('Error getting Google Place Data: ', error);
+                }
             } else {
-                console.error('Error building Google Text Search query string');
+                console.warn('Insufficient data for Google Text Search query string');
             }
         }
 
