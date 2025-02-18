@@ -9,16 +9,42 @@ import { Input } from '@/components/ui/input';
 import { Check, X, Pencil } from 'lucide-react';
 function Review({formInfo, nullFields, handleFieldChange}) {
     const [editingFields, setEditingFields] = useState<Record<string, boolean>>({});
+    const [tempValues, setTempValues] = useState<Record<string, any>>({});
 
-    const toggleEdit = (fieldName: string) => {
+    const toggleEdit = (fieldName: string, save: boolean = false) => {
+        if (save) {
+            handleFieldChange(fieldName, tempValues[fieldName]);
+        } else {
+            setTempValues(prev => ({
+                ...prev,
+                [fieldName]: formInfo[fieldName]
+            }));
+        }
+
         setEditingFields(prev => ({
             ...prev,
             [fieldName]: !prev[fieldName]
         }));
     };
 
+    const handleTempChange = (fieldName: string, value: any) => {
+        setTempValues(prev => ({
+            ...prev,
+            [fieldName]: value
+        }));
+    };
+
     const EditableField = ({ label, value, fieldName, type = 'text' }) => {
-        const isEditing = editingFields[fieldName] || nullFields?.[fieldName] === null;
+        const isEditing = editingFields[fieldName];
+
+        React.useEffect(() => {
+            if (isEditing && tempValues[fieldName] === undefined) {
+                setTempValues(prev => ({
+                    ...prev,
+                    [fieldName]: value
+                }));
+            }
+        }, [isEditing]);
 
         return (
             <>
@@ -28,28 +54,28 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                         <div className="flex gap-2 items-start">
                             {type === 'textarea' ? (
                                 <Textarea
-                                    value={value || ''}
-                                    onChange={(e) => handleFieldChange(fieldName, e.target.value)}
+                                    value={tempValues[fieldName] ?? value ?? ''}
+                                    onChange={(e) => handleTempChange(fieldName, e.target.value)}
                                     className="flex-1 bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white"
                                     autoFocus
                                 />
                             ) : (
                                 <Input
-                                    value={value || ''}
-                                    onChange={(e) => handleFieldChange(fieldName, e.target.value)}
+                                    value={tempValues[fieldName] ?? value ?? ''}
+                                    onChange={(e) => handleTempChange(fieldName, e.target.value)}
                                     className="flex-1 bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white"
                                     autoFocus
                                 />
                             )}
                             <div className="flex gap-1">
                                 <button
-                                    onClick={() => toggleEdit(fieldName)}
+                                    onClick={() => toggleEdit(fieldName, false)}
                                     className="p-2 hover:bg-orange-500/20 rounded-md"
                                 >
                                     <X className="w-5 h-5 text-gray-400 hover:text-white" />
                                 </button>
                                 <button
-                                    onClick={() => toggleEdit(fieldName)}
+                                    onClick={() => toggleEdit(fieldName, true)}
                                     className="p-2 hover:bg-orange-500/20 rounded-md"
                                 >
                                     <Check className="w-5 h-5 text-orange-500 hover:text-orange-400" />
@@ -98,18 +124,34 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                         Event Information
                     </h3>
                     <div className="grid grid-cols-2 gap-4">
-                        <p className="text-gray-400">Title:</p>
-                        <p className="text-white">{formInfo.title}</p>
-                        <p className="text-gray-400">Description:</p>
-                        <p className="text-white">{formInfo.description}</p>
-                        <p className="text-gray-400">Category:</p>
-                        <p className="text-white">{formInfo.category}</p>
+                        <EditableField
+                            label="Title"
+                            value={formInfo.title}
+                            fieldName="title"
+                        />
+
+                        <EditableField
+                            label="Description"
+                            value={formInfo.description}
+                            fieldName="description"
+                            type="textarea"
+                        />
+
+                        <EditableField
+                            label="Category"
+                            value={formInfo.category}
+                            fieldName="category"
+                        />
+
                         <p className="text-gray-400">Interests:</p>
                         <p className="text-white">{formInfo.interests.join(', ')}</p>
+
                         <p className="text-gray-400">Start Date:</p>
                         <p className="text-white">{dayjs(formInfo.startDate).format("MMM D, YYYY")}</p>
+
                         <p className="text-gray-400">Start Time:</p>
                         <p className="text-white">{dayjs(`2024-01-01T${formInfo.startTime}`).format("h:mm A")}</p>
+
                         <p className="text-gray-400">End Time:</p>
                         <p className="text-white">{dayjs(`2024-01-01T${formInfo.endTime}`).format("h:mm A")}</p>
                     </div>
@@ -147,8 +189,8 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                             {editingFields.wheelchair_accessible ? (
                                 <div className="flex gap-2 items-center">
                                     <Select
-                                        value={formInfo.wheelchair_accessible === null ? "unknown" : formInfo.wheelchair_accessible ? "1" : "0"}
-                                        onValueChange={(value) => handleFieldChange('wheelchair_accessible', value === "unknown" ? null : value === "1")}
+                                        value={tempValues.wheelchair_accessible === null ? "unknown" : tempValues.wheelchair_accessible ? "1" : "0"}
+                                        onValueChange={(value) => handleTempChange('wheelchair_accessible', value === "unknown" ? null : value === "1")}
                                         className="flex-1"
                                     >
                                         <SelectTrigger
@@ -166,13 +208,13 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                                     </Select>
                                     <div className="flex gap-1">
                                         <button
-                                            onClick={() => toggleEdit('wheelchair_accessible')}
+                                            onClick={() => toggleEdit('wheelchair_accessible', false)}
                                             className="p-2 hover:bg-orange-500/20 rounded-md"
                                         >
                                             <X className="w-5 h-5 text-gray-400 hover:text-white"/>
                                         </button>
                                         <button
-                                            onClick={() => toggleEdit('wheelchair_accessible')}
+                                            onClick={() => toggleEdit('wheelchair_accessible', true)}
                                             className="p-2 hover:bg-orange-500/20 rounded-md"
                                         >
                                             <Check className="w-5 h-5 text-orange-500 hover:text-orange-400"/>
@@ -211,8 +253,8 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                             {editingFields.serves_alcohol ? (
                                 <div className="flex gap-2 items-center">
                                     <Select
-                                        value={formInfo.serves_alcohol === null ? "unknown" : formInfo.serves_alcohol ? "1" : "0"}
-                                        onValueChange={(value) => handleFieldChange('serves_alcohol', value === "unknown" ? null : value === "1")}
+                                        value={tempValues.serves_alcohol === null ? "unknown" : tempValues.serves_alcohol ? "1" : "0"}
+                                        onValueChange={(value) => handleTempChange('serves_alcohol', value === "unknown" ? null : value === "1")}
                                         className="flex-1"
                                     >
                                         <SelectTrigger
@@ -259,7 +301,7 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                                                             : 'No'}
                                                 </p>
                                                 <Pencil
-                                                    className="w-5 h-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"/>
+                                                    className="w-5 h-5 text-oraspotifynge-500 opacity-0 group-hover:opacity-100 transition-opacity"/>
                                             </div>
                                         </TooltipTrigger>
                                         <TooltipContent>
