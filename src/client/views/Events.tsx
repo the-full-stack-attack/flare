@@ -156,6 +156,10 @@ function Events() {
     setCatFilter(cats);
   };
 
+  const handleSetInterestsFilter = (ints: string[]) => {
+    setInterestsFilter(ints);
+  };
+
   useEffect(() => {
     getEvents();
   }, []);
@@ -178,7 +182,10 @@ function Events() {
               catFilter={catFilter}
               handleSetCatFilter={handleSetCatFilter}
             />
-            <InterestsFilter />
+            <InterestsFilter
+              interestsFilter={interestsFilter}
+              handleSetInterestsFilter={handleSetInterestsFilter}
+            />
           </div>
           <div className="lg:col-span-5 md:col-span-3">
             <TabGroup
