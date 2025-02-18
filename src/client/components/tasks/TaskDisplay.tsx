@@ -99,7 +99,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
             {user.current_task_id && (
               <div className="flex gap-3">
                 <Dialog>
-                  <DialogTrigger>
+                  <DialogTrigger asChild>
                     <button
                       onClick={completeTask}
                       className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium 
@@ -110,6 +110,10 @@ function TaskDisplay({ task }: TaskDisplayProps) {
                       Complete
                     </button>
                   </DialogTrigger>
+                  <DialogContent>
+                    <DialogTitle>YOU DID IT</DialogTitle>
+                    <DialogDescription>Some positive text here!</DialogDescription>
+                  </DialogContent>
                 </Dialog>
                 <button
                   onClick={() => setOpenOptOut(true)}
