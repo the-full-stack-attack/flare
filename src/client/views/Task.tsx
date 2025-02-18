@@ -27,24 +27,26 @@ function Task() {
     }
   }, [user]);
   return (
-    <div className="grid grid-cols-3 gap-6 min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden px-10 pt-24 pb-12 text-white">
-      <div className="sm:col-span-3 md:col-span-2">
-        {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
-        <div className="text-2xl font-semibold">Completed Tasks</div>
-        <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60">
-          {user.total_tasks_completed ? (
-            <CompletedTaskList />
-          ) : (
-            <center>You Have Not Completed Any Tasks</center>
-          )}
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden px-10 pt-24 pb-12 text-white">
+      <div className="grid grid-cols-3 gap-6">
+        <div className="sm:col-span-full md:col-span-2">
+          {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
+          <div className="text-2xl font-semibold">Completed Tasks</div>
+          <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60">
+            {user.total_tasks_completed ? (
+              <CompletedTaskList />
+            ) : (
+              <center>You Have Not Completed Any Tasks</center>
+            )}
+          </div>
+          <div className="text-xl font-semibold">Opted Out Tasks</div>
+          <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60">
+            <OptOutList />
+          </div>
         </div>
-        <div className="text-xl font-semibold">Opted Out Tasks</div>
-        <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60">
-          <OptOutList />
+        <div className="sm:col-span-2 md:col-span-1">
+          <TaskSidebar />
         </div>
-      </div>
-      <div className="sm:col-span-1 md:col-span-1">
-        <TaskSidebar />
       </div>
     </div>
   );
