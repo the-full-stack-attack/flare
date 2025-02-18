@@ -6,33 +6,15 @@ import Task from '../models/tasks';
 dotenv.config();
 const { GEMINI_API_KEY } = process.env;
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
-// Helper to parse date strings and convert them to dates using dayjs
-const parseDates = (text: any): dayjs.Dayjs[] => {
-  // Create an array to hold the converted dates
-  const dates: dayjs.Dayjs[] = [];
-  // Clean the dates of unwanted tokens
-  const datesArr = JSON.parse(text.trim().replace(/^```json\s*|```\s*$/g, ''));
-  // Convert each string to a date and push onto dates
-  datesArr.forEach((date: string) => {
-    const newDate = dayjs(date, 'MM/DD/YYYY');
-    dates.push(newDate);
-  });
-  return dates;
-};
-
-const makeDates = () => {
-  const today = new Date();
-  // eslint-disable-next-line prettier/prettier
-  const prompt = `With the first date being ${today}, please provide a JSON array of dates of 3 consecutive dates. Put the dates in ISO string format MM/DD/YY.`;
-  return model
-    .generateContent(prompt)
-    .then((result: any) => parseDates(result.response.text()))
-    .catch((err: any) => {
-      console.error('Error generating dates: ', err);
-    });
-};
+const model = genAI.getGenerativeModel({
+  model: 'gemini-1.5-flash',
+  systemInstruction: `Help me seed a MySQL database with tasks by returning an array of JSON objects. The tasks should require
+  the person to leave their house. The tasks should be non-specific in the sense that anyone should be able to complete it
+  Do not tell the person how to get to the task destination, simply state where to go for the task. Take into consideration
+  the day of the week and that people may have other responsibilities on weekdays. The objects should
+  have the following properties: description is a task for the user to do in order to get out of the house,
+  type is a category of task, difficulty is either 1, 2, 3, 4, or 5, completed_count is 0, and date is a provided date.`
+});
 
 // Helper to parse the GoogleGenerativeAI response
 const parseTasks = (text: any) => {
@@ -48,12 +30,6 @@ const parseTasks = (text: any) => {
 };
 
 const seedTasks = async () => {
-  const dates = await makeDates();
-  // Add conditional logic to make sure dates is an array
-  if (!dates || !Array.isArray(dates)) {
-    console.error('Dates was not an array: ');
-    return;
-  }
   const { count, rows } = await Task.findAndCountAll();
   // Make sure the table isnt empty
   if (count && rows) {
@@ -63,15 +39,12 @@ const seedTasks = async () => {
     await Task.destroy({ where: { type: 'Fun' } });
     await Task.destroy({ where: { type: 'Normal' } });
     await Task.destroy({ where: { type: 'Duo' } });
-    await Task.destroy({ where: { type: 'Rejection Therapy' } });
+    await Task.destroy({ where: { type: 'Rejection' } });
   }
-  dates.forEach((date: any) => {
-    const prompt = `I am seeding a MySQL database and need the tasks formatted as JSON objects. Please return a JSON array that can be parsed into an array of objects. The objects should
-have the following properties: description is a task for the user to do in order to get out of the house,
-type is a category of task, difficulty is either 1, 2, 3, 4, or 5, completed_count is 0, and date is ${date}. The type options are:
-Active, Fun, Normal, Duo, and Rejection. For each type of task, please provide a task for every difficulty level.
-The task should not take more than 60 minutes, but should require the person to leave their house. The tasks should be non specific in the sense that anyone should be able to complete it.
-Take into consideration that most places are not within walking distance for many people. Do not tell people how to reach a destination, just tell them to go to where the task will take place.`;
+  const now = dayjs();
+  const date = now.format('MM/DD/YYYY');
+  const prompt = `Provide me a task for the categories of Active, Fun, Normal, Duo, and Rejection Therapy with the date of ${date}. I need one task for each difficulty 
+  level for every category. For the rejection therapy tasks, the 'type' property should be 'Rejection'.`;
     model
       .generateContent(prompt)
       .then(async (result: any) => {
@@ -87,7 +60,6 @@ Take into consideration that most places are not within walking distance for man
       .catch((err: any) => {
         console.error('Error from gemini: ', err);
       });
-  });
 };
 
 seedTasks();
