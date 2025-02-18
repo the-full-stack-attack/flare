@@ -24,6 +24,7 @@ import {
 import { UserContext } from '../../contexts/UserContext';
 
 import EventDrawerContent from './EventDrawerContent';
+import { nextMonday } from 'date-fns';
 
 type EventProps = {
   event: {
@@ -156,13 +157,15 @@ function Event({ event, getEvents }: EventProps) {
       });
   };
 
-  const handleVenuePicChange = () => {
-    const nextPicIndex = venuePicIndex + 1;
-
-    if (nextPicIndex === venuePics.length) {
-      setVenuePicIndex(0);
-    } else {
-      setVenuePicIndex(nextPicIndex);
+  const handleVenuePicChange = (dir: 'left' | 'right') => {
+    if (dir === 'left') {
+      const nextPicIndex = venuePicIndex - 1;
+      nextPicIndex < 0 ? setVenuePicIndex(venuePics.length - 1) : setVenuePicIndex(nextPicIndex);
+    }
+    
+    else {
+      const nextPicIndex = venuePicIndex + 1;
+      nextPicIndex === venuePics.length ? setVenuePicIndex(0) : setVenuePicIndex(nextPicIndex);
     }
   };
 
@@ -180,14 +183,20 @@ function Event({ event, getEvents }: EventProps) {
                 <img
                   className="h-30 w-30 object-contain cursor-pointer"
                   src={venuePics[venuePicIndex]}
-                  onClick={handleVenuePicChange}
+                  onClick={() => { handleVenuePicChange('right'); }}
                 />
               </div>
               <div className="col-span-6 grid grid-cols-subgrid">
-                <button className="col-start-2 text-left">
+                <button
+                  className="col-start-2 text-left"
+                  onClick={() => { handleVenuePicChange('left'); }}
+                >
                   <FaAngleLeft className="text-gray-200 hover:text-orange-400" />
                 </button>
-                <button className="col-start-5 text-right">
+                <button
+                  className="col-start-5 text-right"
+                  onClick={() => { handleVenuePicChange('right'); }}
+                >
                   <FaAngleRight className="text-gray-200 hover:text-orange-400" />
                 </button>
               </div>
