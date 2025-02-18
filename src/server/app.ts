@@ -17,6 +17,7 @@ const app = express();
 dotenv.config();
 
 app.use(express.static(path.resolve(__dirname, '../../dist')));
+app.use('/favicons', express.static(path.resolve(__dirname, '../../favicons')));
 app.use(express.json());
 
 app.use(
@@ -215,3 +216,4 @@ app.get('*', verifySessionView, (req: any, res: any) => {
 });
 
 export default app;
+
