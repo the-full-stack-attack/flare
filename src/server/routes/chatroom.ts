@@ -29,11 +29,11 @@ chatroomRouter.get('/chatroom/:eventId', (req, res) => {
 
 chatroomRouter.get('/image', (req: any, res) => {
   const userId = req.user.id;
-  console.log(req.user)
-  console.log( userId, ' should be a users id ');
+  // console.log(req.user)
+  // console.log( userId, ' should be a users id ');
  User.findOne({ where: { username: req.user.username } })
  .then((userObj: any) => {
-  console.log(userObj.avatar_uri, ' found avatar')
+  // console.log(userObj.avatar_uri, ' found avatar')
 })
   res.send('aye').status(200);
 })
