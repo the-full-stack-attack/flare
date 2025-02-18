@@ -3,6 +3,8 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { toast } from 'sonner';
 
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+
 import { Button } from '../../../components/ui/button';
 
 import {
@@ -173,12 +175,22 @@ function Event({ event, getEvents }: EventProps) {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 place-content-center">
-            <div>
-              <img
-                className="h-30 w-30 object-contain cursor-pointer"
-                src={venuePics[venuePicIndex]}
-                onClick={handleVenuePicChange}
-              />
+            <div className="grid grid-cols-6 place-content-center">
+              <div className="col-span-6 mb-2">
+                <img
+                  className="h-30 w-30 object-contain cursor-pointer"
+                  src={venuePics[venuePicIndex]}
+                  onClick={handleVenuePicChange}
+                />
+              </div>
+              <div className="col-span-6 grid grid-cols-subgrid">
+                <button className="col-start-2 text-left">
+                  <FaAngleLeft className="text-gray-200 hover:text-orange-400" />
+                </button>
+                <button className="col-start-5 text-right">
+                  <FaAngleRight className="text-gray-200 hover:text-orange-400" />
+                </button>
+              </div>
             </div>
             <div>
               <Drawer>
