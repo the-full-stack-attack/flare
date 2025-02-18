@@ -2,14 +2,22 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { UserType } from '../../contexts/UserContext';
 
 interface UserMenuProps {
   isOpen: boolean;
   onClose: () => void;
-  avatarUrl: string;
+  onLogout: () => void;
+  user: UserType;
 }
 
-export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose, avatarUrl }) => {
+export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose, onLogout, user }) => {
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onLogout();
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -28,14 +36,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({ isOpen, onClose, avatarUrl }
               <FaCog className="mr-2" />
               Settings
             </Link>
-            <Link
-              to="/logout"
-              className="flex items-center px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10"
-              onClick={onClose}
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10"
             >
               <FaSignOutAlt className="mr-2" />
               Logout
-            </Link>
+            </button>
           </div>
         </motion.div>
       )}

@@ -13,9 +13,13 @@ import { UserContext } from '../contexts/UserContext';
 import { Logo } from './Logo';
 import { NotificationBell } from './NavBar/NotificationBell';
 import { UserMenu } from './NavBar/UserMenu';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export const NavBar = () => {
   const { user } = useContext(UserContext);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -36,6 +40,16 @@ export const NavBar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Logout error:', error);
+      navigate('/', { replace: true });
+    }
+  };
 
   return (
     <nav
@@ -105,8 +119,8 @@ export const NavBar = () => {
 
           {/* Right side items (Notifications & User Menu) */}
           <div className="flex items-center space-x-4">
-            <NotificationBell count={user.Notifications.length} />
-            
+            <NotificationBell count={user.Notifications?.length || 0} />
+
             <div className="relative">
               <motion.button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -114,17 +128,32 @@ export const NavBar = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <img
-                  src={user.avatar_id ? `/api/avatar/${user.avatar_id}` : '/default-avatar.png'}
-                  alt="User avatar"
-                  className="h-10 w-10 rounded-full object-cover"
-                />
+                {user.avatar_id ? (
+                  <img
+                    src={`/api/avatar/${user.avatar_id}`}
+                    alt="User avatar"
+                    className="h-10 w-10 rounded-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/default-avatar.png';
+                    }}
+                  />
+                ) : (
+                  <div className="h-10 w-10 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                    <span className="text-yellow-500 text-lg">
+                      {user.username?.[0]?.toUpperCase() || '?'}
+                    </span>
+                  </div>
+                )}
               </motion.button>
-              <UserMenu
-                isOpen={userMenuOpen}
-                onClose={() => setUserMenuOpen(false)}
-                avatarUrl={user.avatar_id ? `/api/avatar/${user.avatar_id}` : '/default-avatar.png'}
-              />
+
+              {userMenuOpen && (
+                <UserMenu
+                  isOpen={userMenuOpen}
+                  onClose={() => setUserMenuOpen(false)}
+                  onLogout={handleLogout}
+                  user={user}
+                />
+              )}
             </div>
           </div>
         </div>
