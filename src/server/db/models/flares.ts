@@ -7,8 +7,9 @@ const Flare = database.define('Flare', {
   icon: { type: Sequelize.STRING },
   achievement: { type: Sequelize.STRING },
   milestone: { type: Sequelize.INTEGER },
-  description: {type: Sequelize.STRING},
+  description: { type: Sequelize.STRING },
   value: { type: Sequelize.INTEGER, defaultValue: 0 },
+  notification_message: { type: Sequelize.TEXT },
 });
 
 export default Flare;
