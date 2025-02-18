@@ -35,7 +35,8 @@ function ChooseTask() {
   const chooseTask = () => {
     const userId = user.id;
     const copyTask = { ...taskInfo };
-    const formattedDate = taskInfo.date.format('MM/DD/YYYY');
+    // Change the time of the date object to midnight and format
+    const formattedDate = taskInfo.date.startOf('day').format('MM/DD/YYYY');
     copyTask.date = dayjs(formattedDate);
     const config = {
       taskInfo: copyTask,
