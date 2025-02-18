@@ -9,7 +9,7 @@ interface NotificationBellProps {
 
 export const NotificationBell: React.FC<NotificationBellProps> = ({ count }) => {
   return (
-    <Link to="/Notifications" className="relative">
+    <Link to="/notifications" className="relative">
       <motion.div
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
