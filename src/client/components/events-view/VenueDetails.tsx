@@ -83,14 +83,6 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
       <DrawerHeader>
         <DrawerTitle className="text-xl">
           <div className="grid grid-cols-12">
-            <div className="col-span-11 inline">
-              {name}
-              <TTSButton
-                text={venueDetailsTTS}
-                className="ml-2"
-                iconClassName="text-lg text-black hover:text-gray-700"
-              />
-            </div>
             <div>
               <button
                 onClick={closeVenueDetails}
@@ -99,6 +91,14 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
                   className="text-black hover:text-gray-700"
                 />
               </button>
+            </div>
+            <div className="col-span-11 inline text-center">
+              {name}
+              <TTSButton
+                text={venueDetailsTTS}
+                className="ml-2"
+                iconClassName="text-lg text-black hover:text-gray-700"
+              />
             </div>
           </div>
         </DrawerTitle>
