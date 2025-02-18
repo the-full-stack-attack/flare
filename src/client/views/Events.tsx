@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import axios from 'axios';
 
 import { UserContext } from '../contexts/UserContext';
@@ -68,7 +68,7 @@ type EventData = {
 };
 
 function Events() {
-  // const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const [locationFilter, setLocationFilter] = useState<Location>({
     city: '',
@@ -77,7 +77,12 @@ function Events() {
 
   const [catFilter, setCatFilter] = useState<string[]>([]);
 
-  const [interestsFilter, setInterestsFilter] = useState<string[] | null>(null);
+  
+  const userInterests = useMemo((): string[] => (
+    user.Interests.map((interest: any) => interest.name)
+  ), [user]);
+
+  const [interestsFilter, setInterestsFilter] = useState<string[] | null>(userInterests || null);
 
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
