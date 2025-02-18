@@ -23,88 +23,57 @@ event2Router.get('/', (req: any, res: Response) => {
   if (req.query.now) {
     now = req.query.now;
   }
-  // Query DB for all event objects & send them back to the user
+
+  const whereFilter: any = {
+    start_time: { [Op.gt]: new Date(+now) },
+  };
+
   if (city && state) {
-    Event.findAll({
-      where: {
-        start_time: { [Op.gt]: new Date(+now) },
-        '$Venue.city_name$': city,
-        '$Venue.state_name$': state,
-      },
-      include: [
-        {
-          model: User,
-        },
-        {
-          model: Venue,
-          include: [
-            {
-              model: Venue_Tag,
-            },
-            {
-              model: Venue_Image,
-            },
-          ],
-        },
-        {
-          association: 'Category',
-        },
-        {
-          association: 'Interests',
-        },
-        {
-          association: 'Users',
-        },
-      ],
-    })
-      .then((events: object[]) => {
-        res.status(200);
-        res.send(events);
-      })
-      .catch((err: Error) => {
-        console.error('Failed to GET /events:', err);
-        res.sendStatus(500);
-      });
-  } else {
-    Event.findAll({
-      where: {
-        start_time: { [Op.gt]: new Date(+now) },
-      },
-      include: [
-        {
-          model: User,
-        },
-        {
-          model: Venue,
-          include: [
-            {
-              model: Venue_Tag,
-            },
-            {
-              model: Venue_Image,
-            },
-          ],
-        },
-        {
-          association: 'Category',
-        },
-        {
-          association: 'Interests',
-        },
-        {
-          association: 'Users',
-        },
-      ],
-    })
-      .then((events: object[]) => {
-        res.status(200);
-        res.send(events);
-      })
-      .catch((err: Error) => {
-        console.error('Failed to GET /events:', err);
-        res.sendStatus(500);
-      });
+    whereFilter['$Venue.city_name$'] = city;
+    whereFilter['$Venue.state_name$'] = state;
   }
+
+  if (req.query.catFilter) {
+    whereFilter['$Category.name$'] = { [Op.or]: req.query.catFilter };
+  }
+
+  // Query DB for all event objects & send them back to the user
+  Event.findAll({
+    where: whereFilter,
+    include: [
+      {
+        model: User,
+      },
+      {
+        model: Venue,
+        include: [
+          {
+            model: Venue_Tag,
+          },
+          {
+            model: Venue_Image,
+          },
+        ],
+      },
+      {
+        association: 'Category',
+      },
+      {
+        association: 'Interests',
+      },
+      {
+        association: 'Users',
+      },
+    ],
+  })
+    .then((events: object[]) => {
+      res.status(200);
+      res.send(events);
+    })
+    .catch((err: Error) => {
+      console.error('Failed to GET /events:', err);
+      res.sendStatus(500);
+    });
 });
 
 /*
