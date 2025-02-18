@@ -134,7 +134,7 @@ function Events() {
         params: {
           locationFilter,
           catFilter,
-          interestsFilter,
+          interestsFilter: interestsFilter.length > 0 ? interestsFilter : null,
           now: Date.now(),
         },
       })
