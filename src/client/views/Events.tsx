@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 
+import { FaCalendarPlus } from 'react-icons/fa';
+
 import { UserContext } from '../contexts/UserContext';
 
 import { Toaster } from 'sonner';
@@ -183,7 +185,7 @@ function Events() {
               className={buttonColor + 'mx-auto mx-4 mt-4 text-white'}
               onClick={() => { navigate('/createevents'); }}
             >
-              + Host an Event
+              {<FaCalendarPlus />} Host an Event
             </Button>
             <LocationFilter
               locationFilter={locationFilter}
