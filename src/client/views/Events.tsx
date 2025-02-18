@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import axios from 'axios';
 
 import { UserContext } from '../contexts/UserContext';
@@ -17,6 +17,7 @@ import { BackgroundGlow } from '@/components/ui/background-glow';
 
 import LocationFilter from '../components/events-view/LocationFilter';
 import CategoryFilter from '../components/events-view/CategoryFilter';
+import InterestsFilter from '../components/events-view/InterestsFilter';
 
 import EventsList from '../components/events-view/EventsList';
 
@@ -67,7 +68,7 @@ type EventData = {
 };
 
 function Events() {
-  // const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const [locationFilter, setLocationFilter] = useState<Location>({
     city: '',
@@ -75,6 +76,13 @@ function Events() {
   });
 
   const [catFilter, setCatFilter] = useState<string[]>([]);
+
+  
+  const userInterests = useMemo((): string[] => (
+    user.Interests.map((interest: any) => interest.name)
+  ), [user]);
+
+  const [interestsFilter, setInterestsFilter] = useState<string[]>(userInterests);
 
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
@@ -126,6 +134,7 @@ function Events() {
         params: {
           locationFilter,
           catFilter,
+          interestsFilter: interestsFilter.length > 0 ? interestsFilter : null,
           now: Date.now(),
         },
       })
@@ -147,13 +156,17 @@ function Events() {
     setCatFilter(cats);
   };
 
+  const handleSetInterestsFilter = (ints: string[]) => {
+    setInterestsFilter(ints);
+  };
+
   useEffect(() => {
     getEvents();
   }, []);
 
   useEffect(() => {
     getEvents();
-  }, [locationFilter, catFilter]);
+  }, [locationFilter, catFilter, interestsFilter]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
@@ -168,6 +181,10 @@ function Events() {
             <CategoryFilter
               catFilter={catFilter}
               handleSetCatFilter={handleSetCatFilter}
+            />
+            <InterestsFilter
+              interestsFilter={interestsFilter}
+              handleSetInterestsFilter={handleSetInterestsFilter}
             />
           </div>
           <div className="lg:col-span-5 md:col-span-3">
