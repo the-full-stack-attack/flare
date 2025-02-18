@@ -15,6 +15,8 @@ import { NotificationBell } from './NavBar/NotificationBell';
 import { UserMenu } from './NavBar/UserMenu';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { createAvatar } from '@dicebear/core';
+import { adventurer } from '@dicebear/collection';
 
 export const NavBar = () => {
   const { user } = useContext(UserContext);
@@ -50,6 +52,40 @@ export const NavBar = () => {
       navigate('/', { replace: true });
     }
   };
+
+  const generateAvatar = (avatarConfig) => {
+    try {
+      const avatar = createAvatar(adventurer, avatarConfig);
+      return avatar.toDataUriSync();
+    } catch (error) {
+      console.error('Error generating avatar:', error);
+      return null;
+    }
+  };
+
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user?.User_Avatar) {
+      try {
+        const avatar = createAvatar(adventurer, {
+          seed: 'Felix',
+          skinColor: [user.User_Avatar.skin],
+          hair: [user.User_Avatar.hair],
+          hairColor: [user.User_Avatar.hair_color],
+          eyebrows: [user.User_Avatar.eyebrows],
+          eyes: [user.User_Avatar.eyes],
+          mouth: [user.User_Avatar.mouth],
+        });
+        setAvatarUrl(avatar.toDataUriSync());
+      } catch (error) {
+        console.error('Error generating avatar:', error);
+        setAvatarUrl(user.avatar_uri || null);
+      }
+    } else if (user?.avatar_uri) {
+      setAvatarUrl(user.avatar_uri);
+    }
+  }, [user]);
 
   return (
     <nav
@@ -128,9 +164,9 @@ export const NavBar = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {user.avatar_id ? (
+                {avatarUrl ? (
                   <img
-                    src={`/api/avatar/${user.avatar_id}`}
+                    src={avatarUrl}
                     alt="User avatar"
                     className="h-10 w-10 rounded-full object-cover"
                     onError={(e) => {
