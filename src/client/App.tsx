@@ -20,8 +20,10 @@ import { NavBar } from './components/NavBar';
 import '../styles/main.css';
 
 import { UserType, UserContext } from './contexts/UserContext';
+import { AuthProvider } from './contexts/AuthContext';
 
 import { BackgroundGlow } from '@/components/ui/background-glow';
+import { Logout } from './components/auth/Logout';
 
 export default function App() {
   const [user, setUser] = useState<UserType>({
@@ -76,31 +78,33 @@ export default function App() {
   }
 
   return (
-    <UserContext.Provider value={userState}>
-      <BrowserRouter>
-        {isAuthenticated && <NavBar />}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="Signup" element={<Signup />} />
+    <AuthProvider>
+      <UserContext.Provider value={userState}>
+        <BrowserRouter>
+          {isAuthenticated && <NavBar />}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="Signup" element={<Signup />} />
+            <Route path="logout" element={<Logout />} />
 
-          {/* Protected Routes */}
-          {isAuthenticated ? (
-            <>
-              <Route path="AiConversations" element={<AiConversations />} />
-              <Route path="/Chatroom/*" element={<Chatroom />} />
-              <Route path="CreateEvents" element={<CreateEvents />} />
-              <Route path="Events" element={<Events />} />
-              <Route path="Task" element={<Task />} />
-              <Route path="Notifications" element={<Notifications />} />
-              <Route path="Dashboard" element={<Dashboard />} />
-              <Route path='Settings' element={<AccountSettings />} />
-            </>
-          ) : (
-            // Redirect to home if trying to access protected routes while not authenticated
-            <Route path="*" element={<Navigate to="/" />} />
-          )}
-        </Routes>
-      </BrowserRouter>
-    </UserContext.Provider>
+            {/* Protected Routes */}
+            {isAuthenticated ? (
+              <>
+                <Route path="AiConversations" element={<AiConversations />} />
+                <Route path="/Chatroom/*" element={<Chatroom />} />
+                <Route path="CreateEvents" element={<CreateEvents />} />
+                <Route path="Events" element={<Events />} />
+                <Route path="Task" element={<Task />} />
+                <Route path="Notifications" element={<Notifications />} />
+                <Route path="Dashboard" element={<Dashboard />} />
+                <Route path='Settings' element={<AccountSettings />} />
+              </>
+            ) : (
+              <Route path="*" element={<Navigate to="/" />} />
+            )}
+          </Routes>
+        </BrowserRouter>
+      </UserContext.Provider>
+    </AuthProvider>
   );
 }
