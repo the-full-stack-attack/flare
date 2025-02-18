@@ -77,6 +77,8 @@ function Events() {
 
   const [catFilter, setCatFilter] = useState<string[]>([]);
 
+  const [interestsFilter, setInterestsFilter] = useState<string[] | null>(null);
+
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
 
@@ -127,6 +129,7 @@ function Events() {
         params: {
           locationFilter,
           catFilter,
+          interestsFilter,
           now: Date.now(),
         },
       })
@@ -154,7 +157,7 @@ function Events() {
 
   useEffect(() => {
     getEvents();
-  }, [locationFilter, catFilter]);
+  }, [locationFilter, catFilter, interestsFilter]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
