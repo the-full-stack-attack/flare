@@ -14,7 +14,7 @@ chatroomRouter.get('/chatroom/:eventId', (req, res) => {
   Chatroom.findOne({
     where: { event_id: pathname },
   }).then((chatroom) => {
-    console.log(chatroom, 'we found it')
+    // console.log(chatroom, 'we found it')
     res.send(chatroom).status(200)
   }).catch((err) =>{
     console.error(err, 'nope')
