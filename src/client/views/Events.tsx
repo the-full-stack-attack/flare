@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
 
 import { UserContext } from '../contexts/UserContext';
 
 import { Toaster } from 'sonner';
+
+import { Button } from '@/components/ui/button';
 
 import {
   Tab,
@@ -68,6 +71,8 @@ type EventData = {
 };
 
 function Events() {
+  const navigate = useNavigate();
+
   const { user } = useContext(UserContext);
 
   const [locationFilter, setLocationFilter] = useState<Location>({
@@ -174,6 +179,12 @@ function Events() {
       <div className="container mx-auto px-4 content-center pt-5">
         <div className="grid grid-cols-1 lg:grid-cols-6 md:grid-cols-4">
           <div>
+            <Button
+              className={buttonColor + 'mx-auto mx-4 mt-4 text-white'}
+              onClick={() => { navigate('/createevents'); }}
+            >
+              + Host an Event
+            </Button>
             <LocationFilter
               locationFilter={locationFilter}
               handleSetLocationFilter={handleSetLocationFilter}
