@@ -42,8 +42,9 @@ const seedTasks = async () => {
     await Task.destroy({ where: { type: 'Rejection' } });
   }
   const now = dayjs();
-  const date = now.format('MM/DD/YYYY');
-  const prompt = `Provide me a task for the categories of Active, Fun, Normal, Duo, and Rejection Therapy with the date of ${date}. I need one task for each difficulty 
+  const dateFormat = now.format('MM/DD/YYYY');
+  const date = dayjs(dateFormat);
+  const prompt = `Provide me a task for the categories of Active, Fun, Normal, Duo, and Rejection Therapy with the date of ${date} as a dayjs object. I need one task for each difficulty
   level for every category. For the rejection therapy tasks, the 'type' property should be 'Rejection'.`;
     model
       .generateContent(prompt)

@@ -60,7 +60,7 @@ const createTasks = () => {
   const day = dayjs().day();
   const today = dayjs().format('MM/DD/YYYY');
   const date = dayjs(today);
-  const prompt = `Provide me new tasks for the categories of Active, Fun, Normal, Duo, and Rejection Therapy with the date of ${date}. I need one task for each difficulty 
+  const prompt = `Provide me new tasks for the categories of Active, Fun, Normal, Duo, and Rejection Therapy with the date of ${date} as a dayjs object. I need one task for each difficulty 
   level for every category. For the rejection therapy tasks, the 'type' property should be 'Rejection'.`;
   chat
     .sendMessage(prompt)
