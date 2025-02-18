@@ -15,12 +15,11 @@ import {
   DialogTitle,
   DialogDescription,
 } from '../../../components/ui/dialog';
-import { Button } from '@headlessui/react';
 import { FaTasks, FaCheckCircle } from 'react-icons/fa';
 
 // Define the props interface
 interface TaskDisplayProps {
-  task: Task | object;
+  task: Task;
 }
 type Task = {
   id: number;
@@ -101,8 +100,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
                 <Dialog>
                   <DialogTrigger asChild>
                     <button
-                      onClick={completeTask}
-                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium 
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
                   hover:from-purple-600 hover:to-pink-600 transition-all duration-300
                   flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
                     >
@@ -110,9 +108,22 @@ function TaskDisplay({ task }: TaskDisplayProps) {
                       Complete
                     </button>
                   </DialogTrigger>
-                  <DialogContent>
-                    <DialogTitle>YOU DID IT</DialogTitle>
-                    <DialogDescription>Some positive text here!</DialogDescription>
+                  <DialogContent
+                    onCloseAutoFocus={completeTask}
+                  >
+                    <DialogTitle>TASK COMPLETE</DialogTitle>
+                    <DialogDescription>
+                      {`Great job completing your task to ${task.description} You've now completed ${user.weekly_task_count + 1} tasks this week!`}
+                    </DialogDescription>
+                    <DialogClose asChild>
+                      <button
+                        onClick={completeTask}
+                        className="px-4 py-2 rounded-lg w-20 text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
+                    hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                      Done
+                      </button>
+                    </DialogClose>
                   </DialogContent>
                 </Dialog>
                 <button
