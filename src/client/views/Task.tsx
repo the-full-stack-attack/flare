@@ -27,7 +27,7 @@ function Task() {
     }
   }, [user]);
   return (
-    <div className="grid grid-cols-3 gap-6 min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12 text-white">
+    <div className="grid grid-cols-3 gap-6 min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden px-10 pt-24 pb-12 text-white">
       <div className="sm:col-span-3 md:col-span-2">
         {user.current_task_id ? <TaskDisplay task={task} /> : <ChooseTask />}
         <div className="text-2xl font-semibold">Completed Tasks</div>

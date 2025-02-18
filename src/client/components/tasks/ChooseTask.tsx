@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import dayjs from 'dayjs';
 import axios from 'axios';
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { Button } from '@headlessui/react';
 import {
   Card,
   CardHeader,
@@ -9,6 +9,7 @@ import {
   CardContent,
   CardFooter,
 } from '../../../components/ui/card';
+import { toast, Toaster } from 'sonner';
 import TypeButton from './TypeButton';
 import DifficultyButton from './DifficultyButton';
 import DialogBox from './DialogBox';
@@ -51,10 +52,25 @@ function ChooseTask() {
       })
       .catch((err) => {
         console.error('Error posting task: ', err);
+        // Check what what the error was
+        if (err.status === 409) {
+          toast.error('You\'ve already attempted that task');
+          setIsOpen(false);
+        } else {
+          toast.error('Task not assigned, try again');
+        }
       });
   };
   return (
     <div>
+      <Toaster
+        position="top-center"
+        theme="dark"
+        toastOptions={{
+          style: { backgroundColor: 'red' },
+          className: 'bg-red-500',
+        }}
+      />
       <DialogBox
         isOpen={isOpen}
         confirm={chooseTask}
