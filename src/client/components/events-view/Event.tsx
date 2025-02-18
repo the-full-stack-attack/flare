@@ -173,15 +173,16 @@ function Event({ event, getEvents }: EventProps) {
     <div key={event.id} className="p-[10px]">
       <Card className="isolate rounded-xl bg-white/10 shadow-lg ring-1 ring-black/5 border-transparent">
         <CardHeader>
-          <CardTitle className="text-xl text-white">{title}</CardTitle>
-          <CardDescription className="text-sm text-gray-200">{`${dayjs(new Date(start_time)).format('MMMM D [--] h:mm A')} - ${dayjs(new Date(end_time)).format('h:mm A')}`}</CardDescription>
+          <CardTitle className="text-xl text-white truncate text-center">{title}</CardTitle>
+          <CardDescription className="text-sm text-gray-200 text-center">{`${dayjs(new Date(start_time)).format('MMMM D')}`}</CardDescription>
+          <CardDescription className="text-sm text-gray-200 text-center">{`${dayjs(new Date(start_time)).format('h:mm A')} - ${dayjs(new Date(end_time)).format('h:mm A')}`}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 place-content-center">
-            <div className="grid grid-cols-6 place-content-center">
+          <div className="grid grid-cols-3 gap-4 place-content-center">
+            <div className="col-span-2 grid grid-cols-6 place-content-center">
               <div className="col-span-6 mb-2">
                 <img
-                  className="h-30 w-30 object-contain cursor-pointer"
+                  className="h-[200px] w-[200px] object-fit cursor-pointer"
                   src={venuePics[venuePicIndex]}
                   onClick={() => { handleVenuePicChange('right'); }}
                 />
@@ -201,7 +202,7 @@ function Event({ event, getEvents }: EventProps) {
                 </button>
               </div>
             </div>
-            <div>
+            <div className="text-center">
               <Drawer>
                 <DrawerTrigger asChild>
                   <Button className={buttonColor}>Details / RSVP</Button>
