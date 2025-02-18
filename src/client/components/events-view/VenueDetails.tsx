@@ -104,7 +104,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
         </DrawerTitle>
         <DrawerDescription className="text-gray-700 text-md">{description}</DrawerDescription>
       </DrawerHeader>
-      <div className="p-4 pb-0">
+      <div className="p-4 pb-0 max-h-[300px] overflow-y-scroll">
         <div className="grid grid-cols-2 gap-2 flex-wrap">
           {/* <div className="col-span-2">
             <b>Address:</b>
