@@ -82,7 +82,7 @@ function Events() {
     user.Interests.map((interest: any) => interest.name)
   ), [user]);
 
-  const [interestsFilter, setInterestsFilter] = useState<string[] | null>(userInterests || null);
+  const [interestsFilter, setInterestsFilter] = useState<string[]>(userInterests);
 
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
