@@ -37,6 +37,9 @@ import axios from 'axios';
 import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' 
 import nightClubTileSet from '../assets/chatroom/tileSet';
 import { ChartNoAxesColumnDecreasing } from 'lucide-react';
+import { createAvatar } from '@dicebear/core';
+import { adventurer } from '@dicebear/collection';
+
 extend({
   Container,
   Graphics,
@@ -75,12 +78,13 @@ const style = new TextStyle({
 });
 
 function Chatroom() {
+  const { user } = useContext(UserContext);
   const location = useLocation();
   const start_time = location.state;
   const [gameLoaded, setGameLoaded] = useState(false);
   // LOAD ASSETS
   // const { assets, successfulLoad } = 
-  const { assets, isSuccess }  = useAssets([
+  const [ arrayForUse, setArrayForUse ] = useState([
     {
       alias: 'bunny',
       src: 'https://pixijs.com/assets/bunny.png',
@@ -197,7 +201,8 @@ function Chatroom() {
     {  alias: '102', src: TILES['102'], }, 
     {  alias: '103', src: TILES['103'], }, 
     {  alias: '104', src: TILES['104'], }, 
-  ]);
+  ])
+  const { assets, isSuccess }  = useAssets(arrayForUse);
 
   // const {
   //   assets: [texture],
@@ -208,7 +213,7 @@ function Chatroom() {
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
   // LOGIC
-  const { user } = useContext(UserContext);
+
   const appRef = useRef(null);
   const [gameRatio, setGameRatio] = useState(window.innerWidth / window.innerHeight)
   const [scaleFactor, setScaleFactor] = useState((gameRatio > 1.5) ? 0.8 : 1)
@@ -220,10 +225,25 @@ function Chatroom() {
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
-  const [avatarImage, setAvatarImage] = useState(null);
+  const [avatarImage, setAvatarImage] = useState<string | null>(user.avatar_uri);
   const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
+  
+    useEffect(() => {
+      console.log(user.avatar_uri, 'attempting to get user avatar')
+setTimeout(() => { 
+      //   assets.push()
+
+     console.log(assets)
+   setArrayForUse((prevItems) => [...prevItems, { alias: 'avatar', src: user.avatar_uri, }])
+  
+    console.log(assets)
+   
+       }, 6000);
+      
+    }, []);
+    
   // QUIPLASH
   const toggleQuiplash = () => {
     // console.log('clicked')
@@ -409,6 +429,7 @@ function Chatroom() {
           width={Math.floor(640)}
           height={Math.floor(360)}
           backgroundColor={' #FFFFFF'}
+          resolution={3}
          >
           {
             mapPack.layers.map((objLay) => (
@@ -471,8 +492,21 @@ function Chatroom() {
                   y={40}
                   style={ styleUserName }
                 />
+                <pixiSprite
+              texture={Assets.get('avatar')}
+              x={0}
+              y={-13}
+              scale={scaleFactor, scaleFactor}
+              width={25}
+              height={25}
+              >
+
+              </pixiSprite>
               </pixiContainer>
             ))} 
+            <pixiContainer>
+              
+            </pixiContainer>
           </Application>
             } 
           </div>

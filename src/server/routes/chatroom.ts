@@ -2,6 +2,8 @@ import { Router } from 'express';
 import Sequelize from 'sequelize';
 import Event from '../db/models/events';
 import Chatroom from '../db/models/chatrooms';
+import User from '../db/models/users';
+
 
 const chatroomRouter = Router();
 
@@ -25,8 +27,14 @@ chatroomRouter.get('/chatroom/:eventId', (req, res) => {
 
 });
 
-chatroomRouter.get('/image', (req, res) => {
-  console.log(req.body);
+chatroomRouter.get('/image', (req: any, res) => {
+  const userId = req.user.id;
+  console.log(req.user)
+  console.log( userId, ' should be a users id ');
+ User.findOne({ where: { username: req.user.username } })
+ .then((userObj: any) => {
+  console.log(userObj.avatar_uri, ' found avatar')
+})
   res.send('aye').status(200);
 })
 export default chatroomRouter;
