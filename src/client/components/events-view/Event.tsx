@@ -3,6 +3,8 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { toast } from 'sonner';
 
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+
 import { Button } from '../../../components/ui/button';
 
 import {
@@ -22,6 +24,7 @@ import {
 import { UserContext } from '../../contexts/UserContext';
 
 import EventDrawerContent from './EventDrawerContent';
+import { nextMonday } from 'date-fns';
 
 type EventProps = {
   event: {
@@ -52,7 +55,7 @@ type EventProps = {
       id: number;
       name: string;
     };
-    Interests?: {
+    Interests: {
       id: number;
       name: string;
     }[];
@@ -154,13 +157,15 @@ function Event({ event, getEvents }: EventProps) {
       });
   };
 
-  const handleVenuePicChange = () => {
-    const nextPicIndex = venuePicIndex + 1;
-
-    if (nextPicIndex === venuePics.length) {
-      setVenuePicIndex(0);
-    } else {
-      setVenuePicIndex(nextPicIndex);
+  const handleVenuePicChange = (dir: 'left' | 'right') => {
+    if (dir === 'left') {
+      const nextPicIndex = venuePicIndex - 1;
+      nextPicIndex < 0 ? setVenuePicIndex(venuePics.length - 1) : setVenuePicIndex(nextPicIndex);
+    }
+    
+    else {
+      const nextPicIndex = venuePicIndex + 1;
+      nextPicIndex === venuePics.length ? setVenuePicIndex(0) : setVenuePicIndex(nextPicIndex);
     }
   };
 
@@ -173,12 +178,28 @@ function Event({ event, getEvents }: EventProps) {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 place-content-center">
-            <div>
-              <img
-                className="h-30 w-30 object-contain cursor-pointer"
-                src={venuePics[venuePicIndex]}
-                onClick={handleVenuePicChange}
-              />
+            <div className="grid grid-cols-6 place-content-center">
+              <div className="col-span-6 mb-2">
+                <img
+                  className="h-30 w-30 object-contain cursor-pointer"
+                  src={venuePics[venuePicIndex]}
+                  onClick={() => { handleVenuePicChange('right'); }}
+                />
+              </div>
+              <div className="col-span-6 grid grid-cols-subgrid">
+                <button
+                  className="col-start-2 text-left"
+                  onClick={() => { handleVenuePicChange('left'); }}
+                >
+                  <FaAngleLeft className="text-gray-200 hover:text-orange-400" />
+                </button>
+                <button
+                  className="col-start-5 text-right"
+                  onClick={() => { handleVenuePicChange('right'); }}
+                >
+                  <FaAngleRight className="text-gray-200 hover:text-orange-400" />
+                </button>
+              </div>
             </div>
             <div>
               <Drawer>

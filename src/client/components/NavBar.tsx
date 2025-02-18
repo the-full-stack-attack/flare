@@ -29,11 +29,10 @@ export const NavBar = () => {
 
   // Navigation items with icons
   const navItems = [
-    { title: 'Dashboard', url: '/Dashboard', icon: FaChartLine },
-    { title: 'Events', url: '/Events', icon: FaCalendarAlt },
-    { title: 'Create Event', url: '/CreateEvents', icon: FaCalendarPlus },
-    { title: 'Tasks', url: '/Task', icon: FaTasks },
-    { title: 'AI Social Coach', url: '/AiConversations', icon: FaRobot },
+    { title: 'Dashboard', url: '/dashboard', icon: FaChartLine },
+    { title: 'Events', url: '/events', icon: FaCalendarAlt },
+    { title: 'Tasks', url: '/task', icon: FaTasks },
+    { title: 'AI Social Coach', url: '/aiconversations', icon: FaRobot },
   ];
 
   useEffect(() => {
@@ -125,7 +124,7 @@ export const NavBar = () => {
             "md:static md:left-0 md:transform-none",
             isOpen ? "hidden" : "flex"
           )}>
-            <Link to="/Dashboard" className="flex items-center">
+            <Link to="/dashboard" className="flex items-center">
              <Logo size="md" animate={true} className="h-8 md:h-10 lg:h-12" />
             </Link>
           </div>

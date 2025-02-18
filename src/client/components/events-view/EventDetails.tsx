@@ -40,7 +40,7 @@ type EventDetailsProps = {
       id: number;
       name: string;
     };
-    Interests?: {
+    Interests: {
       id: number;
       name: string;
     }[];
@@ -128,7 +128,7 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
           {description}
         </DrawerDescription>
       </DrawerHeader>
-      <div className="p-4 pb-0">
+      <div className="p-4 pb-0 max-h-[300px] overflow-y-scroll">
         <div className="grid grid-cols-2 gap-2">
           <div>
             <b>Date:</b>

@@ -184,9 +184,9 @@ app.get('/auth/success', (req: any, res: any) => {
   }
   
   if (req.user.username) {
-    res.redirect('/Dashboard');
+    res.redirect('/dashboard');
   } else {
-    res.redirect('/Signup');
+    res.redirect('/signup');
   }
 });
 

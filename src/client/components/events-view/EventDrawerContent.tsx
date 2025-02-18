@@ -43,7 +43,7 @@ type EventDrawerContentProps = {
       id: number;
       name: string;
     };
-    Interests?: {
+    Interests: {
       id: number;
       name: string;
     }[];
