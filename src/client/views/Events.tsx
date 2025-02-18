@@ -17,6 +17,7 @@ import { BackgroundGlow } from '@/components/ui/background-glow';
 
 import LocationFilter from '../components/events-view/LocationFilter';
 import CategoryFilter from '../components/events-view/CategoryFilter';
+import InterestsFilter from '../components/events-view/InterestsFilter';
 
 import EventsList from '../components/events-view/EventsList';
 
@@ -169,6 +170,7 @@ function Events() {
               catFilter={catFilter}
               handleSetCatFilter={handleSetCatFilter}
             />
+            <InterestsFilter />
           </div>
           <div className="lg:col-span-5 md:col-span-3">
             <TabGroup
