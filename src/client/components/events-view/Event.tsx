@@ -216,13 +216,13 @@ function Event({ event, getEvents }: EventProps) {
               </div>
               <div className="col-span-6 grid grid-cols-subgrid">
                 <button
-                  className="col-start-2 text-left"
+                  className="col-start-2 justify-center"
                   onClick={() => { handleVenuePicChange('left'); }}
                 >
                   <FaAngleLeft className="text-gray-200 hover:text-orange-400" />
                 </button>
                 <button
-                  className="col-start-5 text-right"
+                  className="col-start-5 justify-center"
                   onClick={() => { handleVenuePicChange('right'); }}
                 >
                   <FaAngleRight className="text-gray-200 hover:text-orange-400" />
