@@ -68,12 +68,13 @@ function Home() {
               transition={{ delay: 0.2, duration: 0.5 }}
             >
               <Button
-                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500
+                className="bg-gradient-to-r from-yellow-500/80 via-orange-500/80 to-pink-500/80
                          hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600
-                         text-white px-8 py-4 rounded-xl text-lg"
+                         text-white/90 px-8 py-4 rounded-xl text-lg"
               >
+                <FaGoogle className="mr-2" />
                 <a href="/auth" className="flex items-center">
-                  Sign Up Now
+                  Sign Up or Login with Google
                 </a>
               </Button>
             </motion.div>
@@ -118,7 +119,7 @@ function Home() {
               <span className="text-gray-400">Made with</span>
               <span className="text-red-500 animate-pulse">❤️</span>
               <span className="text-gray-400">by</span>
-              <a 
+              <a
                 href="https://github.com/the-full-stack-attack/flare"
                 target="_blank"
                 rel="noopener noreferrer"

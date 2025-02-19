@@ -24,18 +24,6 @@ export function LandingNav() {
             <Logo size="md" animate={true} className="py-2" />
           </motion.div>
 
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button
-              className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500
-                       hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600
-                       text-white px-6 py-2 rounded-lg"
-            >
-              <Link to="/auth">Log In</Link>
-            </Button>
-          </motion.div>
         </div>
       </div>
     </nav>
