@@ -60,6 +60,8 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
 
+  const reverseNormalDrawerButton = 'bg-gradient-to-r from-pink-900 via-gray-900 to-black hover:from-pink-700 hover:via-gray-700 hover:to-black text-white flex items-center';
+  
   const tags: string = useMemo(() => (
     Venue_Tags
       .sort((a, b) => b.count - a.count)
@@ -138,10 +140,10 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
             website ? (
               <div>
                 <Button
-                  className={normalDrawerButton}
+                  className={reverseNormalDrawerButton + ' ' + 'h-[20px] mt-1'}
                   onClick={() => { openInNewTab(website); }} 
                 >
-                  Check Website
+                  Visit Website
                 </Button>
                 <p>
                   {website.split('/')[2].includes('www.') ? website.split('/')[2].slice(4) : website.split('/')[2]}

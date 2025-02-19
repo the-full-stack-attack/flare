@@ -88,6 +88,8 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
 
+  const reverseNormalDrawerButton = 'bg-gradient-to-r from-pink-900 via-gray-900 to-black hover:from-pink-700 hover:via-gray-700 hover:to-black text-white flex items-center';
+  
   const eventDetailsTTS = useMemo(() => {
     let text = `
       Event Title: ${title}
@@ -162,7 +164,7 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
           </div>
           <div>
             <Button 
-              className={normalDrawerButton}
+              className={reverseNormalDrawerButton}
               onClick={openVenueDetails}
             >
               Venue Details
