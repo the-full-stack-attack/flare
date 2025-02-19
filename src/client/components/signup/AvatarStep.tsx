@@ -323,7 +323,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Skin Color</Label>
-              {openSection === 'skin' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'skin' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-4 gap-2">
@@ -348,7 +351,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Hair Style</Label>
-              {openSection === 'hair' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'hair' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
@@ -373,7 +379,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Hair Color</Label>
-              {openSection === 'hairColor' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'hairColor' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
@@ -401,7 +410,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Eyebrows</Label>
-              {openSection === 'eyebrows' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'eyebrows' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
@@ -429,7 +441,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Eyes</Label>
-              {openSection === 'eyes' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'eyes' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
@@ -454,7 +469,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Mouth</Label>
-              {openSection === 'mouth' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'mouth' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
