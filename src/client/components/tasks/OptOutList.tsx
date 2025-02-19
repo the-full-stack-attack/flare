@@ -82,7 +82,7 @@ function OptOutList() {
         cancelText="Cancel"
         confirmText="Retry"
       />
-      <table className="w-full">
+      <table className="w-full text-white">
         <thead>
           <tr className="border-b-4">
             <th className="text-left">Type</th>
