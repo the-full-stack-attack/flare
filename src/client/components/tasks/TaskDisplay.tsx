@@ -49,7 +49,7 @@ function TaskDisplay({ task, setShowConfetti }: TaskDisplayProps) {
         setShowConfetti(true);
         setTimeout(() => {
           setShowConfetti(false);
-        }, 10000);
+        }, 30000);
       })
       .catch((err) => {
         console.error('Error completing task/user PATCH: ', err);
