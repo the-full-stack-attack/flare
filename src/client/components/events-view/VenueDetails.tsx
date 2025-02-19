@@ -142,11 +142,12 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
               <div>
                 <Button
                   className={reverseNormalDrawerButton + ' ' + 'h-[20px] mt-1'}
-                  onClick={() => { openInNewTab(website); }} 
+                  onClick={() => { openInNewTab(website); }}
+                  title={website}
                 >
                   Visit Website
                 </Button>
-                <p>
+                <p className="truncate">
                   {website.split('/')[2].includes('www.') ? website.split('/')[2].slice(4) : website.split('/')[2]}
                 </p>
               </div>
