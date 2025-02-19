@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { TbCircleLetterAFilled, TbCircleDashedLetterB } from "react-icons/tb";
+
 import { Button } from '../../../components/ui/button';
 
 import {
@@ -86,11 +88,11 @@ function EventDrawerContent({
 
   const { start_time, end_time, Venue, Category, id } = event;
 
-  const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
+  const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white flex items-center';
 
-  const warnDrawerButton = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-800 hover:to-orange-800 text-white';
+  const warnDrawerButton = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-800 hover:to-orange-800 text-white flex items-center';
 
-  const successDrawerButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white'
+  const successDrawerButton = 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-700 hover:to-yellow-800 text-white flex items-center';
 
   const openVenueDetails = () => {
     setShowVenueDetails(true);
@@ -109,7 +111,7 @@ function EventDrawerContent({
       }
       <DrawerFooter>
         {category === 'upcoming' ? (
-          <Button className={successDrawerButton} onClick={postAttendEvent}>Attend</Button>
+          <Button className={successDrawerButton} onClick={postAttendEvent}>Attend {<TbCircleLetterAFilled />}</Button>
         ) : null}
         {category === 'attending' ? (
           <div className="grid grid-cols-2 gap-2">
@@ -120,7 +122,7 @@ function EventDrawerContent({
             </Button>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className={successDrawerButton}>Schedule Text</Button>
+                <Button className={normalDrawerButton}>Schedule Text</Button>
               </DialogTrigger>
               <ScheduleTextDialog
                 eventId={event.id}
@@ -134,12 +136,12 @@ function EventDrawerContent({
         {category === 'attending' ? (
           <Button className={warnDrawerButton} onClick={() => {
             patchAttendingEvent(false);
-          }}>Bail</Button>
+          }}>Bail {<TbCircleDashedLetterB />}</Button>
         ) : null}
         {category === 'bailed' ? (
           <Button className={successDrawerButton} onClick={() => {
             patchAttendingEvent(true);
-          }}>Re-attend</Button>
+          }}>Re-attend {<TbCircleLetterAFilled />}</Button>
         ) : null}
         <DrawerClose asChild>
           <Button className={normalDrawerButton}>Close</Button>

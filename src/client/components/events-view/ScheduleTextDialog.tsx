@@ -148,7 +148,7 @@ function ScheduleTextDialog({
   }, [getText]);
 
   return (
-    <DialogContent className="sm:max-w-[425px] bg-gray-600/80 text-white rounded-xl border-transparent">
+    <DialogContent className="sm:max-w-[425px] bg-black/80 text-white rounded-xl border-transparent">
       <DialogHeader>
         <DialogTitle>Schedule a Check-In Text</DialogTitle>
         <DialogDescription className="text-gray-200">
@@ -223,7 +223,7 @@ function ScheduleTextDialog({
         {newTextMode ? (
           <div className="grid grid-cols-2 gap-2">
             <DialogClose asChild>
-              <Button type="submit" className={successDialogButton} onClick={() => {
+              <Button type="submit" className={normalDialogButton} onClick={() => {
                 postPatchText();
                 updateMode ? toast('Scheduled text has been updated.') : toast('A text message has been scheduled.');
               }}>
