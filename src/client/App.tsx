@@ -17,11 +17,10 @@ import {
   AccountSettings,
 } from './views/index';
 import { NavBar } from './components/NavBar';
+import { LandingNav } from '@/components/ui/landing-nav';
 import '../styles/main.css';
-
 import { UserType, UserContext } from './contexts/UserContext';
 import { AuthProvider } from './contexts/AuthContext';
-
 import { BackgroundGlow } from '@/components/ui/background-glow';
 import { Logout } from './components/auth/Logout';
 
@@ -81,8 +80,15 @@ export default function App() {
     <AuthProvider>
       <UserContext.Provider value={userState}>
         <BrowserRouter>
-          {isAuthenticated && <NavBar />}
+          {/* Conditionally render either NavBar or LandingNav, but never both */}
+          {isAuthenticated ? (
+            <NavBar />
+          ) : (
+            <LandingNav />
+          )}
+
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="Signup" element={<Signup />} />
             <Route path="logout" element={<Logout />} />
