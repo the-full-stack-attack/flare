@@ -41,10 +41,13 @@ function Task() {
           recycle={false}
         />
       )}
-      <div className="flex items-center">
-        <div className="">
-          <TaskSidebar />
+      <div className="flex-col items-center">
+        <div className="inline-flex items-center text-white">
+          Task Counts:
+          <div className="text-md text-white px-2">{`Last week: ${user.last_week_task_count}`}</div>
+          <div className="text-md text-white">{`This week: ${user.weekly_task_count}`}</div>
         </div>
+          <TaskSidebar />
         <div className="">
           {user.current_task_id ? (
             <TaskDisplay task={task} setShowConfetti={setShowConfetti} />

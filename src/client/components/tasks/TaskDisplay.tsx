@@ -73,7 +73,7 @@ function TaskDisplay({ task, setShowConfetti }: TaskDisplayProps) {
       });
   };
   return (
-    <div>
+    <div className="pt-3">
       <DialogBox
         isOpen={openOptOut}
         confirm={optOut}

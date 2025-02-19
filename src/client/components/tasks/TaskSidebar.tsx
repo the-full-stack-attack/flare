@@ -35,9 +35,7 @@ function TaskSidebar() {
       });
   }, [user]);
   return (
-    <div>
-      <div className="text-2xl text-white">{`Last week task count: ${user.last_week_task_count}`}</div>
-      <div className="text-2xl text-white">{`This week task count: ${user.weekly_task_count}`}</div>
+    <div className="grid grid-cols-3">
       {completedTaskFlares.map((taskFlare, index) => {
         return (
           <TaskFlareCard
