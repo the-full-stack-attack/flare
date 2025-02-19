@@ -299,7 +299,7 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
 
   return (
     <div>
-      <CardHeader className="text-center">
+      <CardHeader>
         <CardTitle className="text-xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
           Create Your Avatar
         </CardTitle>
@@ -311,10 +311,13 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
       <CardContent>
         <div className="flex flex-col space-y-4">
           <div className="flex justify-center">
-            <img
-              src={avatarUri}
-              className="w-32 h-32 rounded-full border-2 border-orange-500/30"
-            />
+            <div className="relative w-32 h-32">
+              <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,theme(colors.orange.500/0.2)_0%,theme(colors.pink.500/0.1)_50%,transparent_100%)]" />
+              <img
+                src={avatarUri}
+                className="relative w-full h-full rounded-full border-2 border-orange-500/30"
+              />
+            </div>
           </div>
 
           <Collapsible open={openSection === 'skin'}>
