@@ -118,11 +118,11 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
   return (
     <>
       <DrawerHeader>
-        <DrawerTitle className="text-xl inline text-center">
+        <DrawerTitle className="text-xl flex items-center justify-center">
           {title}
           <TTSButton
             text={eventDetailsTTS}
-            className="ml-2"
+            className="ml-2 pb-1"
             iconClassName="text-lg text-black hover:text-gray-700"
           />
         </DrawerTitle>

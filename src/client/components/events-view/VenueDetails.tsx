@@ -97,20 +97,21 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
       <DrawerHeader>
         <DrawerTitle className="text-xl">
           <div className="grid grid-cols-12">
-            <div>
+            <div className="flex items-center justify-center">
               <button
                 onClick={closeVenueDetails}
+                className="pt-1"
               >
                 <IoArrowBack
                   className="text-black hover:text-gray-700"
                 />
               </button>
             </div>
-            <div className="col-span-11 inline text-center">
+            <div className="col-span-11 flex items-center justify-center">
               {name}
               <TTSButton
                 text={venueDetailsTTS}
-                className="ml-2"
+                className="ml-2 pb-1"
                 iconClassName="text-lg text-black hover:text-gray-700"
               />
             </div>
