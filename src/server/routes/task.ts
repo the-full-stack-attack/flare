@@ -62,8 +62,8 @@ taskRouter.post('/', async (req: any, res: Response) => {
       if (userTask[1] === false) {
         throw new Error('User already attempted task');
       }
-      res.sendStatus(201);
       await user.save();
+      res.sendStatus(201);
     }
   } catch (err: any) {
     console.error('Error in POST to /api/task: ', err);
