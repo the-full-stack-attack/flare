@@ -51,7 +51,7 @@ function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-6xl md:text-7xl font-bold mb-6">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
                   Turn Social Anxiety into Social Energy
                 </span>
@@ -68,13 +68,13 @@ function Home() {
               transition={{ delay: 0.2, duration: 0.5 }}
             >
               <Button
-                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500
+                className="bg-gradient-to-r from-yellow-500/80 via-orange-500/80 to-pink-500/80
                          hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600
-                         text-white px-8 py-4 rounded-xl text-lg"
+                         text-white/90 px-8 py-4 rounded-xl text-lg"
               >
                 <FaGoogle className="mr-2" />
                 <a href="/auth" className="flex items-center">
-                  Start Your Journey
+                  Sign Up or Login with Google
                 </a>
               </Button>
             </motion.div>
@@ -111,18 +111,22 @@ function Home() {
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/10 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between items-center">
-            <div className="text-gray-400">
-              {' '}
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="text-gray-400 mb-4 md:mb-0">
               2024 Flare. All rights reserved.
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-gray-400">Made with</span>
               <span className="text-red-500 animate-pulse">❤️</span>
               <span className="text-gray-400">by</span>
-              <span className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent font-bold">
+              <a
+                href="https://github.com/the-full-stack-attack/flare"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent font-bold hover:opacity-80 transition-opacity"
+              >
                 Full Stack Attack
-              </span>
+              </a>
             </div>
           </div>
         </div>
@@ -132,4 +136,3 @@ function Home() {
 }
 
 export default Home;
-

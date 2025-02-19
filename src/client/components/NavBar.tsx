@@ -21,19 +21,12 @@ import { FaBars, FaTimes } from 'react-icons/fa';
 
 export const NavBar = () => {
   const { user } = useContext(UserContext);
-  const { logout } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-
-  // Navigation items with icons
-  const navItems = [
-    { title: 'Dashboard', url: '/dashboard', icon: FaChartLine },
-    { title: 'Events', url: '/events', icon: FaCalendarAlt },
-    { title: 'Tasks', url: '/task', icon: FaTasks },
-    { title: 'AI Social Coach', url: '/aiconversations', icon: FaRobot },
-  ];
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,28 +35,6 @@ export const NavBar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/', { replace: true });
-    } catch (error) {
-      console.error('Logout error:', error);
-      navigate('/', { replace: true });
-    }
-  };
-
-  const generateAvatar = (avatarConfig) => {
-    try {
-      const avatar = createAvatar(adventurer, avatarConfig);
-      return avatar.toDataUriSync();
-    } catch (error) {
-      console.error('Error generating avatar:', error);
-      return null;
-    }
-  };
-
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.User_Avatar) {
@@ -86,6 +57,27 @@ export const NavBar = () => {
       setAvatarUrl(user.avatar_uri);
     }
   }, [user]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Logout error:', error);
+      navigate('/', { replace: true });
+    }
+  };
+
+  const navItems = [
+    { title: 'Dashboard', url: '/dashboard', icon: FaChartLine },
+    { title: 'Events', url: '/events', icon: FaCalendarAlt },
+    { title: 'Tasks', url: '/task', icon: FaTasks },
+    { title: 'AI Social Coach', url: '/aiconversations', icon: FaRobot },
+  ];
 
   return (
     <nav
