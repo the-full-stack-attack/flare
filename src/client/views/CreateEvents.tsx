@@ -228,14 +228,14 @@ function CreateEvents() {
                                 {step === 5 ? (
                                     <Button
                                         onClick={onSubmit}
-                                        className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black"
+                                        className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black hover:text-white"
                                     >
                                         Submit Event
                                     </Button>
                                 ) : (
                                     <Button
                                         onClick={handleNext}
-                                        className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black"
+                                        className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black hover:text-white"
                                     >
                                         {step === 4 ? "Review" : "Continue"}
                                     </Button>
@@ -243,7 +243,7 @@ function CreateEvents() {
                                 <Button
                                     onClick={handlePrev}
                                     disabled={step === 1}
-                                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black"
+                                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black hover:text-white"
                                 >
                                     Go Back
                                 </Button>
