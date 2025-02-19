@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
+import { LuSquareX, LuX } from "react-icons/lu";
+
 import {
   Card,
   CardHeader,
@@ -41,7 +43,9 @@ function Notification({ notif, getNotifications }: NotificationProps) {
         <CardTitle>
           <div className="grid grid-cols-12 gap-2">
             <div className="col-span-11 text-gray-200">{notif.message}</div>
-            <button className="text-gray-200 hover:text-gray-400 text-lg" onClick={deleteNotification}>x</button>
+            <div className="relative">
+              <button className="text-gray-200 hover:text-gray-400 text-lg absolute -right-2 -top-2" onClick={deleteNotification}>{<LuSquareX />}</button>
+            </div>
           </div>
         </CardTitle>
         <CardDescription className="text-gray-400">
