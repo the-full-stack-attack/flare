@@ -199,6 +199,7 @@ function CreateEvents() {
                                             interests: interests,
                                         }));
                                     }}
+                                    formInfo={formInfo}
                                 />
                             )}
                             {step === 3 && (

@@ -6,18 +6,26 @@ import {Separator} from '@/components/ui/seperator';
 import axios from 'axios';
 
 
-function CategoryInterest({handleCategoryInterests}) {
+function CategoryInterest({handleCategoryInterests, formInfo}) {
+    // initialize with formInfo values
+    const [selectedCategory, setSelectedCategory] = useState(formInfo.category || '');
+    const [selectedInterests, setSelectedInterests] = useState(formInfo.interests || []);
     const [categories, setCategories] = useState([]);
     const [interests, setInterests] = useState([]);
-    const [selectedInterests, setSelectedInterests] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState('');
-
+    const [searchTerm, setSearchTerm] = useState('');
+    const [suggestedInterests, setSuggestedInterests] = useState([]);
 
     useEffect(() => {
         getInterests();
         getCategories();
     }, []);
 
+    useEffect(() => {
+        handleCategoryInterests({
+            category: selectedCategory,
+            interests: selectedInterests
+        });
+    }, [selectedCategory, selectedInterests]);
 
     // get interests from db
     const getInterests = async () => {
@@ -29,8 +37,7 @@ function CategoryInterest({handleCategoryInterests}) {
         }
     };
 
-
-// get categories from db
+    // get categories from db
     const getCategories = async () => {
         try {
             const allCategories = await axios.get('/api/event/categories');
@@ -58,7 +65,7 @@ function CategoryInterest({handleCategoryInterests}) {
         // pass updated selections to parent
         handleCategoryInterests({
             category: value,
-            interests: selectedInterests, // Pass the current interests
+            interests: selectedInterests, // pass the current interests
         });
     };
 
