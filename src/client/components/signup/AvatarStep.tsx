@@ -36,7 +36,7 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
     mouth: {},
     earrings: {},
   });
-  const [openSection, setOpenSection] = useState('');
+  const [openSection, setOpenSection] = useState('skin');
 
   const avatarOptions = {
     seed: ['Felix'],
