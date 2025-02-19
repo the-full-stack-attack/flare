@@ -41,8 +41,11 @@ function Task() {
           recycle={false}
         />
       )}
-      <div className="grid grid-cols-3 gap-6">
-        <div className="sm:col-span-full md:col-span-2">
+      <div className="flex items-center">
+        <div className="">
+          <TaskSidebar />
+        </div>
+        <div className="">
           {user.current_task_id ? (
             <TaskDisplay task={task} setShowConfetti={setShowConfetti} />
           ) : (
@@ -60,9 +63,6 @@ function Task() {
           <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60">
             <OptOutList />
           </div>
-        </div>
-        <div className="sm:col-span-2 md:col-span-1">
-          <TaskSidebar />
         </div>
       </div>
     </div>
