@@ -134,8 +134,8 @@ function Dashboard() {
         {showConfetti && (
           <Confetti
             width={width}
-            height={height * 3}
-            numberOfPieces={400}
+            height={height * 5}
+            numberOfPieces={height * 5}
             recycle={false}
           />
         )}
