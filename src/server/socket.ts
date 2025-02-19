@@ -77,6 +77,9 @@ const initializeSocket = (
       const stringName = socket.data.name;
       SOCKET_LIST[stringName] = socket;
       PLAYER_LIST[socket.id] = player;
+      socket.nsp
+          .to(eventId)
+          .emit('newPlayerList', { PLAYER_LIST });
     });
 
     // Removes player everywhere on disconnect
@@ -306,6 +309,7 @@ const initializeSocket = (
       player.updatePosition();
       pack.push({
         id: player.name,
+        avatar: player.avatar,
         x: player.data.x,
         y: player.data.y,
         username: player.username,

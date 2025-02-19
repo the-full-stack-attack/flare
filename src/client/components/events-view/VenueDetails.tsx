@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router';
 import dayjs from 'dayjs';
 
 import { IoArrowBack } from "react-icons/io5";
@@ -42,8 +41,6 @@ type VenueDetailsProps = {
 }
 
 function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
-  const navigate = useNavigate();
-
   const {
     name,
     description,
@@ -87,6 +84,10 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
 
   const openInNewTab = (url: string) => {
     window.open(url, '_blank');
+  };
+
+  const extractHostname = (url: string) => {
+    const urlHost = url.split('/')[2];
   };
 
   return (
@@ -142,9 +143,9 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
                 >
                   Check Website
                 </Button>
-                {/* <p>
-                  {website.slice(website.indexOf('www') + 2, website.indexOf('.') + 4)}
-                </p> */}
+                <p>
+                  {website.split('/')[2].includes('www.') ? website.split('/')[2].slice(4) : website.split('/')[2]}
+                </p>
               </div>
             ) : null
           }

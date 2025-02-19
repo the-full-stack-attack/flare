@@ -2,6 +2,7 @@
 const Player = function (id: any, user: any, eventId: any): any {
   const self = {
     username: user.username,
+    avatar: user.avatar_uri,
     name: id,
     eventId,
     data: {
