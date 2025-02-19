@@ -336,7 +336,7 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
                     onClick={() =>
                       setAvatarItems({ ...avatarItems, skinColor: [color] })
                     }
-                    className={`p-1 rounded-lg ${avatarItems.skinColor[0] === color ? 'ring-2 ring-orange-500' : 'ring-1 ring-orange-500/30'} hover:ring-orange-500/60`}
+                    className={`p-1 rounded-lg flex items-center justify-center ${avatarItems.skinColor[0] === color ? 'ring-2 ring-orange-500' : 'ring-1 ring-orange-500/30'} hover:ring-orange-500/60`}
                   >
                     <img src={previewUris.skin[color]} className="w-16 h-16" />
                   </button>
