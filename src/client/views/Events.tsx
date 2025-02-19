@@ -1,13 +1,14 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
+
+import { FaCalendarPlus } from 'react-icons/fa';
 
 import { UserContext } from '../contexts/UserContext';
 
-import { Button } from '../../components/ui/button';
-
-import { Input } from '../../components/ui/input';
-
 import { Toaster } from 'sonner';
+
+import { Button } from '@/components/ui/button';
 
 import {
   Tab,
@@ -20,6 +21,9 @@ import {
 import { BackgroundGlow } from '@/components/ui/background-glow';
 
 import LocationFilter from '../components/events-view/LocationFilter';
+import CategoryFilter from '../components/events-view/CategoryFilter';
+import InterestsFilter from '../components/events-view/InterestsFilter';
+
 import EventsList from '../components/events-view/EventsList';
 
 type Location = {
@@ -69,12 +73,23 @@ type EventData = {
 };
 
 function Events() {
-  // const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const { user } = useContext(UserContext);
 
   const [locationFilter, setLocationFilter] = useState<Location>({
     city: '',
     state: '',
   });
+
+  const [catFilter, setCatFilter] = useState<string[]>([]);
+
+  
+  const userInterests = useMemo((): string[] => (
+    user.Interests.map((interest: any) => interest.name)
+  ), [user]);
+
+  const [interestsFilter, setInterestsFilter] = useState<string[]>(userInterests);
 
   // Events the user can attend will be stored in state on page load
   const [events, setEvents] = useState<EventData[]>([]);
@@ -125,6 +140,8 @@ function Events() {
       .get('/api/event', {
         params: {
           locationFilter,
+          catFilter,
+          interestsFilter: interestsFilter.length > 0 ? interestsFilter : null,
           now: Date.now(),
         },
       })
@@ -140,7 +157,15 @@ function Events() {
 
   const handleSetLocationFilter = (loc: Location) => {
     setLocationFilter(loc);
-  }
+  };
+
+  const handleSetCatFilter = (cats: string[]) => {
+    setCatFilter(cats);
+  };
+
+  const handleSetInterestsFilter = (ints: string[]) => {
+    setInterestsFilter(ints);
+  };
 
   useEffect(() => {
     getEvents();
@@ -148,43 +173,63 @@ function Events() {
 
   useEffect(() => {
     getEvents();
-  }, [locationFilter]);
+  }, [locationFilter, catFilter, interestsFilter]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
       <div className="container mx-auto px-4 content-center pt-5">
-        <LocationFilter
-          locationFilter={locationFilter}
-          handleSetLocationFilter={handleSetLocationFilter}
-        />
-        <TabGroup
-          defaultValue="upcoming"
-          className="container mx-auto px-4 content-center pt-4"
-        >
-          <TabList>
-            <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Upcoming (${events.length})`}</Tab>
-            <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Attending (${attendingEvents.length})`}</Tab>
-            <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Bailed (${bailedEvents.length})`}</Tab>
-          </TabList>
-          <TabPanels className="mt-4">
-            <TabPanel
-              className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+        <div className="grid grid-cols-1 lg:grid-cols-6 md:grid-cols-4">
+          <div>
+            <Button
+              className={buttonColor + 'mx-auto mx-4 mt-4 text-white'}
+              onClick={() => { navigate('/createevents'); }}
             >
-              <EventsList events={events} getEvents={getEvents} />
-            </TabPanel>
-            <TabPanel
-              className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+              {<FaCalendarPlus />} Host an Event
+            </Button>
+            <LocationFilter
+              locationFilter={locationFilter}
+              handleSetLocationFilter={handleSetLocationFilter}
+            />
+            <CategoryFilter
+              catFilter={catFilter}
+              handleSetCatFilter={handleSetCatFilter}
+            />
+            <InterestsFilter
+              interestsFilter={interestsFilter}
+              handleSetInterestsFilter={handleSetInterestsFilter}
+            />
+          </div>
+          <div className="lg:col-span-5 md:col-span-3">
+            <TabGroup
+              defaultValue="upcoming"
+              className="container mx-auto px-4 content-center pt-4"
             >
-              <EventsList events={attendingEvents} getEvents={getEvents} />
-            </TabPanel>
-            <TabPanel
-              className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
-            >
-              <EventsList events={bailedEvents} getEvents={getEvents} />
-            </TabPanel>
-          </TabPanels>
-        </TabGroup>
+              <TabList>
+                <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Upcoming (${events.length})`}</Tab>
+                <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Attending (${attendingEvents.length})`}</Tab>
+                <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white">{`Bailed (${bailedEvents.length})`}</Tab>
+              </TabList>
+              <TabPanels className="mt-4">
+                <TabPanel
+                  className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+                >
+                  <EventsList events={events} getEvents={getEvents} />
+                </TabPanel>
+                <TabPanel
+                  className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+                >
+                  <EventsList events={attendingEvents} getEvents={getEvents} />
+                </TabPanel>
+                <TabPanel
+                  className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 rounded-xl bg-white/5 p-3"
+                >
+                  <EventsList events={bailedEvents} getEvents={getEvents} />
+                </TabPanel>
+              </TabPanels>
+            </TabGroup>
+          </div>
+        </div>
       </div>
       <Toaster
         toastOptions={{

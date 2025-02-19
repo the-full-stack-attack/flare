@@ -3,6 +3,10 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { toast } from 'sonner';
 
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+
+import { TbHexagonLetterHFilled, TbCircleLetterAFilled, TbCircleDashedLetterB } from "react-icons/tb";
+
 import { Button } from '../../../components/ui/button';
 
 import {
@@ -52,7 +56,7 @@ type EventProps = {
       id: number;
       name: string;
     };
-    Interests?: {
+    Interests: {
       id: number;
       name: string;
     }[];
@@ -154,13 +158,15 @@ function Event({ event, getEvents }: EventProps) {
       });
   };
 
-  const handleVenuePicChange = () => {
-    const nextPicIndex = venuePicIndex + 1;
-
-    if (nextPicIndex === venuePics.length) {
-      setVenuePicIndex(0);
-    } else {
-      setVenuePicIndex(nextPicIndex);
+  const handleVenuePicChange = (dir: 'left' | 'right') => {
+    if (dir === 'left') {
+      const nextPicIndex = venuePicIndex - 1;
+      nextPicIndex < 0 ? setVenuePicIndex(venuePics.length - 1) : setVenuePicIndex(nextPicIndex);
+    }
+    
+    else {
+      const nextPicIndex = venuePicIndex + 1;
+      nextPicIndex === venuePics.length ? setVenuePicIndex(0) : setVenuePicIndex(nextPicIndex);
     }
   };
 
@@ -168,52 +174,60 @@ function Event({ event, getEvents }: EventProps) {
     <div key={event.id} className="p-[10px]">
       <Card className="isolate rounded-xl bg-white/10 shadow-lg ring-1 ring-black/5 border-transparent">
         <CardHeader>
-          <CardTitle className="text-xl text-white">{title}</CardTitle>
-          <CardDescription className="text-sm text-gray-200">{`${dayjs(new Date(start_time)).format('MMMM D [--] h:mm A')} - ${dayjs(new Date(end_time)).format('h:mm A')}`}</CardDescription>
+          <CardTitle className="text-xl text-white truncate flex items-center justify-center">
+            <span>{` ${title} `}</span>
+          </CardTitle>
+          <CardDescription className="text-sm text-gray-200 text-center">{`${dayjs(new Date(start_time)).format('MMMM D')}`}</CardDescription>
+          <CardDescription className="text-sm text-gray-200 text-center">{`${dayjs(new Date(start_time)).format('h:mm A')} - ${dayjs(new Date(end_time)).format('h:mm A')}`}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 place-content-center">
-            <div>
-              <img
-                className="h-30 w-30 object-contain cursor-pointer"
-                src={venuePics[venuePicIndex]}
-                onClick={handleVenuePicChange}
-              />
-            </div>
-            <div>
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button className={buttonColor}>Details / RSVP</Button>
-                </DrawerTrigger>
-                <DrawerContent className="mx-auto w-full max-w-md bg-gradient-to-br from-orange-800/60 via-yellow-700/70 to-red-600/70 isolate border-transparent">
-                  <EventDrawerContent
-                    event={event}
-                    category={category}
-                    postAttendEvent={postAttendEvent}
-                    patchAttendingEvent={patchAttendingEvent}
-                  />
-                </DrawerContent>
-              </Drawer>
-              <div className="p-2">
-                <p className="text-gray-100">
-                  {user.id === event.created_by ? <b>Host</b> : null}
-                </p>
+          <div className="grid flex justify-center">
+            <div className="grid grid-cols-4 gap-2 mb-2 flex items-center justify-center">
+              <div className="flex justify-center">
+                {user.id === event.created_by ? <TbHexagonLetterHFilled className="text-yellow-400" /> : null}
               </div>
-              
-              {category === 'attending' ? (
-                <div className="p-2">
-                  <p className="text-gray-300">
-                    <i>Attending</i>
-                  </p>
-                </div>
-              ) : null}
-              {category === 'bailed' ? (
-                <div className="p-2">
-                  <p className="text-gray-300">
-                    <i>Bailed</i>
-                  </p>
-                </div>
-              ) : null}
+              <div className="col-span-2 flex justify-center">
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Button className={buttonColor}>Details / RSVP</Button>
+                  </DrawerTrigger>
+                  <DrawerContent className="mx-auto w-full max-w-md bg-gradient-to-br from-orange-800/60 via-yellow-700/70 to-red-600/70 isolate border-transparent">
+                    <EventDrawerContent
+                      event={event}
+                      category={category}
+                      postAttendEvent={postAttendEvent}
+                      patchAttendingEvent={patchAttendingEvent}
+                    />
+                  </DrawerContent>
+                </Drawer>
+              </div>
+              <div className="flex justify-center">
+                {category === 'attending' ? <TbCircleLetterAFilled className="text-amber-500" /> : null}
+                {category === 'bailed' ? <TbCircleDashedLetterB className="text-red-500" /> : null}
+              </div>
+            </div>
+            <div className="grid grid-cols-6 place-content-center">
+              <div className="col-span-6 mb-2">
+                <img
+                  className="h-[200px] w-[200px] object-fit cursor-pointer"
+                  src={venuePics[venuePicIndex]}
+                  onClick={() => { handleVenuePicChange('right'); }}
+                />
+              </div>
+              <div className="col-span-6 grid grid-cols-subgrid">
+                <button
+                  className="col-start-2 text-left"
+                  onClick={() => { handleVenuePicChange('left'); }}
+                >
+                  <FaAngleLeft className="text-gray-200 hover:text-orange-400" />
+                </button>
+                <button
+                  className="col-start-5 text-right"
+                  onClick={() => { handleVenuePicChange('right'); }}
+                >
+                  <FaAngleRight className="text-gray-200 hover:text-orange-400" />
+                </button>
+              </div>
             </div>
           </div>
         </CardContent>

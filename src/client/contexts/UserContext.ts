@@ -16,6 +16,15 @@ export interface UserType {
   avatar_shirt?: string;
   avatar_pants?: string;
   current_task_id?: number;
+  avatar_uri?: string;
+  User_Avatar?: {
+    skin: string;
+    hair: string;
+    hair_color: string;
+    eyebrows: string;
+    eyes: string;
+    mouth: string;
+  };
   Interests: {
     id: number;
     name: string;

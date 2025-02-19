@@ -17,11 +17,12 @@ import {
   AccountSettings,
 } from './views/index';
 import { NavBar } from './components/NavBar';
+import { LandingNav } from '@/components/ui/landing-nav';
 import '../styles/main.css';
-
 import { UserType, UserContext } from './contexts/UserContext';
-
+import { AuthProvider } from './contexts/AuthContext';
 import { BackgroundGlow } from '@/components/ui/background-glow';
+import { Logout } from './components/auth/Logout';
 
 export default function App() {
   const [user, setUser] = useState<UserType>({
@@ -76,31 +77,40 @@ export default function App() {
   }
 
   return (
-    <UserContext.Provider value={userState}>
-      <BrowserRouter>
-        {isAuthenticated && <NavBar />}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="Signup" element={<Signup />} />
-
-          {/* Protected Routes */}
+    <AuthProvider>
+      <UserContext.Provider value={userState}>
+        <BrowserRouter>
+          {/* Conditionally render either NavBar or LandingNav, but never both */}
           {isAuthenticated ? (
-            <>
-              <Route path="AiConversations" element={<AiConversations />} />
-              <Route path="/Chatroom/*" element={<Chatroom />} />
-              <Route path="CreateEvents" element={<CreateEvents />} />
-              <Route path="Events" element={<Events />} />
-              <Route path="Task" element={<Task />} />
-              <Route path="Notifications" element={<Notifications />} />
-              <Route path="Dashboard" element={<Dashboard />} />
-              <Route path='Settings' element={<AccountSettings />} />
-            </>
+            <NavBar />
           ) : (
-            // Redirect to home if trying to access protected routes while not authenticated
-            <Route path="*" element={<Navigate to="/" />} />
+            <LandingNav />
           )}
-        </Routes>
-      </BrowserRouter>
-    </UserContext.Provider>
+
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="Signup" element={<Signup />} />
+            <Route path="logout" element={<Logout />} />
+
+            {/* Protected Routes */}
+            {isAuthenticated ? (
+              <>
+                <Route path="AiConversations" element={<AiConversations />} />
+                <Route path="/Chatroom/*" element={<Chatroom />} />
+                <Route path="CreateEvents" element={<CreateEvents />} />
+                <Route path="Events" element={<Events />} />
+                <Route path="Task" element={<Task />} />
+                <Route path="Notifications" element={<Notifications />} />
+                <Route path="Dashboard" element={<Dashboard />} />
+                <Route path='Settings' element={<AccountSettings />} />
+              </>
+            ) : (
+              <Route path="*" element={<Navigate to="/" />} />
+            )}
+          </Routes>
+        </BrowserRouter>
+      </UserContext.Provider>
+    </AuthProvider>
   );
 }

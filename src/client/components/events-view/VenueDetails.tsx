@@ -3,6 +3,8 @@ import dayjs from 'dayjs';
 
 import { IoArrowBack } from "react-icons/io5";
 
+import { Button } from '@/components/ui/button';
+
 import {
   DrawerHeader,
   DrawerTitle,
@@ -56,6 +58,8 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
     Venue_Tags,
   } = venue;
 
+  const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
+
   const tags: string = useMemo(() => (
     Venue_Tags
       .sort((a, b) => b.count - a.count)
@@ -76,21 +80,21 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
       ${wheelchair_accessible !== null ? `Wheelchair Accessible? ${wheelchair_accessible ? 'Yes.' : 'No.'}` : ''}
       ${Venue_Tags.length > 0 ? `Tags: ${tags}` : ''}
     `
-  ), [venue, tags])
+  ), [venue, tags]);
+
+  const openInNewTab = (url: string) => {
+    window.open(url, '_blank');
+  };
+
+  const extractHostname = (url: string) => {
+    const urlHost = url.split('/')[2];
+  };
 
   return (
     <>
       <DrawerHeader>
         <DrawerTitle className="text-xl">
           <div className="grid grid-cols-12">
-            <div className="col-span-11 inline">
-              {name}
-              <TTSButton
-                text={venueDetailsTTS}
-                className="ml-2"
-                iconClassName="text-lg text-black hover:text-gray-700"
-              />
-            </div>
             <div>
               <button
                 onClick={closeVenueDetails}
@@ -100,11 +104,19 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
                 />
               </button>
             </div>
+            <div className="col-span-11 inline text-center">
+              {name}
+              <TTSButton
+                text={venueDetailsTTS}
+                className="ml-2"
+                iconClassName="text-lg text-black hover:text-gray-700"
+              />
+            </div>
           </div>
         </DrawerTitle>
         <DrawerDescription className="text-gray-700 text-md">{description}</DrawerDescription>
       </DrawerHeader>
-      <div className="p-4 pb-0">
+      <div className="p-4 pb-0 max-h-[300px] overflow-y-scroll">
         <div className="grid grid-cols-2 gap-2 flex-wrap">
           {/* <div className="col-span-2">
             <b>Address:</b>
@@ -125,14 +137,14 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
           {
             website ? (
               <div>
-                <b>Website:</b>
-                <p className="hover:underline truncate overflow-visible">
-                  <a
-                    href={website}
-                    target="_blank"
-                  >
-                    {website}
-                  </a>
+                <Button
+                  className={normalDrawerButton}
+                  onClick={() => { openInNewTab(website); }} 
+                >
+                  Check Website
+                </Button>
+                <p>
+                  {website.split('/')[2].includes('www.') ? website.split('/')[2].slice(4) : website.split('/')[2]}
                 </p>
               </div>
             ) : null

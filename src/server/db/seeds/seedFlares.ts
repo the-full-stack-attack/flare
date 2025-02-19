@@ -28,6 +28,7 @@ type FlareType = {
   value: number;
   milestone: number | null;
   description: string;
+  notification_message: string;
 };
 type FlareArr = any[];
 type UploadParams = {
@@ -48,9 +49,10 @@ class Flare {
   value: number;
   milestone: number;
   description: string;
+  notification_message: string;
   constructor(flareInfo: any[]) {
     // Destructure the array
-    const [name, type, icon, achievement, value, milestone, description] =
+    const [name, type, icon, achievement, value, milestone, description, notification_message] =
       flareInfo;
     this.name = name;
     this.type = type;
@@ -59,6 +61,7 @@ class Flare {
     this.value = value;
     this.milestone = milestone;
     this.description = description;
+    this.notification_message = notification_message;
   }
 }
 /* PLAN
@@ -79,6 +82,7 @@ const butterFlareEffect: FlareArr = [
   0,
   null,
   'Signup for Flare',
+  'You\'ve earned the Butterflare Effect Flare! Flares are achievements you unlock by hitting milestones on the Flare app! The Butterflare Effect is represented by the Phoenix, symbolizing the transformative power of new beginnings and the potential for amazing growth!',
 ];
 const goGetter: FlareArr = [
   'Go Getter',
@@ -88,6 +92,7 @@ const goGetter: FlareArr = [
   0,
   null,
   'Complete your first task',
+  'You\'ve earned the Go Getter Flare! This Flare is represented by the Horse, a symbol of your proactive spirit and the exciting journey you\'ve just begun!',
 ];
 const theHost: FlareArr = [
   'The Host',
@@ -97,6 +102,7 @@ const theHost: FlareArr = [
   0,
   null,
   'Create an event',
+  'You\'ve earned The Host Flare! This Flare is represented by the Wolf, a symbol of your ability to bring people together and lead the pack!',
 ];
 const storedThoughts: FlareArr = [
   'Stored Thoughts(x3)',
@@ -105,7 +111,8 @@ const storedThoughts: FlareArr = [
   'Saved 3 AI conversations',
   0,
   null,
-  'Talk to the AI',
+  'Save 3 AI conversations',
+  'You\'ve earned the Stored Thoughts (x3) Flare! This Flare is represented by three Owls, symbolizing the wisdom and insight you\'re gaining through mindful reflection and therapeutic conversations!',
 ];
 const theSpark: FlareArr = [
   'The Spark',
@@ -115,6 +122,7 @@ const theSpark: FlareArr = [
   0,
   null,
   'Attend your first event',
+  'You\'ve earned The Spark Flare! This Flare is represented by a Burning Fire, a reminder that even the smallest spark of connection and inspiration can ignite something truly amazing!',
 ];
 const multiTasker: FlareArr = [
   'Multitasker',
@@ -124,6 +132,7 @@ const multiTasker: FlareArr = [
   0,
   5,
   'Complete 5 tasks',
+  '',
 ];
 const socialDynamo: FlareArr = [
   'Social Dynamo',
@@ -133,6 +142,7 @@ const socialDynamo: FlareArr = [
   0,
   5,
   'Attend 5 events',
+  '',
 ];
 const venueVirtuoso: FlareArr = [
   'Venue Virtuoso',
@@ -142,6 +152,7 @@ const venueVirtuoso: FlareArr = [
   0,
   null,
   'Input venue data',
+  'You\'ve earned the Venue Virtuoso Flare! This Flare is represented by the Stag, symbolizing your guiding presence and skillful management in crafting the perfect event experience!',
 ];
 
 flareArrays.push(

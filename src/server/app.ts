@@ -17,6 +17,7 @@ const app = express();
 dotenv.config();
 
 app.use(express.static(path.resolve(__dirname, '../../dist')));
+app.use('/favicons', express.static(path.resolve(__dirname, '../../favicons')));
 app.use(express.json());
 
 app.use(
@@ -183,9 +184,9 @@ app.get('/auth/success', (req: any, res: any) => {
   }
   
   if (req.user.username) {
-    res.redirect('/Dashboard');
+    res.redirect('/dashboard');
   } else {
-    res.redirect('/Signup');
+    res.redirect('/signup');
   }
 });
 
@@ -215,3 +216,4 @@ app.get('*', verifySessionView, (req: any, res: any) => {
 });
 
 export default app;
+

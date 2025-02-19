@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 import { Button } from '@/components/ui/button';
@@ -48,7 +48,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
 
   const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-4 py-4 rounded-xl text-md';
 
-  const getGeoLocation = () => {
+  const getGeoLocation = useCallback(() => {
     const success = (position: GeoPosition) => {
       const { latitude, longitude } = position.coords;
 
@@ -64,7 +64,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
     } else {
       navigator.geolocation.getCurrentPosition(success, error);
     }
-  };
+  }, []);
 
   const getLocation = () => {
     if (geoLocation.latitude && geoLocation.longitude) {
@@ -125,7 +125,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
 
   useEffect(() => {
     getGeoLocation();
-  }, []);
+  }, [getGeoLocation]);
 
   useEffect(() => {
     getLocation();
@@ -134,7 +134,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
   console.log()
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 mt-4">
       <p className="text-gray-200">
         Upcoming Events from
         <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
@@ -144,9 +144,9 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
           Change Location
         </Button>
       ) : (
-        <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 gap-4">
+        <div className="mt-2 grid grid-cols-2 gap-4">
           <Button
-            className={'col-span-1 ' + buttonColor}
+            className={'col-span-2 ' + buttonColor}
             onClick={({ target }: any) => {
               if (target.innerText === 'Cancel') {
                 toggleChangeLocFilter();
@@ -181,7 +181,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
             }}
           />
           <Button
-            className={'col-span-1 ' + buttonColor}
+            className={'col-span-2 ' + buttonColor}
             onClick={({ target }: any) => {
               if (target.innerText === 'Remove Filter') {
                 handleClearLocFilter();
