@@ -65,3 +65,19 @@
       "calt" 1;
   }
 }
+/* 
+.select-content .select-item {
+  @apply text-gray-200;
+}
+
+.select-content .select-item[data-highlighted] {
+  @apply bg-orange-500/30 text-white;
+} */
+
+[role="listbox"] [role="option"] {
+  @apply text-gray-200;
+}
+
+[role="listbox"] [role="option"][data-highlighted] {
+  @apply bg-orange-500/30 text-white !important;
+}

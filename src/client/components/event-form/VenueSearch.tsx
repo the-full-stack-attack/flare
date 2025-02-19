@@ -126,11 +126,17 @@ function VenueSearch({ handleVenueSelect }) {
             <div className="p-6">
                 <Tabs defaultValue="search" className="space-y-4">
                     <TabsList className="grid grid-cols-2 bg-black/50">
-                        <TabsTrigger value="search" className="data-[state=active]:bg-orange-500/20">
+                        <TabsTrigger 
+                            value="search" 
+                            className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-white hover:text-white"
+                        >
                             <Search className="w-4 h-4 mr-2" />
                             Search Venues
                         </TabsTrigger>
-                        <TabsTrigger value="create" className="data-[state=active]:bg-orange-500/20">
+                        <TabsTrigger 
+                            value="create" 
+                            className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-white hover:text-white"
+                        >
                             <PlusCircle className="w-4 h-4 mr-2" />
                             Create New
                         </TabsTrigger>
