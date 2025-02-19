@@ -57,13 +57,13 @@ function InterestsStep({ initialData, onSubmit, onBack }) {
             <Label className="text-gray-200 mb-2 block">
               Available Interests
             </Label>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {interests.map((interest, index) => (
                 <Button
                   key={`interest-${index}`}
                   onClick={() => addToSelectedInterests(interest)}
                   type="button"
-                  className="bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30"
+                  className="w-full bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30"
                 >
                   {interest}
                 </Button>
@@ -75,14 +75,14 @@ function InterestsStep({ initialData, onSubmit, onBack }) {
             <Label className="text-gray-200 mb-2 block">
               Selected Interests
             </Label>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {selectedInterests.map((interest, index) => (
                 <Button
                   key={`selected-${index}`}
                   name="selectedInterest"
                   onClick={() => removeSelectedInterests(interest)}
                   type="button"
-                  className="bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50"
+                  className="w-full bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50"
                 >
                   {interest}
                 </Button>

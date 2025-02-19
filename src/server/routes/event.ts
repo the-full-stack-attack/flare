@@ -14,7 +14,7 @@ import Venue_Image from '../db/models/venue_images';
 import Notification from '../db/models/notifications';
 
 // helper fns
-import { removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
+import { isVenueMatch, removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
     from '../../../utils/venue';
 import { type VenueType, type GoogleData, } from '../../types/Venues';
 
@@ -86,6 +86,7 @@ eventRouter.get('/search', async (req: any, res: Response): Promise<void> => {
 // create event route
 eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
     try {
+        // grab all the form data from frontend
         const {
             title,
             description,
@@ -104,14 +105,13 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         let { cityName } = req.body;
         const userId = req.user.id;
 
-        // convert date time
+        // convert the date and times into proper format for db
         const start_time = dayjs(`${startDate} ${startTime}`).format('YYYY-MM-DD HH:mm:ss');
         const end_time = dayjs(`${startDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
 
-        // find or create venue based on user input
+        // check if venue exists using fsq_id
         let eventVenue: any;
         if (fsq_id) {
-            // if fsq_id exists, use existing venue
             eventVenue = await Venue.findOne({
                 where: { fsq_id }
             });
@@ -120,30 +120,22 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
                 return res.status(400).json({ error: 'Selected venue not found' });
             }
             cityName = eventVenue.city_name;
-        } else {
-            // // create venue
-            // eventVenue = await Venue.create({
-            //     name: venue,
-            //     description: venueDescription,
-            //     street_address: streetAddress,
-            //     zip_code: zipCode,
-            //     city_name: cityName,
-            //     state_name: stateName,
-            // });
         }
 
+        // create notification to remind user 1 hour before event
         const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
         const notification: any = await Notification.create({
             message: `The upcoming event you're attending, ${title}, starts soon at ${dayjs(`${startDate} ${startTime}`).format('h:mm A')}. Hope to see you there.`,
             send_time: oneHourBefore,
         });
 
+        // link notification to user
         await User_Notification.create({
             UserId: userId,
             NotificationId: notification.id
         });
 
-        // then create the event
+        // create the actual event
         const newEvent: any = await Event.create({
             title,
             start_time,
@@ -153,38 +145,32 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             created_by: userId,
         });
 
-        // add venue_id to event
+        // connect venue to event
         await newEvent.setVenue(eventVenue);
 
-        // find matching category
+        // find and add the category to event
         const assignCategory: any = await Category.findOne({
             where: {name: category}
         });
-
-        // confirm matching category located in db
         if (assignCategory) {
-            // add category_id to new event
             await newEvent.setCategory(assignCategory);
         }
 
-        // find matching interests
+        // find and add interests to event
         const findInterest: any = await Interest.findAll({
             where: {name: interests}
         });
-
-        // confirm matching interests located in db
         if (findInterest) {
             await newEvent.setInterests(findInterest);
         }
 
-        // create chatroom
+        // create chatroom for the event
         const chatroom: any = await Chatroom.create({
             map: null,
             event_id: newEvent.dataValues.id
         });
-
-        // add event__id to new chatroom
         await chatroom.setEvent(newEvent);
+
         res.sendStatus(200);
 
     } catch (err: any) {
@@ -195,20 +181,141 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
 
 
 
+
+eventRouter.post('/venue/create', async (req: any, res: Response) => {
+    try {
+        const inputVenueData = req.body;
+
+        // build search query to find venue in google/fsq
+        const searchQuery = `"${inputVenueData.name}" "${inputVenueData.street_address} ${inputVenueData.city_name} ${inputVenueData.state_name} ${inputVenueData.zip_code}"`;
+        
+        // console.log('searching with query:', searchQuery);
+
+        // try to get google place id first
+        const googlePlaceId = await getGooglePlaceId(searchQuery);
+        // console.log('got google place id:', googlePlaceId);
+
+        // if we got google id, get more data using apify
+        let googleData = null;
+        if (googlePlaceId) {
+            // console.log('fetching google data with apify...');
+            const apifyResults: any = await runApifyActor(googlePlaceId);
+            // console.log('apify results:', apifyResults);
+            googleData = apifyResults?.[0] || null;
+            // console.log('processed google data:', {
+            //     description: googleData?.description,
+            //     title: googleData?.title,
+            //     address: googleData?.street
+            // });
+
+            // make sure google data matches our venue
+            if (googleData && !isVenueMatch(inputVenueData, googleData)) {
+                // console.log('google data did not match input venue');
+                googleData = null;
+            }
+        }
+
+        // try to find venue in fsq
+        const fsqResponse = await fetch(
+            `https://api.foursquare.com/v3/places/search?query=${encodeURIComponent(searchQuery)}`,
+            {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `${process.env.FOURSQUARE_API_KEY}`,
+                },
+            }
+        );
+        const fsqData = await fsqResponse.json();
+
+        // find matching venue in fsq results
+        const fsqVenue = fsqData.results?.find((venue: any) => isVenueMatch(inputVenueData, venue));
+
+        // if we found fsq venue, get full details
+        let fsqVenueDetails = null;
+        if (fsqVenue?.fsq_id) {
+            const detailsResponse = await fetch(
+                `https://api.foursquare.com/v3/places/${fsqVenue.fsq_id}?fields=fsq_id,name,description,location,tel,website,tips,rating,hours,features,stats,price,photos,tastes,popularity,hours_popular,social_media,categories`,
+                {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `${process.env.FOURSQUARE_API_KEY}`,
+                    },
+                }
+            );
+            fsqVenueDetails = await detailsResponse.json();
+        }
+
+        // get images and tags from both apis
+        const venueImages = getVenueImages(fsqVenueDetails, googleData ? [googleData] : []);
+        const venueTags = getVenueTags(fsqVenueDetails, googleData ? [googleData] : []);
+
+        // combine all the venue data we got
+        const enrichedVenue = {
+            ...inputVenueData,
+            google_place_id: googlePlaceId || null,
+            fsq_id: fsqVenue?.fsq_id || null,
+            phone: googleData?.phone || fsqVenueDetails?.tel || null,
+            website: googleData?.website || fsqVenueDetails?.website || null,
+            wheelchair_accessible: googleData?.additionalInfo?.Accessibility ? true : null,
+            rating: getVenueRating(fsqVenueDetails || {}, googleData ? [googleData] : []),
+            total_reviews: getVenueReviewCount(fsqVenueDetails || {}, googleData ? [googleData] : []),
+            pricing: googleData?.price || convertFSQPrice(fsqVenueDetails?.price) || null,
+            serves_alcohol: getVenueAlcohol(fsqVenueDetails || {}, googleData ? [googleData] : []),
+            images: venueImages || [],
+            tags: venueTags || []
+        };
+
+        // save venue to our db
+        const newVenue = await Venue.create(enrichedVenue);
+
+        if (!newVenue) {
+            throw new Error('Failed to create venue in database');
+        }
+
+        // convert sequelize model to plain object
+        const plainVenueData = newVenue.get({ plain: true });
+
+        // send back venue data and what fields were null
+        res.json({
+            venue: plainVenueData,
+            nullFields: {
+                description: !plainVenueData.description,
+                phone: !plainVenueData.phone,
+                website: !plainVenueData.website,
+                rating: !plainVenueData.rating,
+                total_reviews: !plainVenueData.total_reviews,
+                pricing: !plainVenueData.pricing,
+                popularTime: !plainVenueData.popularTime,
+                wheelchair_accessible: !plainVenueData.wheelchair_accessible,
+                serves_alcohol: !plainVenueData.serves_alcohol
+            }
+        });
+
+    } catch (error) {
+        console.error('Error in venue creation:', error);
+        res.status(500).json({
+            error: 'Error creating venue',
+            originalData: req.body
+        });
+    }
+});
+
+
+
+
+// this route gets called when user selects a venue from fsq search results
 eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
     let fsqData;
-    let googlePlaceId;
+    let googlePlaceId = null;
     let gData: GoogleData[] = [];
     try {
-        // get fsqId needed to make api request
+        // get the fsq id from url
         const {fsqId} = req.params;
 
-        // check if venue already exists in our DB with a fsqId
+        // check if we already have this venue in our db
         const hasFSQId = await Venue.findOne({where: {fsq_id: fsqId}});
 
-
-
-        // if no venue with matching fsqId exists - call FSQ API
+        // if venue isn't in our db, get it from fsq api
         if (!hasFSQId) {
             const response = await fetch(
                 `https://api.foursquare.com/v3/places/${fsqId}?fields=fsq_id,name,description,location,tel,website,tips,rating,hours,features,stats,price,photos,tastes,popularity,hours_popular,social_media,categories`, {
@@ -221,7 +328,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             fsqData = await response.json();
         }
 
-        // check if venue has google place id and it is not null or an empty string
+        // check if we have a google place id for this venue
         const hasGoogleId = await Venue.findOne({
             where: {
                 fsq_id: fsqId,
@@ -234,25 +341,28 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             }
         });
 
-
-
-        // if venue does not have valid google place id
+        // if no google data, try to get it
         if (!hasGoogleId) {
-
-            // verify we have necessary fsqData to build our query string
-            if (fsqData.name && fsqData.location.formatted_address) {
-                // format our api query
-                const query = `"${fsqData.name}" "${fsqData.location.formatted_address}"` // wrap in quotes to apply added weight to location and name (avoids server locale having priority weights when searching)
-                // send request to google text search api to get google place id
-                googlePlaceId = await getGooglePlaceId(query);
-                // scrape google my business page for google place id using Apify's SDK
-                gData = await runApifyActor(googlePlaceId) as GoogleData[]; //! response time varies from 5-20 seconds
+            // make sure we have enough info to search google
+            if (fsqData?.name && fsqData?.location?.formatted_address) {
+                try {
+                    // build search query for google
+                    const query = `"${fsqData.name}" "${fsqData.location.formatted_address}"`
+                    // get google place id
+                    googlePlaceId = await getGooglePlaceId(query);
+                    if (googlePlaceId) {
+                        // use apify to get more google data
+                        gData = await runApifyActor(googlePlaceId) as GoogleData[];
+                    }
+                } catch (error) {
+                    console.error('Error getting Google Place Data: ', error);
+                }
             } else {
-                console.error('Error building Google Text Search query string');
+                console.warn('Not enough data for Google Text Search query');
             }
         }
 
-
+        // combine all the venue data we got
         const buildVenue: VenueType = {
             id: null,
             name: fsqData?.name || gData?.[0]?.title || null,
@@ -274,18 +384,11 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             google_place_id: googlePlaceId || null,
         };
 
-        // create new venue in db
+        // save venue to our db
         const newVenue: any = await Venue.create(buildVenue);
 
-
-        // const nullFields: any = {};
-        // if (buildVenue.wheelchair_accessible === null) {
-        //     console.log('venue wheelchair is null');
-        //     nullFields.wheelchair_accessible = null;
-        // }
-
+        // track which fields are null for the review page
         const nullFields: any = {};
-
         if (newVenue) {
             if (newVenue.name === null) nullFields.name = null;
             if (newVenue.description === null) nullFields.description = null;
@@ -299,30 +402,27 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             if (newVenue.pricing === null) nullFields.pricing = null;
             if (newVenue.wheelchair_accessible === null) nullFields.wheelchair_accessible = null;
             if (newVenue.serves_alcohol === null) nullFields.serves_alcohol = null;
-        };
-        // get tags from api responses
-        const newTags = getVenueTags(fsqData, gData);
+        }
 
-        // if function returned populated tags array
+        // get and save venue tags
+        const newTags = getVenueTags(fsqData, gData);
         if (newTags) {
-            // create tags
             await Venue_Tag.bulkCreate(newTags.map((tag) => ({
                 ...tag,
                 venue_id: newVenue.id
             })));
         }
 
-        // get image paths from api res
+        // get and save venue images
         const newImages = getVenueImages(fsqData, gData);
-        // if function returned populated images array
         if (newImages) {
-            // create images
             await Venue_Image.bulkCreate(newImages.map(image => ({
                 ...image,
                 venue_id: newVenue.id
             })));
         }
 
+        // send back venue data and null fields
         const buildResponse = {
             venue: newVenue,
             nullFields,
@@ -335,17 +435,18 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
     }
 })
 
-
+// this route handles when users update venue info on the review page
 eventRouter.put('/venue/:id/:field', async (req: any, res: Response) => {
     try {
         const { id, field } = req.params;
         const { userId } = req.body;
         const updateData = { [field]: req.body[field] };
 
+        // update the venue field
         await Venue.update(updateData, { where: { id } });
 
+        // get user to check for flare achievement
         const user: any = await User.findByPk(userId);
-
         await checkForFlares(user, 'Venue Virtuoso');
 
         res.sendStatus(200);
@@ -355,8 +456,7 @@ eventRouter.put('/venue/:id/:field', async (req: any, res: Response) => {
     }
 });
 
-
-// get all categories in db to populate form category options
+// get all categories for the category dropdown in create event form
 eventRouter.get('/categories', async (req: Request, res: Response) => {
     try {
         const categories: any[] = await Category.findAll();
@@ -371,8 +471,7 @@ eventRouter.get('/categories', async (req: Request, res: Response) => {
     }
 });
 
-
-// get all venues in db
+// get all venues in our db - DEPRECATED (fields need to be udpated, but this is never used so)
 eventRouter.get('/venues', async (req: Request, res: Response) => {
     try {
         const venues = await Venue.findAll();
