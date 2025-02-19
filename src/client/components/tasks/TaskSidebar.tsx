@@ -35,7 +35,7 @@ function TaskSidebar() {
       });
   }, [user]);
   return (
-    <div className="grid grid-cols-3">
+    <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
       {completedTaskFlares.map((taskFlare, index) => {
         return (
           <TaskFlareCard

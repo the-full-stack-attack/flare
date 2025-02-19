@@ -31,7 +31,7 @@ function Task() {
     }
   }, [user]);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12 px-4">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
       {showConfetti && (
         <Confetti
@@ -41,8 +41,8 @@ function Task() {
           recycle={false}
         />
       )}
-      <div className="flex-col items-center">
-        <div className="inline-flex items-center text-white">
+      <div className="flex flex-col justify-center items-center">
+        <div className="inline-flex justify-center text-white w-full py-3">
           Task Counts:
           <div className="text-md text-white px-2">{`Last week: ${user.last_week_task_count}`}</div>
           <div className="text-md text-white">{`This week: ${user.weekly_task_count}`}</div>
