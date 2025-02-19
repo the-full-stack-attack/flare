@@ -1,21 +1,25 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from '../../../components/ui/card';
 import { UserContext } from '../../contexts/UserContext';
 import DialogBox from './DialogBox';
+import {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from '../../../components/ui/dialog';
 import { FaTasks, FaCheckCircle } from 'react-icons/fa';
 
 // Define the props interface
 interface TaskDisplayProps {
-  task: Task | object;
+  task: Task;
 }
 type Task = {
   id: number;
@@ -34,9 +38,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
   const completeTask = (): void => {
     const userId = user.id;
     const taskId = task.id;
-    const config = {
-      ids: { userId, taskId },
-    };
+    const config = { ids: { userId, taskId } };
     axios
       .patch('/api/task/complete', config)
       .then(({ data }) => {
@@ -50,9 +52,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
   const optOut = (): void => {
     const userId = user.id;
     const taskId = task.id;
-    const config = {
-      userId,
-    };
+    const config = { userId };
     axios
       .patch(`/api/task/optOut/${taskId}`, config)
       .then(({ data }) => {
@@ -91,22 +91,41 @@ function TaskDisplay({ task }: TaskDisplayProps) {
               </div>
             </div>
             <div className="text-white/70 mb-6">
-              {user.current_task_id ?
-                `Level ${task.difficulty} ${task.type} task ${task.description}` :
-                'You are not assigned a task. Go to the Task page to choose your task.'
-              }
+              {user.current_task_id
+                ? `Level ${task.difficulty} ${task.type} task ${task.description}`
+                : 'You are not assigned a task. Go to the Task page to choose your task.'}
             </div>
             {user.current_task_id && (
               <div className="flex gap-3">
-                <button
-                  onClick={completeTask}
-                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium 
-                           hover:from-purple-600 hover:to-pink-600 transition-all duration-300
-                           flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  <FaCheckCircle className="text-white" />
-                  Complete
-                </button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
+                  hover:from-purple-600 hover:to-pink-600 transition-all duration-300
+                  flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      <FaCheckCircle className="text-white" />
+                      Complete
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent
+                    onCloseAutoFocus={completeTask}
+                  >
+                    <DialogTitle>TASK COMPLETE</DialogTitle>
+                    <DialogDescription>
+                      {`Great job completing your task to ${task.description} You've now completed ${user.weekly_task_count + 1} tasks this week!`}
+                    </DialogDescription>
+                    <DialogClose asChild>
+                      <button
+                        onClick={completeTask}
+                        className="px-4 py-2 rounded-lg w-20 text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
+                    hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                      Done
+                      </button>
+                    </DialogClose>
+                  </DialogContent>
+                </Dialog>
                 <button
                   onClick={() => setOpenOptOut(true)}
                   className="px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-white/70 font-medium

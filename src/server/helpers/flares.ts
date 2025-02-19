@@ -34,6 +34,7 @@ type FlareType = {
   achievement: string;
   value: number;
   type: string | void;
+  notification_message: string;
 };
 type UseFlareType = {
   UserId: number;
@@ -139,12 +140,12 @@ async function sendFlareObject(flare: FlareType, user: UserType) {
         FlareId: flareId,
       });
       // Create notification object and add it to the database
-      const { achievement } = flare;
+      const { notification_message } = flare;
       // Create the sendTime for the notification to be sent 3 seconds from now
       const now = Date.now();
       const sendTime = new Date(now + 3000);
       const newNotification = {
-        message: achievement,
+        message: notification_message,
         send_time: sendTime,
       };
       const notification: any = await Notification.create(newNotification);
