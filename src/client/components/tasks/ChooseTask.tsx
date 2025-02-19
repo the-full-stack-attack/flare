@@ -26,7 +26,7 @@ const difficulties: number[] = [1, 2, 3, 4, 5];
 function ChooseTask() {
   const [isOpen, setIsOpen] = useState(false);
   const [taskInfo, setTaskInfo] = useState<TaskInfo>({
-    type: '',
+    type: 'Normal',
     difficulty: 3,
     date: dayjs(),
   });
