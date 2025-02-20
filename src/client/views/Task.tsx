@@ -55,7 +55,7 @@ function Task() {
             <ChooseTask />
           )}
           <div className="text-2xl font-semibold text-white">Completed Tasks</div>
-          <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60 text-white">
+          <div className="container overflow-auto min-h-40 max-h-60">
             {user.total_tasks_completed ? (
               <CompletedTaskList />
             ) : (
@@ -63,7 +63,7 @@ function Task() {
             )}
           </div>
           <div className="text-xl font-semibold text-white">Opted Out Tasks</div>
-          <div className="container overflow-auto border-2 px-1 rounded-lg min-h-40 max-h-60">
+          <div className="container overflow-auto min-h-40 max-h-60">
             <OptOutList />
           </div>
         </div>

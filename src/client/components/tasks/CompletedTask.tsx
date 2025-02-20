@@ -28,7 +28,7 @@ function CompletedTask({ userTask }: CompletedTaskProps) {
     'MM/DD/YYYY'
   );
   return (
-    <tr className="border-b-2">
+    <tr className="border-b pb-2">
       <td>{`${difficulty} ${type}`}</td>
       <td>{description.slice(0, -1)}</td>
       <td>{dateString}</td>
