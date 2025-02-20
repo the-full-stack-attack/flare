@@ -48,7 +48,7 @@ function Task() {
           <div className="text-md text-white">{`This week: ${user.weekly_task_count}`}</div>
         </div>
           <TaskSidebar />
-        <div className="">
+        <div className="min-w-[50vw]">
           {user.current_task_id ? (
             <TaskDisplay task={task} setShowConfetti={setShowConfetti} />
           ) : (

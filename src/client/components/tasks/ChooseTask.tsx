@@ -98,7 +98,7 @@ function ChooseTask() {
             ))}
           </div>
           Choose a category
-          <div className="grid grid-cols-5 gap-0 lg:grid-cols-15">
+          <div className="grid grid-cols-5 gap-1 lg:grid-cols-15">
             {types.map((type) => (
               <TypeButton
                 key={type}
