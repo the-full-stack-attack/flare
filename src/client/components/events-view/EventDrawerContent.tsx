@@ -89,7 +89,9 @@ function EventDrawerContent({
   const { start_time, end_time, Venue, Category, id } = event;
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white flex items-center';
-
+  
+  const reverseNormalDrawerButton = 'bg-gradient-to-r from-pink-900 via-gray-900 to-black hover:from-pink-700 hover:via-gray-700 hover:to-black text-white flex items-center';
+  
   const warnDrawerButton = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-800 hover:to-orange-800 text-white flex items-center';
 
   const successDrawerButton = 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-700 hover:to-yellow-800 text-white flex items-center';
@@ -122,7 +124,7 @@ function EventDrawerContent({
             </Button>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className={normalDrawerButton}>Schedule Text</Button>
+                <Button className={reverseNormalDrawerButton}>Schedule Text</Button>
               </DialogTrigger>
               <ScheduleTextDialog
                 eventId={event.id}
