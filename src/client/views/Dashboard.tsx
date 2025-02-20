@@ -56,6 +56,7 @@ function Dashboard() {
   const [task, setTask] = useState<Task | object>({});
   const [width, height] = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
+  const [completeDisabled, setCompleteDisabled] = useState(false);
 
   const stats = [
     {
@@ -240,7 +241,12 @@ function Dashboard() {
             transition={{ delay: 0.4 }}
             className="mb-12"
           >
-            <TaskDisplay task={task} setShowConfetti={setShowConfetti} />
+            <TaskDisplay
+              task={task}
+              completeDisabled={completeDisabled}
+              setShowConfetti={setShowConfetti}
+              setCompleteDisabled={setCompleteDisabled}
+            />
           </motion.div>
 
           <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
