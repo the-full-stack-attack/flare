@@ -142,7 +142,7 @@ const socialDynamo: FlareArr = [
   0,
   5,
   'Attend 5 events',
-  '',
+  'You\'ve earned the Social Dynamo Flare for attending 5 events! This Flare is represented by the Fox, a symbol of your charismatic presence, quick wit, and the vibrant connections you forge within the social landscape.',
 ];
 const venueVirtuoso: FlareArr = [
   'Venue Virtuoso',
