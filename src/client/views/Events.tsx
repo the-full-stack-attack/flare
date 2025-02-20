@@ -86,7 +86,7 @@ function Events() {
 
   
   const userInterests = useMemo((): string[] => (
-    user.Interests.map((interest: any) => interest.name)
+    user.Interests.map((interest: { name: string; }) => interest.name)
   ), [user]);
 
   const [interestsFilter, setInterestsFilter] = useState<string[]>(userInterests);
