@@ -15,6 +15,7 @@ function Task() {
   const [task, setTask] = useState<object | null>({});
   const [width, height] = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
+  const [completeDisabled, setCompleteDisabled] = useState(false);
   // Use effect will call getTask if there is a change in user state
   useEffect((): void => {
     // Find the task by the id and set the task in state
@@ -47,22 +48,33 @@ function Task() {
           <div className="text-md text-white px-2">{`Last week: ${user.last_week_task_count}`}</div>
           <div className="text-md text-white">{`This week: ${user.weekly_task_count}`}</div>
         </div>
-          <TaskSidebar />
+        <TaskSidebar />
         <div className="min-w-[50vw]">
           {user.current_task_id ? (
-            <TaskDisplay task={task} setShowConfetti={setShowConfetti} />
+            <TaskDisplay
+              task={task}
+              completeDisabled={completeDisabled}
+              setShowConfetti={setShowConfetti}
+              setCompleteDisabled={setCompleteDisabled}
+            />
           ) : (
             <ChooseTask />
           )}
-          <div className="text-2xl font-semibold text-white">Completed Tasks</div>
+          <div className="text-2xl font-semibold text-white">
+            Completed Tasks
+          </div>
           <div className="container overflow-auto max-h-60">
             {user.total_tasks_completed ? (
               <CompletedTaskList />
             ) : (
-              <center className="text-white">You Have Not Completed Any Tasks</center>
+              <center className="text-white">
+                You Have Not Completed Any Tasks
+              </center>
             )}
           </div>
-          <div className="text-xl font-semibold text-white">Opted Out Tasks</div>
+          <div className="text-xl font-semibold text-white">
+            Opted Out Tasks
+          </div>
           <div className="container overflow-auto min-h-40 max-h-60">
             <OptOutList />
           </div>

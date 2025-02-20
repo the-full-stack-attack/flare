@@ -15,12 +15,15 @@ import {
   DialogTitle,
   DialogDescription,
 } from '../../../components/ui/dialog';
+import { toast, Toaster } from 'sonner';
 import { FaTasks, FaCheckCircle } from 'react-icons/fa';
 
 // Define the props interface
 interface TaskDisplayProps {
   task: Task;
+  completeDisabled: Boolean;
   setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>;
+  setCompleteDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 type Task = {
   id: number;
@@ -31,12 +34,20 @@ type Task = {
   difficulty: number;
 };
 
-function TaskDisplay({ task, setShowConfetti }: TaskDisplayProps) {
-  const [openComplete, setOpenComplete] = useState(false);
+function TaskDisplay({
+  task,
+  completeDisabled,
+  setShowConfetti,
+  setCompleteDisabled,
+}: TaskDisplayProps) {
   const [openOptOut, setOpenOptOut] = useState(false);
   // Function for when a task is complete
   const { user, getUser } = useContext(UserContext);
   const completeTask = (): void => {
+    if (completeDisabled === true) {
+      toast.error("That was too fast! Please wait");
+      return;
+    }
     const userId = user.id;
     const taskId = task.id;
     const config = { ids: { userId, taskId } };
@@ -47,8 +58,10 @@ function TaskDisplay({ task, setShowConfetti }: TaskDisplayProps) {
       })
       .then(() => {
         setShowConfetti(true);
+        setCompleteDisabled(true);
         setTimeout(() => {
           setShowConfetti(false);
+          setCompleteDisabled(false);
         }, 30000);
       })
       .catch((err) => {
@@ -74,6 +87,14 @@ function TaskDisplay({ task, setShowConfetti }: TaskDisplayProps) {
   };
   return (
     <div className="pt-3">
+      <Toaster
+        position="top-center"
+        theme="dark"
+        toastOptions={{
+          style: { backgroundColor: 'red' },
+          className: 'bg-red-500',
+        }}
+      />
       <DialogBox
         isOpen={openOptOut}
         confirm={optOut}
