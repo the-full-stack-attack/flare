@@ -60,19 +60,13 @@ function Task() {
           ) : (
             <ChooseTask />
           )}
-          <div className="text-2xl font-semibold text-white">
+          <div className="text-xl font-semibold text-white pt-3">
             Completed Tasks
           </div>
           <div className="container overflow-auto max-h-60">
-            {user.total_tasks_completed ? (
-              <CompletedTaskList />
-            ) : (
-              <center className="text-white">
-                You Have Not Completed Any Tasks
-              </center>
-            )}
+            <CompletedTaskList />
           </div>
-          <div className="text-xl font-semibold text-white">
+          <div className="text-xl font-semibold text-white pt-3">
             Opted Out Tasks
           </div>
           <div className="container overflow-auto min-h-40 max-h-60">
