@@ -20,6 +20,7 @@ import { FaTasks, FaCheckCircle } from 'react-icons/fa';
 // Define the props interface
 interface TaskDisplayProps {
   task: Task;
+  setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>
 }
 type Task = {
   id: number;
@@ -30,7 +31,7 @@ type Task = {
   difficulty: number;
 };
 
-function TaskDisplay({ task }: TaskDisplayProps) {
+function TaskDisplay({ task, setShowConfetti }: TaskDisplayProps) {
   const [openComplete, setOpenComplete] = useState(false);
   const [openOptOut, setOpenOptOut] = useState(false);
   // Function for when a task is complete
@@ -43,6 +44,12 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       .patch('/api/task/complete', config)
       .then(({ data }) => {
         getUser();
+      })
+      .then(() => {
+        setShowConfetti(true);
+        setTimeout(() => {
+          setShowConfetti(false);
+        }, 30000);
       })
       .catch((err) => {
         console.error('Error completing task/user PATCH: ', err);
@@ -66,7 +73,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       });
   };
   return (
-    <div>
+    <div className="pt-3">
       <DialogBox
         isOpen={openOptOut}
         confirm={optOut}
@@ -108,9 +115,7 @@ function TaskDisplay({ task }: TaskDisplayProps) {
                       Complete
                     </button>
                   </DialogTrigger>
-                  <DialogContent
-                    onCloseAutoFocus={completeTask}
-                  >
+                  <DialogContent>
                     <DialogTitle>TASK COMPLETE</DialogTitle>
                     <DialogDescription>
                       {`Great job completing your task to ${task.description} You've now completed ${user.weekly_task_count + 1} tasks this week!`}

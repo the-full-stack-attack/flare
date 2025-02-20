@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import Confetti from 'react-confetti';
+import { useWindowSize } from '@react-hook/window-size';
 import {
   FaTrophy,
   FaCalendarCheck,
@@ -21,7 +23,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from 'recharts';
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import { UserContext } from '../contexts/UserContext';
@@ -52,6 +54,8 @@ interface Achievement {
 function Dashboard() {
   const { user } = useContext(UserContext);
   const [task, setTask] = useState<Task | object>({});
+  const [width, height] = useWindowSize();
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const stats = [
     {
@@ -59,28 +63,28 @@ function Dashboard() {
       label: 'Total Tasks',
       value: '24',
       icon: FaTasks,
-      color: 'from-purple-500 to-pink-500'
+      color: 'from-purple-500 to-pink-500',
     },
     {
       id: 2,
       label: 'Events',
       value: '12',
       icon: FaCalendarCheck,
-      color: 'from-blue-500 to-cyan-500'
+      color: 'from-blue-500 to-cyan-500',
     },
     {
       id: 3,
       label: 'Achievements',
       value: '8',
       icon: FaTrophy,
-      color: 'from-yellow-500 to-orange-500'
+      color: 'from-yellow-500 to-orange-500',
     },
     {
       id: 4,
       label: 'Progress',
       value: '75%',
       icon: FaRocket,
-      color: 'from-green-500 to-emerald-500'
+      color: 'from-green-500 to-emerald-500',
     },
   ];
 
@@ -106,15 +110,16 @@ function Dashboard() {
   ];
 
   const achievementColors: Record<string, string> = {
-    'FaStar': 'from-yellow-500 to-amber-500',
-    'FaUsers': 'from-blue-500 to-cyan-500',
-    'FaChartLine': 'from-purple-500 to-pink-500'
+    FaStar: 'from-yellow-500 to-amber-500',
+    FaUsers: 'from-blue-500 to-cyan-500',
+    FaChartLine: 'from-purple-500 to-pink-500',
   } as const;
 
   useEffect(() => {
     const { current_task_id } = user;
     if (current_task_id) {
-      axios.get(`/api/task/${current_task_id}`)
+      axios
+        .get(`/api/task/${current_task_id}`)
         .then(({ data }) => {
           setTask(data);
         })
@@ -126,7 +131,14 @@ function Dashboard() {
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
         <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
-
+        {showConfetti && (
+          <Confetti
+            width={width}
+            height={height * 5}
+            numberOfPieces={height * 5}
+            recycle={false}
+          />
+        )}
         <div className="relative z-10 container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-8">
             <motion.div
@@ -154,13 +166,11 @@ function Dashboard() {
                 src={PhoenixLogo}
                 alt="Phoenix"
                 className="w-32 h-32 object-contain"
-                animate={{
-                  y: [0, -10, 0],
-                }}
+                animate={{ y: [0, -10, 0] }}
                 transition={{
                   duration: 4,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: 'easeInOut',
                 }}
               />
               <div>
@@ -168,9 +178,10 @@ function Dashboard() {
                   Rise Like a Phoenix
                 </h3>
                 <p className="text-gray-300 leading-relaxed">
-                  Just as the phoenix rises from the ashes, transformed and renewed,
-                  you too have the power to break free and emerge stronger. Every step
-                  forward is part of your journey to becoming your most authentic self.
+                  Just as the phoenix rises from the ashes, transformed and
+                  renewed, you too have the power to break free and emerge
+                  stronger. Every step forward is part of your journey to
+                  becoming your most authentic self.
                 </p>
               </div>
             </motion.div>
@@ -210,7 +221,9 @@ function Dashboard() {
                             {stat.value}
                           </motion.span>
                         </div>
-                        <h3 className={`font-medium bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+                        <h3
+                          className={`font-medium bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}
+                        >
                           {stat.label}
                         </h3>
                       </div>
@@ -227,7 +240,7 @@ function Dashboard() {
             transition={{ delay: 0.4 }}
             className="mb-12"
           >
-            <TaskDisplay task={task} />
+            <TaskDisplay task={task} setShowConfetti={setShowConfetti} />
           </motion.div>
 
           <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
@@ -249,7 +262,9 @@ function Dashboard() {
                     const Icon = achievement.icon;
                     // Use a simpler approach to get the icon name
                     const iconName = Icon.name || 'FaStar'; // Fallback to FaStar if name is undefined
-                    const colorClass = achievementColors[iconName] || 'from-yellow-500 to-orange-500'; // fallback color
+                    const colorClass =
+                      achievementColors[iconName] ||
+                      'from-yellow-500 to-orange-500'; // fallback color
 
                     return (
                       <motion.div
@@ -260,17 +275,25 @@ function Dashboard() {
                         className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300"
                       >
                         <div className="p-2 rounded-lg bg-white/[0.03]">
-                          <Icon className={`text-xl bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`} />
+                          <Icon
+                            className={`text-xl bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
+                          />
                         </div>
                         <div>
-                          <p className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}>
+                          <p
+                            className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
+                          >
                             {achievement.title}
                           </p>
                           <p className="text-white/60 text-sm">
                             {achievement.description}
                           </p>
-                          <span className={`text-xs ${achievement.earned ? 'text-green-500' : 'text-gray-500'}`}>
-                            {achievement.earned ? '✓ Earned' : '◯ Not Yet Earned'}
+                          <span
+                            className={`text-xs ${achievement.earned ? 'text-green-500' : 'text-gray-500'}`}
+                          >
+                            {achievement.earned
+                              ? '✓ Earned'
+                              : '◯ Not Yet Earned'}
                           </span>
                         </div>
                       </motion.div>

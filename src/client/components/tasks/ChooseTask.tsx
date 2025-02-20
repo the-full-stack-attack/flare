@@ -26,7 +26,7 @@ const difficulties: number[] = [1, 2, 3, 4, 5];
 function ChooseTask() {
   const [isOpen, setIsOpen] = useState(false);
   const [taskInfo, setTaskInfo] = useState<TaskInfo>({
-    type: '',
+    type: 'Normal',
     difficulty: 3,
     date: dayjs(),
   });
@@ -63,7 +63,7 @@ function ChooseTask() {
       });
   };
   return (
-    <div>
+    <div className="pt-3">
       <Toaster
         position="top-center"
         theme="dark"
@@ -98,7 +98,7 @@ function ChooseTask() {
             ))}
           </div>
           Choose a category
-          <div className="grid grid-cols-5 gap-0 lg:grid-cols-15">
+          <div className="grid grid-cols-5 gap-1 lg:grid-cols-15">
             {types.map((type) => (
               <TypeButton
                 key={type}
@@ -109,12 +109,16 @@ function ChooseTask() {
             ))}
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter
+          className="justify-end"
+        >
           <Button
             onClick={() => {
               setIsOpen(true);
             }}
-            variant="secondary"
+            className="px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-white/70 font-medium
+                hover:bg-white/10 hover:text-white transition-all duration-300
+                flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
           >
             Choose Task
           </Button>
