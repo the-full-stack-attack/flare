@@ -4,14 +4,15 @@ import {Toggle} from '@/components/ui/toggle';
 import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem} from '@/components/ui/select';
 import {Separator} from '@/components/ui/seperator';
 import axios from 'axios';
+import {Label} from '@/components/ui/label';
+import {Button} from '@/components/ui/button';
 
 
-function CategoryInterest({handleCategoryInterests}) {
+function CategoryInterest({ handleCategoryInterests, formInfo }) {
+    const [selectedCategory, setSelectedCategory] = useState(formInfo.category || '');
+    const [selectedInterests, setSelectedInterests] = useState(formInfo.interests || []);
     const [categories, setCategories] = useState([]);
     const [interests, setInterests] = useState([]);
-    const [selectedInterests, setSelectedInterests] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState('');
-
 
     useEffect(() => {
         getInterests();
@@ -40,28 +41,31 @@ function CategoryInterest({handleCategoryInterests}) {
         }
     };
 
-    const toggleInterest = (interest) => {
-        const newInterests = selectedInterests.includes(interest)
-            ? selectedInterests.filter(i => i !== interest)
-            : [...selectedInterests, interest];
+    const selectCategory = (category: string) => {
+        setSelectedCategory(category);
+        handleCategoryInterests({
+            category: category,
+            interests: selectedInterests
+        });
+    };
 
+    const handleInterestSelect = (interest: string) => {
+        const newInterests = [...selectedInterests, interest];
         setSelectedInterests(newInterests);
-        // pass updated selections to parent
         handleCategoryInterests({
             category: selectedCategory,
-            interests: newInterests,
+            interests: newInterests
         });
     };
 
-    const selectCategory = (value) => {
-        setSelectedCategory(value);
-        // pass updated selections to parent
+    const handleInterestRemove = (interest: string) => {
+        const newInterests = selectedInterests.filter(i => i !== interest);
+        setSelectedInterests(newInterests);
         handleCategoryInterests({
-            category: value,
-            interests: selectedInterests, // Pass the current interests
+            category: selectedCategory,
+            interests: newInterests
         });
     };
-
 
     return (
         <div className="flex-1">
@@ -80,8 +84,7 @@ function CategoryInterest({handleCategoryInterests}) {
                         value={selectedCategory}
                         onValueChange={selectCategory}
                     >
-                        <SelectTrigger
-                            className="bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white">
+                        <SelectTrigger className="bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white">
                             <SelectValue placeholder="Select A Category"/>
                         </SelectTrigger>
                         <SelectContent className="bg-gray-900/95 border-orange-500/30">
@@ -89,7 +92,7 @@ function CategoryInterest({handleCategoryInterests}) {
                                 <SelectItem
                                     key={category.id}
                                     value={category.name}
-                                    className="text-white hover:bg-orange-500/30 focus:bg-orange-500/30"
+                                    className="text-gray-200 data-[highlighted]:text-white !important data-[highlighted]:bg-orange-500/30 cursor-pointer"
                                 >
                                     {category.name}
                                 </SelectItem>
@@ -98,24 +101,45 @@ function CategoryInterest({handleCategoryInterests}) {
                     </Select>
                 </div>
 
-                <Separator className="border-orange-500/20"/>
+                <div className="space-y-4">
+                    <div>
+                        <Label className="text-gray-200 mb-2 block">
+                            Available Interests
+                        </Label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {interests
+                                .filter(interest => !selectedInterests.includes(interest))
+                                .map((interest, index) => (
+                                    <Button
+                                        key={`interest-${index}`}
+                                        onClick={() => handleInterestSelect(interest)}
+                                        type="button"
+                                        className="w-full bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30"
+                                    >
+                                        {interest}
+                                    </Button>
+                                ))}
+                        </div>
+                    </div>
 
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                    {interests.map((interest, index) => (
-                        <Toggle
-                            key={index}
-                            pressed={selectedInterests.includes(interest)}
-                            onPressedChange={() => toggleInterest(interest)}
-                            variant="outline"
-                            size="lg"
-                            className={`h-12 border-orange-500/30 hover:bg-orange-500/30 
-                                ${selectedInterests.includes(interest)
-                                ? 'bg-orange-500/40 text-white font-medium'
-                                : 'text-gray-100'}`}
-                        >
-                            {interest}
-                        </Toggle>
-                    ))}
+                    <div>
+                        <Label className="text-gray-200 mb-2 block">
+                            Selected Interests
+                        </Label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {selectedInterests.map((interest, index) => (
+                                <Button
+                                    key={`selected-${index}`}
+                                    name="selectedInterest"
+                                    onClick={() => handleInterestRemove(interest)}
+                                    type="button"
+                                    className="w-full bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50"
+                                >
+                                    {interest}
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="text-center">
@@ -125,7 +149,6 @@ function CategoryInterest({handleCategoryInterests}) {
                 </div>
             </div>
         </div>
-
     )
 };
 

@@ -35,7 +35,9 @@ function ScheduleTextDialog({
   const [updateMode, setUpdateMode] = useState<boolean>(false);
 
   const normalDialogButton = 'bg-gradient-to-r from-gray-700 to-pink-700 hover:from-gray-900 hover:to-pink-900 text-white';
-
+  
+  const reverseNormalDialogButton = 'bg-gradient-to-r from-pink-700 to-gray-700 hover:from-pink-900 hover:to-gray-900 text-white';
+  
   const warnDialogButton = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-800 hover:to-orange-800 text-white';
 
   const successDialogButton = 'bg-gradient-to-r from-green-600 to-lime-600 hover:from-green-800 hover:to-lime-800 text-white';
@@ -148,7 +150,7 @@ function ScheduleTextDialog({
   }, [getText]);
 
   return (
-    <DialogContent className="sm:max-w-[425px] bg-gray-600/80 text-white rounded-xl border-transparent">
+    <DialogContent className="sm:max-w-[425px] bg-black/80 text-white rounded-xl border-transparent">
       <DialogHeader>
         <DialogTitle>Schedule a Check-In Text</DialogTitle>
         <DialogDescription className="text-gray-200">
@@ -223,18 +225,18 @@ function ScheduleTextDialog({
         {newTextMode ? (
           <div className="grid grid-cols-2 gap-2">
             <DialogClose asChild>
-              <Button type="submit" className={successDialogButton} onClick={() => {
+              <Button type="submit" className={normalDialogButton} onClick={() => {
                 postPatchText();
                 updateMode ? toast('Scheduled text has been updated.') : toast('A text message has been scheduled.');
               }}>
                 Schedule Text
               </Button>
             </DialogClose>
-            {updateMode ? <Button className={normalDialogButton} onClick={getText}>Cancel</Button> : null}
+            {updateMode ? <Button className={reverseNormalDialogButton} onClick={getText}>Cancel</Button> : null}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2">
-            <Button className={normalDialogButton} onClick={handleUpdateModeTrue}>Update</Button>
+            <Button className={reverseNormalDialogButton} onClick={handleUpdateModeTrue}>Update</Button>
             <DialogClose asChild>
               <Button className={warnDialogButton} onClick={() => {
                 deleteText();

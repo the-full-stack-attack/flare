@@ -60,6 +60,8 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
 
+  const reverseNormalDrawerButton = 'bg-gradient-to-r from-pink-900 via-gray-900 to-black hover:from-pink-700 hover:via-gray-700 hover:to-black text-white flex items-center';
+  
   const tags: string = useMemo(() => (
     Venue_Tags
       .sort((a, b) => b.count - a.count)
@@ -95,20 +97,21 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
       <DrawerHeader>
         <DrawerTitle className="text-xl">
           <div className="grid grid-cols-12">
-            <div>
+            <div className="flex items-center justify-center">
               <button
                 onClick={closeVenueDetails}
+                className="pt-1"
               >
                 <IoArrowBack
                   className="text-black hover:text-gray-700"
                 />
               </button>
             </div>
-            <div className="col-span-11 inline text-center">
+            <div className="col-span-11 flex items-center justify-center">
               {name}
               <TTSButton
                 text={venueDetailsTTS}
-                className="ml-2"
+                className="ml-2 pb-1"
                 iconClassName="text-lg text-black hover:text-gray-700"
               />
             </div>
@@ -138,12 +141,13 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
             website ? (
               <div>
                 <Button
-                  className={normalDrawerButton}
-                  onClick={() => { openInNewTab(website); }} 
+                  className={reverseNormalDrawerButton + ' ' + 'h-[20px] mt-1'}
+                  onClick={() => { openInNewTab(website); }}
+                  title={website}
                 >
-                  Check Website
+                  Visit Website
                 </Button>
-                <p>
+                <p className="truncate">
                   {website.split('/')[2].includes('www.') ? website.split('/')[2].slice(4) : website.split('/')[2]}
                 </p>
               </div>
