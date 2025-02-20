@@ -127,12 +127,12 @@ const theSpark: FlareArr = [
 const multiTasker: FlareArr = [
   'Multitasker',
   'Task Flare',
-  '',
-  "You've completed 5 tasks!",
+  path.join(__dirname, '.', 'flareImages', 'multitasker.png'),
+  'You\'ve completed 5 tasks!',
   0,
   5,
   'Complete 5 tasks',
-  '',
+  'You\'ve earned the Multitasker Flare for successfully completing 5 tasks! This Flare is represented by the Falcon, a symbol of your exceptional focus, unwavering determination, and the efficient way you soar through multiple challenges with precision!',
 ];
 const socialDynamo: FlareArr = [
   'Social Dynamo',
@@ -163,6 +163,7 @@ flareArrays.push(
   theSpark,
   venueVirtuoso,
   socialDynamo,
+  multiTasker,
 );
 
 // Create an object using the arrays above and push the object onto the flares array
