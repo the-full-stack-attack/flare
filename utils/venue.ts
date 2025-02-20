@@ -4,6 +4,42 @@ import dayjs from 'dayjs';
 import {ApifyClient} from 'apify-client';
 
 
+
+// helper function to check if venue from api matches user input
+export const isVenueMatch = (inputVenue: any, apiVenue: any): boolean => {
+    // console.log('checking venue match:');
+    // console.log('input:', {
+    //     name: inputVenue.name,
+    //     address: inputVenue.street_address
+    // });
+    // console.log('api:', {
+    //     name: apiVenue.name || apiVenue.title,
+    //     address: apiVenue.location?.address || apiVenue.street
+    // });
+
+    // clean up venue names and addresses for comparison
+    const inputName = inputVenue.name.toLowerCase().trim();
+    const inputAddress = inputVenue.street_address.toLowerCase().trim();
+
+    const apiName = apiVenue.name?.toLowerCase().trim() ||
+        apiVenue.title?.toLowerCase().trim();
+    const apiAddress = apiVenue.location?.address?.toLowerCase().trim() ||
+        apiVenue.street?.toLowerCase().trim();
+
+    // console.log('comparison:', {
+    //     nameMatch: inputName === apiName,
+    //     addressMatch: inputAddress === apiAddress,
+    //     inputName,
+    //     apiName,
+    //     inputAddress,
+    //     apiAddress
+    // });
+
+    return inputName === apiName && inputAddress === apiAddress;
+}
+
+
+
 // remove duplicate venues helper function - used to remove duplicates from user venue autocomplete search
 export const removeDuplicateVenues = (venues: any) => {
     // object to track venues using name and street address keys
@@ -27,19 +63,23 @@ export const removeDuplicateVenues = (venues: any) => {
 // apify worker/actor that receives a Google Place Id and returns Google Business Data (scrapes data from Google My Business) - uses the Apify SDK
 export const runApifyActor = async (googlePlaceId: any) => {
     try {
+        console.log('initializing apify client...');
         const client = new ApifyClient({
             token: process.env.APIFY_API_KEY,
-        })
+        });
 
+        console.log('calling apify actor with place id:', googlePlaceId);
         // calls our Apify actor 'compass/google-places-api'
         const run = await client.actor("compass/google-places-api").call({
-            // each Apify actor will receive different inputs - these are specific to our Apify actor
             placeIds: [`place_id:${googlePlaceId}`]
         });
 
-        // after our Apify actor runs, it returns various meta data - including defaultDatasetId - the results of our previous call
-        const {items} = await client.dataset(run.defaultDatasetId).listItems(); // retrieve results
-        return items; // return results
+        console.log('got apify run result:', run);
+        // after our Apify actor runs, it returns various meta data
+        const {items} = await client.dataset(run.defaultDatasetId).listItems();
+        console.log('apify items:', items);
+        
+        return items;
 
     } catch (error) {
         console.error('Error running Apify Actor', error);
@@ -54,11 +94,15 @@ export const getGooglePlaceId = async (query: any) => {
         const googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${process.env.GOOGLE_PLACES_API_KEY}`
         const response = await fetch(googlePlacesUrl)
         const data = await response.json();
-        if (!data.results[0].place_id) console.error('Error getting Google Place Id for', query);
-        // const id: any = data.results[0].place_id;
-        return data.results[0].place_id;
+        if (data.results && data.results.length > 0 && data.results[0].place_id) {
+            return data.results[0].place_id;
+        }
+        // if no results are found, log and return null
+        console.warn('No Google Place results found for query: ', query);
+        return null;
     } catch (error) {
         console.error(`Error getting Google Place Id for Venue. ERROR: ${error}`);
+        return null;
     }
 }
 

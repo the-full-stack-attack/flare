@@ -184,7 +184,7 @@ function Event({ event, getEvents }: EventProps) {
           <div className="grid flex justify-center">
             <div className="grid grid-cols-4 gap-2 mb-2 flex items-center justify-center">
               <div className="flex justify-center">
-                {user.id === event.created_by ? <TbHexagonLetterHFilled className="text-yellow-400" /> : null}
+                {user.id === event.created_by ? <TbHexagonLetterHFilled className="text-yellow-400 text-2xl" /> : null}
               </div>
               <div className="col-span-2 flex justify-center">
                 <Drawer>
@@ -202,27 +202,27 @@ function Event({ event, getEvents }: EventProps) {
                 </Drawer>
               </div>
               <div className="flex justify-center">
-                {category === 'attending' ? <TbCircleLetterAFilled className="text-amber-500" /> : null}
-                {category === 'bailed' ? <TbCircleDashedLetterB className="text-red-500" /> : null}
+                {category === 'attending' ? <TbCircleLetterAFilled className="text-amber-500 text-2xl" /> : null}
+                {category === 'bailed' ? <TbCircleDashedLetterB className="text-red-500 text-2xl" /> : null}
               </div>
             </div>
             <div className="grid grid-cols-6 place-content-center">
               <div className="col-span-6 mb-2">
                 <img
-                  className="h-[200px] w-[200px] object-fit cursor-pointer"
+                  className="h-[215px] w-[215px] object-fit cursor-pointer"
                   src={venuePics[venuePicIndex]}
                   onClick={() => { handleVenuePicChange('right'); }}
                 />
               </div>
               <div className="col-span-6 grid grid-cols-subgrid">
                 <button
-                  className="col-start-2 text-left"
+                  className="col-start-2 justify-center"
                   onClick={() => { handleVenuePicChange('left'); }}
                 >
                   <FaAngleLeft className="text-gray-200 hover:text-orange-400" />
                 </button>
                 <button
-                  className="col-start-5 text-right"
+                  className="col-start-5 justify-center"
                   onClick={() => { handleVenuePicChange('right'); }}
                 >
                   <FaAngleRight className="text-gray-200 hover:text-orange-400" />

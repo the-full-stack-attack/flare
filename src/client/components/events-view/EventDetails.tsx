@@ -116,7 +116,7 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
   return (
     <>
       <DrawerHeader>
-        <DrawerTitle className="text-xl inline">
+        <DrawerTitle className="text-xl inline text-center">
           {title}
           <TTSButton
             text={eventDetailsTTS}
@@ -124,7 +124,7 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
             iconClassName="text-lg text-black hover:text-gray-700"
           />
         </DrawerTitle>
-        <DrawerDescription className="text-gray-700 text-md">
+        <DrawerDescription className="text-gray-700 text-md text-center">
           {description}
         </DrawerDescription>
       </DrawerHeader>

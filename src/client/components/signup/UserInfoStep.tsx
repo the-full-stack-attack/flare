@@ -155,7 +155,7 @@ function UserInfoStep({ initialData, onSubmit }) {
                   : 'hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600'
               }`}
             >
-              Continue to Avatar Creation
+              Continue to Select Interests
             </Button>
           </div>
         </form>

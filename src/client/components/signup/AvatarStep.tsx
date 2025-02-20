@@ -36,7 +36,7 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
     mouth: {},
     earrings: {},
   });
-  const [openSection, setOpenSection] = useState('');
+  const [openSection, setOpenSection] = useState('skin');
 
   const avatarOptions = {
     seed: ['Felix'],
@@ -311,10 +311,13 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
       <CardContent>
         <div className="flex flex-col space-y-4">
           <div className="flex justify-center">
-            <img
-              src={avatarUri}
-              className="w-32 h-32 rounded-full border-2 border-orange-500/30"
-            />
+            <div className="relative w-32 h-32">
+              <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,theme(colors.orange.500/0.2)_0%,theme(colors.pink.500/0.1)_50%,transparent_100%)]" />
+              <img
+                src={avatarUri}
+                className="relative w-full h-full rounded-full border-2 border-orange-500/30"
+              />
+            </div>
           </div>
 
           <Collapsible open={openSection === 'skin'}>
@@ -323,7 +326,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Skin Color</Label>
-              {openSection === 'skin' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'skin' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-4 gap-2">
@@ -333,7 +339,7 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
                     onClick={() =>
                       setAvatarItems({ ...avatarItems, skinColor: [color] })
                     }
-                    className={`p-1 rounded-lg ${avatarItems.skinColor[0] === color ? 'ring-2 ring-orange-500' : 'ring-1 ring-orange-500/30'} hover:ring-orange-500/60`}
+                    className={`p-1 rounded-lg flex items-center justify-center ${avatarItems.skinColor[0] === color ? 'ring-2 ring-orange-500' : 'ring-1 ring-orange-500/30'} hover:ring-orange-500/60`}
                   >
                     <img src={previewUris.skin[color]} className="w-16 h-16" />
                   </button>
@@ -348,7 +354,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Hair Style</Label>
-              {openSection === 'hair' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'hair' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
@@ -373,7 +382,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Hair Color</Label>
-              {openSection === 'hairColor' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'hairColor' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
@@ -401,7 +413,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Eyebrows</Label>
-              {openSection === 'eyebrows' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'eyebrows' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
@@ -429,7 +444,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Eyes</Label>
-              {openSection === 'eyes' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'eyes' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
@@ -454,7 +472,10 @@ function AvatarStep({ initialData, onSubmit, onBack }) {
               className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-orange-500/10"
             >
               <Label className="text-gray-200 cursor-pointer">Mouth</Label>
-              {openSection === 'mouth' ? <ChevronUp /> : <ChevronDown />}
+              {openSection === 'mouth' ? 
+                <ChevronUp className="text-orange-500" /> : 
+                <ChevronDown className="text-orange-500" />
+              }
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2">
               <div className="grid grid-cols-5 gap-2">
