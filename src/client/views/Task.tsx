@@ -36,7 +36,7 @@ function Task() {
       {showConfetti && (
         <Confetti
           width={width}
-          height={height}
+          height={height * 2}
           numberOfPieces={height * 2}
           recycle={false}
         />
