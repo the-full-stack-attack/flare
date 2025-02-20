@@ -40,7 +40,7 @@ function CompletedTaskList() {
   return (
     <div className="relative group transition-all duration-300 hover:transform text-white">
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
-      <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl px-3 py-4 overflow-hidden">
+      <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl px-3 py-4 overflow-hidden min-h-40">
         <div className="relative z-10">
           <table className="w-full text-white">
             <thead>
