@@ -20,7 +20,7 @@ import { FaTasks, FaCheckCircle } from 'react-icons/fa';
 // Define the props interface
 interface TaskDisplayProps {
   task: Task;
-  setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>
+  setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>;
 }
 type Task = {
   id: number;
@@ -80,10 +80,10 @@ function TaskDisplay({ task, setShowConfetti }: TaskDisplayProps) {
         stateSetter={setOpenOptOut}
         title="Opt out of Task"
         content="Are you sure you want to opt out of your current task?"
-        cancelText="Cancel"
-        confirmText="Opt Out"
+        cancelText="No"
+        confirmText="Yes"
       />
-      <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
+      <div className="relative group transition-all duration-300 hover:transform">
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
         <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
@@ -109,7 +109,7 @@ function TaskDisplay({ task, setShowConfetti }: TaskDisplayProps) {
                     <button
                       className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
                   hover:from-purple-600 hover:to-pink-600 transition-all duration-300
-                  flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+                  flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] ml-auto"
                     >
                       <FaCheckCircle className="text-white" />
                       Complete
@@ -124,9 +124,9 @@ function TaskDisplay({ task, setShowConfetti }: TaskDisplayProps) {
                       <button
                         onClick={completeTask}
                         className="px-4 py-2 rounded-lg w-20 text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
-                    hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                    hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ml-auto"
                       >
-                      Done
+                        Done
                       </button>
                     </DialogClose>
                   </DialogContent>
