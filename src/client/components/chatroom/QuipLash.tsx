@@ -8,7 +8,7 @@ import React, {
   useId,
 } from 'react';
 import io from 'socket.io-client';
-
+import { BsSend } from 'react-icons/bs';
 import { Application, extend, useAssets } from '@pixi/react';
 import '@pixi/events';
 import {
@@ -49,21 +49,22 @@ extend({
   AnimatedSprite,
 });
 
-const style = new TextStyle({
-  align: 'left',
-  fontFamily: 'sans-serif',
-  fontSize: 17,
-  fontWeight: 'bold',
-  fill: '#000000',
-  stroke: '#eef1f5',
-  letterSpacing: 2,
-  wordWrap: true,
-  wordWrapWidth: 150,
-  breakWords: true,
-});
 
 
 function QuipLash({wantsToPlay}) {
+  const [sizeFactor, setSizeFactor] = useState(1);
+  const style = new TextStyle({
+    align: 'left',
+    fontFamily: 'sans-serif',
+    fontSize: 17 * sizeFactor,
+    fontWeight: 'bold',
+    fill: '#000000',
+    stroke: '#eef1f5',
+    letterSpacing: 2 * sizeFactor,
+    wordWrap: true,
+    wordWrapWidth: 150,
+    breakWords: true,
+  });
 
  useAssets([
     {
@@ -130,11 +131,12 @@ function QuipLash({wantsToPlay}) {
   });
   // EXAMPLES
   const speechBubble = useCallback((graphics: unknown, element) => {
+    // if(sizeFactor )
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, 0, 270);
-    graphics?.scale.set(1, 0.7);
+    graphics?.scale.set(1 * sizeFactor, 0.7 * sizeFactor);
     graphics.cursor = 'pointer';
     graphics.label = 'HELLO';
-  }, []);
+  }, [sizeFactor]);
 
   function onTouchstart(param, e) {
     // console.log(e);
@@ -248,6 +250,14 @@ function QuipLash({wantsToPlay}) {
     socket.emit('vote', e);
     }
   };
+
+  const enlargePrompt = () => {
+    if(sizeFactor === 1){
+    setSizeFactor(1.3);
+    } else {
+      setSizeFactor(1);
+    }
+  }
   return (
    
     <div>
@@ -289,6 +299,10 @@ function QuipLash({wantsToPlay}) {
             )}
              {promptGiven && !answersReceived && !quit && (
                  <pixiContainer
+                 eventMode="static"
+                onPointerDown={() => {
+                  enlargePrompt();
+                }}
                 scale={0.7, 0.7}
                 x={350}
                 y={30}
@@ -350,29 +364,23 @@ function QuipLash({wantsToPlay}) {
         
         {promptGiven && !answersReceived && !quit && (
           <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '11px',
-          }}>
-            <Label className="text-white"> Enter Your Quiplash! </Label>
+          className="flex justify-center">
+              <div
+                className="justify-center items-center"
+              >
+            <Label className="text-white"> Enter A Fun Response! </Label>
+              </div>
+            <div className="relative">
             <Input
               className="bg-white" 
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginTop: '20px',
-              }}
-            >
-              <InteractiveHoverButton onClick={sendMessage}>
-                SUBMIT QUIPLASH
-              </InteractiveHoverButton>
-            </div>
+             <BsSend onClick={sendMessage} className="absolute w-5 h-5 bottom-1.5 right-2.5 text-black hover:text-orange-500" />
+              </div>
+             
+           
           </div>
         )}
 
