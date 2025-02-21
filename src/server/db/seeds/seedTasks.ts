@@ -1,6 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
-import dayjs from 'dayjs';
 import Task from '../models/tasks';
 
 dotenv.config();
@@ -43,7 +42,7 @@ const seedTasks = async () => {
   }
   const now: Date = new Date(); // Gets current local date and time
   // Convert now to Midnight UTC
-  const date = new Date(
+  const date: string = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
   ).toISOString();
   const prompt = `Provide me a task for the categories of Active, Fun, Normal, Duo, and Rejection Therapy with the date of ${date} in ISO String format. I need one task for each difficulty
