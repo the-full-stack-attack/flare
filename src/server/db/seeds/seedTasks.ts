@@ -13,7 +13,7 @@ const model = genAI.getGenerativeModel({
   Do not tell the person how to get to the task destination, simply state where to go for the task. Take into consideration
   the day of the week and that people may have other responsibilities on weekdays. The objects should
   have the following properties: description is a task for the user to do in order to get out of the house,
-  type is a category of task, difficulty is either 1, 2, 3, 4, or 5, completed_count is 0, and date is a provided date.`
+  type is a category of task, difficulty is either 1, 2, 3, 4, or 5, completed_count is 0, and date is a provided date.`,
 });
 
 // Helper to parse the GoogleGenerativeAI response
@@ -28,7 +28,7 @@ const parseTasks = (text: any) => {
   }
   return tasksArr;
 };
-
+let seedRunCount: number = 0;
 const seedTasks = async () => {
   const { count, rows } = await Task.findAndCountAll();
   // Make sure the table isnt empty
@@ -41,26 +41,37 @@ const seedTasks = async () => {
     await Task.destroy({ where: { type: 'Duo' } });
     await Task.destroy({ where: { type: 'Rejection' } });
   }
-  const now = dayjs();
-  const dateFormat = now.format('MM/DD/YYYY');
-  const date = dayjs(dateFormat);
-  const prompt = `Provide me a task for the categories of Active, Fun, Normal, Duo, and Rejection Therapy with the date of ${date} as a dayjs object. I need one task for each difficulty
+  const now: Date = new Date(); // Gets current local date and time
+  // Convert now to Midnight UTC
+  const date = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+  ).toISOString();
+  console.log('Date: ', date);
+  const prompt = `Provide me a task for the categories of Active, Fun, Normal, Duo, and Rejection Therapy with the date of ${date} in ISO String format. I need one task for each difficulty
   level for every category. For the rejection therapy tasks, the 'type' property should be 'Rejection'.`;
-    model
-      .generateContent(prompt)
-      .then(async (result: any) => {
-        const tasks = await parseTasks(result.response.text());
-        Task.bulkCreate(tasks || [{}])
-          .then(() => {
-            console.log('Tasks successfully created!');
-          })
-          .catch((err) => {
-            console.error('Error bulk creating tasks: ', err);
-          });
-      })
-      .catch((err: any) => {
-        console.error('Error from gemini: ', err);
-      });
+  model
+    .generateContent(prompt)
+    .then(async (result: any) => {
+      const tasks = await parseTasks(result.response.text());
+      Task.bulkCreate(tasks || [{}])
+        .then(() => {
+          console.log('Tasks successfully created!');
+        })
+        .catch((err) => {
+          console.error('Error bulk creating tasks: ', err);
+          seedRunCount += 1;
+          if (count <= 5) {
+            seedTasks();
+          }
+        });
+    })
+    .catch((err: any) => {
+      console.error('Error from gemini: ', err);
+      seedRunCount += 1;
+      if (count <= 5) {
+        seedTasks();
+      }
+    });
 };
 
 seedTasks();
