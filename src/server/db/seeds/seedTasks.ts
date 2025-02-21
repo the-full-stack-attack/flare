@@ -57,18 +57,23 @@ const seedTasks = async () => {
           console.log('Tasks successfully created!');
         })
         .catch((err) => {
-          console.error('Error bulk creating tasks: ', err);
           seedRunCount += 1;
-          if (count <= 5) {
+          if (seedRunCount <= 5) {
+            console.error(`Tasking seeding failed, trying again`);
             seedTasks();
+          } else {
+            console.error('Task seed failed too many times in bulkCreate: ', err);
           }
         });
     })
     .catch((err: any) => {
       console.error('Error from gemini: ', err);
       seedRunCount += 1;
-      if (count <= 5) {
+      if (seedRunCount <= 5) {
+        console.error(`Tasking seeding failed, trying again`);
         seedTasks();
+      } else {
+        console.log('Task seed failed too many times due to Gemini: ', err);
       }
     });
 };
