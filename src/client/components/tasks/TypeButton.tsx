@@ -10,13 +10,12 @@ type TypeButtonProps = {
 type TaskInfo = {
   type: string;
   difficulty: number;
-  date: dayjs.Dayjs;
   userId?: number;
 };
 
 function TypeButton({ type, taskInfo, setTaskInfo }: TypeButtonProps) {
   // Function to set the taskInfo type
-  const pickType = (element) => {
+  const pickType = (element: any) => {
     const { id } = element.target;
     const copyTask = { ...taskInfo };
     copyTask.type = id;
@@ -24,7 +23,8 @@ function TypeButton({ type, taskInfo, setTaskInfo }: TypeButtonProps) {
   };
   return (
     <Button
-      variant={taskInfo.type === type ? '' : 'ghost'}
+      className="border rounded-sm border-white/10"
+      variant={taskInfo.type === type ? 'default' : 'ghost'}
       id={type}
       onClick={pickType}
     >

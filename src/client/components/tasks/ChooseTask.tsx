@@ -18,7 +18,6 @@ import { UserContext } from '../../contexts/UserContext';
 type TaskInfo = {
   type: string;
   difficulty: number;
-  date: dayjs.Dayjs;
   userId?: number;
 };
 const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection'];
@@ -26,22 +25,25 @@ const difficulties: number[] = [1, 2, 3, 4, 5];
 function ChooseTask() {
   const [isOpen, setIsOpen] = useState(false);
   const [taskInfo, setTaskInfo] = useState<TaskInfo>({
-    type: '',
+    type: 'Normal',
     difficulty: 3,
-    date: dayjs(),
   });
   const { user, getUser } = useContext(UserContext);
   // Function to assign the chosen task category to the user
   const chooseTask = () => {
     const userId = user.id;
     const copyTask = { ...taskInfo };
-    // Change the time of the date object to midnight and format
-    const formattedDate = taskInfo.date.startOf('day').format('MM/DD/YYYY');
-    copyTask.date = dayjs(formattedDate);
+    const now: Date = new Date(); // Gets current local date and time
+    // Convert now to Midnight UTC
+    const date: string = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+    ).toISOString()
+    // Assing date and userId to copyTask
+    copyTask.date = date;
+    copyTask.userId = userId;
     const config = {
       taskInfo: copyTask,
     };
-    config.taskInfo.userId = userId;
     // Make axios request: UPDATE the users current task AND create a user_task row
     axios
       .post('/api/task', config)
@@ -55,7 +57,7 @@ function ChooseTask() {
         console.error('Error posting task: ', err);
         // Check what what the error was
         if (err.status === 409) {
-          toast.error('You\'ve already attempted that task');
+          toast.error("You've already attempted that task");
           setIsOpen(false);
         } else {
           toast.error('Task not assigned, try again');
@@ -63,7 +65,7 @@ function ChooseTask() {
       });
   };
   return (
-    <div>
+    <div className="pt-3">
       <Toaster
         position="top-center"
         theme="dark"
@@ -81,45 +83,51 @@ function ChooseTask() {
         cancelText="Cancel"
         confirmText="Confirm"
       />
-      <Card className="bg-white/10 shadow-lg ring-1 ring-black/5 border-transparent text-white">
-        <CardHeader>
-          <CardTitle>Choose A Task</CardTitle>
-        </CardHeader>
-        <CardContent>
-          Choose a Difficulty
-          <div className="grid grid-cols-5 gap-1">
-            {difficulties.map((difficulty) => (
-              <DifficultyButton
-                key={difficulty}
-                difficulty={difficulty}
-                taskInfo={taskInfo}
-                setTaskInfo={setTaskInfo}
-              />
-            ))}
+      <div className="relative group transition-all duration-300 hover:transform text-white">
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
+        <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 overflow-hidden">
+
+          <div className="relative z-10">
+            <h3 className="text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent pb-4">
+              Choose a Task
+            </h3>
           </div>
-          Choose a category
-          <div className="grid grid-cols-5 gap-0 lg:grid-cols-15">
-            {types.map((type) => (
-              <TypeButton
-                key={type}
-                type={type}
-                setTaskInfo={setTaskInfo}
-                taskInfo={taskInfo}
-              />
-            ))}
+            Choose a Difficulty
+            <div className="grid grid-cols-5 gap-1">
+              {difficulties.map((difficulty) => (
+                <DifficultyButton
+                  key={difficulty}
+                  difficulty={difficulty}
+                  taskInfo={taskInfo}
+                  setTaskInfo={setTaskInfo}
+                />
+              ))}
+            </div>
+            Choose a category
+            <div className="grid grid-cols-5 gap-1 lg:grid-cols-15">
+              {types.map((type) => (
+                <TypeButton
+                  key={type}
+                  type={type}
+                  setTaskInfo={setTaskInfo}
+                  taskInfo={taskInfo}
+                />
+              ))}
+            </div>
+          <div className="pt-6 pr-6">
+            <Button
+              onClick={() => {
+                setIsOpen(true);
+              }}
+              className="px-6 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
+                  hover:from-purple-600 hover:to-pink-600 transition-all duration-300
+                  flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] ml-auto"
+            >
+              Choose Task
+            </Button>
           </div>
-        </CardContent>
-        <CardFooter>
-          <Button
-            onClick={() => {
-              setIsOpen(true);
-            }}
-            variant="secondary"
-          >
-            Choose Task
-          </Button>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

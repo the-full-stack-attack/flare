@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import dayjs from 'dayjs';
 import { checkForFlares } from '../helpers/flares';
 import User from '../db/models/users';
 import Task from '../db/models/tasks';
@@ -62,8 +61,8 @@ taskRouter.post('/', async (req: any, res: Response) => {
       if (userTask[1] === false) {
         throw new Error('User already attempted task');
       }
-      res.sendStatus(201);
       await user.save();
+      res.sendStatus(201);
     }
   } catch (err: any) {
     console.error('Error in POST to /api/task: ', err);
@@ -129,9 +128,8 @@ taskRouter.patch('/complete', async (req: any, res: Response) => {
       task.completed_count += 1;
       await task.save();
       userTask.completed = true;
-      const date = dayjs().format('MM/DD/YYYY');
-      const newDate = dayjs(date);
-      userTask.date_completed = newDate;
+      const date = new Date().toISOString();
+      userTask.date_completed = date;
       await userTask.save();
       checkForFlares(user);
       res.status(200).send(user);

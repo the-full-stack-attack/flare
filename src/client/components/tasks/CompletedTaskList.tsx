@@ -38,20 +38,33 @@ function CompletedTaskList() {
       });
   }, [user]);
   return (
-    <table className="w-full">
-      <thead>
-        <tr className="border-b-4">
-          <th className="text-left">Type</th>
-          <th className="text-left">Task</th>
-          <th className="text-left">Completed</th>
-        </tr>
-      </thead>
-      <tbody>
-        {completedTasks.map((userTask) => (
-          <CompletedTask key={userTask.TaskId} userTask={userTask} />
-        ))}
-      </tbody>
-    </table>
+    <div className="relative group transition-all duration-300 hover:transform text-white">
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
+      <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl px-3 py-4 overflow-hidden min-h-40">
+        <div className="relative z-10">
+          {user.total_tasks_completed ? (
+            <table className="w-full text-white">
+              <thead>
+                <tr className="border-b-2">
+                  <th className="text-left">Type</th>
+                  <th className="text-left">Task</th>
+                  <th className="text-left">Completed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {completedTasks.map((userTask) => (
+                  <CompletedTask key={userTask.TaskId} userTask={userTask} />
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <center className="text-white">
+              You Have Not Completed Any Tasks
+            </center>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

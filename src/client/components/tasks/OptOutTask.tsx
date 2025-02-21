@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import dayjs from 'dayjs';
 
 type CompletedTaskProps = {
   userTask: UserTask;
@@ -9,7 +8,7 @@ type CompletedTaskProps = {
 type UserTask = {
   completed?: boolean;
   overall_rating?: number;
-  date_completed: dayjs.Dayjs;
+  date_completed: string | null;
   opted_out?: boolean;
   UserId: number;
   TaskId: number;
@@ -20,7 +19,7 @@ type Task = {
   description: string;
   type: string;
   completed_count: number;
-  date: dayjs.Dayjs | '';
+  date: string;
   difficulty: number;
 };
 function OptOutTask({ userTask, setIsOpen, setRetryTask }: CompletedTaskProps) {
@@ -32,7 +31,7 @@ function OptOutTask({ userTask, setIsOpen, setRetryTask }: CompletedTaskProps) {
   }
   return (
     <>
-      <tr className="border-b-2 hover:bg-gray-500 hover:bg-opacity-50 hover:cursor-pointer" onClick={rowClick}>
+      <tr className="border-b hover:bg-gray-500 hover:bg-opacity-50 hover:cursor-pointer pb-1" onClick={rowClick}>
         <td>{`${difficulty} ${type}`}</td>
         <td>{description.slice(0, -1)}</td>
       </tr>

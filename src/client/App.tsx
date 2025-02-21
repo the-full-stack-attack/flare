@@ -36,7 +36,7 @@ export default function App() {
   const getUser = () => {
     axios
       .get('/api/user')
-      .then(({ data }: any) => {
+      .then(({ data }: { data: UserType; }) => {
         setUser(data);
         setIsAuthenticated(true);
       })

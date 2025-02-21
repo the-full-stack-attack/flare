@@ -15,11 +15,15 @@ import {
   DialogTitle,
   DialogDescription,
 } from '../../../components/ui/dialog';
+import { toast, Toaster } from 'sonner';
 import { FaTasks, FaCheckCircle } from 'react-icons/fa';
 
 // Define the props interface
 interface TaskDisplayProps {
   task: Task;
+  completeDisabled: Boolean;
+  setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>;
+  setCompleteDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 type Task = {
   id: number;
@@ -30,12 +34,20 @@ type Task = {
   difficulty: number;
 };
 
-function TaskDisplay({ task }: TaskDisplayProps) {
-  const [openComplete, setOpenComplete] = useState(false);
+function TaskDisplay({
+  task,
+  completeDisabled,
+  setShowConfetti,
+  setCompleteDisabled,
+}: TaskDisplayProps) {
   const [openOptOut, setOpenOptOut] = useState(false);
   // Function for when a task is complete
   const { user, getUser } = useContext(UserContext);
   const completeTask = (): void => {
+    if (completeDisabled === true) {
+      toast.error("That was too fast! Please wait");
+      return;
+    }
     const userId = user.id;
     const taskId = task.id;
     const config = { ids: { userId, taskId } };
@@ -43,6 +55,14 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       .patch('/api/task/complete', config)
       .then(({ data }) => {
         getUser();
+      })
+      .then(() => {
+        setShowConfetti(true);
+        setCompleteDisabled(true);
+        setTimeout(() => {
+          setShowConfetti(false);
+          setCompleteDisabled(false);
+        }, 30000);
       })
       .catch((err) => {
         console.error('Error completing task/user PATCH: ', err);
@@ -66,17 +86,25 @@ function TaskDisplay({ task }: TaskDisplayProps) {
       });
   };
   return (
-    <div>
+    <div className="pt-3">
+      <Toaster
+        position="top-center"
+        theme="dark"
+        toastOptions={{
+          style: { backgroundColor: 'red' },
+          className: 'bg-red-500',
+        }}
+      />
       <DialogBox
         isOpen={openOptOut}
         confirm={optOut}
         stateSetter={setOpenOptOut}
         title="Opt out of Task"
         content="Are you sure you want to opt out of your current task?"
-        cancelText="Cancel"
-        confirmText="Opt Out"
+        cancelText="No"
+        confirmText="Yes"
       />
-      <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
+      <div className="relative group transition-all duration-300 hover:transform">
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
         <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
@@ -102,15 +130,13 @@ function TaskDisplay({ task }: TaskDisplayProps) {
                     <button
                       className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
                   hover:from-purple-600 hover:to-pink-600 transition-all duration-300
-                  flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+                  flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] ml-auto"
                     >
                       <FaCheckCircle className="text-white" />
                       Complete
                     </button>
                   </DialogTrigger>
-                  <DialogContent
-                    onCloseAutoFocus={completeTask}
-                  >
+                  <DialogContent>
                     <DialogTitle>TASK COMPLETE</DialogTitle>
                     <DialogDescription>
                       {`Great job completing your task to ${task.description} You've now completed ${user.weekly_task_count + 1} tasks this week!`}
@@ -119,9 +145,9 @@ function TaskDisplay({ task }: TaskDisplayProps) {
                       <button
                         onClick={completeTask}
                         className="px-4 py-2 rounded-lg w-20 text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
-                    hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                    hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ml-auto"
                       >
-                      Done
+                        Done
                       </button>
                     </DialogClose>
                   </DialogContent>

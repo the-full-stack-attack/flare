@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 
 import { Input } from '@/components/ui/input';
 
+type InputChangeEvent = React.ChangeEvent<HTMLInputElement>;
+type ButtonClickEvent = React.MouseEvent<HTMLButtonElement>;
+
 type GeoPosition = {
   coords: {
     latitude: number;
@@ -92,11 +95,11 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
     setChangeLocFilter(!changeLocFilter);
   };
 
-  const handleCityInput = ({ target }: any) => {
+  const handleCityInput = ({ target }: InputChangeEvent) => {
     setCity(target.value);
   };
 
-  const handleStateInput = ({ target }: any) => {
+  const handleStateInput = ({ target }: InputChangeEvent) => {
     setState(target.value);
   };
 
@@ -131,8 +134,6 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
     getLocation();
   }, [geoLocation]);
 
-  console.log()
-
   return (
     <div className="container mx-auto px-4 mt-4">
       <p className="text-gray-200">
@@ -147,11 +148,11 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
         <div className="mt-2 grid grid-cols-2 gap-4">
           <Button
             className={'col-span-2 ' + buttonColor}
-            onClick={({ target }: any) => {
-              if (target.innerText === 'Cancel') {
+            onClick={({ target }: ButtonClickEvent) => {
+              if ((target as HTMLButtonElement).innerText === 'Cancel') {
                 toggleChangeLocFilter();
               }
-              if (target.innerText === 'Current Location') {
+              if ((target as HTMLButtonElement).innerText === 'Current Location') {
                 handleResetLocFilter();
               }
             }}
@@ -182,11 +183,11 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
           />
           <Button
             className={'col-span-2 ' + buttonColor}
-            onClick={({ target }: any) => {
-              if (target.innerText === 'Remove Filter') {
+            onClick={({ target }: ButtonClickEvent) => {
+              if ((target as HTMLButtonElement).innerText === 'Remove Filter') {
                 handleClearLocFilter();
               }
-              if (target.innerText === 'Set Filter') {
+              if ((target as HTMLButtonElement).innerText === 'Set Filter') {
                 handleSubmitLocFilter();
               }
             }}

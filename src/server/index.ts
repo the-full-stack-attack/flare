@@ -9,6 +9,8 @@ import './db/models/index';
 import { data } from 'react-router';
 import './workers/tasks'; // Tasks Worker
 import './workers/texts'; // Texts Worker
+import './workers/events'; // Events Worker
+import './workers/eventFlares'; // Flares Worker
 import { type SocketList, PlayerList, QuiplashList, QuiplashGames } from '../types/Players';
 import initializeSocket from './socket';
 
