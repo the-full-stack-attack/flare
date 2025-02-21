@@ -14,7 +14,7 @@ type UserEvent = {
   EventId: Number;
 }
 
-cron.schedule('29 * * * *', async () => {
+cron.schedule('0,29 * * * *', async () => {
   // Grab the events that have started in the last hour
   const now = Date.now();
   const events: any = await Event.findAll({ where: {
