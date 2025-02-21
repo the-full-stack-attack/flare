@@ -140,7 +140,7 @@ function CreateEvents() {
                 description: formInfo.description,
                 category: formInfo.category,
                 interests: formInfo.interests,
-                // startDate: new Date(`${formInfo.startDate}T${formInfo.startTime}`).toISOString(),
+                startDate: new Date(`${formInfo.startDate}T${formInfo.startTime}`).toISOString(),
                 startTime: new Date(`${formInfo.startDate}T${formInfo.startTime}`).toISOString(),
                 endTime: new Date(`${formInfo.startDate}T${formInfo.endTime}`).toISOString(),
                 venue: formInfo.venue,
@@ -151,6 +151,9 @@ function CreateEvents() {
                 stateName: formInfo.stateName.toUpperCase(),
                 fsq_id: formInfo.fsq_id,
             };
+            console.log('sending: ', formattedData.startDate);
+            console.log('also ', formattedData.startTime);
+            console.log('and ', formattedData.endTime);
             await axios.post('/api/event', formattedData);
             setStep(1);
             setFormInfo({
