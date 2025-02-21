@@ -94,8 +94,6 @@ const createTasks = () => {
     });
 };
 
-createTasks();
-
 type UserType = {
   id: number;
   username: string;
