@@ -20,6 +20,7 @@ import QuipLash from '../components/chatroom/QuipLash';
 import MsgBox from '../components/chatroom/MsgBox';
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
+import IDLE from '../assets/chatroom/idle/index';
 import mapPack from '../assets/chatroom/mapPack';
 import { BsSend } from 'react-icons/bs';
 import {
@@ -81,6 +82,7 @@ function Chatroom() {
   const { user } = useContext(UserContext);
   const location = useLocation();
   const start_time = location.state;
+
   const [gameLoaded, setGameLoaded] = useState(false);
   // LOAD ASSETS
   // const { assets, successfulLoad } = 
@@ -201,8 +203,14 @@ function Chatroom() {
     {  alias: '102', src: TILES['102'], }, 
     {  alias: '103', src: TILES['103'], }, 
     {  alias: '104', src: TILES['104'], }, 
+    {  alias: '105', src: IDLE['105']},
+    {  alias: '106', src: IDLE['106']},
+    {  alias: '107', src: IDLE['107']},
+    {  alias: '108', src: IDLE['108']},
+    {  alias: '109', src: IDLE['109']},
   ])
   const { assets, isSuccess }  = useAssets(arrayForUse);
+  
   const [ lobby, setLobby ] = useState([user]);
   // const {
   //   assets: [texture],
@@ -224,12 +232,14 @@ function Chatroom() {
   const [allMessages, setAllMessages] = useState([]);
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
+  const spriteRef = useRef(null);
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
   const [avatarImage, setAvatarImage] = useState<string | null>(user.avatar_uri);
   const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
-  
+  const [textures, setTextures] = useState([]);
+const [isReady, setIsReady] = useState(false);
     useEffect(() => {
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
       for(let player in PLAYER_LIST ){
@@ -344,7 +354,25 @@ function Chatroom() {
   const typing = async () => {
     await setIsTyping(true);
   };
+  //////////////////////////////////////////////////
 
+  useEffect(() => {
+    if (spriteRef.current && isReady) {
+      spriteRef.current.play(); // Explicitly start animation
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      const loadedTextures = [
+        assets['107'], assets['108'], assets['109'], assets['110'], assets['111'], 
+      ];
+      setTextures(loadedTextures);
+      setIsReady(true); // Once textures are ready, set the state to true
+    }
+  }, [isSuccess, assets]); // Re-run when assets load
+  
+///////////////////////////////////////////
   const notTyping = async () =>{
     await setIsTyping(false);
   }
@@ -463,6 +491,7 @@ function Chatroom() {
           ))
             }
             {allPlayers.map((player) => (
+              
               <pixiContainer 
               x={player.x} 
               y={player.y} 
@@ -473,7 +502,7 @@ function Chatroom() {
                   <pixiGraphics 
                   draw={speechBubble} 
                   key= {crypto.randomUUID()}
-                />
+                  />
                 )}
                 {player.sentMessage && (
                   <pixiText
@@ -486,15 +515,6 @@ function Chatroom() {
                     style={styleMessage}
                   />
                 )}
-                <pixiSprite
-                  texture={Assets.get('bunny')}
-                  x={0}
-                  y={0}
-                  scale={scaleFactor, scaleFactor}
-                  width={22}
-                  height={22}
-                  key={player.id}
-                />
                 <pixiText
                   text={player.username}
                   anchor={0.5}
@@ -502,7 +522,7 @@ function Chatroom() {
                   x={10}
                   y={40}
                   style={ styleUserName }
-                />
+                  />
                 <pixiSprite
               texture={Assets.get(player.username)}
               x={0}
@@ -513,11 +533,33 @@ function Chatroom() {
               >
 
               </pixiSprite>
+                {isReady && 
+                 <pixiAnimatedSprite
+       textures={textures}
+       x={-18.6}
+       y={-21}
+       ref={(spriteRef) => {
+         spriteRef?.play()
+       }}
+       initialFrame={0}
+       animationSpeed={0.05}
+       loop={true}
+       scale={{ x: scaleFactor, y: scaleFactor }}
+  
+     /> }
+                  {/* <pixiContainer>
+                <pixiSprite
+                  textures={ Assets.get('77') }
+                  x={0}
+                  y={0}
+                  scale={scaleFactor, scaleFactor}
+                  width={25}
+                  height={25}
+                />
+              </pixiContainer> */}
               </pixiContainer>
             ))} 
-            <pixiContainer>
               
-            </pixiContainer>
           </Application>
             } 
           </div>
