@@ -24,7 +24,6 @@ cron.schedule('0,29 * * * *', async () => {
   }});
   // Find all the user_events for each event
   events.forEach((event: any) => {
-    console.log('Current event: ', event);
     updateUserAttended(event.id);
   })
   // Update the user_attended to true
@@ -39,8 +38,6 @@ async function updateUserAttended(eventId: number): Promise<void> {
   const userEvents: any = await User_Event.findAll({ where: { EventId: eventId, user_attending: true }});
   // Change each userEvents element user_attended to true
   userEvents.forEach(async (userEvent: any) => {
-    console.log('EventId: ', eventId);
-    console.log('Current userEvent: ', userEvent);
     userEvents.user_attended = true;
     await userEvent.save();
   })

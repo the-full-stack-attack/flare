@@ -46,6 +46,7 @@ async function countUsersEvents(userId: number) {
   });
   // Count the number of events the user has attended
   const userEventsCount = usersEvents.length;
+  console.log(`userEventsCount = ${userEventsCount}`);
   if (userEventsCount === 1) {
     checkForFlares(user, 'The Spark');
   } else if (userEventsCount && userEventsCount % 5 === 0) {

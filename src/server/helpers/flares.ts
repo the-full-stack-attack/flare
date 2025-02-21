@@ -54,6 +54,7 @@ async function checkForFlares(user: UserType, flareName: string | void) {
   }
   // If the flareName is given then we know the name of the flare to send
   if (flareName) {
+    console.log(`Looking for ${flareName}`);
     sendFlareByName(flareName);
     return;
   }
@@ -103,6 +104,7 @@ async function checkForFlares(user: UserType, flareName: string | void) {
 }
 // Function to find and sendFlare
 async function findFlare(type: string, milestone: number, user: UserType) {
+  console.log(`findFlare invoked with ${type} ${milestone}`);
   try {
     const flareToSend: any = await Flare.findOne({
       where: { type, milestone },
