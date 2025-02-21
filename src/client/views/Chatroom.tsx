@@ -21,6 +21,7 @@ import MsgBox from '../components/chatroom/MsgBox';
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
 import IDLE from '../assets/chatroom/idle/index';
+import WALK from '../assets/chatroom/walk/index';
 import mapPack from '../assets/chatroom/mapPack';
 import { BsSend } from 'react-icons/bs';
 import {
@@ -208,6 +209,12 @@ function Chatroom() {
     {  alias: '107', src: IDLE['107']},
     {  alias: '108', src: IDLE['108']},
     {  alias: '109', src: IDLE['109']},
+    { alias: '110', src: WALK['110']},
+    { alias: '111', src: WALK['111']},
+    { alias: '112', src: WALK['112']},
+    { alias: '113', src: WALK['113']},
+    { alias: '114', src: WALK['114']},
+    { alias: '115', src: WALK['115']},
   ])
   const { assets, isSuccess }  = useAssets(arrayForUse);
   
@@ -239,6 +246,7 @@ function Chatroom() {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   const [textures, setTextures] = useState([]);
+  const [walkTextures, setWalkTextures] = useState([]);
 const [isReady, setIsReady] = useState(false);
     useEffect(() => {
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
@@ -315,6 +323,7 @@ const [isReady, setIsReady] = useState(false);
             sentMessage: data[i].sentMessage,
             currentMessage: data[i].currentMessage,
             room: data[i].room,
+            isWalking: data[i].isWalking,
           });
         //   console.log(allPlayerInfo, 'ok');
      
@@ -367,7 +376,11 @@ const [isReady, setIsReady] = useState(false);
       const loadedTextures = [
         assets['107'], assets['108'], assets['109'], assets['110'], assets['111'], 
       ];
+      const loadedWalkTextures = [
+        assets['112'], assets['113'], assets['114'], assets['115'], assets['116'], 
+      ]
       setTextures(loadedTextures);
+      setWalkTextures(loadedWalkTextures);
       setIsReady(true); // Once textures are ready, set the state to true
     }
   }, [isSuccess, assets]); // Re-run when assets load
@@ -533,7 +546,7 @@ const [isReady, setIsReady] = useState(false);
               >
 
               </pixiSprite>
-                {isReady && 
+                {isReady && !player.isWalking &&
                  <pixiAnimatedSprite
        textures={textures}
        x={-18.6}
@@ -542,7 +555,21 @@ const [isReady, setIsReady] = useState(false);
          spriteRef?.play()
        }}
        initialFrame={0}
-       animationSpeed={0.05}
+       animationSpeed={0.1}
+       loop={true}
+       scale={{ x: scaleFactor, y: scaleFactor }}
+  
+     /> }
+     {isReady && player.isWalking &&
+                 <pixiAnimatedSprite
+       textures={walkTextures}
+       x={-18.6}
+       y={-21}
+       ref={(spriteRef) => {
+         spriteRef?.play()
+       }}
+       initialFrame={0}
+       animationSpeed={0.1}
        loop={true}
        scale={{ x: scaleFactor, y: scaleFactor }}
   
