@@ -14,6 +14,7 @@ import { checkForFlares, findFlare } from '../helpers/flares';
  */
 
 cron.schedule('1,30 * * * *', async () => {
+  console.log('Event Flares worker working')
   // Create a Date to query by
   const now: number = Date.now();
   // Find all the events that have started in the last hour
