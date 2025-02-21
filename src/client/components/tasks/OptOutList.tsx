@@ -9,7 +9,7 @@ type OptedOutTasks = UserTask[];
 type UserTask = {
   completed?: boolean;
   overall_rating?: number;
-  date_completed: dayjs.Dayjs;
+  date_completed: string | null;
   opted_out?: boolean;
   UserId: number;
   TaskId: number;
@@ -20,7 +20,7 @@ type Task = {
   description: string;
   type: string;
   completed_count: number;
-  date: dayjs.Dayjs | '';
+  date: string;
   difficulty: number;
 };
 function OptOutList() {
@@ -28,7 +28,7 @@ function OptOutList() {
   const [optedOutTasks, setOptedOutTasks] = useState<OptedOutTasks>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [retryingTask, setRetryTask] = useState<UserTask>({
-    date_completed: dayjs(),
+    date_completed: null,
     UserId: 0,
     TaskId: 0,
     Task: {
@@ -36,7 +36,7 @@ function OptOutList() {
       description: '',
       type: '',
       completed_count: 0,
-      date: dayjs(),
+      date: '',
       difficulty: 3,
     },
   });
