@@ -7,19 +7,19 @@ import { findFlare } from '../helpers/flares';
 /***
  * This worker will be in charge of checking to see if a user has earned an event flare
  * Steps:
- * => See what events are occuring and grab the ids
+ * => See what events are occurring and grab the ids
  * => Use the event id to grab the users attending those events
  * => Check how many events that user has attended before
  */
 
-cron.schedule('*/30 * * * *', async () => {
+cron.schedule('30 * * * *', async () => {
   // Create a Date to query by
   const now: number = Date.now();
-  // Find all the events between now and 45 minutes ago
+  // Find all the events that have started in the last hour
   const events: any = await Event.findAll({
     where: {
       start_time: {
-        [Op.between]: [new Date(now - 1000 * 45 * 10), new Date(now)],
+        [Op.between]: [new Date(now - 1000 * 60 * 61), new Date(now)],
       },
     },
   });
