@@ -62,6 +62,12 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
 
   const reverseNormalDrawerButton = 'bg-gradient-to-r from-pink-900 via-gray-900 to-black hover:from-pink-700 hover:via-gray-700 hover:to-black text-white flex items-center';
   
+  const scrollbarStyle = `
+    [&::-webkit-scrollbar]:[width:15px]
+    [&::-webkit-scrollbar-thumb]:bg-gradient-to-br from-pink-900/50 via-gray-900/50 to-black/50 hover:from-pink-900/80 hover:via-gray-900/80 hover:to-black/80
+    [&::-webkit-scrollbar-thumb]:rounded-lg
+  `;
+
   const tags: string = useMemo(() => (
     Venue_Tags
       .sort((a, b) => b.count - a.count)
@@ -119,7 +125,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
         </DrawerTitle>
         <DrawerDescription className="text-gray-700 text-md">{description}</DrawerDescription>
       </DrawerHeader>
-      <div className="p-4 pb-0 max-h-[300px] overflow-y-scroll">
+      <div className={'p-4 pb-0 max-h-[300px] overflow-y-scroll ' + scrollbarStyle}>
         <div className="grid grid-cols-2 gap-2 flex-wrap">
           {/* <div className="col-span-2">
             <b>Address:</b>
@@ -180,7 +186,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
           {
             serves_alcohol !== null ? (
               <div>
-                <b>Serves Alcohol?</b>
+                <b>Serves Alcohol:</b>
                 <p>{serves_alcohol ? 'Yes' : 'No'}</p>
               </div>
             ) : null
@@ -188,7 +194,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
           {
             wheelchair_accessible !== null ? (
               <div>
-                <b>Wheelchair Accessible?</b>
+                <b>Wheelchair Accessible:</b>
                 <p>{wheelchair_accessible ? 'Yes' : 'No'}</p>
               </div>
             ) : null

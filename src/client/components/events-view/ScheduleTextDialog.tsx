@@ -161,9 +161,20 @@ function ScheduleTextDialog({
           an out if you need to leave.
         </DialogDescription>
       </DialogHeader>
-      <div className="grid gap-4 py-4">
+      <div className="grid gap-4 py-1">
+        <div>
+          <p><b>Event:</b> {eventTitle}</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <p><b>Date:</b> {`${dayjs(startTime).format('MMMM D, YYYY')}`}</p>
+            </div>
+            <div>
+              <p><b>Time:</b> {`${dayjs(startTime).format('h:mm A')} - ${dayjs(endTime).format('h:mm A')}`}</p>
+            </div>
+          </div>
+        </div>
         <Label htmlFor="Send Time" className="text-left">
-          Send a Text In
+          Send a Text During the Event
         </Label>
         <RadioGroup defaultValue={sendTime} disabled={!newTextMode}>
           {
@@ -177,7 +188,7 @@ function ScheduleTextDialog({
                   className="focus:bg-white text-white"
                   onClick={handleSendTimeSelect}
                 />
-                <Label htmlFor="30-minutes">{`30 minutes [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 30)).format('h:mm A')}]`}</Label>
+                <Label htmlFor="30-minutes">{`30 minutes into the event [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 30)).format('h:mm A')}]`}</Label>
               </div>
             ) : null
           }
@@ -192,7 +203,7 @@ function ScheduleTextDialog({
                   className="focus:bg-white text-white"
                   onClick={handleSendTimeSelect}
                 />
-                <Label htmlFor="1-hour">{`1 hour [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 1)).format('h:mm A')}]`}</Label>
+                <Label htmlFor="1-hour">{`1 hour into the event [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 1)).format('h:mm A')}]`}</Label>
               </div>
             ) : null
           }
@@ -207,13 +218,13 @@ function ScheduleTextDialog({
                   className="focus:bg-white text-white"
                   onClick={handleSendTimeSelect}
                 />
-                <Label htmlFor="2-hours">{`2 hours [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 2)).format('h:mm A')}]`}</Label>
+                <Label htmlFor="2-hours">{`2 hours into the event [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 2)).format('h:mm A')}]`}</Label>
               </div>
             ) : null
           }
         </RadioGroup>
       </div>
-      <div className="grid gap-4 py-4">
+      <div className="grid gap-4 py-1">
         <Label htmlFor="message" className="text-left">
           Custom Message
         </Label>
