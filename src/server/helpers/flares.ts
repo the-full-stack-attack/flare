@@ -206,4 +206,4 @@ const getImageUrl = async (imageKey: string): Promise<string> => {
   }
 };
 
-export { checkForFlares, getImageUrl };
+export { checkForFlares, getImageUrl, findFlare };
