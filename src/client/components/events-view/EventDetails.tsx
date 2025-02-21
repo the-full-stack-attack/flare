@@ -90,6 +90,12 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
 
   const reverseNormalDrawerButton = 'bg-gradient-to-r from-pink-900 via-gray-900 to-black hover:from-pink-700 hover:via-gray-700 hover:to-black text-white flex items-center';
   
+  const scrollbarStyle = `
+    [&::-webkit-scrollbar]:[width:15px]
+    [&::-webkit-scrollbar-thumb]:bg-gradient-to-br from-pink-900/50 via-gray-900/50 to-black/50 hover:from-pink-900/80 hover:via-gray-900/80 hover:to-black/80
+    [&::-webkit-scrollbar-thumb]:rounded-lg
+  `;
+
   const eventDetailsTTS = useMemo(() => {
     let text = `
       Event Title: ${title}
@@ -130,7 +136,7 @@ function EventDetails({ event, openVenueDetails }: EventDetailsProps) {
           {description}
         </DrawerDescription>
       </DrawerHeader>
-      <div className="p-4 pb-0 max-h-[300px] overflow-y-scroll">
+      <div className={'p-4 pb-0 max-h-[300px] overflow-y-scroll ' + scrollbarStyle}>
         <div className="grid grid-cols-2 gap-2">
           <div>
             <b>Date:</b>
