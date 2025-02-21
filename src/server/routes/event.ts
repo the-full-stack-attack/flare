@@ -104,9 +104,9 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         } = req.body;
         let { cityName } = req.body;
         const userId = req.user.id;
-        console.log('we received: ', startDate);
-        console.log('and ', startTime);
-        console.log('finally ', endTime);
+        // console.log('we received: ', startDate);
+        // console.log('and ', startTime);
+        // console.log('finally ', endTime);
 
         // convert the date and times into proper format for db
         // const start_time = dayjs(`${startDate} ${startTime}`).format('YYYY-MM-DD HH:mm:ss');

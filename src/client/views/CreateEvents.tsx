@@ -151,9 +151,9 @@ function CreateEvents() {
                 stateName: formInfo.stateName.toUpperCase(),
                 fsq_id: formInfo.fsq_id,
             };
-            console.log('sending: ', formattedData.startDate);
-            console.log('also ', formattedData.startTime);
-            console.log('and ', formattedData.endTime);
+            // console.log('sending: ', formattedData.startDate);
+            // console.log('also ', formattedData.startTime);
+            // console.log('and ', formattedData.endTime);
             await axios.post('/api/event', formattedData);
             setStep(1);
             setFormInfo({

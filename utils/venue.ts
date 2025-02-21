@@ -63,21 +63,21 @@ export const removeDuplicateVenues = (venues: any) => {
 // apify worker/actor that receives a Google Place Id and returns Google Business Data (scrapes data from Google My Business) - uses the Apify SDK
 export const runApifyActor = async (googlePlaceId: any) => {
     try {
-        console.log('initializing apify client...');
+        // console.log('initializing apify client...');
         const client = new ApifyClient({
             token: process.env.APIFY_API_KEY,
         });
 
-        console.log('calling apify actor with place id:', googlePlaceId);
+        // console.log('calling apify actor with place id:', googlePlaceId);
         // calls our Apify actor 'compass/google-places-api'
         const run = await client.actor("compass/google-places-api").call({
             placeIds: [`place_id:${googlePlaceId}`]
         });
 
-        console.log('got apify run result:', run);
+        // console.log('got apify run result:', run);
         // after our Apify actor runs, it returns various meta data
         const {items} = await client.dataset(run.defaultDatasetId).listItems();
-        console.log('apify items:', items);
+        // console.log('apify items:', items);
         
         return items;
 
