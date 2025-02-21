@@ -46,7 +46,6 @@ const seedTasks = async () => {
   const date = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
   ).toISOString();
-  console.log('Date: ', date);
   const prompt = `Provide me a task for the categories of Active, Fun, Normal, Duo, and Rejection Therapy with the date of ${date} in ISO String format. I need one task for each difficulty
   level for every category. For the rejection therapy tasks, the 'type' property should be 'Rejection'.`;
   model
