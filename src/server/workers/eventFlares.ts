@@ -2,7 +2,8 @@ import { Op } from 'sequelize';
 import cron from 'node-cron';
 import User_Event from '../db/models/users_events';
 import Event from '../db/models/events';
-import { findFlare } from '../helpers/flares';
+import User from '../db/models/users';
+import { checkForFlares, findFlare } from '../helpers/flares';
 
 /***
  * This worker will be in charge of checking to see if a user has earned an event flare
@@ -23,6 +24,31 @@ cron.schedule('30 * * * *', async () => {
       },
     },
   });
-  // Use the events id to find the users attending
-  // Check how many events the user has attended in the past
+  // Use each event id to find the users attending
+  events.forEach(async (event: any) => {
+    // Find the user_events rows of the attending users
+    const usersAttending: any = await User_Event.findAll({
+      where: { EventId: event.id, user_attending: true },
+    });
+    for (let i = 0; i < usersAttending.length; i++) {
+      const currUserId = usersAttending[i].UserId;
+      // Pass the user id into the helper to see if they've earned a flare
+      countUsersEvents(currUserId);
+    }
+  });
 });
+
+async function countUsersEvents(userId: number) {
+  const user: any = await User.findOne({ where: { id: userId } });
+  // Find the current user's events where user_attended is true
+  const usersEvents = await User_Event.findAll({
+    where: { UserId: userId, user_attended: true },
+  });
+  // Count the number of events the user has attended
+  const userEventsCount = usersEvents.length;
+  if (userEventsCount === 1) {
+    checkForFlares(user, 'The Spark');
+  } else if (userEventsCount && userEventsCount % 5 === 0) {
+    findFlare('Event Flare', userEventsCount, user);
+  }
+}
