@@ -206,23 +206,23 @@ function Event({ event, getEvents }: EventProps) {
                 {category === 'bailed' ? <TbCircleDashedLetterB className="text-red-500 text-2xl" /> : null}
               </div>
             </div>
-            <div className="grid grid-cols-6 place-content-center">
-              <div className="col-span-6 mb-2">
+            <div className="grid grid-cols-3 place-content-center">
+              <div className="col-span-3 mb-2">
                 <img
-                  className="h-[215px] w-[215px] object-fit cursor-pointer"
+                  className="h-[220px] w-[220px] object-fit cursor-pointer"
                   src={venuePics[venuePicIndex]}
                   onClick={() => { handleVenuePicChange('right'); }}
                 />
               </div>
-              <div className="col-span-6 grid grid-cols-subgrid">
+              <div className="col-span-3 grid grid-cols-subgrid">
                 <button
-                  className="col-start-2 justify-center"
+                  className="col-start-1 flex justify-start"
                   onClick={() => { handleVenuePicChange('left'); }}
                 >
                   <FaAngleLeft className="text-gray-200 hover:text-orange-400" />
                 </button>
                 <button
-                  className="col-start-5 justify-center"
+                  className="col-start-3 flex justify-end"
                   onClick={() => { handleVenuePicChange('right'); }}
                 >
                   <FaAngleRight className="text-gray-200 hover:text-orange-400" />
