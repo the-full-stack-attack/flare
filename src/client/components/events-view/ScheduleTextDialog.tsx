@@ -16,6 +16,9 @@ import { Button } from '../../../components/ui/button';
 import { Label } from '../../../components/ui/label';
 import { Textarea } from '../../../components/ui/textarea';
 
+type TextAreaChangeEvent = React.ChangeEvent<HTMLTextAreaElement>;
+type ButtonClickEvent = React.MouseEvent<HTMLButtonElement>;
+
 type ScheduleTextDialogProps = {
   eventId: number;
   startTime: Date;
@@ -48,12 +51,12 @@ function ScheduleTextDialog({
     now: Date.now(),
   }), [startTime, endTime]);
 
-  const handleSendTimeSelect = useCallback(({ target }: any) => {
-    setSendTime(target.value);
+  const handleSendTimeSelect = useCallback(({ target }: ButtonClickEvent) => {
+    setSendTime((target as HTMLButtonElement).value);
   }, []);
 
-  const handleMessageChange = useCallback(({ target }: any) => {
-    setMessage(target.value);
+  const handleMessageChange = useCallback(({ target }: TextAreaChangeEvent) => {
+    setMessage((target as HTMLTextAreaElement).value);
   }, []);
 
   const getText = useCallback(() => {

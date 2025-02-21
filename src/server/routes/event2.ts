@@ -18,14 +18,14 @@ const event2Router = Router();
 event2Router.get('/', (req: any, res: Response) => {
   const { city, state } = req.query.locationFilter;
   
-  let now = Date.now();
+  let now = new Date().toISOString();
   
   if (req.query.now) {
     now = req.query.now;
   }
 
   const whereFilter: any = {
-    start_time: { [Op.gt]: new Date(+now) },
+    start_time: { [Op.gt]: now },
   };
 
   if (city && state) {
@@ -117,7 +117,7 @@ event2Router.post('/attend/:id', async (req: any, res: Response) => {
   GET /api/event/attend => Retrieve all events the user is attending from the User_Events table
 */
 event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
-  let now = Date.now();
+  let now = new Date().toISOString();
   
   if (req.query.now) {
     now = req.query.now;
@@ -135,7 +135,7 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     },
     include: {
       model: Event,
-      where: { end_time: { [Op.gt]: new Date(+now) } },
+      where: { end_time: { [Op.gt]: now } },
       include: [
         {
           model: User,

@@ -104,10 +104,13 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         } = req.body;
         let { cityName } = req.body;
         const userId = req.user.id;
+        // console.log('we received: ', startDate);
+        // console.log('and ', startTime);
+        // console.log('finally ', endTime);
 
         // convert the date and times into proper format for db
-        const start_time = dayjs(`${startDate} ${startTime}`).format('YYYY-MM-DD HH:mm:ss');
-        const end_time = dayjs(`${startDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
+        // const start_time = dayjs(`${startDate} ${startTime}`).format('YYYY-MM-DD HH:mm:ss');
+        // const end_time = dayjs(`${startDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
 
         // check if venue exists using fsq_id
         let eventVenue: any;
@@ -123,9 +126,16 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         }
 
         // create notification to remind user 1 hour before event
-        const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
+        // const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
+        // const notification: any = await Notification.create({
+        //     message: `The upcoming event you're attending, ${title}, starts soon at ${dayjs(`${startDate} ${startTime}`).format('h:mm A')}. Hope to see you there.`,
+        //     send_time: oneHourBefore,
+        // });
+        const oneHourBefore = new Date(startDate);
+        oneHourBefore.setHours(oneHourBefore.getHours() - 1);
+
         const notification: any = await Notification.create({
-            message: `The upcoming event you're attending, ${title}, starts soon at ${dayjs(`${startDate} ${startTime}`).format('h:mm A')}. Hope to see you there.`,
+            message: `The upcoming event you're attending, ${title}, starts soon at ${new Date(startDate).toLocaleTimeString()}. Hope to see you there.`,
             send_time: oneHourBefore,
         });
 
@@ -138,8 +148,8 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         // create the actual event
         const newEvent: any = await Event.create({
             title,
-            start_time,
-            end_time,
+            start_time: startDate,
+            end_time: endTime,
             description,
             hour_before_notif: notification.id,
             created_by: userId,

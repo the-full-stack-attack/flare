@@ -13,10 +13,28 @@ import TTSButton from '../components/a11y/TTSButton';
 import NotificationList from '../components/notifications-view/NotificationList';
 import HeadlessDialog from '../components/general/HeadlessDialog';
 
+type Notifications = {
+  id: number;
+  message: string;
+  send_time: Date;
+  User_Notification: {
+    seen: boolean;
+  };
+}[];
+
+type Notification = {
+  id: number;
+  message: string;
+  send_time: Date;
+  User_Notification: {
+    seen: boolean;
+  };
+};
+
 function Notifications() {
   const { getUser } = useContext(UserContext);
 
-  const [notifs, setNotifs] = useState<any>([]);
+  const [notifs, setNotifs] = useState<Notifications>([]);
   const [deleteAllNotifsDialogOpen, setDeleteAllNotifsDialogOpen] = useState<boolean>(false);
 
   const [newNotifsText, setNewNotifsText] = useState<string>('You currently have no new notifications.')
@@ -62,7 +80,7 @@ function Notifications() {
     if (newNotifs.length) {
       let text = `You currently have ${newNotifs.length} new notification${newNotifs.length === 1 ? '' : 's'}:`;
 
-      newNotifs.forEach((notif: any, index: number) => {
+      newNotifs.forEach((notif: Notification, index: number) => {
         text += `Notification number ${index + 1}: Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}: ${notif.message},`;
       });
 
