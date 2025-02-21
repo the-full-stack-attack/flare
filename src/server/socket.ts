@@ -288,6 +288,7 @@ const initializeSocket = (
       if (inputId === 'Down') {
         PLAYER_LIST[socket.id].pressingDown = state;
       }
+      PLAYER_LIST[socket.id].isWalking = state;
     });
 
     socket.on('message', ({ message, eventId }) => {
@@ -316,6 +317,7 @@ const initializeSocket = (
         sentMessage: player.sentMessage,
         currentMessage: player.currentMessage,
         room: player.eventId,
+        isWalking: player.isWalking,
       });
     }
     // loop through the sockets and send the package to each of them
