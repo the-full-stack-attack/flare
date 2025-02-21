@@ -10,7 +10,6 @@ type TypeButtonProps = {
 type TaskInfo = {
   type: string;
   difficulty: number;
-  date: dayjs.Dayjs;
   userId?: number;
 };
 

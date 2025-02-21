@@ -10,7 +10,6 @@ type DifficultyButtonProps = {
 type TaskInfo = {
   type: string;
   difficulty: number;
-  date: dayjs.Dayjs;
   userId?: number;
 };
 function DifficultyButton({
