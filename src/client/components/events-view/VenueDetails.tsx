@@ -186,7 +186,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
           {
             serves_alcohol !== null ? (
               <div>
-                <b>Serves Alcohol?</b>
+                <b>Serves Alcohol:</b>
                 <p>{serves_alcohol ? 'Yes' : 'No'}</p>
               </div>
             ) : null
@@ -194,7 +194,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
           {
             wheelchair_accessible !== null ? (
               <div>
-                <b>Wheelchair Accessible?</b>
+                <b>Wheelchair Accessible:</b>
                 <p>{wheelchair_accessible ? 'Yes' : 'No'}</p>
               </div>
             ) : null
