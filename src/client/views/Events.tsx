@@ -105,7 +105,7 @@ function Events() {
     axios
       .get('/api/event/attend/true', {
         params: {
-          now: Date.now(),
+          now: new Date().toISOString(),
         },
       })
       .then(({ data }) => {
@@ -122,7 +122,7 @@ function Events() {
     axios
       .get('/api/event/attend/false', {
         params: {
-          now: Date.now(),
+          now: new Date().toISOString(),
         },
       })
       .then(({ data }) => {
@@ -142,7 +142,7 @@ function Events() {
           locationFilter,
           catFilter,
           interestsFilter: interestsFilter.length > 0 ? interestsFilter : null,
-          now: Date.now(),
+          now: new Date().toISOString(),
         },
       })
       .then(({ data }) => {
