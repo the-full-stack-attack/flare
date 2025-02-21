@@ -9,7 +9,7 @@ type OptedOutTasks = UserTask[];
 type UserTask = {
   completed?: boolean;
   overall_rating?: number;
-  date_completed: dayjs.Dayjs;
+  date_completed: string | null;
   opted_out?: boolean;
   UserId: number;
   TaskId: number;
@@ -20,7 +20,7 @@ type Task = {
   description: string;
   type: string;
   completed_count: number;
-  date: dayjs.Dayjs | '';
+  date: string;
   difficulty: number;
 };
 function OptOutList() {
@@ -28,7 +28,7 @@ function OptOutList() {
   const [optedOutTasks, setOptedOutTasks] = useState<OptedOutTasks>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [retryingTask, setRetryTask] = useState<UserTask>({
-    date_completed: dayjs(),
+    date_completed: null,
     UserId: 0,
     TaskId: 0,
     Task: {
@@ -36,7 +36,7 @@ function OptOutList() {
       description: '',
       type: '',
       completed_count: 0,
-      date: dayjs(),
+      date: '',
       difficulty: 3,
     },
   });
@@ -86,24 +86,30 @@ function OptOutList() {
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
         <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl px-3 py-4 overflow-hidden min-h-40">
           <div className="relative z-10"></div>
-          <table className="w-full text-white">
-            <thead>
-              <tr className="border-b-2">
-                <th className="text-left">Type</th>
-                <th className="text-left">Task</th>
-              </tr>
-            </thead>
-            <tbody>
-              {optedOutTasks.map((userTask) => (
-                <OptOutTask
-                  key={userTask.TaskId}
-                  userTask={userTask}
-                  setIsOpen={setIsOpen}
-                  setRetryTask={setRetryTask}
-                />
-              ))}
-            </tbody>
-          </table>
+          {optedOutTasks.length ? (
+            <table className="w-full text-white">
+              <thead>
+                <tr className="border-b-2">
+                  <th className="text-left">Type</th>
+                  <th className="text-left">Task</th>
+                </tr>
+              </thead>
+              <tbody>
+                {optedOutTasks.map((userTask) => (
+                  <OptOutTask
+                    key={userTask.TaskId}
+                    userTask={userTask}
+                    setIsOpen={setIsOpen}
+                    setRetryTask={setRetryTask}
+                  />
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <center className="text-white">
+              You've Completed All Your Tasks!
+            </center>
+          )}
         </div>
       </div>
     </>

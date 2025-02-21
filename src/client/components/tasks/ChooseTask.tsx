@@ -18,7 +18,6 @@ import { UserContext } from '../../contexts/UserContext';
 type TaskInfo = {
   type: string;
   difficulty: number;
-  date: dayjs.Dayjs;
   userId?: number;
 };
 const types: string[] = ['Fun', 'Active', 'Normal', 'Duo', 'Rejection'];
@@ -28,20 +27,23 @@ function ChooseTask() {
   const [taskInfo, setTaskInfo] = useState<TaskInfo>({
     type: 'Normal',
     difficulty: 3,
-    date: dayjs(),
   });
   const { user, getUser } = useContext(UserContext);
   // Function to assign the chosen task category to the user
   const chooseTask = () => {
     const userId = user.id;
     const copyTask = { ...taskInfo };
-    // Change the time of the date object to midnight and format
-    const formattedDate = taskInfo.date.startOf('day').format('MM/DD/YYYY');
-    copyTask.date = dayjs(formattedDate);
+    const now: Date = new Date(); // Gets current local date and time
+    // Convert now to Midnight UTC
+    const date: string = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+    ).toISOString()
+    // Assing date and userId to copyTask
+    copyTask.date = date;
+    copyTask.userId = userId;
     const config = {
       taskInfo: copyTask,
     };
-    config.taskInfo.userId = userId;
     // Make axios request: UPDATE the users current task AND create a user_task row
     axios
       .post('/api/task', config)

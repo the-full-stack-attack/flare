@@ -18,7 +18,7 @@ type Task = {
   description: string;
   type: string;
   completed_count: number;
-  date: dayjs.Dayjs | '';
+  date: string | null;
   difficulty: number;
 };
 function CompletedTask({ userTask }: CompletedTaskProps) {
