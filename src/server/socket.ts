@@ -298,6 +298,10 @@ const initializeSocket = (
         if (inputId === 'Wave') {
           PLAYER_LIST[socket.id].isWaving = state;
           }
+          if (inputId === 'EnergyWave') {
+            console.log('isenergywaving')
+            PLAYER_LIST[socket.id].isEnergyWaving = state;
+            }
     });
 
     socket.on('message', ({ message, eventId }) => {
@@ -329,6 +333,7 @@ const initializeSocket = (
         isWalking: player.isWalking,
         isSnapping: player.isSnapping,
         isWaving: player.isWaving,
+        isEnergyWaving: player.isEnergyWaving,
       });
     }
     // loop through the sockets and send the package to each of them

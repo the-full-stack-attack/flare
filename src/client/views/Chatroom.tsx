@@ -24,6 +24,7 @@ import IDLE from '../assets/chatroom/idle/index';
 import WALK from '../assets/chatroom/walk/index';
 import SNAP from '../assets/chatroom/snap/index';
 import WAVE from '../assets/chatroom/wave/index';
+import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
 import { BsSend } from 'react-icons/bs';
 import {
@@ -227,6 +228,14 @@ function Chatroom() {
     { alias: '123', src: WAVE['3']},
     { alias: '124', src: WAVE['4']},
     { alias: '125', src: WAVE['5']},
+    { alias: '126', src: ENERGYWAVE['1']},
+    { alias: '127', src: ENERGYWAVE['2']},
+    { alias: '128', src: ENERGYWAVE['3']},
+    { alias: '129', src: ENERGYWAVE['4']},
+    { alias: '130', src: ENERGYWAVE['5']},
+    { alias: '131', src: ENERGYWAVE['6']},
+    { alias: '132', src: ENERGYWAVE['7']},
+    { alias: '133', src: ENERGYWAVE['8']},
 
   ])
   const { assets, isSuccess }  = useAssets(arrayForUse);
@@ -262,6 +271,7 @@ function Chatroom() {
   const [walkTextures, setWalkTextures] = useState([]);
   const [snapTextures, setSnapTextures] = useState([]);
   const [waveTextures, setWaveTextures] = useState([]);
+  const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
 const [isReady, setIsReady] = useState(false);
     useEffect(() => {
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
@@ -310,6 +320,9 @@ const [isReady, setIsReady] = useState(false);
       if (key === 'e' || key ==='E'){
         socket.emit('keyPress', {inputId: 'Wave', state:true});
       }
+      if (key === 'r' || key === 'R'){
+        socket.emit('keyPress', {inputId: 'EnergyWave', state: true});
+      }
     }
   };
   const keyUp = ({ key }: any) => {
@@ -328,6 +341,9 @@ const [isReady, setIsReady] = useState(false);
     if (key === 'e' || key ==='E'){
       socket.emit('keyPress', {inputId: 'Wave', state:false});
     }
+    if (key === 'r' || key === 'R'){
+      socket.emit('keyPress', {inputId: 'EnergyWave', state: false});
+    }
   };
   let variable = 'temporaryMap'
   // SOCKET ACTIVITY & MAP LOAD
@@ -341,6 +357,7 @@ const [isReady, setIsReady] = useState(false);
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
         if (data[i].room === eventId) {
+          console.log(data[i])
           allPlayerInfo.push({
             id: data[i].id,
             avatar: data[i].avatar,
@@ -353,8 +370,9 @@ const [isReady, setIsReady] = useState(false);
             isWalking: data[i].isWalking,
             isSnapping: data[i].isSnapping,
             isWaving: data[i].isWaving,
+            isEnergyWaving: data[i].isEnergyWaving,
           });
-        //   console.log(allPlayerInfo, 'ok');
+          
      
           
         }
@@ -414,6 +432,10 @@ const [isReady, setIsReady] = useState(false);
       const loadedWaveTextures = [
         assets['123'], assets['124'], assets['125'], assets['126'], assets['127']
       ]
+      const loadedEnergyWaveTextures = [
+        assets['128'], assets['129'], assets['130'], assets['131'], assets['132'], assets['133'], assets['134'], assets['135'],
+      ]
+      setEnergyWaveTextures(loadedEnergyWaveTextures);
       setTextures(loadedTextures);
       setWalkTextures(loadedWalkTextures);
       setSnapTextures(loadedSnapTextures);
@@ -583,7 +605,7 @@ const [isReady, setIsReady] = useState(false);
               >
 
               </pixiSprite>
-                {isReady && !player.isWalking && !player.isSnapping && !player.isWaving &&
+                {isReady && !player.isWalking && !player.isSnapping && !player.isWaving && !player.isEnergyWaving &&
                  <pixiAnimatedSprite
        textures={textures}
        x={-18.6}
@@ -635,6 +657,20 @@ const [isReady, setIsReady] = useState(false);
        }}
        initialFrame={0}
        animationSpeed={0.27}
+       loop={true}
+       scale={{ x: scaleFactor, y: scaleFactor }}
+  
+     /> }
+          {isReady && !player.isSnapping && !player.isWalking && player.isEnergyWaving &&
+                 <pixiAnimatedSprite
+       textures={energyWaveTextures}
+       x={-18.6}
+       y={-21}
+       ref={(spriteRef) => {
+         spriteRef?.play()
+       }}
+       initialFrame={0}
+       animationSpeed={0.2}
        loop={true}
        scale={{ x: scaleFactor, y: scaleFactor }}
   
