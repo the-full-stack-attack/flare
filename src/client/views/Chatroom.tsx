@@ -379,15 +379,16 @@ const [isReady, setIsReady] = useState(false);
           });
 
           // if the client is at the keyboard:
-          if ((data[i].x > 466 || data[i].x < 412 ) && ( data[i].y < 112 || data[i].y > 150 ) && onKeyboard){
-            console.log('off keyboard')
-            setOnKeyboard(false);
-          }
           if(data[i].username === user.username){
             if(data[i].x < 466 && data[i].x > 412 && data[i].y > 112 && data[i].y < 150 && !onKeyboard){
               console.log('onkeyboard')
               setOnKeyboard(true);
             } 
+
+            if ((data[i].x > 466 || data[i].x < 412 ) || ( data[i].y < 112 || data[i].y > 150 ) && onKeyboard){
+              console.log('off keyboard')
+              setOnKeyboard(false);
+            }
             
           }
           
@@ -435,6 +436,9 @@ const [isReady, setIsReady] = useState(false);
       spriteRef.current.play(); // Explicitly start animation
     }
   }, []);
+  useEffect(() => {
+
+  }, [setOnKeyboard])
   useEffect(() => {
     return () => {
       // Cleanup sprite texture when unmounting
