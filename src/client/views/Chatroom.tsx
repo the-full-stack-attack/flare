@@ -23,6 +23,7 @@ import TILES from '../assets/chatroom/tiles/index';
 import IDLE from '../assets/chatroom/idle/index';
 import WALK from '../assets/chatroom/walk/index';
 import SNAP from '../assets/chatroom/snap/index';
+import WAVE from '../assets/chatroom/wave/index';
 import mapPack from '../assets/chatroom/mapPack';
 import { BsSend } from 'react-icons/bs';
 import {
@@ -221,6 +222,11 @@ function Chatroom() {
     { alias: '118', src: SNAP['3']},
     { alias: '119', src: SNAP['4']},
     { alias: '120', src: SNAP['5']},
+    { alias: '121', src: WAVE['1']},
+    { alias: '122', src: WAVE['2']},
+    { alias: '123', src: WAVE['3']},
+    { alias: '124', src: WAVE['4']},
+    { alias: '125', src: WAVE['5']},
 
   ])
   const { assets, isSuccess }  = useAssets(arrayForUse);
@@ -255,6 +261,7 @@ function Chatroom() {
   const [textures, setTextures] = useState([]);
   const [walkTextures, setWalkTextures] = useState([]);
   const [snapTextures, setSnapTextures] = useState([]);
+  const [waveTextures, setWaveTextures] = useState([]);
 const [isReady, setIsReady] = useState(false);
     useEffect(() => {
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
@@ -300,6 +307,9 @@ const [isReady, setIsReady] = useState(false);
       if (key === 'q' || key === 'Q'){
         socket.emit('keyPress', { inputId: 'Snap', state: true });
       }
+      if (key === 'e' || key ==='E'){
+        socket.emit('keyPress', {inputId: 'Wave', state:true});
+      }
     }
   };
   const keyUp = ({ key }: any) => {
@@ -314,6 +324,9 @@ const [isReady, setIsReady] = useState(false);
     }
     if (key === 'q' || key === 'Q'){
       socket.emit('keyPress', { inputId: 'Snap', state: false });
+    } 
+    if (key === 'e' || key ==='E'){
+      socket.emit('keyPress', {inputId: 'Wave', state:false});
     }
   };
   let variable = 'temporaryMap'
@@ -339,6 +352,7 @@ const [isReady, setIsReady] = useState(false);
             room: data[i].room,
             isWalking: data[i].isWalking,
             isSnapping: data[i].isSnapping,
+            isWaving: data[i].isWaving,
           });
         //   console.log(allPlayerInfo, 'ok');
      
@@ -392,14 +406,18 @@ const [isReady, setIsReady] = useState(false);
         assets['107'], assets['108'], assets['109'], assets['110'], assets['111'], 
       ];
       const loadedWalkTextures = [
-        assets['112'], assets['113'], assets['114'], assets['115'], assets['116'], 
+        assets['112'], assets['113'], assets['114'], assets['115'], assets['116'], assets['117'],
       ]
       const loadedSnapTextures = [
-        assets['117'], assets['118'], assets['119'], assets['120'], assets['121']
+        assets['118'], assets['119'], assets['120'], assets['121'], assets['122']
+      ]
+      const loadedWaveTextures = [
+        assets['123'], assets['124'], assets['125'], assets['126'], assets['127']
       ]
       setTextures(loadedTextures);
       setWalkTextures(loadedWalkTextures);
       setSnapTextures(loadedSnapTextures);
+      setWaveTextures(loadedWaveTextures);
       setIsReady(true); // Once textures are ready, set the state to true
     }
   }, [isSuccess, assets]); // Re-run when assets load
@@ -565,7 +583,7 @@ const [isReady, setIsReady] = useState(false);
               >
 
               </pixiSprite>
-                {isReady && !player.isWalking &&
+                {isReady && !player.isWalking && !player.isSnapping && !player.isWaving &&
                  <pixiAnimatedSprite
        textures={textures}
        x={-18.6}
@@ -579,9 +597,23 @@ const [isReady, setIsReady] = useState(false);
        scale={{ x: scaleFactor, y: scaleFactor }}
   
      /> }
-     {isReady && player.isWalking && !player.isSnapping &&
+     {isReady && player.isWalking &&
                  <pixiAnimatedSprite
        textures={walkTextures}
+       x={-18.6}
+       y={-21}
+       ref={(spriteRef) => {
+         spriteRef?.play()
+       }}
+       initialFrame={0}
+       animationSpeed={0.1}
+       loop={true}
+       scale={{ x: scaleFactor, y: scaleFactor }}
+  
+     /> }
+     {isReady && !player.isWalking && !player.isSnapping && player.isWaving &&
+                 <pixiAnimatedSprite
+       textures={waveTextures}
        x={-18.6}
        y={-21}
        ref={(spriteRef) => {
@@ -602,7 +634,7 @@ const [isReady, setIsReady] = useState(false);
          spriteRef?.play()
        }}
        initialFrame={0}
-       animationSpeed={0.1}
+       animationSpeed={0.27}
        loop={true}
        scale={{ x: scaleFactor, y: scaleFactor }}
   
