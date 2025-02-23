@@ -24,6 +24,7 @@ import IDLE from '../assets/chatroom/idle/index';
 import WALK from '../assets/chatroom/walk/index';
 import SNAP from '../assets/chatroom/snap/index';
 import WAVE from '../assets/chatroom/wave/index';
+import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
 import { BsSend } from 'react-icons/bs';
@@ -530,10 +531,17 @@ const [isReady, setIsReady] = useState(false);
          { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
           { !isPlayingQuiplash &&
           <div className="p-4">
-          <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+          <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
           <div className="p-2">
           <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
-          { !isSuccess && <div className='p-15'><VelocityScroll >LOADING GAME</VelocityScroll></div> }
+          { !isSuccess && 
+          <div>
+            <div><VelocityScroll >LOADING GAME</VelocityScroll></div> 
+          <div><VelocityScroll >LOADING GAME</VelocityScroll></div> 
+          <div className="flex justify-center"><img id="loading-image" src={loading} alt="Loading..."></img></div>
+          <div><VelocityScroll >LOADING GAME</VelocityScroll></div> 
+          </div>
+          }
           { isSuccess && 
           <Application 
           resizeTo={appRef}
