@@ -18,6 +18,8 @@ import { UserContext } from '../contexts/UserContext';
 import { Countdown } from '../components/chatroom/countdown';
 import QuipLash from '../components/chatroom/QuipLash';
 import MsgBox from '../components/chatroom/MsgBox';
+import Keyboard from '../components/chatroom/Piano'
+import MacroRecorder from '../components/chatroom/MacroRecorder'
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
 import IDLE from '../assets/chatroom/idle/index';
@@ -263,6 +265,7 @@ function Chatroom() {
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
   const spriteRef = useRef(null);
+  const spriteRef2 = useRef(null);
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
   const [avatarImage, setAvatarImage] = useState<string | null>(user.avatar_uri);
   const displayMessage = (msg: any) => {
@@ -273,11 +276,12 @@ function Chatroom() {
   const [snapTextures, setSnapTextures] = useState([]);
   const [waveTextures, setWaveTextures] = useState([]);
   const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
+  const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
 const [isReady, setIsReady] = useState(false);
     useEffect(() => {
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
       for(let player in PLAYER_LIST ){
-        console.log(PLAYER_LIST[player])
+ 
         if(!lobby.includes(PLAYER_LIST[player].username)){
           setLobby((prevItems) => [ ...prevItems, PLAYER_LIST[player].username ])
           // setTimeout( () => {
@@ -358,7 +362,7 @@ const [isReady, setIsReady] = useState(false);
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
         if (data[i].room === eventId) {
-          console.log(data[i])
+
           allPlayerInfo.push({
             id: data[i].id,
             avatar: data[i].avatar,
@@ -373,6 +377,19 @@ const [isReady, setIsReady] = useState(false);
             isWaving: data[i].isWaving,
             isEnergyWaving: data[i].isEnergyWaving,
           });
+
+          // if the client is at the keyboard:
+          if ((data[i].x > 466 || data[i].x < 412 ) && ( data[i].y < 112 || data[i].y > 150 ) && onKeyboard){
+            console.log('off keyboard')
+            setOnKeyboard(false);
+          }
+          if(data[i].username === user.username){
+            if(data[i].x < 466 && data[i].x > 412 && data[i].y > 112 && data[i].y < 150 && !onKeyboard){
+              console.log('onkeyboard')
+              setOnKeyboard(true);
+            } 
+            
+          }
           
      
           
@@ -417,6 +434,14 @@ const [isReady, setIsReady] = useState(false);
     if (spriteRef.current && isReady) {
       spriteRef.current.play(); // Explicitly start animation
     }
+  }, []);
+  useEffect(() => {
+    return () => {
+      // Cleanup sprite texture when unmounting
+      if (spriteRef2.current) {
+        spriteRef2.current.texture?.destroy(true);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -560,6 +585,7 @@ const [isReady, setIsReady] = useState(false);
              
                 <pixiSprite
                   texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
+                  ref={spriteRef2} 
                   x={32 * (objTiles.x) * 1.25 }
                   y={32 * (objTiles.y) * 1.25 }
                  scale={ 1.25, 1.25}
@@ -605,6 +631,7 @@ const [isReady, setIsReady] = useState(false);
                   />
                 <pixiSprite
               texture={Assets.get(player.username)}
+              ref={spriteRef2} 
               x={0}
               y={-13}
               scale={scaleFactor, scaleFactor}
@@ -670,7 +697,7 @@ const [isReady, setIsReady] = useState(false);
   
      /> }
           {isReady && !player.isSnapping && !player.isWalking && player.isEnergyWaving &&
-                 <pixiAnimatedSprite
+       <pixiAnimatedSprite
        textures={energyWaveTextures}
        x={-18.6}
        y={-21}
@@ -728,6 +755,13 @@ const [isReady, setIsReady] = useState(false);
         <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
       </svg>  
       <em> Message Limit: {message.length} / 150</em>
+      {
+        onKeyboard &&
+        <div>
+      <MacroRecorder></MacroRecorder>
+      <Keyboard></Keyboard>
+      </div>
+      }
     </h1>  
             {/* <em className="text-white">Allowed Characters</em> */}
         </div>
@@ -765,6 +799,7 @@ const [isReady, setIsReady] = useState(false);
           </AnimatedList>
         </div>
       </Card> 
+     
       </div>
   );
 }
