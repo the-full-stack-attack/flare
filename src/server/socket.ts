@@ -325,7 +325,7 @@ const initializeSocket = (
       let socket = SOCKET_LIST[key];
       socket.emit('newPositions', pack);
     }
-  }, 1000 / 25);
+  }, 1000 / 20);
 };
 
 export default initializeSocket;

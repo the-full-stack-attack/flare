@@ -22,6 +22,7 @@ import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
 import IDLE from '../assets/chatroom/idle/index';
 import WALK from '../assets/chatroom/walk/index';
+import SNAP from '../assets/chatroom/snap/index';
 import mapPack from '../assets/chatroom/mapPack';
 import { BsSend } from 'react-icons/bs';
 import {
@@ -215,6 +216,12 @@ function Chatroom() {
     { alias: '113', src: WALK['113']},
     { alias: '114', src: WALK['114']},
     { alias: '115', src: WALK['115']},
+    { alias: '116', src: SNAP['1']},
+    { alias: '116', src: SNAP['2']},
+    { alias: '116', src: SNAP['3']},
+    { alias: '116', src: SNAP['4']},
+    { alias: '116', src: SNAP['5']},
+
   ])
   const { assets, isSuccess }  = useAssets(arrayForUse);
   
@@ -481,7 +488,7 @@ const [isReady, setIsReady] = useState(false);
           width={Math.floor(640)}
           height={Math.floor(360)}
           backgroundColor={' #FFFFFF'}
-          resolution={3}
+          resolution={2.5}
          >
           {
             mapPack.layers.map((objLay) => (
