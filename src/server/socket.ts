@@ -278,17 +278,23 @@ const initializeSocket = (
     socket.on('keyPress', ({ inputId, state }) => {
       if (inputId === 'Up') {
         PLAYER_LIST[socket.id].pressingUp = state;
+        PLAYER_LIST[socket.id].isWalking = state;
       }
       if (inputId === 'Left') {
         PLAYER_LIST[socket.id].pressingLeft = state;
+        PLAYER_LIST[socket.id].isWalking = state;
       }
       if (inputId === 'Right') {
         PLAYER_LIST[socket.id].pressingRight = state;
+        PLAYER_LIST[socket.id].isWalking = state;
       }
       if (inputId === 'Down') {
         PLAYER_LIST[socket.id].pressingDown = state;
+        PLAYER_LIST[socket.id].isWalking = state;
       }
-      PLAYER_LIST[socket.id].isWalking = state;
+      if (inputId === 'Snap') {
+        PLAYER_LIST[socket.id].isSnapping = state;
+        }
     });
 
     socket.on('message', ({ message, eventId }) => {
@@ -318,6 +324,7 @@ const initializeSocket = (
         currentMessage: player.currentMessage,
         room: player.eventId,
         isWalking: player.isWalking,
+        isSnapping: player.isSnapping,
       });
     }
     // loop through the sockets and send the package to each of them

@@ -217,10 +217,10 @@ function Chatroom() {
     { alias: '114', src: WALK['114']},
     { alias: '115', src: WALK['115']},
     { alias: '116', src: SNAP['1']},
-    { alias: '116', src: SNAP['2']},
-    { alias: '116', src: SNAP['3']},
-    { alias: '116', src: SNAP['4']},
-    { alias: '116', src: SNAP['5']},
+    { alias: '117', src: SNAP['2']},
+    { alias: '118', src: SNAP['3']},
+    { alias: '119', src: SNAP['4']},
+    { alias: '120', src: SNAP['5']},
 
   ])
   const { assets, isSuccess }  = useAssets(arrayForUse);
@@ -254,6 +254,7 @@ function Chatroom() {
   };
   const [textures, setTextures] = useState([]);
   const [walkTextures, setWalkTextures] = useState([]);
+  const [snapTextures, setSnapTextures] = useState([]);
 const [isReady, setIsReady] = useState(false);
     useEffect(() => {
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
@@ -296,6 +297,9 @@ const [isReady, setIsReady] = useState(false);
       } else if (key === 'ArrowRight' || key === 'd') {
         socket.emit('keyPress', { inputId: 'Right', state: true });
       }
+      if (key === 'q' || key === 'Q'){
+        socket.emit('keyPress', { inputId: 'Snap', state: true });
+      }
     }
   };
   const keyUp = ({ key }: any) => {
@@ -307,6 +311,9 @@ const [isReady, setIsReady] = useState(false);
       socket.emit('keyPress', { inputId: 'Left', state: false });
     } else if (key === 'ArrowRight' || key === 'd') {
       socket.emit('keyPress', { inputId: 'Right', state: false });
+    }
+    if (key === 'q' || key === 'Q'){
+      socket.emit('keyPress', { inputId: 'Snap', state: false });
     }
   };
   let variable = 'temporaryMap'
@@ -331,6 +338,7 @@ const [isReady, setIsReady] = useState(false);
             currentMessage: data[i].currentMessage,
             room: data[i].room,
             isWalking: data[i].isWalking,
+            isSnapping: data[i].isSnapping,
           });
         //   console.log(allPlayerInfo, 'ok');
      
@@ -386,8 +394,12 @@ const [isReady, setIsReady] = useState(false);
       const loadedWalkTextures = [
         assets['112'], assets['113'], assets['114'], assets['115'], assets['116'], 
       ]
+      const loadedSnapTextures = [
+        assets['117'], assets['118'], assets['119'], assets['120'], assets['121']
+      ]
       setTextures(loadedTextures);
       setWalkTextures(loadedWalkTextures);
+      setSnapTextures(loadedSnapTextures);
       setIsReady(true); // Once textures are ready, set the state to true
     }
   }, [isSuccess, assets]); // Re-run when assets load
@@ -567,9 +579,23 @@ const [isReady, setIsReady] = useState(false);
        scale={{ x: scaleFactor, y: scaleFactor }}
   
      /> }
-     {isReady && player.isWalking &&
+     {isReady && player.isWalking && !player.isSnapping &&
                  <pixiAnimatedSprite
        textures={walkTextures}
+       x={-18.6}
+       y={-21}
+       ref={(spriteRef) => {
+         spriteRef?.play()
+       }}
+       initialFrame={0}
+       animationSpeed={0.1}
+       loop={true}
+       scale={{ x: scaleFactor, y: scaleFactor }}
+  
+     /> }
+     {isReady && player.isSnapping && !player.isWalking &&
+                 <pixiAnimatedSprite
+       textures={snapTextures}
        x={-18.6}
        y={-21}
        ref={(spriteRef) => {

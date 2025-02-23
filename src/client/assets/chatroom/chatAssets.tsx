@@ -15,6 +15,7 @@ const Player = function (id: any, user: any, eventId: any): any {
     pressingUp: false,
     pressingDown: false,
     isWalking: false,
+    isSnapping: false,
     maxSpd: 3,
     updatePosition() {
       // method for updating state of movement
