@@ -44,17 +44,19 @@ function Keyboard() {
   }, []);
 
   return (
-    <div className="flex gap-4 p-4">
+    <div className="grid grid-cols-8 ">
       {Object.keys(keySounds).map((key) => (
+        <div>
         <button
           key={key}
           onClick={() => playSound(key)}
-          className={`p-4 text-xl font-bold border rounded ${
+          className={`p-4 text-l font-bold border rounded ${
             activeKey === key ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
         >
           {key.toUpperCase()}
         </button>
+        </div>
       ))}
     </div>
   );
