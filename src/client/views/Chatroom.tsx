@@ -26,6 +26,7 @@ import IDLE from '../assets/chatroom/idle/index';
 import WALK from '../assets/chatroom/walk/index';
 import SNAP from '../assets/chatroom/snap/index';
 import WAVE from '../assets/chatroom/wave/index';
+import vinyl from '../assets/images/vinyl.png';
 import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
@@ -759,14 +760,24 @@ const [isReady, setIsReady] = useState(false);
         <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
       </svg>  
       <em> Message Limit: {message.length} / 150</em>
+    </h1>  
       {
         onKeyboard &&
         <div>
+      <div className='flex justify-center items-center'>
+      <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+        <img src={vinyl} alt="Loading...">
+        </img>
+        </div>
       <MacroRecorder></MacroRecorder>
+        <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+        <img src={vinyl} alt="Loading...">
+        </img>
+        </div>
+        </div>
       <Keyboard></Keyboard>
       </div>
       }
-    </h1>  
             {/* <em className="text-white">Allowed Characters</em> */}
         </div>
       </div>

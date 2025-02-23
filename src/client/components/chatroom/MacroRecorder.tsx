@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button } from '../../../components/ui/button';
+import { RainbowButton } from "../../../components/ui/rainbowbutton";
 import G4 from '../../assets/sounds/chatroom/notes/G4.mp3';
 import C4 from '../../assets/sounds/chatroom/notes/C4.mp3';
 import A4 from '../../assets/sounds/chatroom/notes/A4.mp3';
@@ -68,7 +69,7 @@ const MacroRecorder = () => {
       });
     } else {
       window.removeEventListener("keydown", handleKeyDown);
-      setMacroCopy(macro)
+      setMacroCopy(macro);
     }
     console.log(recording, 'recording')
     console.log(macro);
@@ -92,14 +93,14 @@ const MacroRecorder = () => {
   };
 
   return (
-    <div>
+    <div className="grid h-56 w-24 grid-cols-1 content-normal gap-4">
       <h2>Macro Recorder</h2>
-      <Button onClick={() => setRecording(!recording)}>
+      <RainbowButton onClick={() => setRecording(!recording)}>
         {recording ? "Stop Recording" : "Start Recording"}
-      </Button>
-      <Button onClick={playMacro} disabled={playing || macro.length === 0}>
+      </RainbowButton>
+      <RainbowButton onClick={playMacro} disabled={playing || macro.length === 0}>
         Play Macro
-      </Button>
+      </RainbowButton>
       <p>{recording ? "Recording..." : "Not Recording"}</p>
       <p>{playing ? " playing..." : "not playing"}</p>
     </div>
