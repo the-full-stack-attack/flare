@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from '../../../components/ui/button';
 import { RainbowButton } from "../../../components/ui/rainbowbutton";
-// Import sounds...
 import G4 from '../../assets/sounds/chatroom/notes/G4.mp3';
 import C4 from '../../assets/sounds/chatroom/notes/C4.mp3';
 import A4 from '../../assets/sounds/chatroom/notes/A4.mp3';
@@ -20,6 +19,12 @@ import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
 import bassloop from '../../assets/sounds/chatroom/notes/bassloop.mp3';
 import beatbass from '../../assets/sounds/chatroom/notes/beatbass.mp3';
 
+interface KeyStroke {
+  key: string;
+  time: number; // Time relative to the start of the recording
+  type: 'keydown' | 'keyup';
+}
+
 const keySounds = {
   'a': C4, 's': D4, 'd': E4, 'f': F4, 'g': G4, 'h': A4, 'j': B4,
   'w': A04, 'e': G04, 'r': D04, 'k': C5,
@@ -27,31 +32,31 @@ const keySounds = {
   '=': beatbass, '-': bassloop,
 };
 
-interface KeyStroke {
-  key: string;
-  time: number; // Time relative to the start of the recording
-  type: 'keydown' | 'keyup';
-}
-
 const MacroRecorder = () => {
   const [recording, setRecording] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
   const [recordings, setRecordings] = useState<KeyStroke[][]>([]);
-  const [mute, setMute] = useState<boolean>(false);
-  const [currentRecording, setCurrentRecording] = useState<KeyStroke[]>([]);
-
+  const [mute, setMute] = useState<boolean>(false); // Mute state
+  const currentRecordingRef = useRef<KeyStroke[]>([]);
   const startTimeRef = useRef<number | null>(null);
-  const isPlaybackRef = useRef<boolean>(false);
-  const loopSoundsRef = useRef<{ [key: string]: HTMLAudioElement | null }>({});
-  const loopKeyStateRef = useRef<{ [key: string]: boolean }>({});
+  const isPlaybackRef = useRef<boolean>(false); // Flag to distinguish playback strokes
+  const loopSoundsRef = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Track loop sounds
+  const loopKeyStateRef = useRef<{ [key: string]: boolean }>({}); // Track loop key state
 
   // Play a sound for a given key
   const playSound = (key: string) => {
-    if (mute || !keySounds[key.toLowerCase()]) return null;
-    const audio = new Audio(keySounds[key.toLowerCase()]);
-    audio.currentTime = 0;
-    audio.play().catch(console.error);
-    return audio;
+    if (mute) return; // Do not play sound if muted
+
+    const lowercaseKey = key.toLowerCase();
+    if (keySounds[lowercaseKey]) {
+      const audio = new Audio(keySounds[lowercaseKey]);
+      audio.currentTime = 0;
+      audio.play().catch((error) => {
+        console.error('Failed to play sound:', error);
+      });
+      return audio;
+    }
+    return null;
   };
 
   // Stop a specific sound
@@ -76,18 +81,18 @@ const MacroRecorder = () => {
 
   // Handle keydown events
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (!recording || isPlaybackRef.current) return;
+    if (!recording || isPlaybackRef.current) return; // Skip if not recording or during playback
 
+    const time = startTimeRef.current ? Date.now() - startTimeRef.current : 0;
     const key = event.key;
-    const time = startTimeRef.current ? performance.now() - startTimeRef.current : 0;
 
     // Handle loop sounds
     if (key === '-' || key === '=') {
       if (!loopKeyStateRef.current[key]) {
-        loopKeyStateRef.current[key] = true;
-        loopSoundsRef.current[key] = playSound(key);
+        loopKeyStateRef.current[key] = true; // Mark the key as pressed
+        loopSoundsRef.current[key] = playSound(key); // Start loop sound
       }
-      return;
+      return; // Do not record loop buttons
     }
 
     // Handle regular sounds
@@ -97,18 +102,18 @@ const MacroRecorder = () => {
 
   // Handle keyup events
   const handleKeyUp = (event: KeyboardEvent) => {
-    if (!recording || isPlaybackRef.current) return;
+    if (!recording || isPlaybackRef.current) return; // Skip if not recording or during playback
 
+    const time = startTimeRef.current ? Date.now() - startTimeRef.current : 0;
     const key = event.key;
-    const time = startTimeRef.current ? performance.now() - startTimeRef.current : 0;
 
     // Handle loop sounds
     if (key === '-' || key === '=') {
       if (loopKeyStateRef.current[key]) {
-        loopKeyStateRef.current[key] = false;
-        stopSound(key);
+        loopKeyStateRef.current[key] = false; // Mark the key as released
+        stopSound(key); // Stop loop sound
       }
-      return;
+      return; // Do not record loop buttons
     }
 
     // Handle regular sounds
@@ -122,17 +127,13 @@ const MacroRecorder = () => {
       setRecordings((prev) => [...prev, currentRecordingRef.current]);
       currentRecordingRef.current = [];
       startTimeRef.current = null;
-      stopAllAudio();
-      loopKeyStateRef.current = {};
-      setPlaying(false); // Stop playback when recording stops
+      stopAllAudio(); // Stop all sounds when recording stops
+      loopKeyStateRef.current = {}; // Reset loop key states
     } else {
       // Start recording
-
-      startTimeRef.current = performance.now();
+      startTimeRef.current = Date.now();
       currentRecordingRef.current = [];
-      if (recordings.length > 0) {
-        playPreviousRecording(); // Play the current macro when recording starts
-      }
+      playAllRecordings(); // Play the previous recording
     }
     setRecording((prev) => !prev);
   };
@@ -141,9 +142,8 @@ const MacroRecorder = () => {
   const playPreviousRecording = () => {
     if (recordings.length === 0) return;
 
-    isPlaybackRef.current = true;
-    setPlaying(true);
-    const previousRecording = recordings[recordings.length - 1];
+    isPlaybackRef.current = true; // Set playback flag
+    const previousRecording = recordings.flat();
 
     previousRecording.forEach(({ key, time, type }) => {
       setTimeout(() => {
@@ -157,37 +157,38 @@ const MacroRecorder = () => {
     const maxTime = Math.max(...previousRecording.map((stroke) => stroke.time));
     setTimeout(() => {
       isPlaybackRef.current = false;
-      setPlaying(false);
     }, maxTime + 100);
   };
+
+  // Play all recordings
   const playAllRecordings = () => {
     if (playing || recordings.length === 0) return;
-  
+
     setPlaying(true);
     stopAllAudio();
-  
-    const mergedRecording = recordings.flat().sort((a, b) => a.time - b.time);
-  
-    mergedRecording.forEach(({ key, time, type }) => {
-      setTimeout(() => {
-        if (type === 'keydown') {
-          console.log("Playing Key:", key, "Time:", time);
-          playSound(key);
-        }
-      }, time);
+
+    recordings.forEach((recording) => {
+      recording.forEach(({ key, time, type }) => {
+        setTimeout(() => {
+          if (type === 'keydown') {
+            playSound(key);
+          }
+        }, time);
+      });
     });
-  
-    const maxTime = Math.max(...mergedRecording.map((stroke) => stroke.time));
+
+    // Reset playing state after the longest recording ends
+    const maxTime = Math.max(...recordings.flatMap((recording) => recording.map((stroke) => stroke.time)));
     setTimeout(() => setPlaying(false), maxTime + 100);
   };
-  
 
   // Toggle mute state
   const toggleMute = () => {
-    if (!mute) stopAllAudio();
     setMute((prev) => !prev);
   };
-
+  const clearRecordings = () => {
+    setRecordings([]);
+  };
   // Add event listeners for keydown and keyup
   useEffect(() => {
     if (recording) {
@@ -214,6 +215,7 @@ const MacroRecorder = () => {
       <RainbowButton onClick={playAllRecordings} disabled={playing || recordings.length === 0}>
         Play Macro
       </RainbowButton>
+      <Button onClick={clearRecordings}>Clear Recordings</Button>
       <p>{recording ? "Recording..." : "Not Recording"}</p>
       <p>{playing ? "Playing..." : "Not Playing"}</p>
       <p>{mute ? "Muted" : "Unmuted"}</p>
