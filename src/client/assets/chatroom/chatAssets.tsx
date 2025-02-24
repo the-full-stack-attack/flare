@@ -14,7 +14,11 @@ const Player = function (id: any, user: any, eventId: any): any {
     pressingLeft: false,
     pressingUp: false,
     pressingDown: false,
-    maxSpd: 10,
+    isWalking: false,
+    isSnapping: false,
+    isWaving: false,
+    isEnergyWaving: false,
+    maxSpd: 15,
     updatePosition() {
       // method for updating state of movement
       if (self.pressingRight) {

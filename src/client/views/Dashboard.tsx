@@ -321,14 +321,9 @@ function Dashboard() {
                   <span className="text-gray-400">Made with</span>
                   <span className="text-red-500 animate-pulse">❤️</span>
                   <span className="text-gray-400">by</span>
-                  <a
-                    href="https://github.com/the-full-stack-attack/flare"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent font-bold hover:opacity-80 transition-opacity"
-                  >
+                  <span className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent font-bold">
                     Full Stack Attack
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>

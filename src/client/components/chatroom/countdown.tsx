@@ -2,7 +2,7 @@
 /* eslint-disable import/prefer-default-export */
 import dayjs, { Dayjs } from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 dayjs.extend(duration);
 
@@ -12,15 +12,15 @@ interface CountdownProps {
 // export function AnimatedListItem({ children }: { children: React.ReactNode }) {
 export const Countdown: React.FC<CountdownProps> = ({ endTime }) => {
   const [time, setTime] = useState<string>();
+// act crazy
+  useEffect(() => {
+    let currentTime = dayjs();
+    let diffTime = endTime.unix() - currentTime.unix();
 
-  useMemo(() => {
-    var currentTime = dayjs();
-    var diffTime = endTime.unix() - currentTime.unix();
-
-    var duration = dayjs.duration(diffTime * 1000, 'milliseconds');
-    var interval = 1000;
+    let duration = dayjs.duration(diffTime * 1000, 'milliseconds');
+    let interval = 1000;
     const twoDP = (n: number) => (n > 9 ? n : '0' + n);
-
+    let nothing = null
     setInterval(function () {
       duration = dayjs.duration(
         duration.asMilliseconds() - interval,
@@ -29,9 +29,9 @@ export const Countdown: React.FC<CountdownProps> = ({ endTime }) => {
       let timestamp = `${duration.days() && duration.days() + 'd '
         }${duration.hours()}h ${twoDP(duration.minutes())}m ${twoDP(
           duration.seconds()
-        )}s`;
+        )}s`; //ayye
       setTime(timestamp);
     }, interval);
-  }, [endTime]);
+  }, []);
   return <h4 className="text-white text-[34px]">{time}</h4>;
 };

@@ -92,12 +92,17 @@ const initializeSocket = (
 
     // QUITTING
     socket.on('quitQuiplash', () => {
+      
       socket.leave(`Quiplash room: ${socket.data.eventId}`);
-      delete QUIPLASH_LIST[socket.id];
+      try{ 
+        delete QUIPLASH_LIST[socket.id];
       QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
       if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
         delete QUIPLASH_GAMES[socket.data.eventId];
       };
+    } catch(error){
+      console.log('error caught')
+    }
     });
 
     // JOINING
@@ -138,6 +143,9 @@ const initializeSocket = (
 
             // After 30 seconds, Show answers & begin next timer
             setTimeout(() => {
+              if(QUIPLASH_GAMES[eventId] === undefined ){
+                return;
+              }
               QUIPLASH_GAMES[eventId].promptGiven = false;
               socket.nsp
                 .to(`Quiplash room: ${socket.data.eventId}`)
@@ -207,6 +215,7 @@ const initializeSocket = (
               }, 17000);
 
             }, 33000);
+            
           },
         }; // END OF QUIPLASH GAME OBJECT
       } // END OF IF STATEMENT
@@ -278,16 +287,29 @@ const initializeSocket = (
     socket.on('keyPress', ({ inputId, state }) => {
       if (inputId === 'Up') {
         PLAYER_LIST[socket.id].pressingUp = state;
+        PLAYER_LIST[socket.id].isWalking = state;
       }
       if (inputId === 'Left') {
         PLAYER_LIST[socket.id].pressingLeft = state;
+        PLAYER_LIST[socket.id].isWalking = state;
       }
       if (inputId === 'Right') {
         PLAYER_LIST[socket.id].pressingRight = state;
+        PLAYER_LIST[socket.id].isWalking = state;
       }
       if (inputId === 'Down') {
         PLAYER_LIST[socket.id].pressingDown = state;
+        PLAYER_LIST[socket.id].isWalking = state;
       }
+      if (inputId === 'Snap') {
+        PLAYER_LIST[socket.id].isSnapping = state;
+        }
+        if (inputId === 'Wave') {
+          PLAYER_LIST[socket.id].isWaving = state;
+          }
+          if (inputId === 'EnergyWave') {
+            PLAYER_LIST[socket.id].isEnergyWaving = state;
+            }
     });
 
     socket.on('message', ({ message, eventId }) => {
@@ -316,6 +338,10 @@ const initializeSocket = (
         sentMessage: player.sentMessage,
         currentMessage: player.currentMessage,
         room: player.eventId,
+        isWalking: player.isWalking,
+        isSnapping: player.isSnapping,
+        isWaving: player.isWaving,
+        isEnergyWaving: player.isEnergyWaving,
       });
     }
     // loop through the sockets and send the package to each of them
@@ -323,7 +349,7 @@ const initializeSocket = (
       let socket = SOCKET_LIST[key];
       socket.emit('newPositions', pack);
     }
-  }, 1000 / 25);
+  }, 1000 / 20);
 };
 
 export default initializeSocket;

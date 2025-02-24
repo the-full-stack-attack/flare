@@ -96,6 +96,8 @@ function EventDrawerContent({
 
   const successDrawerButton = 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-700 hover:to-yellow-800 text-white flex items-center';
 
+  const middleDrawerButton = 'bg-gradient-to-r from-black via-pink-900 to-black hover:from-black hover:via-pink-700 hover:to-black text-white flex items-center';
+
   const openVenueDetails = () => {
     setShowVenueDetails(true);
   };
@@ -146,7 +148,7 @@ function EventDrawerContent({
           }}>Re-attend {<TbCircleLetterAFilled />}</Button>
         ) : null}
         <DrawerClose asChild>
-          <Button className={normalDrawerButton}>Close</Button>
+          <Button className={middleDrawerButton}>Close</Button>
         </DrawerClose>
       </DrawerFooter>
     </div>
