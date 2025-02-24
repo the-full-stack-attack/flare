@@ -16,86 +16,86 @@ import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
 import bassloop from '../../assets/sounds/chatroom/notes/bassloop.mp3';
 import beatbass from '../../assets/sounds/chatroom/notes/beatbass.mp3';
-import { TbArrowAutofitDown } from 'react-icons/tb';
 
 function Keyboard() {
-
   const keySounds = {
-    'a': C4,
-    's': D4,
-    'd': E4,
-    'f': F4,
-    'g': G4,
-    'h': A4,
-    'j': B4,
-    'w': A04,
-    'e': G04,
-    'r': D04,
-    'k': C5,
-    'z': kick,
-    'x': kick,
-    'c': snare,
-    'v': crash1,
-    '.': china,
-    '=': beatbass,
-    '-': bassloop,
+    'a': C4, 's': D4, 'd': E4, 'f': F4, 'g': G4, 'h': A4, 'j': B4,
+    'w': A04, 'e': G04, 'r': D04, 'k': C5,
+    'z': kick, 'x': kick, 'c': snare, 'v': crash1, '.': china,
+    '=': beatbass, '-': bassloop,
   };
 
   const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [playingSounds, setPlayingSounds] = useState<{ [key: string]: HTMLAudioElement }>({});
 
-  // Function to play sound
-  const playSound = (key: string, bool: Boolean): void => {
+  // Function to play a sound
+  const playSound = (key: string) => {
     if (keySounds[key]) {
-
       const audio = new Audio(keySounds[key]);
-
-      if(!bool){
-        audio.pause();
-        audio.currentTime = 0;
-        return;
-      }
-
+      audio.currentTime = 0;
       audio.play();
-      setActiveKey(key); // Highlight active key
-      setTimeout(() => setActiveKey(null), 200); // Remove highlight after 200ms
+      setActiveKey(key);
+      setTimeout(() => setActiveKey(null), 200);
+
+      // Store looping sounds
+      if (key === '=' || key === '-') {
+        setPlayingSounds((prev) => ({ ...prev, [key]: audio }));
+      }
     }
-
   };
 
-  // Handle key press
-  const handleKeyDown = (event: KeyboardEvent, ): void => {
-    playSound(event.key.toLowerCase(), true);
+  // Function to stop looping sounds
+  const stopSound = (key: string) => {
+    if (playingSounds[key]) {
+      playingSounds[key].pause();
+      playingSounds[key].currentTime = 0;
+      setPlayingSounds((prev) => {
+        const updated = { ...prev };
+        delete updated[key];
+        return updated;
+      });
+    }
   };
-  const handleKeyUp = (event: KeyboardEvent): void => {
-    playSound(event.key.toLowerCase(), false);
+
+  // Handle key events
+  const handleKeyDown = (event: KeyboardEvent) => {
+    const key = event.key.toLowerCase();
+    if (!playingSounds[key]) {
+      playSound(key);
+    }
+  };
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+    const key = event.key.toLowerCase();
+    if (key === '=' || key === '-') {
+      stopSound(key);
+    }
   };
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyUp", handleKeyUp);
+    window.addEventListener("keyup", handleKeyUp);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyUp", handleKeyUp);
+      window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [playingSounds]);
 
   return (
-    <div className="grid grid-cols-6 ">
+    <div className="grid grid-cols-6 gap-2">
       {Object.keys(keySounds).map((key) => (
-        <div>
         <button
           key={key}
-          onClick={() => playSound(key, true)}
-          className={`p-4 text-l font-bold border rounded ${
+          onClick={() => playSound(key)}
+          className={`p-4 text-lg font-bold border rounded ${
             activeKey === key ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
         >
           {key.toUpperCase()}
         </button>
-        </div>
       ))}
     </div>
   );
-};
+}
 
 export default Keyboard;
