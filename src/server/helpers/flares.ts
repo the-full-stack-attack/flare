@@ -145,10 +145,10 @@ async function sendFlareObject(flare: FlareType, user: UserType) {
       const { notification_message } = flare;
       // Create the sendTime for the notification to be sent 3 seconds from now
       const now = Date.now();
-      const sendTime = new Date(now + 3000);
       const newNotification = {
+        title: `${flare.name} Achieved`,
         message: notification_message,
-        send_time: sendTime,
+        send_time: new Date(now + 3000),
       };
       const notification: any = await Notification.create(newNotification);
       const notificationId = notification.id;

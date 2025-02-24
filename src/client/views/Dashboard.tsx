@@ -44,12 +44,16 @@ type Task = {
 
 type IconType = typeof FaStar | typeof FaUsers | typeof FaChartLine;
 
-interface Achievement {
-  icon: IconType;
-  title: string;
+type FlareType = {
+  id: number;
+  name: string;
+  type: string | void;
+  icon: string;
+  achievement: string;
+  milestone: string;
   description: string;
-  earned: boolean;
-}
+  value: number;
+};
 
 function Dashboard() {
   const { user } = useContext(UserContext);
@@ -57,6 +61,7 @@ function Dashboard() {
   const [width, height] = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
   const [completeDisabled, setCompleteDisabled] = useState(false);
+  const [userFlares, setUserFlares] = useState<FlareType[]>([]);
 
   const stats = [
     {
@@ -126,6 +131,15 @@ function Dashboard() {
         })
         .catch((err) => console.error('Error fetching task:', err));
     }
+    const { id } = user;
+    axios
+      .get(`/api/flare/${id}`)
+      .then(({ data }) => {
+        setUserFlares(data);
+      })
+      .catch((err) => {
+        console.error('Error GETing user flares on AccountSettings: ', err);
+      });
   }, [user]);
 
   return (
@@ -259,19 +273,13 @@ function Dashboard() {
                   <div className="flex items-center gap-3">
                     <FaTrophy className="text-2xl bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent" />
                     <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
-                      Your Achievements
+                      Your Flares
                     </h3>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {achievements.map((achievement: Achievement, index) => {
-                    const Icon = achievement.icon;
-                    // Use a simpler approach to get the icon name
-                    const iconName = Icon.name || 'FaStar'; // Fallback to FaStar if name is undefined
-                    const colorClass =
-                      achievementColors[iconName] ||
-                      'from-yellow-500 to-orange-500'; // fallback color
-
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {userFlares.slice(-6).map((flare: FlareType, index) => {
+                    const colorClass = 'from-yellow-500 to-orange-500'; // fallback color
                     return (
                       <motion.div
                         key={index}
@@ -280,27 +288,18 @@ function Dashboard() {
                         transition={{ delay: index * 0.1 }}
                         className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300"
                       >
-                        <div className="p-2 rounded-lg bg-white/[0.03]">
-                          <Icon
-                            className={`text-xl bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
-                          />
-                        </div>
-                        <div>
-                          <p
-                            className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
-                          >
-                            {achievement.title}
-                          </p>
-                          <p className="text-white/60 text-sm">
-                            {achievement.description}
-                          </p>
-                          <span
-                            className={`text-xs ${achievement.earned ? 'text-green-500' : 'text-gray-500'}`}
-                          >
-                            {achievement.earned
-                              ? '✓ Earned'
-                              : '◯ Not Yet Earned'}
-                          </span>
+                        <div className="flex items-center gap-4">
+                          <img className="rounded-full sm:w-1/4 lg:w-1/6 !important" src={flare.icon} />
+                          <div className="flex-col">
+                            <p
+                              className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
+                            >
+                              {flare.name}
+                            </p>
+                            <p className="text-white/60 text-sm">
+                              {flare.description}
+                            </p>
+                          </div>
                         </div>
                       </motion.div>
                     );

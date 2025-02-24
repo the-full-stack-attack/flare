@@ -18,12 +18,20 @@ import { UserContext } from '../contexts/UserContext';
 import { Countdown } from '../components/chatroom/countdown';
 import QuipLash from '../components/chatroom/QuipLash';
 import MsgBox from '../components/chatroom/MsgBox';
+import Keyboard from '../components/chatroom/Piano'
+import MacroRecorder from '../components/chatroom/MacroRecorder'
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
 import IDLE from '../assets/chatroom/idle/index';
 import WALK from '../assets/chatroom/walk/index';
+import SNAP from '../assets/chatroom/snap/index';
+import WAVE from '../assets/chatroom/wave/index';
+import vinyl from '../assets/images/vinyl.png';
+import loading from '../assets/chatroom/loading.gif';
+import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
 import { BsSend } from 'react-icons/bs';
+
 import {
   Container,
   Graphics,
@@ -215,6 +223,25 @@ function Chatroom() {
     { alias: '113', src: WALK['113']},
     { alias: '114', src: WALK['114']},
     { alias: '115', src: WALK['115']},
+    { alias: '116', src: SNAP['1']},
+    { alias: '117', src: SNAP['2']},
+    { alias: '118', src: SNAP['3']},
+    { alias: '119', src: SNAP['4']},
+    { alias: '120', src: SNAP['5']},
+    { alias: '121', src: WAVE['1']},
+    { alias: '122', src: WAVE['2']},
+    { alias: '123', src: WAVE['3']},
+    { alias: '124', src: WAVE['4']},
+    { alias: '125', src: WAVE['5']},
+    { alias: '126', src: ENERGYWAVE['1']},
+    { alias: '127', src: ENERGYWAVE['2']},
+    { alias: '128', src: ENERGYWAVE['3']},
+    { alias: '129', src: ENERGYWAVE['4']},
+    { alias: '130', src: ENERGYWAVE['5']},
+    { alias: '131', src: ENERGYWAVE['6']},
+    { alias: '132', src: ENERGYWAVE['7']},
+    { alias: '133', src: ENERGYWAVE['8']},
+
   ])
   const { assets, isSuccess }  = useAssets(arrayForUse);
   
@@ -240,18 +267,25 @@ function Chatroom() {
   const [gameWidth, setGameWidth] = useState(window.innerWidth);
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
   const spriteRef = useRef(null);
+  const spriteRef2 = useRef(null);
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
+  const [isPlayingDJ, setIsPlayingDJ] = useState(false);
+  const [isPlayingGames, setIsPlayingGames] = useState(false);
   const [avatarImage, setAvatarImage] = useState<string | null>(user.avatar_uri);
   const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   const [textures, setTextures] = useState([]);
   const [walkTextures, setWalkTextures] = useState([]);
+  const [snapTextures, setSnapTextures] = useState([]);
+  const [waveTextures, setWaveTextures] = useState([]);
+  const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
+  const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
 const [isReady, setIsReady] = useState(false);
     useEffect(() => {
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
       for(let player in PLAYER_LIST ){
-        console.log(PLAYER_LIST[player])
+ 
         if(!lobby.includes(PLAYER_LIST[player].username)){
           setLobby((prevItems) => [ ...prevItems, PLAYER_LIST[player].username ])
           // setTimeout( () => {
@@ -268,8 +302,14 @@ const [isReady, setIsReady] = useState(false);
     }, []);
     
   // QUIPLASH
+  const toggleGames = () => {
+    isPlayingGames ? setIsPlayingGames(false) : setIsPlayingGames(true);
+  }
+
+  const toggleDJ = () => {
+    isPlayingDJ ? setIsPlayingDJ(false) : setIsPlayingDJ(true);
+  }
   const toggleQuiplash = () => {
-    // console.log('clicked')
     isPlayingQuiplash ? setIsPlayingQuiplash(false) : setIsPlayingQuiplash(true);
   }
   const speechBubble = useCallback((graphics: unknown) => {
@@ -289,6 +329,15 @@ const [isReady, setIsReady] = useState(false);
       } else if (key === 'ArrowRight' || key === 'd') {
         socket.emit('keyPress', { inputId: 'Right', state: true });
       }
+      if (key === 'q' || key === 'Q'){
+        socket.emit('keyPress', { inputId: 'Snap', state: true });
+      }
+      if (key === 'e' || key ==='E'){
+        socket.emit('keyPress', {inputId: 'Wave', state:true});
+      }
+      if (key === 'r' || key === 'R'){
+        socket.emit('keyPress', {inputId: 'EnergyWave', state: true});
+      }
     }
   };
   const keyUp = ({ key }: any) => {
@@ -300,6 +349,15 @@ const [isReady, setIsReady] = useState(false);
       socket.emit('keyPress', { inputId: 'Left', state: false });
     } else if (key === 'ArrowRight' || key === 'd') {
       socket.emit('keyPress', { inputId: 'Right', state: false });
+    }
+    if (key === 'q' || key === 'Q'){
+      socket.emit('keyPress', { inputId: 'Snap', state: false });
+    } 
+    if (key === 'e' || key ==='E'){
+      socket.emit('keyPress', {inputId: 'Wave', state:false});
+    }
+    if (key === 'r' || key === 'R'){
+      socket.emit('keyPress', {inputId: 'EnergyWave', state: false});
     }
   };
   let variable = 'temporaryMap'
@@ -324,13 +382,25 @@ const [isReady, setIsReady] = useState(false);
             currentMessage: data[i].currentMessage,
             room: data[i].room,
             isWalking: data[i].isWalking,
+            isSnapping: data[i].isSnapping,
+            isWaving: data[i].isWaving,
+            isEnergyWaving: data[i].isEnergyWaving,
           });
-        //   console.log(allPlayerInfo, 'ok');
-     
-          
+
+          // if the client is at the keyboard:
+          if(data[i].username === user.username){
+            if(data[i].x < 466 && data[i].x > 412 && data[i].y > 112 && data[i].y < 150 && !onKeyboard){
+              console.log('onkeyboard')
+              setOnKeyboard(true);
+            } 
+
+            if ((data[i].x > 466 || data[i].x < 412 ) || ( data[i].y < 112 || data[i].y > 150 ) && onKeyboard){
+              console.log('off keyboard')
+              setOnKeyboard(false);
+            }
+          }
         }
       }
-     
       setAllPlayers(allPlayerInfo);
     });
 
@@ -370,6 +440,17 @@ const [isReady, setIsReady] = useState(false);
       spriteRef.current.play(); // Explicitly start animation
     }
   }, []);
+  useEffect(() => {
+
+  }, [setOnKeyboard])
+  useEffect(() => {
+    return () => {
+      // Cleanup sprite texture when unmounting
+      if (spriteRef2.current) {
+        spriteRef2.current.texture?.destroy(true);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
@@ -377,10 +458,22 @@ const [isReady, setIsReady] = useState(false);
         assets['107'], assets['108'], assets['109'], assets['110'], assets['111'], 
       ];
       const loadedWalkTextures = [
-        assets['112'], assets['113'], assets['114'], assets['115'], assets['116'], 
+        assets['112'], assets['113'], assets['114'], assets['115'], assets['116'], assets['117'],
       ]
+      const loadedSnapTextures = [
+        assets['118'], assets['119'], assets['120'], assets['121'], assets['122']
+      ]
+      const loadedWaveTextures = [
+        assets['123'], assets['124'], assets['125'], assets['126'], assets['127']
+      ]
+      const loadedEnergyWaveTextures = [
+        assets['128'], assets['129'], assets['130'], assets['131'], assets['132'], assets['133'], assets['134'], assets['135'],
+      ]
+      setEnergyWaveTextures(loadedEnergyWaveTextures);
       setTextures(loadedTextures);
       setWalkTextures(loadedWalkTextures);
+      setSnapTextures(loadedSnapTextures);
+      setWaveTextures(loadedWaveTextures);
       setIsReady(true); // Once textures are ready, set the state to true
     }
   }, [isSuccess, assets]); // Re-run when assets load
@@ -453,50 +546,64 @@ const [isReady, setIsReady] = useState(false);
           }} >
           <Countdown endTime={dayjs(start_time)}/>
           </div> 
-          { !isPlayingQuiplash && 
+          { !isPlayingGames && 
         <div className="flex justify-center"> 
-        <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleQuiplash}>
+        <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleGames}>
           Ice-Breaker Games
           </RainbowButton>
           </div> || 
           <div className="flex justify-center"> 
-          <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleQuiplash}>
+          <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleGames}>
             Chat-Room Lobby
             </RainbowButton>
             </div>
           
           }
           
-        
+        { isPlayingGames && 
+        <div>
+        <Button onClick={toggleDJ}>MIX CHAT</Button>
+        <Button onClick={toggleQuiplash}>Flamiliar</Button>
+        </div>
+        }
          { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
-          { !isPlayingQuiplash &&
-          <div className="p-4">
-          <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
-          <div className="p-2">
+         
+   { !isPlayingGames &&
+    <div className="p-4">
+      <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full max-w-4xl bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+        <div className="p-2">
           <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
-          { !isSuccess && <div className='p-15'><VelocityScroll >LOADING GAME</VelocityScroll></div> }
+          { !isSuccess && 
+          <div>
+            <div><VelocityScroll >LOADING GAME</VelocityScroll></div> 
+          <div><VelocityScroll >LOADING GAME</VelocityScroll></div> 
+          <div className="flex justify-center"><img id="loading-image" src={loading} alt="Loading..."></img></div>
+          <div><VelocityScroll >LOADING GAME</VelocityScroll></div> 
+          </div>
+          }
           { isSuccess && 
           <Application 
           resizeTo={appRef}
           width={Math.floor(640)}
           height={Math.floor(360)}
           backgroundColor={' #FFFFFF'}
-          resolution={3}
+          resolution={2.5}
          >
           {
-            mapPack.layers.map((objLay) => (
+            mapPack.layers.map((objLay, index) => (
               <pixiContainer 
-              key= {crypto.randomUUID()} 
+              key= {index} 
               >
             { 
-            objLay.tiles.map((objTiles) => ( 
+            objLay.tiles.map((objTiles, index) => ( 
              
                 <pixiSprite
                   texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
+                  ref={spriteRef2} 
                   x={32 * (objTiles.x) * 1.25 }
                   y={32 * (objTiles.y) * 1.25 }
                  scale={ 1.25, 1.25}
-                 key= {crypto.randomUUID()}
+                 key= {index}
                 />
             ))
             }
@@ -538,6 +645,7 @@ const [isReady, setIsReady] = useState(false);
                   />
                 <pixiSprite
               texture={Assets.get(player.username)}
+              ref={spriteRef2} 
               x={0}
               y={-13}
               scale={scaleFactor, scaleFactor}
@@ -546,9 +654,39 @@ const [isReady, setIsReady] = useState(false);
               >
 
               </pixiSprite>
-                {isReady && !player.isWalking &&
+                {isReady && !player.isWalking && !player.isSnapping && !player.isWaving && !player.isEnergyWaving &&
                  <pixiAnimatedSprite
        textures={textures}
+       x={-18.6}
+       y={-21}
+       ref={(spriteRef) => {
+         spriteRef?.play()
+       }}
+       initialFrame={0}
+       animationSpeed={0.1}
+       loop={true}
+       scale={ scaleFactor, scaleFactor }
+       width={64}
+       height={64}
+     /> }
+     {isReady && player.isWalking &&
+                 <pixiAnimatedSprite
+                 textures={walkTextures}
+                 x={-18.6}
+                 y={-21}
+                 ref={(spriteRef) => {
+                   spriteRef?.play()
+                  }}
+                  initialFrame={0}
+                  animationSpeed={0.4}
+                  loop={true}
+                  scale={ scaleFactor, scaleFactor }
+                  width={64}
+                  height={64}
+     /> }
+     {isReady && !player.isWalking && !player.isSnapping && player.isWaving &&
+                 <pixiAnimatedSprite
+       textures={waveTextures}
        x={-18.6}
        y={-21}
        ref={(spriteRef) => {
@@ -560,16 +698,30 @@ const [isReady, setIsReady] = useState(false);
        scale={{ x: scaleFactor, y: scaleFactor }}
   
      /> }
-     {isReady && player.isWalking &&
+     {isReady && player.isSnapping && !player.isWalking &&
                  <pixiAnimatedSprite
-       textures={walkTextures}
+       textures={snapTextures}
        x={-18.6}
        y={-21}
        ref={(spriteRef) => {
          spriteRef?.play()
        }}
        initialFrame={0}
-       animationSpeed={0.1}
+       animationSpeed={0.27}
+       loop={true}
+       scale={{ x: scaleFactor, y: scaleFactor }}
+  
+     /> }
+          {isReady && !player.isSnapping && !player.isWalking && player.isEnergyWaving &&
+       <pixiAnimatedSprite
+       textures={energyWaveTextures}
+       x={-18.6}
+       y={-21}
+       ref={(spriteRef) => {
+         spriteRef?.play()
+       }}
+       initialFrame={0}
+       animationSpeed={0.2}
        loop={true}
        scale={{ x: scaleFactor, y: scaleFactor }}
   
@@ -590,9 +742,27 @@ const [isReady, setIsReady] = useState(false);
           </Application>
             } 
           </div>
-          </div>
-          </div>
-          </div> }
+        </div>
+      </div>
+    </div> 
+  }
+   {
+        ( isPlayingDJ || onKeyboard ) &&
+        <div>
+      <div className='flex justify-center items-center'>
+      <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+        <img src={vinyl} alt="Loading...">
+        </img>
+        </div>
+      <MacroRecorder></MacroRecorder>
+        <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+        <img src={vinyl} alt="Loading...">
+        </img>
+        </div>
+        </div>
+      <Keyboard></Keyboard>
+      </div>
+      }
           <div className="flex justify-center mt-2">
         <div onClick={typing}>
           <Label className="flex justify-center  text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-2xl rounded-md"> 
@@ -620,6 +790,7 @@ const [isReady, setIsReady] = useState(false);
       </svg>  
       <em> Message Limit: {message.length} / 150</em>
     </h1>  
+     
             {/* <em className="text-white">Allowed Characters</em> */}
         </div>
       </div>
@@ -656,6 +827,7 @@ const [isReady, setIsReady] = useState(false);
           </AnimatedList>
         </div>
       </Card> 
+     
       </div>
   );
 }
