@@ -18,6 +18,16 @@ import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
 import bassloop from '../../assets/sounds/chatroom/notes/bassloop.mp3';
 import beatbass from '../../assets/sounds/chatroom/notes/beatbass.mp3';
+import bass1 from '../../assets/sounds/chatroom/notes/bass1.mp3';
+import bass2 from '../../assets/sounds/chatroom/notes/bass2.mp3';
+import bass3 from '../../assets/sounds/chatroom/notes/bass3.mp3';
+import bass4 from '../../assets/sounds/chatroom/notes/bass4.mp3';
+import bass5 from '../../assets/sounds/chatroom/notes/bass5.mp3';
+import bass6 from '../../assets/sounds/chatroom/notes/bass6.mp3';
+import bass7 from '../../assets/sounds/chatroom/notes/bass7.mp3';
+import bass8 from '../../assets/sounds/chatroom/notes/bass8.mp3';
+import bass10 from '../../assets/sounds/chatroom/notes/bass10.mp3';
+import bass11 from '../../assets/sounds/chatroom/notes/bass11.mp3';
 
 interface KeyStroke {
   key: string;
@@ -25,12 +35,14 @@ interface KeyStroke {
   type: 'keydown' | 'keyup';
 }
 
-const keySounds = {
-  'a': C4, 's': D4, 'd': E4, 'f': F4, 'g': G4, 'h': A4, 'j': B4,
-  'w': A04, 'e': G04, 'r': D04, 'k': C5,
-  'z': kick, 'x': kick, 'c': snare, 'v': crash1, '.': china,
-  '=': beatbass, '-': bassloop,
-};
+  const keySounds = {
+    'a': C4, 's': D4, 'd': E4, 'f': F4, 'g': G4, 'h': A4, 'j': B4,
+    'w': A04, 'e': G04, 'r': D04, 'k': C5,
+    'z': kick, 'x': kick, 'c': snare, 'v': crash1, '.': china,
+    '=': beatbass, '-': bassloop, 'p': bass1, 'o': bass2, 'i': bass3, 
+    'u':bass4, '9': bass5, '8': bass6,
+    '5': bass8, '3':bass10, '1':bass11
+  };
 
 const MacroRecorder = () => {
   const [recording, setRecording] = useState<boolean>(false);
@@ -184,6 +196,7 @@ const MacroRecorder = () => {
 
   // Toggle mute state
   const toggleMute = () => {
+    stopAllAudio()
     setMute((prev) => !prev);
   };
   const clearRecordings = () => {

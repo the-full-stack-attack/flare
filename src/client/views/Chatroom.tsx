@@ -31,6 +31,7 @@ import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
 import { BsSend } from 'react-icons/bs';
+
 import {
   Container,
   Graphics,
@@ -268,6 +269,8 @@ function Chatroom() {
   const spriteRef = useRef(null);
   const spriteRef2 = useRef(null);
   const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
+  const [isPlayingDJ, setIsPlayingDJ] = useState(false);
+  const [isPlayingGames, setIsPlayingGames] = useState(false);
   const [avatarImage, setAvatarImage] = useState<string | null>(user.avatar_uri);
   const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
@@ -299,8 +302,14 @@ const [isReady, setIsReady] = useState(false);
     }, []);
     
   // QUIPLASH
+  const toggleGames = () => {
+    isPlayingGames ? setIsPlayingGames(false) : setIsPlayingGames(true);
+  }
+
+  const toggleDJ = () => {
+    isPlayingDJ ? setIsPlayingDJ(false) : setIsPlayingDJ(true);
+  }
   const toggleQuiplash = () => {
-    // console.log('clicked')
     isPlayingQuiplash ? setIsPlayingQuiplash(false) : setIsPlayingQuiplash(true);
   }
   const speechBubble = useCallback((graphics: unknown) => {
@@ -363,7 +372,6 @@ const [isReady, setIsReady] = useState(false);
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
         if (data[i].room === eventId) {
-
           allPlayerInfo.push({
             id: data[i].id,
             avatar: data[i].avatar,
@@ -390,14 +398,9 @@ const [isReady, setIsReady] = useState(false);
               console.log('off keyboard')
               setOnKeyboard(false);
             }
-            
           }
-          
-     
-          
         }
       }
-     
       setAllPlayers(allPlayerInfo);
     });
 
@@ -543,26 +546,32 @@ const [isReady, setIsReady] = useState(false);
           }} >
           <Countdown endTime={dayjs(start_time)}/>
           </div> 
-          { !isPlayingQuiplash && 
+          { !isPlayingGames && 
         <div className="flex justify-center"> 
-        <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleQuiplash}>
+        <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleGames}>
           Ice-Breaker Games
           </RainbowButton>
           </div> || 
           <div className="flex justify-center"> 
-          <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleQuiplash}>
+          <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleGames}>
             Chat-Room Lobby
             </RainbowButton>
             </div>
           
           }
           
-        
+        { isPlayingGames && 
+        <div>
+        <Button onClick={toggleDJ}>MIX CHAT</Button>
+        <Button onClick={toggleQuiplash}>Flamiliar</Button>
+        </div>
+        }
          { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
-          { !isPlayingQuiplash &&
-          <div className="p-4">
-          <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
-          <div className="p-2">
+         
+   { !isPlayingGames &&
+    <div className="p-4">
+      <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+        <div className="p-2">
           <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
           { !isSuccess && 
           <div>
@@ -731,9 +740,10 @@ const [isReady, setIsReady] = useState(false);
           </Application>
             } 
           </div>
-          </div>
-          </div>
-          </div> }
+        </div>
+      </div>
+    </div> 
+  }
           <div className="flex justify-center mt-2">
         <div onClick={typing}>
           <Label className="flex justify-center  text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-2xl rounded-md"> 
@@ -762,7 +772,7 @@ const [isReady, setIsReady] = useState(false);
       <em> Message Limit: {message.length} / 150</em>
     </h1>  
       {
-        onKeyboard &&
+        ( isPlayingDJ || onKeyboard ) &&
         <div>
       <div className='flex justify-center items-center'>
       <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
