@@ -274,7 +274,7 @@ function Dashboard() {
 
           <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
-            <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 overflow-hidden">
+            <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 sm:max-h-[460px] md:max-h-[430px] lg:max-h-[343px] overflow-auto">
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
 
               <div className="relative z-10">
@@ -287,7 +287,7 @@ function Dashboard() {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {userFlares.slice(-6).map((flare: FlareType, index) => {
+                  {userFlares.reverse().map((flare: FlareType, index) => {
                     const colorClass = 'from-yellow-500 to-orange-500'; // fallback color
                     return (
                       <motion.div
@@ -298,7 +298,10 @@ function Dashboard() {
                         className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300"
                       >
                         <div className="flex items-center gap-4">
-                          <img className="rounded-full sm:w-1/6 md:w-1/4 lg:w-1/3 !important" src={flare.icon} />
+                          <img
+                            className="rounded-full sm:w-1/6 md:w-1/4 lg:w-1/3 !important"
+                            src={flare.icon}
+                          />
                           <div className="flex-col">
                             <p
                               className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
@@ -319,9 +322,8 @@ function Dashboard() {
           </div>
           <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
-            <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
-
+            <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 sm:max-h-[460px] md:max-h-[430px] lg:max-h-[343px] overflow-auto">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -343,7 +345,10 @@ function Dashboard() {
                         className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300"
                       >
                         <div className="flex items-center gap-4">
-                          <img className="rounded-full blur sm:w-1/6 md:w-1/4 lg:w-1/3" src={flare.icon} />
+                          <img
+                            className="rounded-full blur sm:w-1/6 md:w-1/4 lg:w-1/3"
+                            src={flare.icon}
+                          />
                           <div className="flex-col">
                             <p
                               className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
