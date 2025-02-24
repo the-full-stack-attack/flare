@@ -14,13 +14,13 @@ type UserEvent = {
   EventId: Number;
 }
 
-cron.schedule('0,29 * * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
   console.log('Events worker working')
   // Grab the events that have started in the last hour
   const now = Date.now();
   const events: any = await Event.findAll({ where: {
     start_time: {
-      [Op.between]:  [new Date(now - 1000 * 60 * 61), new Date(now)],
+      [Op.between]:  [new Date(now - 1000 * 60 * 10), new Date(now)],
     }
   }});
   // Find all the user_events for each event
