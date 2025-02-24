@@ -23,10 +23,8 @@ export function LandingNav() {
           >
             <Logo size="md" animate={true} className="py-2" />
           </motion.div>
-
         </div>
       </div>
     </nav>
   );
 }
-
