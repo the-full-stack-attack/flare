@@ -30,6 +30,7 @@ function Keyboard() {
 
   // Function to play a sound
   const playSound = (key: string) => {
+    console.log('piano event listener to play')
     if (keySounds[key]) {
       const audio = new Audio(keySounds[key]);
       audio.currentTime = 0;
