@@ -38,7 +38,8 @@ const MacroRecorder = () => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [recordings, setRecordings] = useState<KeyStroke[][]>([]);
   const [mute, setMute] = useState<boolean>(false);
-  const currentRecordingRef = useRef<KeyStroke[]>([]);
+  const [currentRecording, setCurrentRecording] = useState<KeyStroke[]>([]);
+
   const startTimeRef = useRef<number | null>(null);
   const isPlaybackRef = useRef<boolean>(false);
   const loopSoundsRef = useRef<{ [key: string]: HTMLAudioElement | null }>({});
@@ -126,7 +127,7 @@ const MacroRecorder = () => {
       setPlaying(false); // Stop playback when recording stops
     } else {
       // Start recording
-      console.log("Recording Key:", key, "Time:", time, "Type:", type);
+
       startTimeRef.current = performance.now();
       currentRecordingRef.current = [];
       if (recordings.length > 0) {
@@ -159,27 +160,23 @@ const MacroRecorder = () => {
       setPlaying(false);
     }, maxTime + 100);
   };
-
   const playAllRecordings = () => {
     if (playing || recordings.length === 0) return;
   
-    console.log("Stored Recordings:", JSON.stringify(recordings, null, 2));
-
     setPlaying(true);
     stopAllAudio();
   
-    // Flatten and sort all keystrokes from all recordings by their timestamps
     const mergedRecording = recordings.flat().sort((a, b) => a.time - b.time);
   
     mergedRecording.forEach(({ key, time, type }) => {
       setTimeout(() => {
         if (type === 'keydown') {
+          console.log("Playing Key:", key, "Time:", time);
           playSound(key);
         }
       }, time);
     });
   
-    // Find the max time to reset playing state
     const maxTime = Math.max(...mergedRecording.map((stroke) => stroke.time));
     setTimeout(() => setPlaying(false), maxTime + 100);
   };
