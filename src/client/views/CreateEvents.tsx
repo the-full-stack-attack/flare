@@ -148,7 +148,7 @@ function CreateEvents() {
                 streetAddress: formInfo.streetAddress,
                 zipCode: Number(formInfo.zipCode),
                 cityName: formInfo.cityName,
-                stateName: formInfo.stateName.toUpperCase(),
+                stateName: formInfo.stateName.toUpperCase(), // check the error here
                 fsq_id: formInfo.fsq_id,
             };
             // console.log('sending: ', formattedData.startDate);

@@ -314,7 +314,7 @@ eventRouter.post('/venue/create', async (req: any, res: Response) => {
 
 
 // this route gets called when user selects a venue from fsq search results
-eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
+eventRouter.get('/venue/:fsqId', async (req: any, res: any) => {
     let fsqData;
     let googlePlaceId = null;
     let gData: GoogleData[] = [];
@@ -326,11 +326,11 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         const hasFSQId = await Venue.findOne({where: {fsq_id: fsqId}});
 
 
-        const existingVenue = await Venue.findOne({
+        const existingVenue: any = await Venue.findOne({
             where: {fsq_id: fsqId},
             include: [
-                { model: Venue_Tag, as: 'tags' },
-                { model: Venue_Image, as: 'images' }
+                { model: Venue_Tag, as: 'Venue_Tags' },
+                { model: Venue_Image, as: 'Venue_Images' }
             ]
         });
 
