@@ -325,6 +325,35 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         // check if we already have this venue in our db
         const hasFSQId = await Venue.findOne({where: {fsq_id: fsqId}});
 
+
+        const existingVenue = await Venue.findOne({
+            where: {fsq_id: fsqId},
+            include: [
+                { model: Venue_Tag, as: 'tags' },
+                { model: Venue_Image, as: 'images' }
+            ]
+        });
+
+        if (existingVenue) {
+            const nullFields: any = {};
+            if (existingVenue.name === null) nullFields.name = null;
+            if (existingVenue.description === null) nullFields.description = null;
+            if (existingVenue.category === null) nullFields.category = null;
+            if (existingVenue.street_address === null) nullFields.street_address = null;
+            if (existingVenue.zip_code === null) nullFields.zip_code = null;
+            if (existingVenue.city_name === null) nullFields.city_name = null;
+            if (existingVenue.state_name === null) nullFields.state_name = null;
+            if (existingVenue.phone === null) nullFields.phone = null;
+            if (existingVenue.website === null) nullFields.website = null;
+            if (existingVenue.pricing === null) nullFields.pricing = null;
+            if (existingVenue.wheelchair_accessible === null) nullFields.wheelchair_accessible = null;
+            if (existingVenue.serves_alcohol === null) nullFields.serves_alcohol = null;
+
+            return res.json({
+                venue: existingVenue,
+                nullFields,
+            });
+        }
         // if venue isn't in our db, get it from fsq api
         if (!hasFSQId) {
             const response = await fetch(
