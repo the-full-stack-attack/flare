@@ -12,12 +12,12 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
+import ImageSelection from './ImageSelection';
 // review is the final step of the event creation flow
 // it shows all entered data and lets users edit any field before submitting
 // it receives formInfo (current data), nullFields (missing data), and handleFieldChange (update function)
 
-function Review({formInfo, nullFields, handleFieldChange}) {
+function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
     // tracks which fields are currently being edited
     const [editingFields, setEditingFields] = useState<Record<string, boolean>>({});
     // holds temporary values while user is editing, before saving
@@ -559,9 +559,16 @@ function Review({formInfo, nullFields, handleFieldChange}) {
                             )}
                         </div>
                     </div>
+
+                    <div className="mt-4">
+                        <p className="text-gray-400 mb-2">Venue Images:</p>
+                        <ImageSelection
+                            venueImages={formInfo.Venue?.Venue_Images || []}
+                            selectedImages={formInfo.selectedImages}
+                            onSelectImages={(images) => setFormInfo(prev => ({ ...prev, selectedImages: images }))}
+                        />
+                    </div>
                 </div>
-
-
 
 
                 <Separator className="border-orange-500/20"/>
