@@ -12,6 +12,7 @@
     "start": "nodemon ./src/server/index.ts",
     "update": "rimraf node_modules && rm package-lock.json && npm install && exit 0",
     "seed": "ts-node ./src/server/db/seeds/index.ts",
+    "seed:showcase": "ts-node ./src/server/db/showcase-seeds",
     "seedEvents": "ts-node ./src/server/db/seeds/seedEvents.ts",
     "seedFlares": "ts-node ./src/server/db/seeds/seedFlares.ts",
     "seedTasks": "ts-node ./src/server/db/seeds/seedTasks.ts && exit 0"
