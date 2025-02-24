@@ -121,7 +121,7 @@ function TaskDisplay({
             <div className="text-white/70 mb-6">
               {user.current_task_id
                 ? `Level ${task.difficulty} ${task.type} task ${task.description}`
-                : 'You are not assigned a task. Go to the Task page to choose your task.'}
+                : 'You are not assigned a task. Go to the Tasks page to choose your task.'}
             </div>
             {user.current_task_id && (
               <div className="flex gap-3">
