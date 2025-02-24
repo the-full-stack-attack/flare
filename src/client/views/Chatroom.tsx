@@ -557,22 +557,24 @@ const [isReady, setIsReady] = useState(false);
        initialFrame={0}
        animationSpeed={0.1}
        loop={true}
-       scale={{ x: scaleFactor, y: scaleFactor }}
-  
+       scale={ scaleFactor, scaleFactor }
+       width={64}
+       height={64}
      /> }
      {isReady && player.isWalking &&
                  <pixiAnimatedSprite
-       textures={walkTextures}
-       x={-18.6}
-       y={-21}
-       ref={(spriteRef) => {
-         spriteRef?.play()
-       }}
-       initialFrame={0}
-       animationSpeed={0.1}
-       loop={true}
-       scale={{ x: scaleFactor, y: scaleFactor }}
-  
+                 textures={walkTextures}
+                 x={-18.6}
+                 y={-21}
+                 ref={(spriteRef) => {
+                   spriteRef?.play()
+                  }}
+                  initialFrame={0}
+                  animationSpeed={0.4}
+                  loop={true}
+                  scale={ scaleFactor, scaleFactor }
+                  width={64}
+                  height={64}
      /> }
                   {/* <pixiContainer>
                 <pixiSprite
