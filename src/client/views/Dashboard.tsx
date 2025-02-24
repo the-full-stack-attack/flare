@@ -289,7 +289,7 @@ function Dashboard() {
                         className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300"
                       >
                         <div className="flex items-center gap-4">
-                          <img className="rounded-full sm:w-1/4 lg:w-1/6 !important" src={flare.icon} />
+                          <img className="rounded-full sm:w-1/6 md:w-1/4 lg:w-1/3 !important" src={flare.icon} />
                           <div className="flex-col">
                             <p
                               className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
