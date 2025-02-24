@@ -20,7 +20,7 @@ import Conversation from './conversations';
 import Conversation_Session from './conversation_session';
 import Venue_Tag from "./venue_tags";
 import Venue_Image from './venue_images';
-
+import Event_Venue_Image from './event_venue_images';
 
 
 export default {
@@ -36,6 +36,7 @@ export default {
   Venue,
   Venue_Tag,
   Venue_Image,
+  Event_Venue_Image,
   Chatroom,
   Chat,
   Category,
