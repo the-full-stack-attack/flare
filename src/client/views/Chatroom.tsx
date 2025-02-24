@@ -570,7 +570,7 @@ const [isReady, setIsReady] = useState(false);
          
    { !isPlayingGames &&
     <div className="p-4">
-      <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
+      <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full max-w-4xl bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
         <div className="p-2">
           <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
           { !isSuccess && 
@@ -590,12 +590,12 @@ const [isReady, setIsReady] = useState(false);
           resolution={2.5}
          >
           {
-            mapPack.layers.map((objLay) => (
+            mapPack.layers.map((objLay, index) => (
               <pixiContainer 
-              key= {crypto.randomUUID()} 
+              key= {index} 
               >
             { 
-            objLay.tiles.map((objTiles) => ( 
+            objLay.tiles.map((objTiles, index) => ( 
              
                 <pixiSprite
                   texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
@@ -603,7 +603,7 @@ const [isReady, setIsReady] = useState(false);
                   x={32 * (objTiles.x) * 1.25 }
                   y={32 * (objTiles.y) * 1.25 }
                  scale={ 1.25, 1.25}
-                 key= {crypto.randomUUID()}
+                 key= {index}
                 />
             ))
             }
@@ -744,6 +744,23 @@ const [isReady, setIsReady] = useState(false);
       </div>
     </div> 
   }
+   {
+        ( isPlayingDJ || onKeyboard ) &&
+        <div>
+      <div className='flex justify-center items-center'>
+      <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+        <img src={vinyl} alt="Loading...">
+        </img>
+        </div>
+      <MacroRecorder></MacroRecorder>
+        <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+        <img src={vinyl} alt="Loading...">
+        </img>
+        </div>
+        </div>
+      <Keyboard></Keyboard>
+      </div>
+      }
           <div className="flex justify-center mt-2">
         <div onClick={typing}>
           <Label className="flex justify-center  text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-2xl rounded-md"> 
@@ -771,23 +788,7 @@ const [isReady, setIsReady] = useState(false);
       </svg>  
       <em> Message Limit: {message.length} / 150</em>
     </h1>  
-      {
-        ( isPlayingDJ || onKeyboard ) &&
-        <div>
-      <div className='flex justify-center items-center'>
-      <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
-        <img src={vinyl} alt="Loading...">
-        </img>
-        </div>
-      <MacroRecorder></MacroRecorder>
-        <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
-        <img src={vinyl} alt="Loading...">
-        </img>
-        </div>
-        </div>
-      <Keyboard></Keyboard>
-      </div>
-      }
+     
             {/* <em className="text-white">Allowed Characters</em> */}
         </div>
       </div>

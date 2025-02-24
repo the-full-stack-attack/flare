@@ -92,12 +92,17 @@ const initializeSocket = (
 
     // QUITTING
     socket.on('quitQuiplash', () => {
+      
       socket.leave(`Quiplash room: ${socket.data.eventId}`);
-      delete QUIPLASH_LIST[socket.id];
+      try{ 
+        delete QUIPLASH_LIST[socket.id];
       QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
       if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
         delete QUIPLASH_GAMES[socket.data.eventId];
       };
+    } catch(error){
+      console.log('error caught')
+    }
     });
 
     // JOINING
@@ -138,6 +143,9 @@ const initializeSocket = (
 
             // After 30 seconds, Show answers & begin next timer
             setTimeout(() => {
+              if(QUIPLASH_GAMES[eventId] === undefined ){
+                return;
+              }
               QUIPLASH_GAMES[eventId].promptGiven = false;
               socket.nsp
                 .to(`Quiplash room: ${socket.data.eventId}`)
@@ -207,6 +215,7 @@ const initializeSocket = (
               }, 17000);
 
             }, 33000);
+            
           },
         }; // END OF QUIPLASH GAME OBJECT
       } // END OF IF STATEMENT
@@ -299,7 +308,6 @@ const initializeSocket = (
           PLAYER_LIST[socket.id].isWaving = state;
           }
           if (inputId === 'EnergyWave') {
-            console.log('isenergywaving')
             PLAYER_LIST[socket.id].isEnergyWaving = state;
             }
     });
