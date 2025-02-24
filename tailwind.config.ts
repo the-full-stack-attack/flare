@@ -77,6 +77,7 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
         rainbow: "rainbow var(--speed, 2s) infinite linear",
         ripple: "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite",
+        "spin-slow": "spin 1s linear infinite",
       },
     },
   },
