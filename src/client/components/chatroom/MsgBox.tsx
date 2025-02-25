@@ -5,7 +5,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import axios from 'axios';
 
-const MsgBox = ({ msg, user, eventId }) => {
+const MsgBox = ({ msg, user, eventId, avatar }) => {
  let timeSent = dayjs().fromNow();
 // let formatted = timeSent.format('HH:mm:ss')
 
@@ -37,7 +37,7 @@ const MsgBox = ({ msg, user, eventId }) => {
             backgroundColor: '#FFB800',
           }}
         >
-          <span className="text-lg">👤</span>
+          <img src={avatar} alt="User avatar"></img>
         </div>
         <div className="flex flex-col overflow-hidden">
           <figcaption className="flex flex-row items-center whitespace-pre text-lg font-medium dark:text-white ">

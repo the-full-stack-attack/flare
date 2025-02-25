@@ -484,7 +484,7 @@ const [isReady, setIsReady] = useState(false);
   const sendMessage = () => {
     // console.log(message);
     socket.emit('message', { message, eventId });
-    displayMessage({message: message, username: user?.username });
+    displayMessage({message: message, username: user?.username, avatar: user?.avatar_uri });
     setMessage('');
   };
   // WINDOW SIZING
@@ -850,6 +850,7 @@ const [isReady, setIsReady] = useState(false);
                 msg={msg.message}
                 user={msg.username}
                 eventId={eventId}
+                avatar={msg.avatar}
               />
             ))}
           </AnimatedList>

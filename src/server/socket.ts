@@ -316,7 +316,7 @@ const initializeSocket = (
       PLAYER_LIST[socket.id].sentMessage = true;
       PLAYER_LIST[socket.id].currentMessage = message;
       
-      socket.to(eventId).emit('message', { message: message, username: PLAYER_LIST[socket.id].username } );
+      socket.to(eventId).emit('message', { message: message, username: PLAYER_LIST[socket.id].username, avatar: PLAYER_LIST[socket.id].avatar } );
       // Remove message after a few seconds
       setTimeout(() => {
         PLAYER_LIST[socket.id].sentMessage = false;
