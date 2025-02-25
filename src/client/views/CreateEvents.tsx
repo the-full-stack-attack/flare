@@ -102,6 +102,8 @@ function CreateEvents() {
                 peak_hour: venue.peak_hour,
                 wheelchair_accessible: venue.wheelchair_accessible,
                 serves_alcohol: venue.serves_alcohol,
+                is_dog_friendly: venue.is_dog_friendly,
+                is_vegan_friendly: venue.is_vegan_friendly,
                 google_place_id: venue.google_place_id,
                 selectedImages: [],
                 Venue: venue,
