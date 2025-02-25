@@ -19,6 +19,7 @@ import { Countdown } from '../components/chatroom/countdown';
 import QuipLash from '../components/chatroom/QuipLash';
 import MsgBox from '../components/chatroom/MsgBox';
 import Keyboard from '../components/chatroom/Piano'
+import DJam from '../components/chatroom/DJam';
 import MacroRecorder from '../components/chatroom/MacroRecorder'
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
@@ -748,20 +749,7 @@ const [isReady, setIsReady] = useState(false);
   }
    {
         ( isPlayingDJ || onKeyboard ) &&
-        <div>
-      <div className='flex justify-center items-center'>
-      <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
-        <img src={vinyl} alt="Loading...">
-        </img>
-        </div>
-      <MacroRecorder></MacroRecorder>
-        <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
-        <img src={vinyl} alt="Loading...">
-        </img>
-        </div>
-        </div>
-      <Keyboard></Keyboard>
-      </div>
+        <DJam/>
       }
           <div className="flex justify-center mt-2">
         <div onClick={typing}>
