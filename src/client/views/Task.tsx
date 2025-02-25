@@ -4,6 +4,15 @@ import { UserContext } from '../contexts/UserContext';
 import Confetti from 'react-confetti';
 import { useWindowSize } from '@react-hook/window-size';
 import { BackgroundGlow } from '@/components/ui/background-glow';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import ChooseTask from '../components/tasks/ChooseTask';
 import CompletedTaskList from '../components/tasks/CompletedTaskList';
@@ -16,6 +25,7 @@ function Task() {
   const [width, height] = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
   const [completeDisabled, setCompleteDisabled] = useState(false);
+  const [filter, setFilter] = React.useState<string | null>(null);
   // Use effect will call getTask if there is a change in user state
   useEffect((): void => {
     // Find the task by the id and set the task in state
@@ -31,6 +41,7 @@ function Task() {
         });
     }
   }, [user]);
+  console.log(filter);
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12 px-4">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
@@ -63,8 +74,25 @@ function Task() {
           <div className="text-xl font-semibold text-white pt-3">
             Completed Tasks
           </div>
+          <div>
+            <Select onValueChange={setFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a fruit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value={null as any}>None</SelectItem>
+                  <SelectItem value="Fun">Fun</SelectItem>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Normal">Normal</SelectItem>
+                  <SelectItem value="Duo">Duo</SelectItem>
+                  <SelectItem value="Rejection">Rejection</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="container overflow-auto max-h-60">
-            <CompletedTaskList />
+            <CompletedTaskList filter={filter} />
           </div>
           <div className="text-xl font-semibold text-white pt-3">
             Opted Out Tasks
