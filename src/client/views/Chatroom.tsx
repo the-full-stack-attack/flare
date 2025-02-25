@@ -27,6 +27,7 @@ import IDLE from '../assets/chatroom/idle/index';
 import WALK from '../assets/chatroom/walk/index';
 import SNAP from '../assets/chatroom/snap/index';
 import WAVE from '../assets/chatroom/wave/index';
+import EMOJIS from '../assets/chatroom/emojis';
 import vinyl from '../assets/images/vinyl.png';
 import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
@@ -242,6 +243,14 @@ function Chatroom() {
     { alias: '131', src: ENERGYWAVE['6']},
     { alias: '132', src: ENERGYWAVE['7']},
     { alias: '133', src: ENERGYWAVE['8']},
+    { alias: '134', src: EMOJIS['1']},
+    { alias: '135', src: EMOJIS['2']},
+    { alias: '136', src: EMOJIS['3']},
+    { alias: '137', src: EMOJIS['4']},
+    { alias: 'sad', src: EMOJIS['5']},//sad
+    { alias: 'shades', src: EMOJIS['6']}, ///shades
+    { alias: 'joint', src: EMOJIS['7']}, // joint
+    { alias: 'beer', src: EMOJIS['8']}, // beer
 
   ])
   const { assets, isSuccess }  = useAssets(arrayForUse);
@@ -280,6 +289,7 @@ function Chatroom() {
   const [walkTextures, setWalkTextures] = useState([]);
   const [snapTextures, setSnapTextures] = useState([]);
   const [waveTextures, setWaveTextures] = useState([]);
+  const [heartTextures, setHeartTextures] = useState([]);
   const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
   const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
 const [isReady, setIsReady] = useState(false);
@@ -339,6 +349,21 @@ const [isReady, setIsReady] = useState(false);
       if (key === 'r' || key === 'R'){
         socket.emit('keyPress', {inputId: 'EnergyWave', state: true});
       }
+      if (key === 'f' || key === 'F'){
+        socket.emit('keyPress', {inputId: 'Heart', state: true});
+      }
+      if (key === '2' || key === '2'){
+        socket.emit('keyPress', {inputId: '420', state: true});
+      }
+      if (key === '3' || key === '3'){
+        socket.emit('keyPress', {inputId: 'Shades', state: true});
+      }
+      if (key === '4' || key === '4'){
+        socket.emit('keyPress', {inputId: 'Beer', state: true});
+      }
+      if (key === '`' || key === '`'){
+        socket.emit('keyPress', {inputId: 'Sad', state: true});
+      }
     }
   };
   const keyUp = ({ key }: any) => {
@@ -359,6 +384,12 @@ const [isReady, setIsReady] = useState(false);
     }
     if (key === 'r' || key === 'R'){
       socket.emit('keyPress', {inputId: 'EnergyWave', state: false});
+    }
+    if (key === 'f' || key === 'F'){
+      socket.emit('keyPress', {inputId: 'Heart', state: false});
+    }
+    if (key === '`' || key === '`'){
+      socket.emit('keyPress', {inputId: 'Sad', state: false});
     }
   };
   let variable = 'temporaryMap'
@@ -386,6 +417,11 @@ const [isReady, setIsReady] = useState(false);
             isSnapping: data[i].isSnapping,
             isWaving: data[i].isWaving,
             isEnergyWaving: data[i].isEnergyWaving,
+            isHearting: data[i].isHearting,
+            equipShades: data[i].equipShades,
+            equip420: data[i].equip420,
+            equipBeer: data[i].equipBeer,
+            isSad: data[i].isSad,
           });
 
           // if the client is at the keyboard:
@@ -468,6 +504,10 @@ const [isReady, setIsReady] = useState(false);
       const loadedEnergyWaveTextures = [
         assets['128'], assets['129'], assets['130'], assets['131'], assets['132'], assets['133'], assets['134'], assets['135'],
       ]
+      const loadedHeartTextures = [
+        assets['136'], assets['137'], assets['138'], assets['139'],
+      ]
+      setHeartTextures(loadedHeartTextures);
       setEnergyWaveTextures(loadedEnergyWaveTextures);
       setTextures(loadedTextures);
       setWalkTextures(loadedWalkTextures);
@@ -484,7 +524,7 @@ const [isReady, setIsReady] = useState(false);
   const sendMessage = () => {
     // console.log(message);
     socket.emit('message', { message, eventId });
-    displayMessage({message: message, username: user?.username });
+    displayMessage({message: message, username: user?.username, avatar: user?.avatar_uri });
     setMessage('');
   };
   // WINDOW SIZING
@@ -771,6 +811,66 @@ const [isReady, setIsReady] = useState(false);
                                 scale={{ x: scaleFactor, y: scaleFactor }}
                               />
                             )}
+                            {isReady &&
+                              player.isHearting && (
+                              <pixiAnimatedSprite
+                                textures={heartTextures}
+                                x={11}
+                                y={-48}
+                                rotation={0.5}
+                                ref={(spriteRef) => {
+                                  spriteRef?.play();
+                                }}
+                                initialFrame={0}
+                                animationSpeed={0.2}
+                                loop={true}
+                                scale={{ x: scaleFactor / 10, y: scaleFactor / 10 }}
+                              />
+                            )}
+                            {isReady && player.equip420 && (
+                              <pixiSprite
+                              texture={Assets.get('joint')}
+                              ref={spriteRef2}
+                              x={-1}
+                              y={5}
+                              scale={(scaleFactor, scaleFactor)}
+                              width={10}
+                              height={10}
+                            ></pixiSprite>
+                            )}
+                            {isReady && player.equipBeer && (
+                              <pixiSprite
+                              texture={Assets.get('beer')}
+                              ref={spriteRef2}
+                              x={-5}
+                              y={5}
+                              scale={(scaleFactor, scaleFactor)}
+                              width={15}
+                              height={15}
+                            ></pixiSprite>
+                            )}
+                            {isReady && player.equipShades && (
+                              <pixiSprite
+                              texture={Assets.get('shades')}
+                              ref={spriteRef2}
+                              x={2}
+                              y={-9}
+                              scale={(scaleFactor, scaleFactor)}
+                              width={20}
+                              height={20}
+                            ></pixiSprite>
+                            )}
+                            {isReady && player.isSad && (
+                              <pixiSprite
+                              texture={Assets.get('sad')}
+                              ref={spriteRef2}
+                              x={2}
+                              y={-33}
+                              scale={(scaleFactor, scaleFactor)}
+                              width={20}
+                              height={20}
+                            ></pixiSprite>
+                            )}
                           {/* <pixiContainer>
                 <pixiSprite
                   textures={ Assets.get('77') }
@@ -850,6 +950,7 @@ const [isReady, setIsReady] = useState(false);
                 msg={msg.message}
                 user={msg.username}
                 eventId={eventId}
+                avatar={msg.avatar}
               />
             ))}
           </AnimatedList>

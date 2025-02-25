@@ -26,6 +26,7 @@ import bass7 from '../../assets/sounds/chatroom/notes/bass7.mp3';
 import bass8 from '../../assets/sounds/chatroom/notes/bass8.mp3';
 import bass10 from '../../assets/sounds/chatroom/notes/bass10.mp3';
 import bass11 from '../../assets/sounds/chatroom/notes/bass11.mp3';
+import RaccoonCityMassacreBeat from '../../assets/sounds/chatroom/notes/RaccoonCityMassacreBeat.mp3';
 
 function Keyboard() {
   const keySounds = {
@@ -34,7 +35,7 @@ function Keyboard() {
     'z': kick, 'x': kick, 'c': snare, 'v': crash1, '.': china,
     '=': beatbass, '-': bassloop, 'p': bass1, 'o': bass2, 'i': bass3, 
     'u':bass4, '9': bass5, '8': bass6,
-    '5': bass8, '3':bass10, '1':bass11
+    '5': bass8, '3':bass10, '1':bass11, '0': RaccoonCityMassacreBeat,
   };
 
   const [activeKey, setActiveKey] = useState<string | null>(null);
@@ -51,7 +52,7 @@ function Keyboard() {
       setTimeout(() => setActiveKey(null), 200);
 
       // Store looping sounds
-      if (key === '=' || key === '-') {
+      if (key === '=' || key === '-' || key === '0') {
         setPlayingSounds((prev) => ({ ...prev, [key]: audio }));
       }
     }
@@ -80,7 +81,7 @@ function Keyboard() {
 
   const handleKeyUp = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
-    if (key === '=' || key === '-') {
+    if (key === '=' || key === '-' || key === '0') {
       stopSound(key);
     }
   };
