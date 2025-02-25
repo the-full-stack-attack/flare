@@ -43,6 +43,7 @@ function CreateEvents() {
         zipCode: null,
         interests: [],
         category: '',
+        selectedImages: [],
     });
 
     const { user } = useContext(UserContext);
@@ -101,7 +102,11 @@ function CreateEvents() {
                 peak_hour: venue.peak_hour,
                 wheelchair_accessible: venue.wheelchair_accessible,
                 serves_alcohol: venue.serves_alcohol,
+                is_dog_friendly: venue.is_dog_friendly,
+                is_vegan_friendly: venue.is_vegan_friendly,
                 google_place_id: venue.google_place_id,
+                selectedImages: [],
+                Venue: venue,
             }));
             setNullFields(nullFields);
             setStep(5);
@@ -148,8 +153,9 @@ function CreateEvents() {
                 streetAddress: formInfo.streetAddress,
                 zipCode: Number(formInfo.zipCode),
                 cityName: formInfo.cityName,
-                stateName: formInfo.stateName.toUpperCase(),
+                stateName: formInfo.stateName.toUpperCase(), // check the error here
                 fsq_id: formInfo.fsq_id,
+                selectedImages: formInfo.selectedImages,
             };
             // console.log('sending: ', formattedData.startDate);
             // console.log('also ', formattedData.startTime);
@@ -222,6 +228,7 @@ function CreateEvents() {
                                     formInfo={formInfo}
                                     nullFields={nullFields}
                                     handleFieldChange={handleFieldChange}
+                                    setFormInfo={setFormInfo}
                                 />
                             )}
                         </div>
