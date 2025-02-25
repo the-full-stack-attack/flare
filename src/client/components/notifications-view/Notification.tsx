@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
@@ -12,6 +12,7 @@ import {
 } from '../../../components/ui/card';
 
 import TTSButton from '../a11y/TTSButton';
+import ReadMore from '../general/ReadMore';
 
 type NotificationProps = {
   notif: {
@@ -50,9 +51,12 @@ function Notification({ notif, getNotifications }: NotificationProps) {
           </div>
         </CardTitle>
         <CardDescription>
-          <div className="pb-1">
-            <p className="text-gray-300">{notif.message}</p>
-          </div>
+          <ReadMore
+            maxLength={200}
+            className="text-gray-300"
+          >
+            {notif.message}
+          </ReadMore>
           <div className="text-gray-400">
             {dayjs(notif.send_time).format('h:mm a, MMM. D')}
             <TTSButton
