@@ -2,34 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from '../../../components/ui/button';
 import { RainbowButton } from "../../../components/ui/rainbowbutton";
 import axios from 'axios';
-import G4 from '../../assets/sounds/chatroom/notes/G4.mp3';
-import C4 from '../../assets/sounds/chatroom/notes/C4.mp3';
-import A4 from '../../assets/sounds/chatroom/notes/A4.mp3';
-import B4 from '../../assets/sounds/chatroom/notes/B4.mp3';
-import D4 from '../../assets/sounds/chatroom/notes/D4.mp3';
-import E4 from '../../assets/sounds/chatroom/notes/E4.mp3';
-import F4 from '../../assets/sounds/chatroom/notes/F4.mp3';
-import A04 from '../../assets/sounds/chatroom/notes/A04.mp3';
-import D04 from '../../assets/sounds/chatroom/notes/D04.mp3';
-import G04 from '../../assets/sounds/chatroom/notes/G04.mp3';
-import C5 from '../../assets/sounds/chatroom/notes/C5.mp3';
+import NOTES from '../../assets/sounds/chatroom/notes/index'
 import china from '../../assets/sounds/chatroom/kit/china.mp3';
 import crash1 from '../../assets/sounds/chatroom/kit/crash1.mp3';
 import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
-import bassloop from '../../assets/sounds/chatroom/notes/bassloop.mp3';
-import beatbass from '../../assets/sounds/chatroom/notes/beatbass.mp3';
-import bass1 from '../../assets/sounds/chatroom/notes/bass1.mp3';
-import bass2 from '../../assets/sounds/chatroom/notes/bass2.mp3';
-import bass3 from '../../assets/sounds/chatroom/notes/bass3.mp3';
-import bass4 from '../../assets/sounds/chatroom/notes/bass4.mp3';
-import bass5 from '../../assets/sounds/chatroom/notes/bass5.mp3';
-import bass6 from '../../assets/sounds/chatroom/notes/bass6.mp3';
-import bass7 from '../../assets/sounds/chatroom/notes/bass7.mp3';
-import bass8 from '../../assets/sounds/chatroom/notes/bass8.mp3';
-import bass10 from '../../assets/sounds/chatroom/notes/bass10.mp3';
-import bass11 from '../../assets/sounds/chatroom/notes/bass11.mp3';
-import RaccoonCityMassacreBeat from '../../assets/sounds/chatroom/notes/RaccoonCityMassacreBeat.mp3';
 
 import vinyl from '../../assets/images/vinyl.png';
 import { set } from "date-fns";
@@ -41,12 +18,12 @@ interface KeyStroke {
 }
 
   const keySounds = {
-    'a': C4, 's': D4, 'd': E4, 'f': F4, 'g': G4, 'h': A4, 'j': B4,
-    'w': A04, 'e': G04, 'r': D04, 'k': C5,
+    'a': NOTES['C4'], 's': NOTES['D4'], 'd': NOTES['E4'], 'f': NOTES['F4'], 'g': NOTES['G4'], 'h': NOTES['A4'], 'j': NOTES['B4'],
+    'w': NOTES['A04'], 'e': NOTES['G04'], 'r': NOTES['D04'], 'k': NOTES['C5'],
     'z': kick, 'x': kick, 'c': snare, 'v': crash1, '.': china,
-    '=': beatbass, '-': bassloop, 'p': bass1, 'o': bass2, 'i': bass3, 
-    'u':bass4, '9': bass5, '8': bass6,
-    '5': bass8, '3':bass10, '1':bass11, '0': RaccoonCityMassacreBeat,
+    '=': NOTES['beatbass'], '-': NOTES['bassloop'], 'p': NOTES['bass1'], 'o': NOTES['bass2'], 'i': NOTES['bass3'], 
+    'u': NOTES['bass4'], '9': NOTES['bass5'], '8': NOTES['bass6'],
+    '5': NOTES['bass8'], '3': NOTES['bass10'], '1': NOTES['bass11'], '0': NOTES['RaccoonCityMassacreBeat'],
   };
 
 const MacroRecorder = ({eventId, user, allRecordings}) => {
