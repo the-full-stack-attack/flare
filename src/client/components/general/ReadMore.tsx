@@ -1,4 +1,3 @@
-import { StringToBoolean } from 'class-variance-authority/dist/types';
 import React, { useState } from 'react';
 
 type ReadMoreProps = {
