@@ -2,8 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import MacroRecorder from "./MacroRecorder";
 import Keyboard from "./Piano";
 import vinyl from '../../assets/images/vinyl.png';
+import axios from "axios";
 
-const DJam = function () {
+const DJam = function ({eventId, user}) {
+
+  useEffect(() => {
+    axios.get('chatroom/chats')
+    .then((mixChats) => {
+      console.log(mixChats)
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+  })
 
   return (
     <div>
