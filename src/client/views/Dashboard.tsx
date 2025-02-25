@@ -30,7 +30,7 @@ import { UserContext } from '../contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
 import cn from '../../../lib/utils';
 import PhoenixLogo from '../assets/logo/phoenix.png';
-import { WeatherPlaceholder } from '../components/dashboard/WeatherPlaceholder';
+import { Weather } from '../components/dashboard/Weather';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
 
 type Task = {
@@ -227,7 +227,7 @@ function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             {/* Weather Panel */}
             <div className="lg:col-span-1">
-              <WeatherPlaceholder />
+              <Weather />
             </div>
 
             {/* Events & Task Section */}
