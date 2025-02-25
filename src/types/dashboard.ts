@@ -3,10 +3,21 @@ import { UserType } from '../client/contexts/UserContext';
 
 export interface WeatherData {
   temp: number;
+  feels_like: number;
+  temp_min: number;
+  temp_max: number;
+  humidity: number;
+  pressure: number;
   description: string;
   icon: string;
-  city?: string;
-  country?: string;
+  city: string;
+  country: string;
+  wind_speed: number;
+  wind_deg: number;
+  clouds: number;
+  visibility: number;
+  sunrise: number;
+  sunset: number;
 }
 
 export interface Location {
@@ -40,3 +51,4 @@ export interface Task {
   created_at: string;
   updated_at: string;
 }
+
