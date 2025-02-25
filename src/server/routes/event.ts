@@ -416,27 +416,24 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: any) => {
                 console.warn('Not enough data for Google Text Search query');
             }
         }
-        // if (fsqData && gData) {
-        //     console.log('DATA BEGINS HERE');
-        //     console.log('---------FSQ DATA')
-        //     console.log(JSON.stringify(fsqData, null, 2));
-        //     console.log('---------GOOGLE DATA');
-        //     console.log(JSON.stringify(gData, null, 2));
-        // } else if (fsqData && !gData) {
-        //     console.log('ONLY FSQ DATA WAS FOUND');
-        // } else {
-        //     console.log('NO DATA WAS FOUND');
-        // }
+        if (fsqData && gData) {
+            console.log('DATA BEGINS HERE');
+            console.log('---------FSQ DATA')
+            console.log(JSON.stringify(fsqData, null, 2));
+            console.log('---------GOOGLE DATA');
+            console.log(JSON.stringify(gData, null, 2));
+        } else if (fsqData && !gData) {
+            console.log('ONLY FSQ DATA WAS FOUND');
+        } else {
+            console.log('NO DATA WAS FOUND');
+        }
 
-        // console.log('fsqAttributes VEGAN DIET: ', fsqData?.features?.attributes?.vegan_diet )
-        // // @ts-ignore
-        // console.log('gData VEGAN DIET: ', gData[0]?.attributes?.vegan_diet)
-        // // @ts-ignore
-        // console.log('GDATA VEGAN DIET CATEGORIES: ', gData[0]?.categories?.includes('Vegan restaurant'));
-        // // @ts-ignore
-        // console.log('VEGAN OPTIONS:', gData[0]?.additionalInfo?.Offerings?.some(offering => offering['Vegan options']));
-        // // @ts-ignore
-        // console.log('GDATA VEGAN DIET CATEGORIES TAKE 2: ', gData[0]?.categories?.some(category => category.toLowerCase().includes('vegan')));
+        // @ts-ignore
+        console.log('DOGS ALLOWED:', gData[0]?.additionalInfo?.Pets?.some(pet => pet?.['Dogs allowed']));
+        // @ts-ignore
+        console.log('DOG FRIENDLY: ', fsqData?.tastes.includes('dog-friendly'));
+        // @ts-ignore
+        console.log('DOG PARK: ', gData[0]?.additionalInfo?.Pets?.some(pet => pet?.['Dog park']));
 
         // combine all the venue data we got
         const buildVenue: VenueType = {
