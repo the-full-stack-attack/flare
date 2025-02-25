@@ -303,4 +303,33 @@ event2Router.get('/location/:lat/:lng', (req: Request, res: Response) => {
     });
 });
 
+event2Router.get('/nearest', async (req: any, res: Response) => {
+  try {
+    const now = new Date().toISOString();
+    const nearestEvent = await Event.findOne({
+      where: {
+        start_time: { [Op.gt]: now },
+        '$Users.id$': req.user.id
+      },
+      include: [
+        {
+          model: User,
+          where: { id: req.user.id },
+          through: { where: { user_attending: true } }
+        },
+        { model: Venue }
+      ],
+      order: [['start_time', 'ASC']]
+    }) as unknown as { title?: string } | null;
+
+    res.status(200).send({
+      title: nearestEvent?.title || 'No upcoming events'
+    });
+  } catch (error) {
+    console.error('Nearest event error:', error);
+    res.status(500).send({ error: 'Failed to find nearest event' });
+  }
+});
+
 export default event2Router;
+
