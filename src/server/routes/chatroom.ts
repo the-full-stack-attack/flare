@@ -3,7 +3,8 @@ import Sequelize from 'sequelize';
 import Event from '../db/models/events';
 import Chatroom from '../db/models/chatrooms';
 import User from '../db/models/users';
-
+import Chat from '../db/models/chats';
+import { CalendarArrowUp } from 'lucide-react';
 
 const chatroomRouter = Router();
 
@@ -11,7 +12,24 @@ chatroomRouter.get('/chats', (req, res) => {
   // Get the room number based on enpoint params
   console.log('received')
   console.log(req.query);
-  res.sendStatus(200)
+  const { eventId, user, userId } = req.query;
+  console.log(eventId, user, userId, 'extracted from query')
+  Chatroom.findOrCreate({ where: { event_id: eventId}})
+  .then((value) => {
+    console.log(value, 'value returned');
+    const { id } = value[0].dataValues;
+    Chat.findAll({where: { chatroom_id: id }})
+    .then((mixChats) => {
+      console.log(mixChats, 'success w/ mixChats')
+      res.send(mixChats).status(200);
+    }).catch((error) => {
+      res.sendStatus(404);
+    })
+  }).catch((error) => {
+    console.error('fatal request', error);
+    res.sendStatus(404);
+  })
+
   // Chatroom.findOne({
   //   where: { event_id: pathname },
   // }).then((chatroom) => {
