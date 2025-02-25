@@ -73,19 +73,49 @@ function Task() {
           <div className="text-xl font-semibold text-white pt-3">
             Completed Tasks
           </div>
-          <div>
+          <div className="text-white pt-2 pb-3">
             <Select onValueChange={setFilter}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a fruit" />
+                <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value={null as any}>None</SelectItem>
-                  <SelectItem value="Fun">Fun</SelectItem>
-                  <SelectItem value="Active">Active</SelectItem>
-                  <SelectItem value="Normal">Normal</SelectItem>
-                  <SelectItem value="Duo">Duo</SelectItem>
-                  <SelectItem value="Rejection">Rejection</SelectItem>
+                  <SelectItem
+                    className="!text-gray-900 !bg-gray-100 !hover:bg-gray-200 !focus:bg-gray-200 !data-[state=active]:bg-gray-300"
+                    value={null as any}
+                  >
+                    None
+                  </SelectItem>
+                  <SelectItem
+                    className="!text-gray-900 !bg-gray-100 !hover:bg-gray-200 !focus:bg-gray-200 !data-[state=active]:bg-gray-300"
+                    value="Fun"
+                  >
+                    Fun
+                  </SelectItem>
+                  <SelectItem
+                    className="!text-gray-900 !bg-gray-100 !hover:bg-gray-200 !focus:bg-gray-200 !data-[state=active]:bg-gray-300"
+                    value="Active"
+                  >
+                    Active
+                  </SelectItem>
+                  <SelectItem
+                    className="!text-gray-900 !bg-gray-100 !hover:bg-gray-200 !focus:bg-gray-200 !data-[state=active]:bg-gray-300"
+                    value="Normal"
+                  >
+                    Normal
+                  </SelectItem>
+                  <SelectItem
+                    className="!text-gray-900 !bg-gray-100 !hover:bg-gray-200 !focus:bg-gray-200 !data-[state=active]:bg-gray-300"
+                    value="Duo"
+                  >
+                    Duo
+                  </SelectItem>
+                  <SelectItem
+                    className="!text-gray-900 !bg-gray-100 !hover:bg-gray-200 !focus:bg-gray-200 !data-[state=active]:bg-gray-300"
+                    value="Rejection"
+                  >
+                    Rejection
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
