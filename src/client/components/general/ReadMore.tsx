@@ -8,20 +8,32 @@ type ReadMoreProps = {
 };
 
 function ReadMore({ children, maxLength, className }: ReadMoreProps) {
-  const [expanded, setExpanded] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  /*
+    Wrap the text you want to collapse in the ReadMore component:
+      - Children refers to the text between the ReadMore tags
+  */
   const text = children;
+  // Will check if the ReadMore button needs to be used.
   const isLongText = text.length > maxLength;
 
-  const toggleExpanded = () => {
-    setExpanded(!expanded);
+  const toggleIsExpanded = () => {
+    setIsExpanded(!isExpanded);
   };
 
   return (
     <div className={className}>
-      {expanded ? text : isLongText ? text.substring(0, maxLength) + '...' : text}
+      {isExpanded
+        ? text
+        : isLongText
+          ? text.substring(0, maxLength) + '... '
+          : text}
       {isLongText ? (
-        <button onClick={toggleExpanded}>
-          {expanded ? 'Read Less' : 'Read More'}
+        <button
+          onClick={toggleIsExpanded}
+          className="font-semibold hover:font-bold hover:underline"
+        >
+          {isExpanded ? 'Read Less' : 'Read More'}
         </button>
       ) : null}
     </div>
