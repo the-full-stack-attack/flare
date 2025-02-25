@@ -54,7 +54,11 @@ function Notification({ notif, getNotifications }: NotificationProps) {
           <TTSButton
             className="pl-2"
             iconClassName="text-orange-500 hover:text-orange-700 text-lg"
-            text={`Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}: ${notif.message}`}
+            text={`
+              Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}:
+              Title: ${notif.title},
+              Message: ${notif.message}
+            `}
           />
         </CardDescription>
       </CardHeader>
