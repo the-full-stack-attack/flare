@@ -5,6 +5,18 @@ import {ApifyClient} from 'apify-client';
 
 
 
+export const getVenueVeganFriendly = (fsqData: any, gData: any) => {
+    if (fsqData?.features?.attributes?.vegan_diet) return true;
+    if (gData?.[0]?.attributes?.vegan_diet) return true;
+    if (gData?.[0]?.categories?.some((category: any) => 
+        category.toLowerCase().includes('vegan'))) return true;
+    if (gData?.[0]?.additionalInfo?.Offerings?.some((offering: any) => 
+        offering['Vegan options'])) return true;
+
+    return null;
+}
+
+
 // helper function to check if venue from api matches user input
 export const isVenueMatch = (inputVenue: any, apiVenue: any): boolean => {
     // console.log('checking venue match:');
