@@ -52,8 +52,8 @@ function Notification({ notif, getNotifications }: NotificationProps) {
         </CardTitle>
         <CardDescription>
           <ReadMore
-            maxLength={200}
-            className="text-gray-300"
+            maxLength={125}
+            className="text-gray-300 pb-1"
           >
             {notif.message}
           </ReadMore>
