@@ -15,7 +15,7 @@ import HeadlessDialog from '../components/general/HeadlessDialog';
 
 type Notifications = {
   id: number;
-  title: string;
+  title: string | null;
   message: string;
   send_time: Date;
   User_Notification: {
@@ -25,7 +25,7 @@ type Notifications = {
 
 type Notification = {
   id: number;
-  title: string;
+  title: string | null;
   message: string;
   send_time: Date;
   User_Notification: {
@@ -86,7 +86,7 @@ function Notifications() {
         text += `
           Notification number ${index + 1}:
           Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}:
-          Title: ${notif.title},
+          Title: ${notif.title ? notif.title : 'Notification'},
           Message: ${notif.message},
         `;
       });
