@@ -3,27 +3,70 @@ import Sequelize from 'sequelize';
 import Event from '../db/models/events';
 import Chatroom from '../db/models/chatrooms';
 import User from '../db/models/users';
-
+import Chat from '../db/models/chats';
+import { CalendarArrowUp } from 'lucide-react';
 
 const chatroomRouter = Router();
 
-chatroomRouter.get('/chatroom/:eventId', (req, res) => {
+chatroomRouter.get('/chats', (req, res) => {
   // Get the room number based on enpoint params
-  const pathname = req.params.eventId
-
-  Chatroom.findOne({
-    where: { event_id: pathname },
-  }).then((chatroom) => {
-    // console.log(chatroom, 'we found it')
-    res.send(chatroom).status(200)
-  }).catch((err) =>{
-    console.error(err, 'nope')
+  console.log('received')
+  console.log(req.query);
+  const { eventId, user, userId } = req.query;
+  console.log(eventId, user, userId, 'extracted from query')
+  Chatroom.findOrCreate({ where: { event_id: eventId}})
+  .then((value) => {
+    console.log(value, 'chatroom returned');
+    const { id } = value[0].dataValues;
+    Chat.findAll({where: { chatroom_id: id }})
+    .then((mixChats) => {
+      console.log(mixChats, 'success w/ finding mixChats')
+      res.send(mixChats).status(200);
+    }).catch((error) => {
+      res.sendStatus(404);
+    })
+  }).catch((error) => {
+    console.error('fatal request', error);
+    res.sendStatus(404);
   })
-  // the endpoint should match the Event id. get the chatroom_id off that table
-  
-  // find the chatroom that has the matching id, get the map from that chatroom
+});
 
-  // send the map back to the chatroom, along with the chatroom_id. 
+chatroomRouter.post('/chats', (req, res) => {
+  // Get the room number based on enpoint params
+  console.log('received')
+  console.log(req.body);
+  const { eventId, user, userId, recording } = req.body.body;
+ console.log(eventId, user, userId, recording, 'extracted from body')
+
+   Chatroom.findOrCreate({ where: { event_id: eventId}})
+   .then((value) => {
+     console.log(value, 'chatroom returned');
+     const { id } = value[0].dataValues;
+     Chat.findOrCreate({ 
+      where: { chatroom_id: id, user_id: userId },
+      defaults: {
+        chatroom_id: id,
+        user_id: userId,
+        macro: recording,
+        username: user,
+      }
+    }).then((newChat) => {
+      newChat[0].update({ macro: recording, username: user})
+      .then((updated) => {
+        console.log('successful chat UPDATED --->v', updated)
+        res.sendStatus(201);
+      }).catch((error) => {
+        console.error('failed to update chat', error);
+        res.sendStatus(404);
+      })
+    }).catch((error) => {
+      console.error('failed to find or create chat', error);
+      res.sendStatus(404);
+    })
+   }).catch((error) => {
+     console.error('fatal request', error);
+     res.sendStatus(404);
+   })
 
 });
 

@@ -15,9 +15,9 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ count }) => 
         whileTap={{ scale: 0.95 }}
         className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10"
       >
-        <FaBell className="h-4 w-4 md:h-5 md:w-5 text-yellow-500" />
+        <FaBell className="h-5 w-5 md:h-6 md:w-6 text-yellow-500" />
         {count > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 md:h-5 md:w-5 flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 md:h-6 md:w-6 flex items-center justify-center">
             {count}
           </span>
         )}

@@ -94,25 +94,6 @@ const createTasks = () => {
     });
 };
 
-type UserType = {
-  id: number;
-  username: string;
-  google_id?: number;
-  email?: string;
-  full_name?: string;
-  phone_number?: string;
-  total_tasks_completed: number;
-  weekly_task_count: number;
-  last_week_task_count: number;
-  events_attended?: number;
-  location?: string;
-  avatar_id?: number;
-  avatar_shirt?: string;
-  avatar_pants?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  current_task_id: number;
-};
 // Function to switch weekly_task_count and last_week_task_count values on every user
 const resetCounts = async () => {
   console.log('Switching task counts for a new week');

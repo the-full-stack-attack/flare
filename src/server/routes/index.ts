@@ -14,6 +14,7 @@ import signUpRouter from './signup';
 import notifsRouter from './notifications';
 import textRouter from './text';
 import settingsRouter from './accountSettings';
+import weatherRouter from './weather';
 
 export = {
   aiRouter,
@@ -32,4 +33,6 @@ export = {
   notifsRouter,
   settingsRouter,
   textRouter,
+  weatherRouter,
 };
+

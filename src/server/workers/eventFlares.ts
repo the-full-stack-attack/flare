@@ -13,14 +13,15 @@ import { checkForFlares, findFlare } from '../helpers/flares';
  * => Check how many events that user has attended before
  */
 
-cron.schedule('1,30 * * * *', async () => {
+cron.schedule('1-59/5 * * * *', async () => {
+  console.log('Event Flares worker working')
   // Create a Date to query by
   const now: number = Date.now();
   // Find all the events that have started in the last hour
   const events: any = await Event.findAll({
     where: {
       start_time: {
-        [Op.between]: [new Date(now - 1000 * 60 * 61), new Date(now)],
+        [Op.between]: [new Date(now - 1000 * 60 * 10), new Date(now)],
       },
     },
   });

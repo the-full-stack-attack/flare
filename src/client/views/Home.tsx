@@ -51,7 +51,7 @@ function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-6xl md:text-7xl font-bold mb-6">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
                   Turn Social Anxiety into Social Energy
                 </span>
@@ -107,28 +107,8 @@ function Home() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/10 backdrop-blur-xl">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between items-center">
-            <div className="text-gray-400">
-              {' '}
-              2024 Flare. All rights reserved.
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-400">Made with</span>
-              <span className="text-red-500 animate-pulse">❤️</span>
-              <span className="text-gray-400">by</span>
-              <span className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent font-bold">
-                Full Stack Attack
-              </span>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
+  </div>
+);
 }
 
 export default Home;
