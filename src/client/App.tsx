@@ -3,7 +3,7 @@ import '@/styles/themes/dark-cosmic.css'; // Theme styles
 import '@/styles/themes/cyber-neon.css'; // Theme styles
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'; // Added Outlet import
 import {
   AiConversations,
   Chatroom,
@@ -17,13 +17,39 @@ import {
   AccountSettings,
 } from './views/index';
 import { NavBar } from './components/NavBar';
-import '../styles/main.css';
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
 
 import { UserType, UserContext } from './contexts/UserContext';
 import { AuthProvider } from './contexts/AuthContext';
 
 import { BackgroundGlow } from '@/components/ui/background-glow';
 import { Logout } from './components/auth/Logout';
+import { Footer } from '../components/ui/footer'
+
+function HomeLayout() {
+  return (
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
+      <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
+      <main className="flex-grow relative z-10">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+function Layout() {
+  return (
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
+      <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
+      <NavBar />
+      <main className="flex-grow relative z-10">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+}
 
 export default function App() {
   const [user, setUser] = useState<UserType>({
@@ -81,30 +107,35 @@ export default function App() {
     <AuthProvider>
       <UserContext.Provider value={userState}>
         <BrowserRouter>
-          {isAuthenticated && <NavBar />}
           <Routes>
+          {/* Public routes with HomeLayout */}
+          <Route element={<HomeLayout />}>
             <Route path="/" element={<Home />} />
+          </Route>
+
+          {/* Other routes with NavBar Layout */}
+          <Route element={<Layout />}>
             <Route path="Signup" element={<Signup />} />
             <Route path="logout" element={<Logout />} />
-
+            
             {/* Protected Routes */}
-            {isAuthenticated ? (
-              <>
-                <Route path="AiConversations" element={<AiConversations />} />
-                <Route path="/Chatroom/*" element={<Chatroom />} />
-                <Route path="CreateEvents" element={<CreateEvents />} />
-                <Route path="Events" element={<Events />} />
-                <Route path="Task" element={<Task />} />
-                <Route path="Notifications" element={<Notifications />} />
-                <Route path="Dashboard" element={<Dashboard />} />
-                <Route path='Settings' element={<AccountSettings />} />
-              </>
-            ) : (
-              <Route path="*" element={<Navigate to="/" />} />
-            )}
-          </Routes>
-        </BrowserRouter>
-      </UserContext.Provider>
-    </AuthProvider>
-  );
+            <Route element={<ProtectedRoute />}>
+              <Route path="AiConversations" element={<AiConversations />} />
+              <Route path="/Chatroom/*" element={<Chatroom />} />
+              <Route path="CreateEvents" element={<CreateEvents />} />
+              <Route path="Events" element={<Events />} />
+              <Route path="Task" element={<Task />} />
+              <Route path="Notifications" element={<Notifications />} />
+              <Route path="Dashboard" element={<Dashboard />} />
+              <Route path='Settings' element={<AccountSettings />} />
+            </Route>
+
+            {/* Catch-all route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </UserContext.Provider>
+  </AuthProvider>
+);
 }
