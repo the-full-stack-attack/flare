@@ -5,6 +5,7 @@ import Notification from './Notification';
 type NotificationListProps = {
   notifs: {
     id: number;
+    title: string | null;
     message: string;
     send_time: Date;
     User_Notification: {
@@ -16,6 +17,7 @@ type NotificationListProps = {
 
 type Notification = {
   id: number;
+  title: string | null;
   message: string;
   send_time: Date;
   User_Notification: {

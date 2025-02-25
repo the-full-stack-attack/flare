@@ -15,6 +15,7 @@ import HeadlessDialog from '../components/general/HeadlessDialog';
 
 type Notifications = {
   id: number;
+  title: string | null;
   message: string;
   send_time: Date;
   User_Notification: {
@@ -24,6 +25,7 @@ type Notifications = {
 
 type Notification = {
   id: number;
+  title: string | null;
   message: string;
   send_time: Date;
   User_Notification: {
@@ -78,13 +80,18 @@ function Notifications() {
     const newNotifs = notifs.filter((notif: { User_Notification: { seen: boolean } }) => !notif.User_Notification.seen);
 
     if (newNotifs.length) {
-      let text = `You currently have ${newNotifs.length} new notification${newNotifs.length === 1 ? '' : 's'}:`;
+      let text = `You currently have ${newNotifs.length} new notification${newNotifs.length === 1 ? '' : 's'}: `;
 
       newNotifs.forEach((notif: Notification, index: number) => {
-        text += `Notification number ${index + 1}: Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}: ${notif.message},`;
+        text += `
+          Notification number ${index + 1}:
+          Received ${dayjs(notif.send_time).format('h:mm a, MMMM D')}:
+          Title: ${notif.title ? notif.title : 'Notification'},
+          Message: ${notif.message},
+        `;
       });
 
-      text += 'This is the end of your new notifications.';
+      text += ' This is the end of your new notifications.';
 
       setNewNotifsText(text);
     }
