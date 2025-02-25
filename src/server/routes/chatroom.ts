@@ -50,9 +50,14 @@ chatroomRouter.post('/chats', (req, res) => {
         macro: recording
       }
     }).then((newChat) => {
-      console.log('successful chat created --->v', newChat)
-      res.sendStatus(201);
-      
+      newChat[0].update({ macro: recording})
+      .then((updated) => {
+        console.log('successful chat UPDATED --->v', updated)
+        res.sendStatus(201);
+      }).catch((error) => {
+        console.error('failed to update chat', error);
+        res.sendStatus(404);
+      })
     }).catch((error) => {
       console.error('failed to find or create chat', error);
       res.sendStatus(404);
