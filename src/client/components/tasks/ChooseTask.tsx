@@ -70,8 +70,7 @@ function ChooseTask() {
         position="top-center"
         theme="dark"
         toastOptions={{
-          style: { backgroundColor: 'red' },
-          className: 'bg-red-500',
+          style: { background: 'red' },
         }}
       />
       <DialogBox
