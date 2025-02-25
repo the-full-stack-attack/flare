@@ -567,14 +567,30 @@ const [isReady, setIsReady] = useState(false);
         </div>
       )}
 
-      {isPlayingGames && (
-        <div>
-          <Button onClick={toggleDJ}>MIX CHAT</Button>
+      <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
+        {isPlayingGames && !isPlayingQuiplash && !isPlayingDJ && (
+          <div className=" col-span-2">
+            <Button onClick={toggleDJ}>MIX CHAT</Button>
+            <Button onClick={toggleQuiplash}>Flamiliar</Button>
+          </div>
+        )}
+        {isPlayingQuiplash && isPlayingGames &&
+        <div className=" col-span-2">
+          <div>
           <Button onClick={toggleQuiplash}>Flamiliar</Button>
+        <QuipLash startTime={start_time} />
         </div>
-      )}
-      {isPlayingQuiplash && <QuipLash startTime={start_time} />}
-      <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 grid-rows-2 gap-2">
+        </div>
+        }
+        
+        { isPlayingDJ && isPlayingGames &&
+          <div className="col-span-2" >
+            <div>
+            <Button onClick={toggleDJ}>QUIT GAME</Button>
+          <DJam eventId={eventId} user={user} />
+          </div>
+          </div>
+          }
         {!isPlayingGames && (
           <div className=" col-span-2 p-4">
             <div
@@ -775,7 +791,7 @@ const [isReady, setIsReady] = useState(false);
           </div>
         )}
         
-     
+        
         {!isPlayingQuiplash && (
           <Card className="w-50 block sm:hidden bg-transparent border-transparent">
             <div className="flex flex-col items-center">
@@ -824,7 +840,7 @@ const [isReady, setIsReady] = useState(false);
 <div className="block mt-2 p-4 h-96">
   <Card className="bg-transparent border-transparent">
     <div onClick={typing}>
-      <Card className="bg-transparent border-transparent flex items-center justify-center">
+      <Card className="bg-gray-900 border-orange-700 flex items-center justify-center">
         {/* Message Box Container with Responsive Height */}
         <div className="h-[15vh] md: h-[24] lg:h-[50vh] w-full max-w-7xl overflow-y-auto">
           <AnimatedList>
@@ -885,7 +901,7 @@ const [isReady, setIsReady] = useState(false);
 
        
         </div>
-        {(isPlayingDJ || onKeyboard) && 
+        { onKeyboard && !isPlayingGames &&
         <div className="col-span-3" >
         <DJam eventId={eventId} user={user} />
         </div>
