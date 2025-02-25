@@ -18,11 +18,8 @@ flareRouter.get('/:id', async (req: any, res: Response) => {
     for (let i = 0; i < flares.length; i++) {
       const flare = flares[i];
       const imageKey = flare.dataValues.icon;
-      console.log('Image key: ', imageKey);
       const imageUrl: string = await getImageUrl(imageKey);
-      console.log('image url: ', imageUrl);
       flare.dataValues.icon = imageUrl;
-      console.log('Changed flare: ', flare);
       }
     res.status(200).send(flares);
   } catch (err) {
@@ -30,6 +27,32 @@ flareRouter.get('/:id', async (req: any, res: Response) => {
     res.sendStatus(500);
   }
 });
+
+// GET req to /api/flare/unearned/:id
+flareRouter.get('/unearned/:id', async (req: any, res: Response) => {
+  const { id } = req.params
+  // Get the user's flares
+  const userFlares: any = await User_Flare.findAll({ where: { UserId: id } });
+  // Grab the FlareIds from the userFlares
+  const userFlareIds = userFlares.map((userFlare: any) => {
+    return userFlare.FlareId
+  })
+  // Grab all the flares
+  const flares: any = await Flare.findAll();
+  // Create an array of the flares that the user does not have
+  const unearnedFlares = flares.filter((flare: any) => {
+    return !userFlareIds.includes(flare.id);
+  })
+  // Turn the flare icon into the url
+  for (let i = 0; i < unearnedFlares.length; i++) {
+    const flare = unearnedFlares[i];
+    const imageKey = flare.icon;
+    const imageUrl: string = await getImageUrl(imageKey);
+    flare.icon = imageUrl;
+    }
+  // Send back the unearned flares
+  res.status(200).send(unearnedFlares);
+})
 
 // GET req to /api/flare/completed/tasks/:id
 flareRouter.get('/completed/tasks/:id', (req: any, res: Response) => {
