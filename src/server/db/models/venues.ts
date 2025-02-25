@@ -19,7 +19,7 @@ const Venue = database.define('Venue', {
     popularTime: { type: Sequelize.DATE },
     wheelchair_accessible: { type: Sequelize.BOOLEAN },
     serves_alcohol: { type: Sequelize.BOOLEAN },
-    isVeganFriendly: { type: Sequelize.BOOLEAN },
+    is_vegan_friendly: { type: Sequelize.BOOLEAN },
     fsq_id: { type: Sequelize.STRING },
     google_place_id: { type: Sequelize.STRING },
 });
