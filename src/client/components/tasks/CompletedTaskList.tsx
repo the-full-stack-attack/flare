@@ -11,7 +11,7 @@ type CompletedTasks = UserTask[];
 type UserTask = {
   completed?: boolean;
   overall_rating: number;
-  date_completed: dayjs.Dayjs;
+  date_completed: string | null;
   opted_out?: boolean;
   UserId: number;
   TaskId: number;
@@ -22,7 +22,7 @@ type Task = {
   description: string;
   type: string;
   completed_count: number;
-  date: dayjs.Dayjs | '';
+  date: string | '';
   difficulty: number;
 };
 function CompletedTaskList({ filter }: CompletedTaskListType) {
