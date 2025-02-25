@@ -5,7 +5,7 @@ import Venue_Image from './venue_images';
 
 const Venue = database.define('Venue', {
     name: { type: Sequelize.STRING },
-    description: { type: Sequelize.STRING },
+    description: { type: Sequelize.TEXT },
     category: { type: Sequelize.STRING },
     street_address: { type: Sequelize.STRING },
     zip_code: { type: Sequelize.INTEGER },
@@ -20,6 +20,7 @@ const Venue = database.define('Venue', {
     wheelchair_accessible: { type: Sequelize.BOOLEAN },
     serves_alcohol: { type: Sequelize.BOOLEAN },
     is_vegan_friendly: { type: Sequelize.BOOLEAN },
+    is_dog_friendly: { type: Sequelize.BOOLEAN },
     fsq_id: { type: Sequelize.STRING },
     google_place_id: { type: Sequelize.STRING },
 });
