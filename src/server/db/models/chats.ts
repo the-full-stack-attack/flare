@@ -1,11 +1,21 @@
-import Sequelize from 'sequelize';
+import Sequelize, { DataTypes } from 'sequelize';
 import database from '../index';
 import Chatroom from './chatrooms';
 import User from './users';
 
 const Chat = database.define('Chat', {
   user_id: { type: Sequelize.INTEGER },
-  message: { type: Sequelize.STRING(60) },
+  macro: { 
+    type: DataTypes.STRING,
+    allowNull: false,
+    set(value) {
+      this.setDataValue('macro', JSON.stringify(value)) 
+    },
+    get() {
+      let value = this.getDataValue('macro')
+      return JSON.parse(value); 
+    }
+   },
   created_at: { type: Sequelize.DATE },
   chatroom_id: { type: Sequelize.INTEGER },
 });
