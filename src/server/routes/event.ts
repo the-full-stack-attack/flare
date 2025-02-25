@@ -460,7 +460,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: any) => {
             fsq_id: fsqId || null,
             google_place_id: googlePlaceId || null,
         };
-
+        // console.log('BUILD VENUE: ', buildVenue);
         // save venue to our db
         const newVenue: any = await Venue.create(buildVenue);
 
