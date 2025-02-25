@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from '../../../components/ui/button';
 import { RainbowButton } from "../../../components/ui/rainbowbutton";
+import axios from 'axios';
 import G4 from '../../assets/sounds/chatroom/notes/G4.mp3';
 import C4 from '../../assets/sounds/chatroom/notes/C4.mp3';
 import A4 from '../../assets/sounds/chatroom/notes/A4.mp3';
@@ -44,7 +45,7 @@ interface KeyStroke {
     '5': bass8, '3':bass10, '1':bass11
   };
 
-const MacroRecorder = () => {
+const MacroRecorder = ({eventId, user}) => {
   const [recording, setRecording] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
   const [recordings, setRecordings] = useState<KeyStroke[][]>([]);
@@ -55,6 +56,25 @@ const MacroRecorder = () => {
   const loopSoundsRef = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Track loop sounds
   const loopKeyStateRef = useRef<{ [key: string]: boolean }>({}); // Track loop key state
 
+const submitMix = () => {
+  console.log(recordings)
+    axios.post('/api/chatroom/chats',
+    { 
+      body: 
+      {
+      eventId,
+      user: user.username,
+      userId: user.id,
+      recording: recordings
+      }
+    })
+    .then(() => {
+      console.log('SUBMITTED!')
+    })
+    .catch((error) => {
+      console.error(error, 'ERROR submitting')
+    })
+  }
   // Play a sound for a given key
   const playSound = (key: string) => {
     if (mute) return; // Do not play sound if muted
@@ -228,6 +248,7 @@ const MacroRecorder = () => {
       <RainbowButton onClick={playAllRecordings} disabled={playing || recordings.length === 0}>
         Play Macro
       </RainbowButton>
+      <Button onClick={submitMix}> SUBMIT! </Button>
       <Button onClick={clearRecordings}>Clear Recordings</Button>
       <p>{recording ? "Recording..." : "Not Recording"}</p>
       <p>{playing ? "Playing..." : "Not Playing"}</p>

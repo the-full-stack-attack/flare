@@ -33,7 +33,7 @@ const DJam = function ({eventId, user}) {
         <img src={vinyl} alt="Loading...">
         </img>
         </div>
-      <MacroRecorder></MacroRecorder>
+      <MacroRecorder eventId={eventId} user={user}></MacroRecorder>
         <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
         <img src={vinyl} alt="Loading...">
         </img>
