@@ -20,7 +20,7 @@ chatroomRouter.get('/chats', (req, res) => {
     const { id } = value[0].dataValues;
     Chat.findAll({where: { chatroom_id: id }})
     .then((mixChats) => {
-      console.log(mixChats, 'success w/ mixChats')
+      console.log(mixChats, 'success w/ finding mixChats')
       res.send(mixChats).status(200);
     }).catch((error) => {
       res.sendStatus(404);
@@ -47,10 +47,11 @@ chatroomRouter.post('/chats', (req, res) => {
       defaults: {
         chatroom_id: id,
         user_id: userId,
-        macro: recording
+        macro: recording,
+        username: user,
       }
     }).then((newChat) => {
-      newChat[0].update({ macro: recording})
+      newChat[0].update({ macro: recording, username: user})
       .then((updated) => {
         console.log('successful chat UPDATED --->v', updated)
         res.sendStatus(201);

@@ -5,6 +5,7 @@ import User from './users';
 
 const Chat = database.define('Chat', {
   user_id: { type: Sequelize.INTEGER },
+  username: { type: Sequelize.STRING },
   macro: { 
     type: DataTypes.TEXT,
     allowNull: false,
