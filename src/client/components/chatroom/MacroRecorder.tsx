@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from '../../../components/ui/button';
 import { RainbowButton } from "../../../components/ui/rainbowbutton";
+import axios from 'axios';
 import G4 from '../../assets/sounds/chatroom/notes/G4.mp3';
 import C4 from '../../assets/sounds/chatroom/notes/C4.mp3';
 import A4 from '../../assets/sounds/chatroom/notes/A4.mp3';
@@ -28,6 +29,8 @@ import bass7 from '../../assets/sounds/chatroom/notes/bass7.mp3';
 import bass8 from '../../assets/sounds/chatroom/notes/bass8.mp3';
 import bass10 from '../../assets/sounds/chatroom/notes/bass10.mp3';
 import bass11 from '../../assets/sounds/chatroom/notes/bass11.mp3';
+import vinyl from '../../assets/images/vinyl.png';
+import { set } from "date-fns";
 
 interface KeyStroke {
   key: string;
@@ -44,7 +47,7 @@ interface KeyStroke {
     '5': bass8, '3':bass10, '1':bass11
   };
 
-const MacroRecorder = () => {
+const MacroRecorder = ({eventId, user, allRecordings}) => {
   const [recording, setRecording] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
   const [recordings, setRecordings] = useState<KeyStroke[][]>([]);
@@ -54,7 +57,27 @@ const MacroRecorder = () => {
   const isPlaybackRef = useRef<boolean>(false); // Flag to distinguish playback strokes
   const loopSoundsRef = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Track loop sounds
   const loopKeyStateRef = useRef<{ [key: string]: boolean }>({}); // Track loop key state
+  const [allMacros, setAllMacros] = useState(allRecordings);
 
+const submitMix = () => {
+  console.log(recordings)
+    axios.post('/api/chatroom/chats',
+    { 
+      body: 
+      {
+      eventId,
+      user: user.username,
+      userId: user.id,
+      recording: recordings
+      }
+    })
+    .then(() => {
+      console.log('SUBMITTED!')
+    })
+    .catch((error) => {
+      console.error(error, 'ERROR submitting')
+    })
+  }
   // Play a sound for a given key
   const playSound = (key: string) => {
     if (mute) return; // Do not play sound if muted
@@ -218,7 +241,23 @@ const MacroRecorder = () => {
     };
   }, [recording]);
 
+  const switchRecording = (e) => {
+    console.log(e.target.name)
+    console.log(allRecordings[e.target.name])
+    setRecordings(allRecordings[e.target.name].recording);
+  }
   return (
+    <div>
+    <div>    {
+     allRecordings && allRecordings.map((recording, index) => (
+        <Button onClick={switchRecording} name={index}>{recording.userName || 'anon'}</Button>
+      ))
+    }</div>
+    <div className='flex justify-center items-center'>
+      <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+        <img src={vinyl} alt="Loading...">
+        </img>
+        </div>
     <div className="grid h-56 w-24 grid-cols-1 content-normal gap-2">
       <h2>Macro Recorder</h2>
       <RainbowButton onClick={toggleRecording}>
@@ -228,11 +267,18 @@ const MacroRecorder = () => {
       <RainbowButton onClick={playAllRecordings} disabled={playing || recordings.length === 0}>
         Play Macro
       </RainbowButton>
+      <Button onClick={submitMix}> SUBMIT! </Button>
       <Button onClick={clearRecordings}>Clear Recordings</Button>
       <p>{recording ? "Recording..." : "Not Recording"}</p>
       <p>{playing ? "Playing..." : "Not Playing"}</p>
       <p>{mute ? "Muted" : "Unmuted"}</p>
     </div>
+    <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+        <img src={vinyl} alt="Loading...">
+        </img>
+        </div>
+        </div>
+        </div>
   );
 };
 
