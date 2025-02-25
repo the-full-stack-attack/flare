@@ -15,6 +15,7 @@ import HeadlessDialog from '../components/general/HeadlessDialog';
 
 type Notifications = {
   id: number;
+  title: string;
   message: string;
   send_time: Date;
   User_Notification: {
@@ -24,6 +25,7 @@ type Notifications = {
 
 type Notification = {
   id: number;
+  title: string;
   message: string;
   send_time: Date;
   User_Notification: {
@@ -98,6 +100,8 @@ function Notifications() {
     createNewNotifsText();
     patchNotificationsSeenAll();
   }, [notifs]);
+
+  console.log(notifs);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">

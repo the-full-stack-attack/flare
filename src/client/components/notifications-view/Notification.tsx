@@ -16,6 +16,7 @@ import TTSButton from '../a11y/TTSButton';
 type NotificationProps = {
   notif: {
     id: number;
+    title: string;
     message: string;
     send_time: Date;
     User_Notification: {
