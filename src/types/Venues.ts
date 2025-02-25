@@ -103,6 +103,7 @@ type VenueType = {
     wheelchair_accessible?: boolean | null;
     serves_alcohol?: boolean | null;
     is_vegan_friendly?: boolean | null;
+    is_dog_friendly?: boolean | null;
     fsq_id?: string | null;
     google_place_id?: string | null;
 };
