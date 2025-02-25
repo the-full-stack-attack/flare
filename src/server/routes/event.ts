@@ -15,7 +15,7 @@ import Notification from '../db/models/notifications';
 import Event_Venue_Image from '../db/models/event_venue_images';
 
 // helper fns
-import { getVenueVeganFriendly, isVenueMatch, removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
+import { getVenueDogFriendly, getVenueVeganFriendly, isVenueMatch, removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
     from '../../../utils/venue';
 import { type VenueType, type GoogleData, } from '../../types/Venues';
 
@@ -416,24 +416,26 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: any) => {
                 console.warn('Not enough data for Google Text Search query');
             }
         }
-        if (fsqData && gData) {
-            console.log('DATA BEGINS HERE');
-            console.log('---------FSQ DATA')
-            console.log(JSON.stringify(fsqData, null, 2));
-            console.log('---------GOOGLE DATA');
-            console.log(JSON.stringify(gData, null, 2));
-        } else if (fsqData && !gData) {
-            console.log('ONLY FSQ DATA WAS FOUND');
-        } else {
-            console.log('NO DATA WAS FOUND');
-        }
+        // if (fsqData && gData) {
+        //     console.log('DATA BEGINS HERE');
+        //     console.log('---------FSQ DATA')
+        //     console.log(JSON.stringify(fsqData, null, 2));
+        //     console.log('---------GOOGLE DATA');
+        //     console.log(JSON.stringify(gData, null, 2));
+        // } else if (fsqData && !gData) {
+        //     console.log('ONLY FSQ DATA WAS FOUND');
+        // } else {
+        //     console.log('NO DATA WAS FOUND');
+        // }
 
-        // @ts-ignore
-        console.log('DOGS ALLOWED:', gData[0]?.additionalInfo?.Pets?.some(pet => pet?.['Dogs allowed']));
-        // @ts-ignore
-        console.log('DOG FRIENDLY: ', fsqData?.tastes.includes('dog-friendly'));
-        // @ts-ignore
-        console.log('DOG PARK: ', gData[0]?.additionalInfo?.Pets?.some(pet => pet?.['Dog park']));
+        // // @ts-ignore
+        // console.log('DOGS ALLOWED:', gData[0]?.additionalInfo?.Pets?.some(pet => pet?.['Dogs allowed']));
+        // // @ts-ignore
+        // console.log('DOG FRIENDLY: ', fsqData?.tastes.includes('dog-friendly'));
+        // // @ts-ignore
+        // console.log('DOG FRIENDLY 2: ', fsqData?.tastes.includes('dog runs'));
+        // // @ts-ignore
+        // console.log('DOG PARK: ', gData[0]?.additionalInfo?.Pets?.some(pet => pet?.['Dog park']));
 
         // combine all the venue data we got
         const buildVenue: VenueType = {
@@ -454,6 +456,7 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: any) => {
             wheelchair_accessible: getVenueAccessibility(gData) || null,
             serves_alcohol: getVenueAlcohol(fsqData, gData),
             is_vegan_friendly: getVenueVeganFriendly(fsqData, gData),
+            is_dog_friendly: getVenueDogFriendly(fsqData, gData),
             fsq_id: fsqId || null,
             google_place_id: googlePlaceId || null,
         };
