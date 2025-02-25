@@ -4,8 +4,10 @@ import Keyboard from "./Piano";
 import vinyl from '../../assets/images/vinyl.png';
 import axios from "axios";
 import { isErrored } from "stream";
-
+import { Button } from "@/components/ui/button";
 const DJam = function ({eventId, user}) {
+
+  const [allRecordings, setAllRecordings] = useState<Array[]>([]) 
 
   useEffect(() => {
     console.log(user)
@@ -19,7 +21,13 @@ const DJam = function ({eventId, user}) {
       }
     })
     .then((mixChats) => {
-      console.log(mixChats, 'ALL CHATS')
+      let arrayOfAllChats = mixChats.data;
+      arrayOfAllChats.forEach((chat) => {
+        let recording = chat.macro
+        let userName = chat.username 
+        console.log(recording, userName)
+        setAllRecordings((prev) => [...prev, { userName, recording } ])
+      })
     })
     .catch((error) => {
       console.error(error, 'ERROR')
@@ -28,17 +36,8 @@ const DJam = function ({eventId, user}) {
 
   return (
     <div>
-      <div className='flex justify-center items-center'>
-      <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
-        <img src={vinyl} alt="Loading...">
-        </img>
-        </div>
-      <MacroRecorder eventId={eventId} user={user}></MacroRecorder>
-        <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
-        <img src={vinyl} alt="Loading...">
-        </img>
-        </div>
-        </div>
+
+      <MacroRecorder allRecordings={allRecordings} eventId={eventId} user={user}></MacroRecorder>
       <Keyboard></Keyboard>
       </div>
   )
