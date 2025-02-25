@@ -65,6 +65,13 @@
       "calt" 1;
   }
 }
+
+.footer-glassmorphism {
+  background: rgba(0, 0, 0, 0.5) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
 /* 
 .select-content .select-item {
   @apply text-gray-200;
@@ -81,3 +88,4 @@
 [role="listbox"] [role="option"][data-highlighted] {
   @apply bg-orange-500/30 text-white !important;
 }
+
