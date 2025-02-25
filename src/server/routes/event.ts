@@ -12,6 +12,7 @@ import User_Notification from '../db/models/users_notifications';
 import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
 import Notification from '../db/models/notifications';
+import Event_Venue_Image from '../db/models/event_venue_images';
 
 // helper fns
 import { isVenueMatch, removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
@@ -100,7 +101,8 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             streetAddress,
             stateName,
             zipCode,
-            fsq_id
+            fsq_id,
+            selectedImages,
         } = req.body;
         let { cityName } = req.body;
         const userId = req.user.id;
@@ -181,6 +183,17 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         });
         await chatroom.setEvent(newEvent);
 
+
+        if (selectedImages.length > 0) {
+            await Event_Venue_Image.bulkCreate(selectedImages.map((img: any) => ({
+                EventId: newEvent.id,
+                VenueImageId: img.id,
+                display_order: img.display_order
+            })))
+        }
+
+
+
         res.sendStatus(200);
 
     } catch (err: any) {
@@ -236,6 +249,9 @@ eventRouter.post('/venue/create', async (req: any, res: Response) => {
             }
         );
         const fsqData = await fsqResponse.json();
+
+       
+
 
         // find matching venue in fsq results
         const fsqVenue = fsqData.results?.find((venue: any) => isVenueMatch(inputVenueData, venue));
@@ -400,7 +416,25 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: any) => {
                 console.warn('Not enough data for Google Text Search query');
             }
         }
+        if (fsqData && gData) {
+            console.log('DATA BEGINS HERE');
+            console.log('---------FSQ DATA')
+            console.log(JSON.stringify(fsqData, null, 2));
+            console.log('---------GOOGLE DATA');
+            console.log(JSON.stringify(gData, null, 2));
+        } else if (fsqData && !gData) {
+            console.log('ONLY FSQ DATA WAS FOUND');
+        } else {
+            console.log('NO DATA WAS FOUND');
+        }
 
+        console.log('fsqAttributes VEGAN DIET: ', fsqData?.features?.attributes?.vegan_diet )
+        // @ts-ignore
+        console.log('gData VEGAN DIET: ', gData[0]?.attributes?.vegan_diet)
+        // @ts-ignore
+        console.log('GDATA VEGAN DIET CATEGORIES: ', gData[0]?.categories?.includes('Vegan restaurant'));
+        // @ts-ignore
+        console.log('VEGAN OPTIONS:', gData[0]?.additionalInfo?.Offerings?.['Vegan options']);
         // combine all the venue data we got
         const buildVenue: VenueType = {
             id: null,
@@ -461,11 +495,19 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: any) => {
             })));
         }
 
+        
+        const completeVenue = await Venue.findOne({
+            where: { id: newVenue.id },
+            include: [
+                { model: Venue_Image, as: 'Venue_Images' }
+            ]
+        });
+
         // send back venue data and null fields
         const buildResponse = {
-            venue: newVenue,
+            venue: completeVenue,
             nullFields,
-        }
+        };
 
         res.json(buildResponse);
     } catch (error) {

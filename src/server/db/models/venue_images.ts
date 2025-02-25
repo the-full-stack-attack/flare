@@ -9,6 +9,5 @@ const Venue_Image = database.define('Venue_Image', {
 });
 
 
-Venue_Image.belongsToMany(Event, { through: Event_Venue_Image });
 
 export default Venue_Image;
