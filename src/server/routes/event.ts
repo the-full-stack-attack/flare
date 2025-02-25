@@ -479,6 +479,8 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: any) => {
             if (newVenue.pricing === null) nullFields.pricing = null;
             if (newVenue.wheelchair_accessible === null) nullFields.wheelchair_accessible = null;
             if (newVenue.serves_alcohol === null) nullFields.serves_alcohol = null;
+            if (newVenue.is_dog_friendly === null) nullFields.is_dog_friendly = null;
+            if (newVenue.is_vegan_friendly === null) nullFields.is_vegan_friendly = null;
         }
 
         // get and save venue tags
