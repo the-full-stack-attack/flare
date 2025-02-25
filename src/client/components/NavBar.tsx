@@ -139,7 +139,7 @@ export const NavBar = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Icon className="text-yellow-500 group-hover:text-orange-500 transition-colors h-4 w-4 lg:h-5 lg:w-5" />
+                <Icon className="text-yellow-500 group-hover:text-orange-500 transition-colors h-5 w-5 lg:h-6 lg:w-6" />
                 <span className="hidden lg:inline">{title}</span>
               </motion.a>
             ))}
@@ -160,14 +160,14 @@ export const NavBar = () => {
                   <img
                     src={avatarUrl}
                     alt="User avatar"
-                    className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover"
+                    className="h-9 w-9 md:h-11 md:w-11 rounded-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = '/default-avatar.png';
                     }}
                   />
                 ) : (
-                  <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                    <span className="text-yellow-500 text-sm md:text-lg">
+                  <div className="h-9 w-9 md:h-11 md:w-11 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                    <span className="text-yellow-500 text-base md:text-xl">
                       {user.username?.[0]?.toUpperCase() || '?'}
                     </span>
                   </div>
