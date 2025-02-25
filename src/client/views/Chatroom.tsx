@@ -534,198 +534,228 @@ const [isReady, setIsReady] = useState(false);
    keyUp({key: e.target.name})// Adjust the timeout as needed
    };
   return (
-     <div  className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
       <div>
-        <img src={ TILES['1'] } alt='' />
-        </div>
-        <div style={{
+        <img src={TILES['1']} alt="" />
+      </div>
+      <div
+        style={{
           display: 'flex',
           justifyContent: 'center',
           marginTop: '80px',
-          }} >
-          <Countdown endTime={dayjs(start_time)}/>
-          </div> 
-          { !isPlayingGames && 
-        <div className="flex justify-center"> 
-        <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleGames}>
-          Ice-Breaker Games
+        }}
+      >
+        <Countdown endTime={dayjs(start_time)} />
+      </div>
+      {(!isPlayingGames && (
+        <div className="flex justify-center">
+          <RainbowButton
+            className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1"
+            onClick={toggleGames}
+          >
+            Ice-Breaker Games
           </RainbowButton>
-          </div> || 
-          <div className="flex justify-center"> 
-          <RainbowButton className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1" onClick={toggleGames}>
-            Chat-Room Lobby
-            </RainbowButton>
-            </div>
-          
-          }
-          
-        { isPlayingGames && 
-        <div>
-        <Button onClick={toggleDJ}>MIX CHAT</Button>
-        <Button onClick={toggleQuiplash}>Flamiliar</Button>
         </div>
-        }
-         { isPlayingQuiplash && <QuipLash startTime={start_time}/> }
-         
-   { !isPlayingGames &&
-    <div className="p-4">
-      <div onClick={notTyping} className="card aspect-w-16 aspect-h-9 w-full h-full max-w-4xl bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
-        <div className="p-2">
-          <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
-          { !isSuccess && 
-          <div>
-            <div><VelocityScroll >LOADING GAME</VelocityScroll></div> 
-          <div><VelocityScroll >LOADING GAME</VelocityScroll></div> 
-          <div className="flex justify-center"><img id="loading-image" src={loading} alt="Loading..."></img></div>
-          <div><VelocityScroll >LOADING GAME</VelocityScroll></div> 
-          </div>
-          }
-          { isSuccess && 
-          <Application 
-          resizeTo={appRef}
-          width={Math.floor(640)}
-          height={Math.floor(360)}
-          backgroundColor={' #FFFFFF'}
-          resolution={2.5}
-         >
-          {
-            mapPack.layers.map((objLay, index) => (
-              <pixiContainer 
-              key= {index} 
-              >
-            { 
-            objLay.tiles.map((objTiles, index) => ( 
-             
-                <pixiSprite
-                  texture={Assets.get(nightClubTileSet[Math.floor(objTiles.id / 8)][objTiles.id % 8 ])}
-                  ref={spriteRef2} 
-                  x={32 * (objTiles.x) * 1.25 }
-                  y={32 * (objTiles.y) * 1.25 }
-                 scale={ 1.25, 1.25}
-                 key= {index}
-                />
-            ))
-            }
-            </pixiContainer>
-          ))
-            }
-            {allPlayers.map((player) => (
-              
-              <pixiContainer 
-              x={player.x} 
-              y={player.y} 
-              key={player.id} 
-              scale={ 1.24, 1.24}
-              >
-                {player.sentMessage && (
-                  <pixiGraphics 
-                  draw={speechBubble} 
-                  key= {crypto.randomUUID()}
-                  />
-                )}
-                {player.sentMessage && (
-                  <pixiText
-                    text={player.currentMessage}
-                    anchor={0.5}
-                    x={70}
-                    y={-30}
-                    key= {crypto.randomUUID()}
-                    scale={ 1.1, 1.1}
-                    style={styleMessage}
-                  />
-                )}
-                <pixiText
-                  text={player.username}
-                  anchor={0.5}
-                  
-                  x={10}
-                  y={40}
-                  style={ styleUserName }
-                  />
-                <pixiSprite
-              texture={Assets.get(player.username)}
-              ref={spriteRef2} 
-              x={0}
-              y={-13}
-              scale={scaleFactor, scaleFactor}
-              width={25}
-              height={25}
-              >
+      )) || (
+        <div className="flex justify-center">
+          <RainbowButton
+            className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1"
+            onClick={toggleGames}
+          >
+            Chat-Room Lobby
+          </RainbowButton>
+        </div>
+      )}
 
-              </pixiSprite>
-                {isReady && !player.isWalking && !player.isSnapping && !player.isWaving && !player.isEnergyWaving &&
-                 <pixiAnimatedSprite
-       textures={textures}
-       x={-18.6}
-       y={-21}
-       ref={(spriteRef) => {
-         spriteRef?.play()
-       }}
-       initialFrame={0}
-       animationSpeed={0.1}
-       loop={true}
-       scale={ scaleFactor, scaleFactor }
-       width={64}
-       height={64}
-     /> }
-     {isReady && player.isWalking &&
-                 <pixiAnimatedSprite
-                 textures={walkTextures}
-                 x={-18.6}
-                 y={-21}
-                 ref={(spriteRef) => {
-                   spriteRef?.play()
-                  }}
-                  initialFrame={0}
-                  animationSpeed={0.4}
-                  loop={true}
-                  scale={ scaleFactor, scaleFactor }
-                  width={64}
-                  height={64}
-     /> }
-     {isReady && !player.isWalking && !player.isSnapping && player.isWaving &&
-                 <pixiAnimatedSprite
-       textures={waveTextures}
-       x={-18.6}
-       y={-21}
-       ref={(spriteRef) => {
-         spriteRef?.play()
-       }}
-       initialFrame={0}
-       animationSpeed={0.1}
-       loop={true}
-       scale={{ x: scaleFactor, y: scaleFactor }}
-  
-     /> }
-     {isReady && player.isSnapping && !player.isWalking &&
-                 <pixiAnimatedSprite
-       textures={snapTextures}
-       x={-18.6}
-       y={-21}
-       ref={(spriteRef) => {
-         spriteRef?.play()
-       }}
-       initialFrame={0}
-       animationSpeed={0.27}
-       loop={true}
-       scale={{ x: scaleFactor, y: scaleFactor }}
-  
-     /> }
-          {isReady && !player.isSnapping && !player.isWalking && player.isEnergyWaving &&
-       <pixiAnimatedSprite
-       textures={energyWaveTextures}
-       x={-18.6}
-       y={-21}
-       ref={(spriteRef) => {
-         spriteRef?.play()
-       }}
-       initialFrame={0}
-       animationSpeed={0.2}
-       loop={true}
-       scale={{ x: scaleFactor, y: scaleFactor }}
-  
-     /> }
-                  {/* <pixiContainer>
+      {isPlayingGames && (
+        <div>
+          <Button onClick={toggleDJ}>MIX CHAT</Button>
+          <Button onClick={toggleQuiplash}>Flamiliar</Button>
+        </div>
+      )}
+      {isPlayingQuiplash && <QuipLash startTime={start_time} />}
+      <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
+        {!isPlayingGames && (
+          <div className=" col-span-2 p-4">
+            <div
+              onClick={notTyping}
+              className="card aspect-w-16 aspect-h-9 max-w-4xl max-h-[100] bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden "
+            >
+              <div className="p-2">
+                <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
+                  {!isSuccess && (
+                    <div>
+                      <div>
+                        <VelocityScroll>LOADING GAME</VelocityScroll>
+                      </div>
+                      <div>
+                        <VelocityScroll>LOADING GAME</VelocityScroll>
+                      </div>
+                      <div className="flex justify-center">
+                        <img
+                          id="loading-image"
+                          src={loading}
+                          alt="Loading..."
+                        ></img>
+                      </div>
+                      <div>
+                        <VelocityScroll>LOADING GAME</VelocityScroll>
+                      </div>
+                    </div>
+                  )}
+                  {isSuccess && (
+                    <Application
+                      resizeTo={appRef}
+                      width={Math.floor(640)}
+                      height={Math.floor(360)}
+                      backgroundColor={' #FFFFFF'}
+                      resolution={2.5}
+                    >
+                      {mapPack.layers.map((objLay, index) => (
+                        <pixiContainer key={index}>
+                          {objLay.tiles.map((objTiles, index) => (
+                            <pixiSprite
+                              texture={Assets.get(
+                                nightClubTileSet[Math.floor(objTiles.id / 8)][
+                                  objTiles.id % 8
+                                ]
+                              )}
+                              ref={spriteRef2}
+                              x={32 * objTiles.x * 1.25}
+                              y={32 * objTiles.y * 1.25}
+                              scale={(1.25, 1.25)}
+                              key={index}
+                            />
+                          ))}
+                        </pixiContainer>
+                      ))}
+                      {allPlayers.map((player) => (
+                        <pixiContainer
+                          x={player.x}
+                          y={player.y}
+                          key={player.id}
+                          scale={(1.24, 1.24)}
+                        >
+                          {player.sentMessage && (
+                            <pixiGraphics
+                              draw={speechBubble}
+                              key={crypto.randomUUID()}
+                            />
+                          )}
+                          {player.sentMessage && (
+                            <pixiText
+                              text={player.currentMessage}
+                              anchor={0.5}
+                              x={70}
+                              y={-30}
+                              key={crypto.randomUUID()}
+                              scale={(1.1, 1.1)}
+                              style={styleMessage}
+                            />
+                          )}
+                          <pixiText
+                            text={player.username}
+                            anchor={0.5}
+                            x={10}
+                            y={40}
+                            style={styleUserName}
+                          />
+                          <pixiSprite
+                            texture={Assets.get(player.username)}
+                            ref={spriteRef2}
+                            x={0}
+                            y={-13}
+                            scale={(scaleFactor, scaleFactor)}
+                            width={25}
+                            height={25}
+                          ></pixiSprite>
+                          {isReady &&
+                            !player.isWalking &&
+                            !player.isSnapping &&
+                            !player.isWaving &&
+                            !player.isEnergyWaving && (
+                              <pixiAnimatedSprite
+                                textures={textures}
+                                x={-18.6}
+                                y={-21}
+                                ref={(spriteRef) => {
+                                  spriteRef?.play();
+                                }}
+                                initialFrame={0}
+                                animationSpeed={0.1}
+                                loop={true}
+                                scale={(scaleFactor, scaleFactor)}
+                                width={64}
+                                height={64}
+                              />
+                            )}
+                          {isReady && player.isWalking && (
+                            <pixiAnimatedSprite
+                              textures={walkTextures}
+                              x={-18.6}
+                              y={-21}
+                              ref={(spriteRef) => {
+                                spriteRef?.play();
+                              }}
+                              initialFrame={0}
+                              animationSpeed={0.4}
+                              loop={true}
+                              scale={(scaleFactor, scaleFactor)}
+                              width={64}
+                              height={64}
+                            />
+                          )}
+                          {isReady &&
+                            !player.isWalking &&
+                            !player.isSnapping &&
+                            player.isWaving && (
+                              <pixiAnimatedSprite
+                                textures={waveTextures}
+                                x={-18.6}
+                                y={-21}
+                                ref={(spriteRef) => {
+                                  spriteRef?.play();
+                                }}
+                                initialFrame={0}
+                                animationSpeed={0.1}
+                                loop={true}
+                                scale={{ x: scaleFactor, y: scaleFactor }}
+                              />
+                            )}
+                          {isReady &&
+                            player.isSnapping &&
+                            !player.isWalking && (
+                              <pixiAnimatedSprite
+                                textures={snapTextures}
+                                x={-18.6}
+                                y={-21}
+                                ref={(spriteRef) => {
+                                  spriteRef?.play();
+                                }}
+                                initialFrame={0}
+                                animationSpeed={0.27}
+                                loop={true}
+                                scale={{ x: scaleFactor, y: scaleFactor }}
+                              />
+                            )}
+                          {isReady &&
+                            !player.isSnapping &&
+                            !player.isWalking &&
+                            player.isEnergyWaving && (
+                              <pixiAnimatedSprite
+                                textures={energyWaveTextures}
+                                x={-18.6}
+                                y={-21}
+                                ref={(spriteRef) => {
+                                  spriteRef?.play();
+                                }}
+                                initialFrame={0}
+                                animationSpeed={0.2}
+                                loop={true}
+                                scale={{ x: scaleFactor, y: scaleFactor }}
+                              />
+                            )}
+                          {/* <pixiContainer>
                 <pixiSprite
                   textures={ Assets.get('77') }
                   x={0}
@@ -735,86 +765,116 @@ const [isReady, setIsReady] = useState(false);
                   height={25}
                 />
               </pixiContainer> */}
-              </pixiContainer>
-            ))} 
-              
-          </Application>
-            } 
+                        </pixiContainer>
+                      ))}
+                    </Application>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div> 
-  }
-   {
-        ( isPlayingDJ || onKeyboard ) &&
-        <DJam eventId={eventId} user={user}/>
-      }
-          <div className="flex justify-center mt-2">
-        <div onClick={typing}>
-          <Label className="flex justify-center  text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-2xl rounded-md"> 
-            Send A Chat 
+        )}
+        {(isPlayingDJ || onKeyboard) && <DJam eventId={eventId} user={user} />}
+        <div className="flex justify-center mt-2">
+          <div onClick={typing}>
+            <Label className="flex justify-center  text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-2xl rounded-md">
+              Send A Chat
             </Label>
             <div className="flex justify-center">
-            <div className="relative">  
-          <Textarea 
-            className="justify-center items-center  border-orange-500  bg-gray-900 text-yellow-500 rounded-md w-72" 
-            type="text"
-            placeholder='Be kind to each other...'
-            value={message}
-            maxlength="150"
-            onChange={(e) => setMessage(e.target.value)}
-            />
-             <BsSend onClick={sendMessage} className="absolute w-5 h-5 bottom-2.5 right-2.5 text-white hover:text-orange-500" />
-            {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute w-5 h-5 top-2.5 right-2.5 text-slate-600"> </svg> */}
-      {/* <path d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"></path>
-     */}
-            </div>
+              <div className="relative">
+                <Textarea
+                  className="justify-center items-center  border-orange-500  bg-gray-900 text-yellow-500 rounded-md w-72"
+                  type="text"
+                  placeholder="Be kind to each other..."
+                  value={message}
+                  maxlength="150"
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <BsSend
+                  onClick={sendMessage}
+                  className="absolute w-5 h-5 bottom-2.5 right-2.5 text-white hover:text-orange-500"
+                />
+                {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute w-5 h-5 top-2.5 right-2.5 text-slate-600"> </svg> */}
+                {/* <path d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"></path>
+                 */}
+              </div>
             </div>
             <h1 className="flex justify-center items-start mt-2 text-xs text-slate-400">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-1.5">
-        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
-      </svg>  
-      <em> Message Limit: {message.length} / 150</em>
-    </h1>  
-     
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="w-5 h-5 mr-1.5"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <em> Message Limit: {message.length} / 150</em>
+            </h1>
+
             {/* <em className="text-white">Allowed Characters</em> */}
+          </div>
         </div>
-      </div>
-      { !isPlayingQuiplash &&
-      <Card className='w-50 block sm:hidden bg-transparent border-transparent'>
-      <div className="flex flex-col items-center">
-        <Button className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full mt-2 border border-black"
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp} name='w'>↑</Button>
-          <div className="flex justify-center">
-         <Button  className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full border border-black"
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp} name='a'>←</Button>
-         <Button className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full border border-black"
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp} name='s'>↓</Button>
-         <Button  className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full border border-black"
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp} name='d'>→</Button>
-        </div>
-        </div>
-      </Card>
-      }     
-       
-            
-      <Card className="bg-transparent border-transparent flex items-center justify-center">
-      <div className="h-[300px] overflow-y-auto">
-          <AnimatedList className="w-80 md:w-160 lg:w-300">
-            {allMessages.map((msg) => (
+        {!isPlayingQuiplash && (
+          <Card className="w-50 block sm:hidden bg-transparent border-transparent">
+            <div className="flex flex-col items-center">
+              <Button
+                className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full mt-2 border border-black"
+                onPointerDown={handlePointerDown}
+                onPointerUp={handlePointerUp}
+                name="w"
+              >
+                ↑
+              </Button>
+              <div className="flex justify-center">
+                <Button
+                  className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full border border-black"
+                  onPointerDown={handlePointerDown}
+                  onPointerUp={handlePointerUp}
+                  name="a"
+                >
+                  ←
+                </Button>
+                <Button
+                  className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full border border-black"
+                  onPointerDown={handlePointerDown}
+                  onPointerUp={handlePointerUp}
+                  name="s"
+                >
+                  ↓
+                </Button>
+                <Button
+                  className="w-10 h-10 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-black font-bold text-lg rounded-full border border-black"
+                  onPointerDown={handlePointerDown}
+                  onPointerUp={handlePointerUp}
+                  name="d"
+                >
+                  →
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
 
-              <MsgBox className="w-80 md:w-360 lg:w-565" msg={msg.message} user={msg.username} eventId={eventId} />
-
-            ))}
-          </AnimatedList>
-        </div>
-      </Card> 
-     
+        <Card className="bg-transparent border-transparent flex items-center justify-center">
+          <div className="h-[300px] overflow-y-auto">
+            <AnimatedList className="w-80 md:w-160 lg:w-300">
+              {allMessages.map((msg) => (
+                <MsgBox
+                  className="w-80 md:w-360 lg:w-565"
+                  msg={msg.message}
+                  user={msg.username}
+                  eventId={eventId}
+                />
+              ))}
+            </AnimatedList>
+          </div>
+        </Card>
       </div>
+    </div>
   );
 }
 
