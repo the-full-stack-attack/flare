@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import {
-  FaMapMarkerAlt,
-  FaThermometerHalf,
-  FaWind,
-  FaCloud,
-  FaEye,
+import { 
+  FaMapMarkerAlt, 
+  FaThermometerHalf, 
+  FaWind, 
+  FaCloud, 
+  FaEye, 
   FaTint,
   FaSun,
   FaMoon,
@@ -67,10 +67,10 @@ export const Weather: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative group transition-all duration-300 hover:transform hover:scale-[1.02] h-full"
+        className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]"
       >
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
-        <div className="relative h-full rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6">
+        <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-4">
           <p className="text-red-400">{error}</p>
         </div>
       </motion.div>
@@ -82,10 +82,10 @@ export const Weather: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative group transition-all duration-300 hover:transform hover:scale-[1.02] h-full"
+        className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]"
       >
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
-        <div className="relative h-full rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6">
+        <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-4">
           <div className="animate-pulse space-y-4">
             <div className="h-4 bg-white/20 rounded w-1/4" />
             <div className="h-8 bg-white/20 rounded w-1/2" />
@@ -100,10 +100,10 @@ export const Weather: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="relative group transition-all duration-300 hover:transform hover:scale-[1.02] h-full"
+      className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]"
     >
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
-      <div className="relative h-full rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6">
+      <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-4">
         {weather && (
           <div className="space-y-6">
             {/* Header with Temperature Toggle */}
@@ -119,15 +119,13 @@ export const Weather: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsCelsius(!isCelsius)}
+                className="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-colors"
+              >
                 <FaExchangeAlt className="text-white/60" />
-                <button
-                  className="text-white/60 text-sm"
-                  onClick={() => setIsCelsius(!isCelsius)}
-                >
-                  {isCelsius ? '°F' : '°C'}
-                </button>
-              </div>
+                <span className="text-white/60 text-sm">°C</span>
+              </button>
             </div>
 
             {/* Main Temperature Display */}
@@ -166,7 +164,7 @@ export const Weather: React.FC = () => {
                   <span className="text-white/60 text-sm">Min/Max</span>
                 </div>
                 <p className="text-white/80">
-                  {formatTemp(weather.temp_min)}°{isCelsius ? 'C' : 'F'} / {formatTemp(weather.temp_max)}°{isCelsius ? 'C' : 'F'}
+                  {formatTemp(weather.temp_min)}° / {formatTemp(weather.temp_max)}°
                 </p>
               </div>
 
