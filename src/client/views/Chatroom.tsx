@@ -574,7 +574,7 @@ const [isReady, setIsReady] = useState(false);
         </div>
       )}
       {isPlayingQuiplash && <QuipLash startTime={start_time} />}
-      <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
+      <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 grid-rows-2 gap-2">
         {!isPlayingGames && (
           <div className=" col-span-2 p-4">
             <div
@@ -774,7 +774,7 @@ const [isReady, setIsReady] = useState(false);
             </div>
           </div>
         )}
-        {(isPlayingDJ || onKeyboard) && <DJam eventId={eventId} user={user} />}
+        
      
         {!isPlayingQuiplash && (
           <Card className="w-50 block sm:hidden bg-transparent border-transparent">
@@ -885,6 +885,11 @@ const [isReady, setIsReady] = useState(false);
 
        
         </div>
+        {(isPlayingDJ || onKeyboard) && 
+        <div className="col-span-3" >
+        <DJam eventId={eventId} user={user} />
+        </div>
+        }
       </div>
     </div>
   );
