@@ -32,7 +32,7 @@ import vinyl from '../assets/images/vinyl.png';
 import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
-import { BsSend } from 'react-icons/bs';
+import { FaSprayCan } from 'react-icons/fa';
 
 import {
   Container,
@@ -973,7 +973,7 @@ const [isReady, setIsReady] = useState(false);
             maxLength="150"
             onChange={(e) => setMessage(e.target.value)}
           />
-          <BsSend
+          <FaSprayCan
             onClick={sendMessage}
             className="absolute w-5 h-5 bottom-2.5 right-2.5 text-white hover:text-orange-500"
           />
