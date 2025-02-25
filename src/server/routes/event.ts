@@ -137,7 +137,7 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         oneHourBefore.setHours(oneHourBefore.getHours() - 1);
 
         const notification: any = await Notification.create({
-            message: `The upcoming event you're attending, ${title}, starts soon at ${new Date(startDate).toLocaleTimeString()}. Hope to see you there.`,
+            message: `The upcoming event you're attending, ${title}, starts soon at ${new Date(startDate)}. Hope to see you there.`,
             send_time: oneHourBefore,
         });
 
