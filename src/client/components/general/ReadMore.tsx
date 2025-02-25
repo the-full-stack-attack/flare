@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 type ReadMoreProps = {
   children: string;
   maxLength: number;
-  className: string;
+  className?: string;
 };
 
 function ReadMore({ children, maxLength, className }: ReadMoreProps) {
@@ -21,7 +21,7 @@ function ReadMore({ children, maxLength, className }: ReadMoreProps) {
   };
 
   return (
-    <div className={className}>
+    <div className={className ? className : ''}>
       {isExpanded
         ? text
         : isLongText
