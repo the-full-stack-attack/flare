@@ -49,8 +49,8 @@ chatroomRouter.post('/chats', (req, res) => {
         user_id: userId,
         macro: recording
       }
-    }).then(() => {
-      console.log('successful chat created')
+    }).then((newChat) => {
+      console.log('successful chat created --->v', newChat)
       res.sendStatus(201);
       
     }).catch((error) => {
