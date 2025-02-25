@@ -7,18 +7,19 @@ import User from '../db/models/users';
 
 const chatroomRouter = Router();
 
-chatroomRouter.get('/chatroom/:eventId', (req, res) => {
+chatroomRouter.get('/chats', (req, res) => {
   // Get the room number based on enpoint params
-  const pathname = req.params.eventId
-
-  Chatroom.findOne({
-    where: { event_id: pathname },
-  }).then((chatroom) => {
+  console.log('received')
+  console.log(req.query);
+  res.sendStatus(200)
+  // Chatroom.findOne({
+  //   where: { event_id: pathname },
+  // }).then((chatroom) => {
     // console.log(chatroom, 'we found it')
-    res.send(chatroom).status(200)
-  }).catch((err) =>{
-    console.error(err, 'nope')
-  })
+  //   res.sendStatus(201)
+  // }).catch((err) =>{
+  //   console.error(err, 'nope')
+  // })
   // the endpoint should match the Event id. get the chatroom_id off that table
   
   // find the chatroom that has the matching id, get the map from that chatroom

@@ -3,18 +3,28 @@ import MacroRecorder from "./MacroRecorder";
 import Keyboard from "./Piano";
 import vinyl from '../../assets/images/vinyl.png';
 import axios from "axios";
+import { isErrored } from "stream";
 
 const DJam = function ({eventId, user}) {
 
   useEffect(() => {
-    axios.get('chatroom/chats')
+    console.log(user)
+    axios.get('/api/chatroom/chats',
+    { 
+      params: 
+      {
+      eventId,
+      user: user.username,
+      userId: user.id,
+      }
+    })
     .then((mixChats) => {
-      console.log(mixChats)
+      console.log(mixChats, 'ALL CHATS')
     })
     .catch((error) => {
-      console.error(error)
+      console.error(error, 'ERROR')
     })
-  })
+  }, [])
 
   return (
     <div>
