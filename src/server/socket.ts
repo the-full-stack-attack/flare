@@ -310,6 +310,21 @@ const initializeSocket = (
           if (inputId === 'EnergyWave') {
             PLAYER_LIST[socket.id].isEnergyWaving = state;
             }
+            if (inputId === 'Heart') {
+              PLAYER_LIST[socket.id].isHearting = state;
+              }
+              if (inputId === 'Shades') {
+                PLAYER_LIST[socket.id].equipShades = !PLAYER_LIST[socket.id].equipShades;
+                }
+                if (inputId === '420') {
+                  PLAYER_LIST[socket.id].equip420 = !PLAYER_LIST[socket.id].equip420;
+                  }
+                  if (inputId === 'Beer') {
+                    PLAYER_LIST[socket.id].equipBeer = !PLAYER_LIST[socket.id].equipBeer;
+                    }
+                    if (inputId === 'Sad') {
+                      PLAYER_LIST[socket.id].isSad = state;
+                      }
     });
 
     socket.on('message', ({ message, eventId }) => {
@@ -342,6 +357,11 @@ const initializeSocket = (
         isSnapping: player.isSnapping,
         isWaving: player.isWaving,
         isEnergyWaving: player.isEnergyWaving,
+        isHearting: player.isHearting,
+        equip420: player.equip420,
+        equipShades: player.equipShades,
+        equipBeer: player.equipBeer,
+        isSad: player.isSad,
       });
     }
     // loop through the sockets and send the package to each of them
