@@ -1,43 +1,95 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaCloud, FaSun, FaMoon } from 'react-icons/fa';
+import {
+  FaMapMarkerAlt,
+  FaThermometerHalf,
+  FaWind,
+  FaCloud,
+  FaEye,
+  FaTint,
+  FaSun,
+  FaMoon,
+  FaExchangeAlt
+} from 'react-icons/fa';
+import { getWeatherByLocation } from '../../services/weather';
 import { WeatherData } from '../../../types/dashboard';
 
-interface WeatherProps {
-  weather: WeatherData | null;
-  isLoading: boolean;
-  error?: string;
-}
+export const Weather: React.FC = () => {
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [isCelsius, setIsCelsius] = useState(false);
 
-export const Weather: React.FC<WeatherProps> = ({ weather, isLoading, error }) => {
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const weatherData = await getWeatherByLocation(
+              position.coords.latitude,
+              position.coords.longitude
+            );
+            setWeather(weatherData);
+            setLoading(false);
+          } catch (err) {
+            setError('Failed to fetch weather data');
+            setLoading(false);
+          }
+        },
+        () => {
+          setError('Location access denied');
+          setLoading(false);
+        }
+      );
+    } else {
+      setError('Geolocation is not supported');
+      setLoading(false);
+    }
+  }, []);
+
+  const formatTime = (timestamp: number) => {
+    return new Date(timestamp * 1000).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
+  const celsiusToFahrenheit = (celsius: number) => {
+    return (celsius * 9/5) + 32;
+  };
+
+  const formatTemp = (temp: number) => {
+    return Math.round(isCelsius ? temp : celsiusToFahrenheit(temp));
+  };
+
   if (error) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="col-span-1 backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-white/10"
+        className="relative group transition-all duration-300 hover:transform hover:scale-[1.02] h-full"
       >
-        <div className="flex items-center justify-center h-full">
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
+        <div className="relative h-full rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6">
           <p className="text-red-400">{error}</p>
         </div>
       </motion.div>
     );
   }
 
-  if (isLoading) {
+  if (loading) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="col-span-1 backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-white/10"
+        className="relative group transition-all duration-300 hover:transform hover:scale-[1.02] h-full"
       >
-        <div className="flex items-center justify-center h-full">
-          <div className="animate-pulse flex space-x-4">
-            <div className="rounded-full bg-white/20 h-12 w-12"></div>
-            <div className="space-y-3">
-              <div className="h-4 bg-white/20 rounded w-24"></div>
-              <div className="h-4 bg-white/20 rounded w-16"></div>
-            </div>
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
+        <div className="relative h-full rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-white/20 rounded w-1/4" />
+            <div className="h-8 bg-white/20 rounded w-1/2" />
+            <div className="h-4 bg-white/20 rounded w-1/3" />
           </div>
         </div>
       </motion.div>
@@ -48,27 +100,119 @@ export const Weather: React.FC<WeatherProps> = ({ weather, isLoading, error }) =
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="col-span-1 backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-white/10"
+      className="relative group transition-all duration-300 hover:transform hover:scale-[1.02] h-full"
     >
-      {weather && (
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-xl font-bold text-white mb-2">Current Weather</h3>
-            <p className="text-gray-300 capitalize">{weather.description}</p>
-            <p className="text-2xl font-bold text-white">{Math.round(weather.temp)}°C</p>
-            {weather.city && (
-              <p className="text-sm text-gray-400 mt-1">
-                {weather.city}, {weather.country}
-              </p>
-            )}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
+      <div className="relative h-full rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6">
+        {weather && (
+          <div className="space-y-6">
+            {/* Header with Temperature Toggle */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent mb-2">
+                  Local Weather
+                </h3>
+                <div className="flex items-center text-sm text-white/60">
+                  <FaMapMarkerAlt className="mr-1" />
+                  <span>
+                    {weather.city}, {weather.country}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <FaExchangeAlt className="text-white/60" />
+                <button
+                  className="text-white/60 text-sm"
+                  onClick={() => setIsCelsius(!isCelsius)}
+                >
+                  {isCelsius ? '°F' : '°C'}
+                </button>
+              </div>
+            </div>
+
+            {/* Main Temperature Display */}
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white/70 capitalize">{weather.description}</p>
+                <p className="text-4xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+                  {formatTemp(weather.temp)}°{isCelsius ? 'C' : 'F'}
+                </p>
+                <p className="text-sm text-white/60">
+                  Feels like {formatTemp(weather.feels_like)}°{isCelsius ? 'C' : 'F'}
+                </p>
+              </div>
+              
+              <motion.img
+                src={`https://openweathermap.org/img/w/${weather.icon}.png`}
+                alt="Weather icon"
+                className="w-16 h-16"
+                animate={{
+                  y: [0, -5, 0],
+                  rotate: [0, 5, 0]
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            </div>
+
+            {/* Weather Details Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-3 rounded-lg bg-white/[0.03]">
+                <div className="flex items-center gap-2 mb-1">
+                  <FaThermometerHalf className="text-orange-500/80" />
+                  <span className="text-white/60 text-sm">Min/Max</span>
+                </div>
+                <p className="text-white/80">
+                  {formatTemp(weather.temp_min)}°{isCelsius ? 'C' : 'F'} / {formatTemp(weather.temp_max)}°{isCelsius ? 'C' : 'F'}
+                </p>
+              </div>
+
+              <div className="p-3 rounded-lg bg-white/[0.03]">
+                <div className="flex items-center gap-2 mb-1">
+                  <FaTint className="text-blue-500/80" />
+                  <span className="text-white/60 text-sm">Humidity</span>
+                </div>
+                <p className="text-white/80">{weather.humidity}%</p>
+              </div>
+
+              <div className="p-3 rounded-lg bg-white/[0.03]">
+                <div className="flex items-center gap-2 mb-1">
+                  <FaWind className="text-cyan-500/80" />
+                  <span className="text-white/60 text-sm">Wind</span>
+                </div>
+                <p className="text-white/80">{Math.round(weather.wind_speed)} m/s</p>
+              </div>
+
+              <div className="p-3 rounded-lg bg-white/[0.03]">
+                <div className="flex items-center gap-2 mb-1">
+                  <FaCloud className="text-gray-400/80" />
+                  <span className="text-white/60 text-sm">Clouds</span>
+                </div>
+                <p className="text-white/80">{weather.clouds}%</p>
+              </div>
+            </div>
+
+            {/* Sun Times */}
+            <div className="flex justify-between text-sm">
+              <div className="flex items-center gap-2">
+                <FaSun className="text-yellow-500" />
+                <span className="text-white/60">
+                  {formatTime(weather.sunrise)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FaMoon className="text-gray-400" />
+                <span className="text-white/60">
+                  {formatTime(weather.sunset)}
+                </span>
+              </div>
+            </div>
           </div>
-          <img
-            src={`https://openweathermap.org/img/w/${weather.icon}.png`}
-            alt="Weather icon"
-            className="w-16 h-16"
-          />
-        </div>
-      )}
+        )}
+      </div>
     </motion.div>
   );
 };
