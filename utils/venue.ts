@@ -5,6 +5,22 @@ import {ApifyClient} from 'apify-client';
 
 
 
+export const getVenueDogFriendly = (fsqData: any, gData: any) => {
+    if (fsqData?.tastes?.includes('dog-friendly')) return true;
+    if (fsqData?.tastes?.includes('dog runs')) return true;
+
+    if (gData?.[0]?.additionalInfo?.Pets) {
+        const pets = gData[0].additionalInfo.Pets;
+        for (const pet of pets) {
+            if (pet['Dogs allowed'] || pet['Dog park']) {
+                return true;
+            }
+        }
+    }
+
+    return null;
+}
+
 export const getVenueVeganFriendly = (fsqData: any, gData: any) => {
     if (fsqData?.features?.attributes?.vegan_diet) return true;
     if (gData?.[0]?.attributes?.vegan_diet) return true;
