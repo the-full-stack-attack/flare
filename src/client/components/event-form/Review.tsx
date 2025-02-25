@@ -558,6 +558,124 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
                                 </TooltipProvider>
                             )}
                         </div>
+
+                        <p className="text-gray-400">Dog Friendly:</p>
+                        <div className="relative group">
+                            {editingFields.is_dog_friendly ? (
+                                <div className="flex gap-2 items-center">
+                                    <Select
+                                        value={tempValues.is_dog_friendly === null ? "unknown" : tempValues.is_dog_friendly ? "1" : "0"}
+                                        onValueChange={(value) => handleTempChange('is_dog_friendly', value === "unknown" ? null : value === "1")}
+                                        className="flex-1"
+                                    >
+                                        <SelectTrigger className="bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white text-sm sm:text-base min-h-[2.5rem]">
+                                            <SelectValue/>
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-gray-900/95 border-orange-500/30">
+                                            <SelectItem value="1" className="text-white hover:bg-orange-500/30">Yes</SelectItem>
+                                            <SelectItem value="0" className="text-white hover:bg-orange-500/30">No</SelectItem>
+                                            <SelectItem value="unknown" className="text-white hover:bg-orange-500/30">Not Sure</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <div className="flex gap-1">
+                                        <button
+                                            onClick={() => toggleEdit('is_dog_friendly', false)}
+                                            className="p-2 hover:bg-orange-500/20 rounded-md"
+                                        >
+                                            <X className="w-5 h-5 text-gray-400 hover:text-white"/>
+                                        </button>
+                                        <button
+                                            onClick={() => toggleEdit('is_dog_friendly', true)}
+                                            className="p-2 hover:bg-orange-500/20 rounded-md"
+                                        >
+                                            <Check className="w-5 h-5 text-orange-500 hover:text-orange-400"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div
+                                                className="flex items-center gap-2 group cursor-pointer p-2 hover:bg-orange-500/10 rounded-md"
+                                                onClick={() => toggleEdit('is_dog_friendly')}
+                                            >
+                                                <p className="text-white flex-1">
+                                                    {formInfo.is_dog_friendly === null
+                                                        ? 'Not specified'
+                                                        : formInfo.is_dog_friendly
+                                                            ? 'Yes'
+                                                            : 'No'}
+                                                </p>
+                                                <Pencil className="w-5 h-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"/>
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Click to edit</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            )}
+                        </div>
+
+                        <p className="text-gray-400">Vegan Friendly:</p>
+                        <div className="relative group">
+                            {editingFields.is_vegan_friendly ? (
+                                <div className="flex gap-2 items-center">
+                                    <Select
+                                        value={tempValues.is_vegan_friendly === null ? "unknown" : tempValues.is_vegan_friendly ? "1" : "0"}
+                                        onValueChange={(value) => handleTempChange('is_vegan_friendly', value === "unknown" ? null : value === "1")}
+                                        className="flex-1"
+                                    >
+                                        <SelectTrigger className="bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white text-sm sm:text-base min-h-[2.5rem]">
+                                            <SelectValue/>
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-gray-900/95 border-orange-500/30">
+                                            <SelectItem value="1" className="text-white hover:bg-orange-500/30">Yes</SelectItem>
+                                            <SelectItem value="0" className="text-white hover:bg-orange-500/30">No</SelectItem>
+                                            <SelectItem value="unknown" className="text-white hover:bg-orange-500/30">Not Sure</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <div className="flex gap-1">
+                                        <button
+                                            onClick={() => toggleEdit('is_vegan_friendly', false)}
+                                            className="p-2 hover:bg-orange-500/20 rounded-md"
+                                        >
+                                            <X className="w-5 h-5 text-gray-400 hover:text-white"/>
+                                        </button>
+                                        <button
+                                            onClick={() => toggleEdit('is_vegan_friendly', true)}
+                                            className="p-2 hover:bg-orange-500/20 rounded-md"
+                                        >
+                                            <Check className="w-5 h-5 text-orange-500 hover:text-orange-400"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div
+                                                className="flex items-center gap-2 group cursor-pointer p-2 hover:bg-orange-500/10 rounded-md"
+                                                onClick={() => toggleEdit('is_vegan_friendly')}
+                                            >
+                                                <p className="text-white flex-1">
+                                                    {formInfo.is_vegan_friendly === null
+                                                        ? 'Not specified'
+                                                        : formInfo.is_vegan_friendly
+                                                            ? 'Yes'
+                                                            : 'No'}
+                                                </p>
+                                                <Pencil className="w-5 h-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"/>
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Click to edit</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            )}
+                        </div>
                     </div>
 
                     <div className="mt-4">
