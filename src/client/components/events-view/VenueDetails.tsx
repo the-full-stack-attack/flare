@@ -39,10 +39,17 @@ type VenueDetailsProps = {
       path: string;
     }[];
   };
+  eventVenueTags: {
+    count: number;
+    tag: string;
+    Event_Venue_Tag: {
+      display_order: number;
+    };
+  }[];
   closeVenueDetails: () => void;
 }
 
-function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
+function VenueDetails({ venue, eventVenueTags, closeVenueDetails }: VenueDetailsProps) {
   const {
     name,
     description,
@@ -71,8 +78,8 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
   `;
 
   const tags: string = useMemo(() => (
-    Venue_Tags
-      .sort((a, b) => b.count - a.count)
+    eventVenueTags
+      .sort((a, b) => a.Event_Venue_Tag.display_order - b.Event_Venue_Tag.display_order)
       .map(({ tag }) => tag)
       .join(', ')
   ), [Venue_Tags]);
