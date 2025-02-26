@@ -7,7 +7,7 @@ type CompletedTaskProps = {
 type UserTask = {
   completed?: boolean;
   overall_rating: number;
-  date_completed: dayjs.Dayjs;
+  date_completed: string | null;
   opted_out?: boolean;
   UserId: number;
   TaskId: number;
