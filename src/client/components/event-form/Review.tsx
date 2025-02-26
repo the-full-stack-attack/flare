@@ -78,16 +78,18 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
 
     // handles toggling edit mode and saving changes
     const toggleEdit = (fieldName: string, save: boolean = false) => {
-        // if saving changes
+        // if saving, update the main form data
         if (save) {
+            // if editing tags, update the form data with the selected tags + display order
             if (fieldName === 'tags') {
                 setFormInfo(prev => ({
                     ...prev,
                     selectedTags: tempValues.tags.map((tag, index) => ({
                         ...tag,
-                        display_order: index  // Add display_order based on selection order
+                        display_order: index 
                     }))
                 }));
+            // if editing other fields, update the form data with the new value
             } else {
                 handleFieldChange(fieldName, tempValues[fieldName]);
             }
@@ -96,7 +98,7 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
         // if entering edit mode
         if (!save) {
             if (fieldName === 'tags') {
-                // Sort tags to show selected ones at top
+                // sort tags to show selected ones at top
                 const sortedTags = [...venueTags].sort((a, b) => {
                     const aSelected = formInfo.selectedTags?.some(tag => tag.id === a.id) ?? false;
                     const bSelected = formInfo.selectedTags?.some(tag => tag.id === b.id) ?? false;
@@ -132,7 +134,7 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
         }));
     };
 
-    // updates temporary values as user types/selects
+    // update temporary values as user selects
     const handleTempChange = (fieldName: string, value: any) => {
         setTempValues(prev => ({
             ...prev,
