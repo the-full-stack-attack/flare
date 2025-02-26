@@ -81,7 +81,11 @@ function Keyboard() {
           onClick={() => playSound(key)}
           className={`p-4 text-lg font-bold border rounded ${
             activeKey === key ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
+          } ${
+            key === 'z' || key === 'x' || key === 'c' || key === 'v' || key === '.' ? 'bg-fuchsia-500 text-black' : 
+            key === 'a' || key === 's' || key === 'd' || key === 'f' || key === 'g' || key === 'h'  ? 'bg-orange-500 text-black' :
+            key === 'j' || key === 'w' || key === 'e' || key === 'r' || key === 'k' ? 'bg-pink-500 text-black' :
+            'bg-yellow-500 text-black'}`}
         >
           {key.toUpperCase()}
         </button>
