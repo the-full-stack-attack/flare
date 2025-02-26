@@ -46,14 +46,6 @@ event2Router.get('/', (req: any, res: Response) => {
       },
       {
         model: Venue,
-        include: [
-          {
-            model: Venue_Tag,
-          },
-          {
-            model: Venue_Image,
-          },
-        ],
       },
       {
         association: 'Category',
@@ -148,14 +140,6 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
         },
         {
           model: Venue,
-          include: [
-            {
-              model: Venue_Tag,
-            },
-            {
-              model: Venue_Image,
-            },
-          ],
         },
         {
           association: 'Category',
