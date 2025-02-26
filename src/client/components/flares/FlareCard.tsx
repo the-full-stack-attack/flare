@@ -22,6 +22,7 @@ type FlareType = {
   milestone: string;
   description: string;
   notification_message: string;
+  card_message: string;
   value: number;
 };
 
@@ -42,15 +43,9 @@ function FlareCard({ flare, index }: FlareCardType) {
           <DialogTitle>{flare.name}</DialogTitle>
           <div className="flex items-start space-x-4">
             <img className="rounded-full w-24 h-24 object-cover" src={flare.icon} />
-            <DialogDescription className="flex-grow">{flare.notification_message}</DialogDescription>
+            <DialogDescription className="flex-grow">{flare.card_message}</DialogDescription>
           </div>
           <DialogClose asChild>
-            <button
-              className="px-4 py-2 rounded-lg w-20 text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
-                    hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ml-auto"
-            >
-              Close
-            </button>
           </DialogClose>
         </DialogContent>
       </Dialog>
