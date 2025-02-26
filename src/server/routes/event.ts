@@ -112,16 +112,16 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         // const end_time = dayjs(`${startDate} ${endTime}`).format('YYYY-MM-DD HH:mm:ss');
 
         // check if venue exists using fsq_id
+        console.log('if statement soon');
         let eventVenue: any;
-        if (venue.fsq_id) {
+        if (venue.id) {
+            console.log('VENUE ID: ', venue.id);
+            eventVenue = await Venue.findByPk(venue.id);
+        } else if (venue.fsq_id) {
+            console.log('searching fsq id for venue bad way');
             eventVenue = await Venue.findOne({
                 where: { fsq_id: venue.fsq_id }
             });
-
-            if (!eventVenue) {
-                return res.status(400).json({ error: 'Selected venue not found' });
-            }
-            cityName = eventVenue.city_name;
         }
 
         // create notification to remind user 1 hour before event
