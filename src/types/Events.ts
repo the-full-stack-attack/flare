@@ -11,10 +11,10 @@ export type EventData = {
   createdAt: Date;
   updatedAt: Date;
   hour_before_notif: number;
-  User_Event?: {
+  User_Event: {
     user_attending: boolean;
   };
-  Users?: {
+  Users: {
     id: number;
     username: string;
     full_name: string;
@@ -22,7 +22,7 @@ export type EventData = {
       user_attending: boolean;
     };
   }[];
-  Category?: {
+  Category: {
     id: number;
     name: string;
   };
@@ -47,13 +47,6 @@ export type EventData = {
     wheelchair_accessible: boolean | null;
     is_dog_friendly: boolean | null;
     is_vegan_friendly: boolean | null;
-    Venue_Tags: {
-      count: number;
-      tag: string;
-    }[];
-    Venue_Images: {
-      path: string;
-    }[];
   };
   Venue_Images: {
     path: string;
