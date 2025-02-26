@@ -64,6 +64,12 @@ event2Router.get('/', (req: any, res: Response) => {
       {
         association: 'Users',
       },
+      {
+        association: 'Venue_Images',
+      },
+      {
+        association: 'Venue_Tags',
+      },
     ],
   })
     .then((events: any) => {
@@ -159,6 +165,12 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
         },
         {
           association: 'Users',
+        },
+        {
+          association: 'Venue_Images',
+        },
+        {
+          association: 'Venue_Tags',
         },
       ],
     },
