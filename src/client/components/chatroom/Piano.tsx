@@ -4,7 +4,8 @@ import china from '../../assets/sounds/chatroom/kit/china.mp3';
 import crash1 from '../../assets/sounds/chatroom/kit/crash1.mp3';
 import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
-
+import { Button } from '../../../components/ui/button.tsx';
+import { Card } from '../../../components/ui/card';
 function Keyboard() {
   const keySounds = {
     'a': NOTES['C4'], 's': NOTES['D4'], 'd': NOTES['E4'], 'f': NOTES['F4'], 'g': NOTES['G4'], 'h': NOTES['A4'], 'j': NOTES['B4'],
@@ -73,24 +74,28 @@ function Keyboard() {
   }, [playingSounds]);
 
   return (
+    <Card className='mt-2 bg-gradient-to-r from-black via-gray-900 to-black border-orange-700 text-white'>
     <div className="grid grid-cols-6 gap-2">
       {Object.keys(keySounds).map((key) => (
         
-        <button
+        <Button
           key={key}
           onClick={() => playSound(key)}
-          className={`p-4 text-lg font-bold border rounded ${
-            activeKey === key ? "bg-blue-500 text-white" : "bg-gray-200"
-          } ${
-            key === 'z' || key === 'x' || key === 'c' || key === 'v' || key === '.' ? 'bg-fuchsia-500 text-black' : 
-            key === 'a' || key === 's' || key === 'd' || key === 'f' || key === 'g' || key === 'h'  ? 'bg-orange-500 text-black' :
-            key === 'j' || key === 'w' || key === 'e' || key === 'r' || key === 'k' ? 'bg-pink-500 text-black' :
-            'bg-yellow-500 text-black'}`}
+          className={`p-6 mt-2 mb-2 ml-2 mr-2 text-lg font-bold border rounded ${
+            key === 'z' || key === 'x' || key === 'c' || key === 'v' || key === '.' ? 'bg-gradient-to-r from-fuchsia-700 via-fuchsia-500 to-fuchsia-800 text-black' : 
+            key === 'p' || key === 'o' || key === 'i' || key === 'u' ? 'bg-gradient-to-r from-red-700 via-red-500 to-red-800 text-black' : 
+            key === 'a' || key === 's' || key === 'd' || key === 'f' || key === 'g' || key === 'h'  ? 'bg-gradient-to-r from-orange-700 via-orange-500 to-orange-800 text-black' :
+            key === 'j' || key === 'w' || key === 'e' || key === 'r' || key === 'k' ? 'bg-gradient-to-r from-pink-700 via-pink-500 to-pink-800 text-black' :
+            key === '0' || key === '=' || key === '-' ? 'bg-gradient-to-r from-gray-700 via-gray-500 to-gray-950 text-black' :
+            'bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-800 text-black'} ${
+            activeKey === key ? "border-white text-white" : "border-black"
+          } `}
         >
           {key.toUpperCase()}
-        </button>
+        </Button>
       ))}
     </div>
+    </Card>
   );
 }
 
