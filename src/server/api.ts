@@ -18,7 +18,8 @@ const {
   signUpRouter,
   notifsRouter,
   textRouter,
-  weatherRouter
+  weatherRouter,
+  venueRouter,
 } = routes;
 
 const apiRouter = Router();
@@ -40,5 +41,6 @@ apiRouter.use('/signup', signUpRouter);
 apiRouter.use('/notifications', notifsRouter);
 apiRouter.use('/text', textRouter);
 apiRouter.use('/weather', weatherRouter);
+apiRouter.use('/venue', venueRouter);
 
 export default apiRouter;
