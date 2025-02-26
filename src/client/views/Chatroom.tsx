@@ -32,7 +32,7 @@ import vinyl from '../assets/images/vinyl.png';
 import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
-import { FaSprayCan } from 'react-icons/fa';
+import { FaShip } from 'react-icons/fa';
 
 import {
   Container,
@@ -871,16 +871,7 @@ const [isReady, setIsReady] = useState(false);
                               height={20}
                             ></pixiSprite>
                             )}
-                          {/* <pixiContainer>
-                <pixiSprite
-                  textures={ Assets.get('77') }
-                  x={0}
-                  y={0}
-                  scale={scaleFactor, scaleFactor}
-                  width={25}
-                  height={25}
-                />
-              </pixiContainer> */}
+                        
                         </pixiContainer>
                       ))}
                     </Application>
@@ -892,7 +883,7 @@ const [isReady, setIsReady] = useState(false);
         )}
         
         
-        {!isPlayingQuiplash && (
+        {!isPlayingGames && (
           <Card className="w-50 block sm:hidden bg-transparent border-transparent">
             <div className="flex flex-col items-center">
               <Button
@@ -973,7 +964,7 @@ const [isReady, setIsReady] = useState(false);
             maxLength="150"
             onChange={(e) => setMessage(e.target.value)}
           />
-          <FaSprayCan
+          <FaShip
             onClick={sendMessage}
             className="absolute w-5 h-5 bottom-2.5 right-2.5 text-white hover:text-orange-500"
           />
@@ -1003,7 +994,7 @@ const [isReady, setIsReady] = useState(false);
        
         </div>
         { onKeyboard && !isPlayingGames &&
-        <div className="col-span-3" >
+        <div className="hidden lg:block col-span-3" >
         <DJam eventId={eventId} user={user} />
         </div>
         }

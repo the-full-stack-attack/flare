@@ -86,7 +86,7 @@ function Keyboard() {
             key === 'p' || key === 'o' || key === 'i' || key === 'u' ? 'bg-gradient-to-r from-red-700 via-red-500 to-red-800 text-black' : 
             key === 'a' || key === 's' || key === 'd' || key === 'f' || key === 'g' || key === 'h'  ? 'bg-gradient-to-r from-orange-700 via-orange-500 to-orange-800 text-black' :
             key === 'j' || key === 'w' || key === 'e' || key === 'r' || key === 'k' ? 'bg-gradient-to-r from-pink-700 via-pink-500 to-pink-800 text-black' :
-            key === '0' || key === '=' || key === '-' ? 'bg-gradient-to-r from-gray-700 via-gray-500 to-gray-950 text-black' :
+            key === '0' || key === '=' || key === '-' ? 'hidden lg:flex bg-gradient-to-r from-gray-700 via-gray-500 to-gray-950 text-black' :
             'bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-800 text-black'} ${
             activeKey === key ? "border-white text-white" : "border-black"
           } `}

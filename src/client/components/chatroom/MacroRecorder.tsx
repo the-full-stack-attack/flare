@@ -233,9 +233,9 @@ const submitMix = () => {
       ))
     }</div>
     <Card className="bg-gradient-to-r from-gray-950 via-gray-700 to-gray-900 border-orange-700 text-white">
-    <p className="flex justify-center font-bold text-gray-400 text-7xl"><em>MACRO RECORDER 2000</em></p>
+    <p className="hidden lg:flex justify-center font-bold text-gray-400 text-7xl"><em>MACRO RECORDER 2000</em></p>
     <div className='flex justify-center items-center'>
-      <div className="size-60 p-4 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+      <div className="hidden md:flex size-60 p-4 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
         <img src={vinyl} alt="Loading...">
         </img>
         </div>
@@ -265,7 +265,7 @@ const submitMix = () => {
    
     </div>
     </Card>
-    <div className="size-60 p-4 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+    <div className="hidden md:flex size-60 p-4 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
         <img src={vinyl} alt="Loading...">
         </img>
         </div>
