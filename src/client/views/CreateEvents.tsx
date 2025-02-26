@@ -26,6 +26,8 @@ type EventData = {
     stateName: string;
     interests: string[];
     category: string;
+    selectedImages: any[];
+    selectedTags: string[];
 };
 
 function CreateEvents() {
@@ -44,6 +46,7 @@ function CreateEvents() {
         interests: [],
         category: '',
         selectedImages: [],
+        selectedTags: [],
     });
 
     const { user } = useContext(UserContext);
@@ -153,13 +156,12 @@ function CreateEvents() {
                 streetAddress: formInfo.streetAddress,
                 zipCode: Number(formInfo.zipCode),
                 cityName: formInfo.cityName,
-                stateName: formInfo.stateName.toUpperCase(), // check the error here
+                stateName: formInfo.stateName.toUpperCase(),
                 fsq_id: formInfo.fsq_id,
                 selectedImages: formInfo.selectedImages,
+                selectedTags: formInfo.selectedTags
             };
-            // console.log('sending: ', formattedData.startDate);
-            // console.log('also ', formattedData.startTime);
-            // console.log('and ', formattedData.endTime);
+
             await axios.post('/api/event', formattedData);
             setStep(1);
             setFormInfo({
@@ -176,6 +178,8 @@ function CreateEvents() {
                 zipCode: null,
                 interests: [],
                 category: '',
+                selectedImages: [],
+                selectedTags: [],
             });
         } catch (error) {
             console.error('Error creating event:', error);

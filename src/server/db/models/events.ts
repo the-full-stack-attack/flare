@@ -9,6 +9,9 @@ import Chatroom from './chatrooms';
 import Notification from './notifications';
 import Venue_Image from './venue_images';
 import Event_Venue_Image from './event_venue_images';
+import Venue_Tag from './venue_tags';
+import Event_Venue_Tag from './event_venue_tags';
+
 
 const Event = database.define('Event', {
   title: { type: Sequelize.STRING(60) },
@@ -31,6 +34,7 @@ Event.hasOne(Chatroom, { foreignKey: 'event_id' });
 Chatroom.belongsTo(Event, { foreignKey: 'event_id', onDelete: 'CASCADE' });
 Event.belongsTo(Notification, { foreignKey: 'hour_before_notif' });
 Event.belongsToMany(Venue_Image, { through: Event_Venue_Image });
-
+Event.belongsToMany(Venue_Tag, { through: Event_Venue_Tag });
+Venue_Tag.belongsToMany(Event, { through: Event_Venue_Tag });
 
 export default Event;

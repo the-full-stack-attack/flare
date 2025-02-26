@@ -13,11 +13,15 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ImageSelection from './ImageSelection';
+import ItemSelection from './ItemSelection';
+
+
 // review is the final step of the event creation flow
 // it shows all entered data and lets users edit any field before submitting
 // it receives formInfo (current data), nullFields (missing data), and handleFieldChange (update function)
-
 function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
+    // console.log('formInfo.Venue: ', formInfo.Venue);
+    // console.log('formInfo.Venue?.Venue_Tags: ', formInfo.Venue?.Venue_Tags);
     // tracks which fields are currently being edited
     const [editingFields, setEditingFields] = useState<Record<string, boolean>>({});
     // holds temporary values while user is editing, before saving
@@ -28,12 +32,29 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
     const [allInterests, setAllInterests] = useState([]);
     const [suggestedInterests, setSuggestedInterests] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [venueTags, setVenueTags] = useState([]);
 
     // fetch categories and interests when component mounts
     useEffect(() => {
         getCategories();
         getInterests();
     }, []);
+
+    // get venue tags whenever the venue changes
+    useEffect(() => {
+        const getVenueTags = async () => {
+            if (formInfo.Venue?.id) {
+                try {
+                    const response = await axios.get(`/api/venue/tags/${formInfo.Venue.id}`);
+                    setVenueTags(response.data);
+                } catch (error) {
+                    console.error('Error getting venue tags:', error);
+                }
+            }
+        };
+
+        getVenueTags();
+    }, [formInfo.Venue?.id]);
 
     // get all possible categories for the dropdown
     const getCategories = async () => {
@@ -55,18 +76,55 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
         }
     };
 
-    // handles toggling edit mode for a field
-    // if save is true, updates the main form data with temp values
+    // handles toggling edit mode and saving changes
     const toggleEdit = (fieldName: string, save: boolean = false) => {
+        // if saving, update the main form data
         if (save) {
-            // if saving, update the main form data
-            handleFieldChange(fieldName, tempValues[fieldName]);
-        } else {
-            // if entering edit mode, initialize temp value with current value
-            setTempValues(prev => ({
-                ...prev,
-                [fieldName]: formInfo[fieldName]
-            }));
+            // if editing tags, update the form data with the selected tags + display order
+            if (fieldName === 'tags') {
+                setFormInfo(prev => ({
+                    ...prev,
+                    selectedTags: tempValues.tags.map((tag, index) => ({
+                        ...tag,
+                        display_order: index 
+                    }))
+                }));
+            // if editing other fields, update the form data with the new value
+            } else {
+                handleFieldChange(fieldName, tempValues[fieldName]);
+            }
+        }
+
+        // if entering edit mode
+        if (!save) {
+            if (fieldName === 'tags') {
+                // sort tags to show selected ones at top
+                const sortedTags = [...venueTags].sort((a, b) => {
+                    const aSelected = formInfo.selectedTags?.some(tag => tag.id === a.id) ?? false;
+                    const bSelected = formInfo.selectedTags?.some(tag => tag.id === b.id) ?? false;
+                    if (aSelected && !bSelected) return -1;
+                    if (!aSelected && bSelected) return 1;
+                    return 0;
+                });
+                
+                setVenueTags(sortedTags);
+                setTempValues(prev => ({
+                    ...prev,
+                    tags: formInfo.selectedTags || []
+                }));
+            } else if (fieldName === 'interests') {
+                // initialize temp tags with current selection
+                setTempValues(prev => ({
+                    ...prev,
+                    interests: formInfo.interests || []
+                }));
+            } else {
+                // handle other fields normally
+                setTempValues(prev => ({
+                    ...prev,
+                    [fieldName]: formInfo[fieldName]
+                }));
+            }
         }
 
         // toggle edit mode for this field
@@ -74,15 +132,9 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
             ...prev,
             [fieldName]: !prev[fieldName]
         }));
-
-        // clear interest search when closing without saving
-        if (fieldName === 'interests' && !save) {
-            setSearchTerm('');
-            setSuggestedInterests([]);
-        }
     };
 
-    // updates temporary values as user types/selects
+    // update temporary values as user selects
     const handleTempChange = (fieldName: string, value: any) => {
         setTempValues(prev => ({
             ...prev,
@@ -294,83 +346,18 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
                         <div className="relative group">
                             {editingFields.interests ? (
                                 <div className="flex flex-col sm:flex-row gap-2">
-                                    <div className="w-full">
-                                        <p className="text-xs text-gray-400 mb-1">Click to select interests</p>
-                                        <Popover defaultOpen>
-                                            <PopoverTrigger asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    className="w-full justify-between bg-black/80 border-orange-500/30 hover:bg-orange-500/10 focus:ring-2 focus:ring-orange-500/50 text-white h-auto min-h-[2.5rem]"
-                                                >
-                                                    <div className="flex flex-wrap gap-1 flex-1">
-                                                        {tempValues.interests?.length > 0 ? (
-                                                            tempValues.interests.map((interest) => (
-                                                                <Badge
-                                                                    key={interest}
-                                                                    className="bg-orange-500/20 hover:bg-orange-500/30 text-white text-xs sm:text-sm"
-                                                                >
-                                                                    {interest}
-                                                                    <span
-                                                                        className="ml-1 hover:text-orange-300 cursor-pointer"
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            removeInterest(interest);
-                                                                        }}
-                                                                    >
-                                                                        <X className="h-3 w-3" />
-                                                                    </span>
-                                                                </Badge>
-                                                            ))
-                                                        ) : (
-                                                            <span className="text-gray-400 text-sm">Click to select interests...</span>
-                                                        )}
-                                                    </div>
-                                                    <span className="text-orange-500 ml-2 shrink-0">
-                                                        <ChevronDown className="h-4 w-4" />
-                                                    </span>
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent
-                                                className="w-[calc(100vw-2rem)] sm:w-[300px] p-0 bg-gray-900/95 border-orange-500/30"
-                                                align="start"
-                                                side="bottom"
-                                                sideOffset={4}
-                                            >
-                                                <Command className="bg-transparent">
-                                                    <CommandInput
-                                                        placeholder="Search interests..."
-                                                        className="border-none bg-transparent text-white placeholder:text-gray-400"
-                                                    />
-                                                    <CommandEmpty className="text-gray-400 p-2 text-sm">No interests found.</CommandEmpty>
-                                                    <CommandGroup className="max-h-[40vh] sm:max-h-[200px] overflow-auto">
-                                                        {allInterests.map((interest) => (
-                                                            <CommandItem
-                                                                key={interest}
-                                                                onSelect={() => {
-                                                                    if (tempValues.interests?.includes(interest)) {
-                                                                        removeInterest(interest);
-                                                                    } else {
-                                                                        addInterest(interest);
-                                                                    }
-                                                                }}
-                                                                className="text-white hover:bg-orange-500/30 cursor-pointer text-sm aria-selected:bg-orange-500/30"
-                                                            >
-                                                                <div className="flex items-center gap-2 w-full">
-                                                                    <div className="w-4 h-4 flex items-center justify-center shrink-0">
-                                                                        {tempValues.interests?.includes(interest) && (
-                                                                            <Check className="h-4 w-4 text-orange-500" />
-                                                                        )}
-                                                                    </div>
-                                                                    <span className="truncate">{interest}</span>
-                                                                </div>
-                                                            </CommandItem>
-                                                        ))}
-                                                    </CommandGroup>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
+                                    <ItemSelection
+                                        items={allInterests.map(interest => ({
+                                            id: interest,
+                                            interest: interest
+                                        }))}
+                                        selectedItems={tempValues.interests?.map(interest => ({
+                                            id: interest,
+                                            interest: interest
+                                        })) || []}
+                                        onSelect={(interests) => handleTempChange('interests', interests.map(i => i.interest))}
+                                        labelField="interest"
+                                    />
                                     <div className="flex gap-1">
                                         <button
                                             onClick={() => toggleEdit('interests', false)}
@@ -394,9 +381,10 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
                                                 className="flex items-center gap-2 group cursor-pointer p-2 hover:bg-orange-500/10 rounded-md"
                                                 onClick={() => toggleEdit('interests')}
                                             >
-                                                <p className="text-white flex-1">{formInfo.interests.join(', ') || 'Not specified'}</p>
-                                                <Pencil
-                                                    className="w-5 h-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"/>
+                                                <p className="text-white flex-1">
+                                                    {formInfo.interests?.join(', ') || 'Not specified'}
+                                                </p>
+                                                <Pencil className="w-5 h-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"/>
                                             </div>
                                         </TooltipTrigger>
                                         <TooltipContent>
@@ -665,6 +653,56 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
                                                         : formInfo.is_vegan_friendly
                                                             ? 'Yes'
                                                             : 'No'}
+                                                </p>
+                                                <Pencil className="w-5 h-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"/>
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Click to edit</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            )}
+                        </div>
+
+                        <p className="text-gray-400">Venue Tags:</p>
+                        <div className="relative group">
+                            {editingFields.tags ? (
+                                <div className="flex flex-col sm:flex-row gap-2">
+                                    <ItemSelection
+                                        items={venueTags}
+                                        selectedItems={tempValues.tags || []}
+                                        onSelect={(tags) => handleTempChange('tags', tags)}
+                                        labelField="tag"
+                                        placeholder="Select your tags"
+                                    />
+                                    <div className="flex gap-1">
+                                        <button
+                                            onClick={() => toggleEdit('tags', false)}
+                                            className="p-2 hover:bg-orange-500/20 rounded-md"
+                                        >
+                                            <X className="w-5 h-5 text-gray-400 hover:text-white"/>
+                                        </button>
+                                        <button
+                                            onClick={() => toggleEdit('tags', true)}
+                                            className="p-2 hover:bg-orange-500/20 rounded-md"
+                                        >
+                                            <Check className="w-5 h-5 text-orange-500 hover:text-orange-400"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div
+                                                className="flex items-center gap-2 group cursor-pointer p-2 hover:bg-orange-500/10 rounded-md"
+                                                onClick={() => toggleEdit('tags')}
+                                            >
+                                                <p className="text-white flex-1">
+                                                    {formInfo.selectedTags?.length > 0 
+                                                        ? formInfo.selectedTags.map(tag => tag.tag).join(', ')
+                                                        : 'Add hashtags'}
                                                 </p>
                                                 <Pencil className="w-5 h-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"/>
                                             </div>

@@ -13,6 +13,7 @@ import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
 import Notification from '../db/models/notifications';
 import Event_Venue_Image from '../db/models/event_venue_images';
+import Event_Venue_Tag from '../db/models/event_venue_tags';
 
 // helper fns
 import { getVenueDogFriendly, getVenueVeganFriendly, isVenueMatch, removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
@@ -97,11 +98,7 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             venue,
             interests,
             category,
-            venueDescription,
-            streetAddress,
-            stateName,
-            zipCode,
-            fsq_id,
+            selectedTags,
             selectedImages,
         } = req.body;
         let { cityName } = req.body;
@@ -116,9 +113,9 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
 
         // check if venue exists using fsq_id
         let eventVenue: any;
-        if (fsq_id) {
+        if (venue.fsq_id) {
             eventVenue = await Venue.findOne({
-                where: { fsq_id }
+                where: { fsq_id: venue.fsq_id }
             });
 
             if (!eventVenue) {
@@ -160,6 +157,9 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         // connect venue to event
         await newEvent.setVenue(eventVenue);
 
+        
+
+
         // find and add the category to event
         const assignCategory: any = await Category.findOne({
             where: {name: category}
@@ -183,8 +183,18 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         });
         await chatroom.setEvent(newEvent);
 
+        // create event venue tag records
+        if (selectedTags?.length > 0) {
+            for (const tag of selectedTags) {
+                await Event_Venue_Tag.create({
+                    EventId: newEvent.id,
+                    VenueTagId: tag.id,
+                    display_order: tag.display_order
+                });
+            }
+        }
 
-        if (selectedImages.length > 0) {
+        if (selectedImages && selectedImages.length > 0) {
             await Event_Venue_Image.bulkCreate(selectedImages.map((img: any) => ({
                 EventId: newEvent.id,
                 VenueImageId: img.id,

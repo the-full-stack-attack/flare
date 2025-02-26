@@ -1,22 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Checkbox } from '../../../components/ui/checkbox';
 
 function ImageSelection({ venueImages, selectedImages, onSelectImages }) {
-
-    console.log('venueImages', venueImages);
-    console.log('selectedImages', selectedImages);
-
-    
+    // executes when user clicks an image
     const handleImageToggle = (imageId) => {
+        // check if image was already selected
         const isSelected = selectedImages.some(img => img.id === imageId);
-        
+        // if it was, remove it and reorder remaining images
         if (isSelected) {
-            // remove already selected image
-            onSelectImages(selectedImages.filter(img => img.id !== imageId));
+            // remove selected image
+            const filteredImages = selectedImages.filter(img => img.id !== imageId);
+            // reassign display_order for remaining images
+            const reorderedImages = filteredImages.map((img, index) => ({
+                ...img,
+                display_order: index
+            }));
+            onSelectImages(reorderedImages);
         } else {
-            // add image with display order
+            // add new image with next display_order
             const nextOrder = selectedImages.length;
-            onSelectImages([...selectedImages, { id: imageId, display_order: nextOrder }]);
+            onSelectImages([
+                ...selectedImages,
+                { 
+                    id: imageId, 
+                    display_order: nextOrder,
+                }
+            ]);
         }
     };
 
