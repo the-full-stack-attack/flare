@@ -262,7 +262,7 @@ function Dashboard() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-6 rounded-xl bg-black/30 backdrop-blur-lg border border-white/10 hover:cursor-pointer"
+                className="p-6 rounded-xl bg-black/30 backdrop-blur-lg border border-white/10"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <FaCalendarCheck className="text-2xl text-blue-500" />
@@ -331,7 +331,7 @@ function Dashboard() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300"
+                            className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300 hover:cursor-pointer"
                           >
                             <div className="flex items-center gap-4">
                               <img
