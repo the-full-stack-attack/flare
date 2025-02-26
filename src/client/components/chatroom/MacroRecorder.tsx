@@ -7,7 +7,7 @@ import china from '../../assets/sounds/chatroom/kit/china.mp3';
 import crash1 from '../../assets/sounds/chatroom/kit/crash1.mp3';
 import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
-
+import { Card } from "@/components/ui/card";
 import vinyl from '../../assets/images/vinyl.png';
 import { set } from "date-fns";
 
@@ -232,31 +232,45 @@ const submitMix = () => {
         <Button onClick={switchRecording} name={index}>{recording.userName || 'anon'}</Button>
       ))
     }</div>
+    <Card className="bg-gradient-to-r from-gray-950 via-gray-700 to-gray-900 border-orange-700 text-white">
+    <p className="flex justify-center font-bold text-gray-400 text-7xl"><em>MACRO RECORDER 2000</em></p>
     <div className='flex justify-center items-center'>
-      <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+      <div className="size-60 p-4 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
         <img src={vinyl} alt="Loading...">
         </img>
         </div>
-    <div className="grid h-56 w-24 grid-cols-1 content-normal gap-2">
-      <h2>Macro Recorder</h2>
-      <RainbowButton onClick={toggleRecording}>
-        {recording ? "Stop Recording" : "Start Recording"}
-      </RainbowButton>
-      <Button onClick={toggleMute}>{mute ? "Unmute" : "Mute"}</Button>
-      <RainbowButton onClick={playAllRecordings} disabled={playing || recordings.length === 0}>
+        <Card className="w-64 bg-gradient-to-r from-gray-600 via-gray-500 to-gray-400 border-orange-700">
+    <div className="grid h-60 w-50 p-4 grid-cols-2 content-normal gap-2">
+     <div  className="col-span-2 "> <p className="font-bold text-gray-900"><em>Macro Recorder 2000</em></p></div>
+      <Button  className="bg-gradient-to-r from-gray-950 via-gray-700 to-gray-900 border-orange-700 text-gray-200"  onClick={toggleRecording}>
+        {recording ? "Stop" : "Record"}
+      </Button>
+      <div>
+        {recording ? <Card className="bg-red-950 font-bold text-red-300 flex justify-center items-center border-red-500">REC</Card> : <Card className="bg-black font-bold text-white flex justify-center items-center ">REC</Card>  }
+        </div>
+      <Button  className="bg-gradient-to-r from-gray-950 via-gray-700 to-gray-900 border-orange-700 text-gray-200"  onClick={playAllRecordings} disabled={playing || recordings.length === 0}>
         Play Macro
-      </RainbowButton>
-      <Button onClick={submitMix}> SUBMIT! </Button>
-      <Button onClick={clearRecordings}>Clear Recordings</Button>
-      <p>{recording ? "Recording..." : "Not Recording"}</p>
-      <p>{playing ? "Playing..." : "Not Playing"}</p>
-      <p>{mute ? "Muted" : "Unmuted"}</p>
+      </Button>
+      <div>
+      {playing ? <Card className="bg-green-950 font-bold text-green-500 flex justify-center items-center border-green-700">PLAYING</Card> : <Card className="bg-black font-bold text-white flex justify-center items-center ">PLAYING</Card>  }
+      </div>
+      <Button  className="bg-gradient-to-r from-gray-950 via-gray-700 to-gray-900 border-orange-700 text-gray-200" onClick={toggleMute}>{mute ? "Unmute" : "Mute"}</Button>
+      <div>
+      {mute ? <Card className="bg-yellow-950 font-bold text-yellow-500 flex justify-center items-center border-yellow-700">ON</Card> : <Card className="bg-black font-bold text-white flex justify-center items-center ">OFF</Card>  }
+      </div>
+      <RainbowButton className="text-gray-200"onClick={submitMix}> SUBMIT! </RainbowButton>
+      
+      <Button className="bg-gradient-to-r from-gray-950 via-gray-700 to-gray-900 border-orange-700 text-gray-200" onClick={clearRecordings}>Clear Macros</Button>
+      
+   
     </div>
-    <div className="size-36 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
+    </Card>
+    <div className="size-60 p-4 mt-6 bg-transparent animate-[spin_10s_linear_infinite]">
         <img src={vinyl} alt="Loading...">
         </img>
         </div>
         </div>
+        </Card>
         </div>
   );
 };

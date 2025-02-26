@@ -75,6 +75,7 @@ function Keyboard() {
   return (
     <div className="grid grid-cols-6 gap-2">
       {Object.keys(keySounds).map((key) => (
+        
         <button
           key={key}
           onClick={() => playSound(key)}
