@@ -80,6 +80,9 @@ module.exports = {
     modules: [
       'node_modules',
       SRC_DIR,
-    ]
+    ],
+    fallback: {
+      "crypto": false
+    }
   }
 };
