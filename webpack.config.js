@@ -63,9 +63,9 @@ module.exports = {
     ]
   },
   plugins: [
-    
-     new BundleAnalyzerPlugin()
-    ,
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'disabled',
+    }),
     new HtmlWebpackPlugin({
       template: path.resolve(CLIENT_DIR, 'index.html'),
       filename: 'index.html',
