@@ -31,13 +31,6 @@ type VenueDetailsProps = {
     wheelchair_accessible: boolean | null;
     is_dog_friendly: boolean | null;
     is_vegan_friendly: boolean | null;
-    Venue_Tags: {
-      count: number;
-      tag: string;
-    }[];
-    Venue_Images: {
-      path: string;
-    }[];
   };
   eventVenueTags: {
     count: number;
