@@ -34,7 +34,7 @@ function EventDrawerContent({
 }: EventDrawerContentProps) {
   const [showVenueDetails, setShowVenueDetails] = useState<boolean>(false);
 
-  const { start_time, end_time, Venue, Category, id } = event;
+  const { start_time, end_time, Venue, Category, id, Venue_Tags } = event;
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white flex items-center';
   
@@ -58,7 +58,7 @@ function EventDrawerContent({
     <div className="mx-auto w-full max-w-sm">
       {
         showVenueDetails
-          ? <VenueDetails venue={Venue} closeVenueDetails={closeVenueDetails} />
+          ? <VenueDetails venue={Venue} eventVenueTags={Venue_Tags} closeVenueDetails={closeVenueDetails} />
           : <EventDetails event={event} openVenueDetails={openVenueDetails} />
       }
       <DrawerFooter>
