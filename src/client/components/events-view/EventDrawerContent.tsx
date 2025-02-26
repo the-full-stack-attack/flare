@@ -17,62 +17,10 @@ import VenueDetails from './VenueDetails';
 
 import ScheduleTextDialog from './ScheduleTextDialog';
 
+import { EventData } from '@/types/Events';
+
 type EventDrawerContentProps = {
-  event: {
-    id: number;
-    title: string;
-    start_time: Date;
-    end_time: Date;
-    address: string;
-    description: string;
-    venue_id: number;
-    created_by: number;
-    chatroom_id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    User_Event?: {
-      user_attending: boolean;
-    };
-    Users?: {
-      id: number;
-      username: string;
-      full_name: string;
-      User_Event: {
-        user_attending: boolean;
-      };
-    }[];
-    Category?: {
-      id: number;
-      name: string;
-    };
-    Interests: {
-      id: number;
-      name: string;
-    }[];
-    Venue: {
-      id: number;
-      name: string;
-      description: string | null;
-      street_address: string | null;
-      city_name: string | null;
-      state_name: string | null;
-      zip_code: number | null;
-      category: string | null;
-      phone: string | null;
-      popularTime: Date | null;
-      pricing: string | null;
-      serves_alcohol: boolean | null;
-      website: string | null;
-      wheelchair_accessible: boolean | null;
-      Venue_Tags: {
-        count: number;
-        tag: string;
-      }[];
-      Venue_Images: {
-        path: string;
-      }[];
-    };
-  };
+  event: EventData;
   postAttendEvent: () => void;
   patchAttendingEvent: (isAttending: boolean) => void;
   category: string;

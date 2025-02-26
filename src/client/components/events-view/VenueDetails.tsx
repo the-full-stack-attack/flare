@@ -29,6 +29,8 @@ type VenueDetailsProps = {
     serves_alcohol: boolean | null;
     website: string | null;
     wheelchair_accessible: boolean | null;
+    is_dog_friendly: boolean | null;
+    is_vegan_friendly: boolean | null;
     Venue_Tags: {
       count: number;
       tag: string;
