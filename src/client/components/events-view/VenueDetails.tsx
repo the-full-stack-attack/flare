@@ -64,7 +64,8 @@ function VenueDetails({ venue, eventVenueTags, closeVenueDetails }: VenueDetails
     serves_alcohol,
     website,
     wheelchair_accessible,
-    Venue_Tags,
+    is_dog_friendly,
+    is_vegan_friendly,
   } = venue;
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
@@ -82,7 +83,7 @@ function VenueDetails({ venue, eventVenueTags, closeVenueDetails }: VenueDetails
       .sort((a, b) => a.Event_Venue_Tag.display_order - b.Event_Venue_Tag.display_order)
       .map(({ tag }) => tag)
       .join(', ')
-  ), [Venue_Tags]);
+  ), [eventVenueTags]);
 
   const venueDetailsTTS: string = useMemo(() => (
     `
@@ -95,7 +96,7 @@ function VenueDetails({ venue, eventVenueTags, closeVenueDetails }: VenueDetails
       ${pricing ? `Pricing: ${pricing}` : ''}
       ${serves_alcohol !== null ? `Serves Alcohol? ${serves_alcohol ? 'Yes.' : 'No.'}` : ''}
       ${wheelchair_accessible !== null ? `Wheelchair Accessible? ${wheelchair_accessible ? 'Yes.' : 'No.'}` : ''}
-      ${Venue_Tags.length > 0 ? `Tags: ${tags}` : ''}
+      ${eventVenueTags.length > 0 ? `Tags: ${tags}` : ''}
     `
   ), [venue, tags]);
 
@@ -209,7 +210,23 @@ function VenueDetails({ venue, eventVenueTags, closeVenueDetails }: VenueDetails
             ) : null
           }
           {
-            Venue_Tags.length > 0 ? (
+            is_dog_friendly !== null ? (
+              <div>
+                <b>Dog Friendly:</b>
+                <p>{is_dog_friendly ? 'Yes' : 'No'}</p>
+              </div>
+            ) : null
+          }
+          {
+            is_vegan_friendly !== null ? (
+              <div>
+                <b>Vegan Friendly:</b>
+                <p>{is_vegan_friendly ? 'Yes' : 'No'}</p>
+              </div>
+            ) : null
+          }
+          {
+            eventVenueTags.length > 0 ? (
               <div className="col-span-2">
                 <b>Tags:</b>
                 <p>{tags}</p>
