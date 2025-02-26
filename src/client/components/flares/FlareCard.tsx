@@ -30,7 +30,7 @@ function FlareCard({ flare, index }: FlareCardType) {
   return (
       <Dialog>
         <DialogTrigger asChild>
-          <div className="p-6">
+          <div className="p-6 hover:cursor-pointer">
             <div>
               <img className="rounded-full" src={flare.icon} />
               <h3 className="font-bold my-2 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent text-center">

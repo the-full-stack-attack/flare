@@ -262,7 +262,7 @@ function Dashboard() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-6 rounded-xl bg-black/30 backdrop-blur-lg border border-white/10"
+                className="p-6 rounded-xl bg-black/30 backdrop-blur-lg border border-white/10 hover:cursor-pointer"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <FaCalendarCheck className="text-2xl text-blue-500" />
