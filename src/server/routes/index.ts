@@ -15,6 +15,7 @@ import notifsRouter from './notifications';
 import textRouter from './text';
 import settingsRouter from './accountSettings';
 import weatherRouter from './weather';
+import venueRouter from './venueRoute';
 
 export = {
   aiRouter,
@@ -34,5 +35,6 @@ export = {
   settingsRouter,
   textRouter,
   weatherRouter,
+  venueRouter,
 };
 

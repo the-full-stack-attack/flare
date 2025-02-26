@@ -12,9 +12,11 @@ import User_Notification from '../db/models/users_notifications';
 import Venue_Tag from "../db/models/venue_tags";
 import Venue_Image from '../db/models/venue_images';
 import Notification from '../db/models/notifications';
+import Event_Venue_Image from '../db/models/event_venue_images';
+import Event_Venue_Tag from '../db/models/event_venue_tags';
 
 // helper fns
-import { isVenueMatch, removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
+import { getVenueDogFriendly, getVenueVeganFriendly, isVenueMatch, removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
     from '../../../utils/venue';
 import { type VenueType, type GoogleData, } from '../../types/Venues';
 
@@ -96,11 +98,8 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             venue,
             interests,
             category,
-            venueDescription,
-            streetAddress,
-            stateName,
-            zipCode,
-            fsq_id
+            selectedTags,
+            selectedImages,
         } = req.body;
         let { cityName } = req.body;
         const userId = req.user.id;
@@ -114,9 +113,9 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
 
         // check if venue exists using fsq_id
         let eventVenue: any;
-        if (fsq_id) {
+        if (venue.fsq_id) {
             eventVenue = await Venue.findOne({
-                where: { fsq_id }
+                where: { fsq_id: venue.fsq_id }
             });
 
             if (!eventVenue) {
@@ -135,7 +134,7 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         oneHourBefore.setHours(oneHourBefore.getHours() - 1);
 
         const notification: any = await Notification.create({
-            message: `The upcoming event you're attending, ${title}, starts soon at ${new Date(startDate).toLocaleTimeString()}. Hope to see you there.`,
+            message: `The upcoming event you're attending, ${title}, starts soon at ${new Date(startDate)}. Hope to see you there.`,
             send_time: oneHourBefore,
         });
 
@@ -157,6 +156,9 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
 
         // connect venue to event
         await newEvent.setVenue(eventVenue);
+
+        
+
 
         // find and add the category to event
         const assignCategory: any = await Category.findOne({
@@ -180,6 +182,27 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             event_id: newEvent.dataValues.id
         });
         await chatroom.setEvent(newEvent);
+
+        // create event venue tag records
+        if (selectedTags?.length > 0) {
+            for (const tag of selectedTags) {
+                await Event_Venue_Tag.create({
+                    EventId: newEvent.id,
+                    VenueTagId: tag.id,
+                    display_order: tag.display_order
+                });
+            }
+        }
+
+        if (selectedImages && selectedImages.length > 0) {
+            await Event_Venue_Image.bulkCreate(selectedImages.map((img: any) => ({
+                EventId: newEvent.id,
+                VenueImageId: img.id,
+                display_order: img.display_order
+            })))
+        }
+
+
 
         res.sendStatus(200);
 
@@ -236,6 +259,9 @@ eventRouter.post('/venue/create', async (req: any, res: Response) => {
             }
         );
         const fsqData = await fsqResponse.json();
+
+       
+
 
         // find matching venue in fsq results
         const fsqVenue = fsqData.results?.find((venue: any) => isVenueMatch(inputVenueData, venue));
@@ -314,7 +340,7 @@ eventRouter.post('/venue/create', async (req: any, res: Response) => {
 
 
 // this route gets called when user selects a venue from fsq search results
-eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
+eventRouter.get('/venue/:fsqId', async (req: any, res: any) => {
     let fsqData;
     let googlePlaceId = null;
     let gData: GoogleData[] = [];
@@ -325,6 +351,35 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
         // check if we already have this venue in our db
         const hasFSQId = await Venue.findOne({where: {fsq_id: fsqId}});
 
+
+        const existingVenue: any = await Venue.findOne({
+            where: {fsq_id: fsqId},
+            include: [
+                { model: Venue_Tag, as: 'Venue_Tags' },
+                { model: Venue_Image, as: 'Venue_Images' }
+            ]
+        });
+
+        if (existingVenue) {
+            const nullFields: any = {};
+            if (existingVenue.name === null) nullFields.name = null;
+            if (existingVenue.description === null) nullFields.description = null;
+            if (existingVenue.category === null) nullFields.category = null;
+            if (existingVenue.street_address === null) nullFields.street_address = null;
+            if (existingVenue.zip_code === null) nullFields.zip_code = null;
+            if (existingVenue.city_name === null) nullFields.city_name = null;
+            if (existingVenue.state_name === null) nullFields.state_name = null;
+            if (existingVenue.phone === null) nullFields.phone = null;
+            if (existingVenue.website === null) nullFields.website = null;
+            if (existingVenue.pricing === null) nullFields.pricing = null;
+            if (existingVenue.wheelchair_accessible === null) nullFields.wheelchair_accessible = null;
+            if (existingVenue.serves_alcohol === null) nullFields.serves_alcohol = null;
+
+            return res.json({
+                venue: existingVenue,
+                nullFields,
+            });
+        }
         // if venue isn't in our db, get it from fsq api
         if (!hasFSQId) {
             const response = await fetch(
@@ -371,6 +426,26 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
                 console.warn('Not enough data for Google Text Search query');
             }
         }
+        // if (fsqData && gData) {
+        //     console.log('DATA BEGINS HERE');
+        //     console.log('---------FSQ DATA')
+        //     console.log(JSON.stringify(fsqData, null, 2));
+        //     console.log('---------GOOGLE DATA');
+        //     console.log(JSON.stringify(gData, null, 2));
+        // } else if (fsqData && !gData) {
+        //     console.log('ONLY FSQ DATA WAS FOUND');
+        // } else {
+        //     console.log('NO DATA WAS FOUND');
+        // }
+
+        // // @ts-ignore
+        // console.log('DOGS ALLOWED:', gData[0]?.additionalInfo?.Pets?.some(pet => pet?.['Dogs allowed']));
+        // // @ts-ignore
+        // console.log('DOG FRIENDLY: ', fsqData?.tastes.includes('dog-friendly'));
+        // // @ts-ignore
+        // console.log('DOG FRIENDLY 2: ', fsqData?.tastes.includes('dog runs'));
+        // // @ts-ignore
+        // console.log('DOG PARK: ', gData[0]?.additionalInfo?.Pets?.some(pet => pet?.['Dog park']));
 
         // combine all the venue data we got
         const buildVenue: VenueType = {
@@ -390,10 +465,12 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             popularTime: getPopularTime(gData) || null,
             wheelchair_accessible: getVenueAccessibility(gData) || null,
             serves_alcohol: getVenueAlcohol(fsqData, gData),
+            is_vegan_friendly: getVenueVeganFriendly(fsqData, gData),
+            is_dog_friendly: getVenueDogFriendly(fsqData, gData),
             fsq_id: fsqId || null,
             google_place_id: googlePlaceId || null,
         };
-
+        // console.log('BUILD VENUE: ', buildVenue);
         // save venue to our db
         const newVenue: any = await Venue.create(buildVenue);
 
@@ -412,6 +489,8 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             if (newVenue.pricing === null) nullFields.pricing = null;
             if (newVenue.wheelchair_accessible === null) nullFields.wheelchair_accessible = null;
             if (newVenue.serves_alcohol === null) nullFields.serves_alcohol = null;
+            if (newVenue.is_dog_friendly === null) nullFields.is_dog_friendly = null;
+            if (newVenue.is_vegan_friendly === null) nullFields.is_vegan_friendly = null;
         }
 
         // get and save venue tags
@@ -432,11 +511,19 @@ eventRouter.get('/venue/:fsqId', async (req: any, res: Response) => {
             })));
         }
 
+        
+        const completeVenue = await Venue.findOne({
+            where: { id: newVenue.id },
+            include: [
+                { model: Venue_Image, as: 'Venue_Images' }
+            ]
+        });
+
         // send back venue data and null fields
         const buildResponse = {
-            venue: newVenue,
+            venue: completeVenue,
             nullFields,
-        }
+        };
 
         res.json(buildResponse);
     } catch (error) {

@@ -5,6 +5,7 @@ const webpack = require('webpack'); // added for configuring process.env variabl
 const DIST_DIR = path.resolve(__dirname, 'dist');
 const SRC_DIR = path.resolve(__dirname, 'src');
 const CLIENT_DIR = path.resolve(__dirname, 'src', 'client');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   mode: 'development',
@@ -62,6 +63,9 @@ module.exports = {
     ]
   },
   plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'disabled',
+    }),
     new HtmlWebpackPlugin({
       template: path.resolve(CLIENT_DIR, 'index.html'),
       filename: 'index.html',
@@ -80,6 +84,9 @@ module.exports = {
     modules: [
       'node_modules',
       SRC_DIR,
-    ]
+    ],
+    fallback: {
+      "crypto": false
+    }
   }
 };

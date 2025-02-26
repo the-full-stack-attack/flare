@@ -6,6 +6,7 @@ dist
 .txt
 .DS_Store
 **/.DS_Store
+config.js
 
 # Test coverage output
 coverage/*

@@ -18,6 +18,11 @@ const Player = function (id: any, user: any, eventId: any): any {
     isSnapping: false,
     isWaving: false,
     isEnergyWaving: false,
+    isHearting: false,
+    equipBeer: false,
+    equipShades: false,
+    equip420: false,
+    isSad: false,
     maxSpd: 15,
     updatePosition() {
       // method for updating state of movement

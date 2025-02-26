@@ -26,6 +26,8 @@ type EventData = {
     stateName: string;
     interests: string[];
     category: string;
+    selectedImages: any[];
+    selectedTags: string[];
 };
 
 function CreateEvents() {
@@ -43,6 +45,8 @@ function CreateEvents() {
         zipCode: null,
         interests: [],
         category: '',
+        selectedImages: [],
+        selectedTags: [],
     });
 
     const { user } = useContext(UserContext);
@@ -101,7 +105,11 @@ function CreateEvents() {
                 peak_hour: venue.peak_hour,
                 wheelchair_accessible: venue.wheelchair_accessible,
                 serves_alcohol: venue.serves_alcohol,
+                is_dog_friendly: venue.is_dog_friendly,
+                is_vegan_friendly: venue.is_vegan_friendly,
                 google_place_id: venue.google_place_id,
+                selectedImages: [],
+                Venue: venue,
             }));
             setNullFields(nullFields);
             setStep(5);
@@ -150,10 +158,10 @@ function CreateEvents() {
                 cityName: formInfo.cityName,
                 stateName: formInfo.stateName.toUpperCase(),
                 fsq_id: formInfo.fsq_id,
+                selectedImages: formInfo.selectedImages,
+                selectedTags: formInfo.selectedTags
             };
-            // console.log('sending: ', formattedData.startDate);
-            // console.log('also ', formattedData.startTime);
-            // console.log('and ', formattedData.endTime);
+
             await axios.post('/api/event', formattedData);
             setStep(1);
             setFormInfo({
@@ -170,6 +178,8 @@ function CreateEvents() {
                 zipCode: null,
                 interests: [],
                 category: '',
+                selectedImages: [],
+                selectedTags: [],
             });
         } catch (error) {
             console.error('Error creating event:', error);
@@ -222,6 +232,7 @@ function CreateEvents() {
                                     formInfo={formInfo}
                                     nullFields={nullFields}
                                     handleFieldChange={handleFieldChange}
+                                    setFormInfo={setFormInfo}
                                 />
                             )}
                         </div>
