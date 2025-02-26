@@ -39,7 +39,7 @@ function Event({ event, getEvents }: EventProps) {
 
   const [venuePicIndex, setVenuePicIndex] = useState<number>(0);
 
-  const { title, start_time, end_time, Users, Venue } = event;
+  const { title, start_time, end_time, Users, Venue, Venue_Images } = event;
 
   const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-2 py-2 rounded-xl text-sm';
 
@@ -70,7 +70,9 @@ function Event({ event, getEvents }: EventProps) {
   }, [Users, user.id]);
 
   const venuePics: string[] = useMemo(() => (
-    Venue?.Venue_Images.map((image) => image.path)
+    Venue_Images
+      .sort((a, b) => a.Event_Venue_Image.display_order - b.Event_Venue_Image.display_order)
+      .map((image) => image.path)
   ), [Venue]);
 
   const postAttendEvent = () => {
