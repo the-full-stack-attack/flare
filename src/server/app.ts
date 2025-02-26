@@ -91,8 +91,10 @@ passport.use(
       done: Function
     ) => {
       try {
+        const user: any = await User.findOne({ where: { google_id: profile.id } })
         // Check if they're already a user
-        if (await User.findOne({ where: { google_id: profile.id } })) {
+        if (user) {
+          checkForFlares(user, 'Butterflare Effect');
           console.log('Exists');
           done(null, profile);
         } else {

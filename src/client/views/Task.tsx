@@ -76,7 +76,7 @@ function Task() {
               <div className="text-white pt-2 pb-3">
                 <Select onValueChange={setFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select a category" />
+                    <SelectValue placeholder="Select a Filter" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
