@@ -7,7 +7,7 @@ import china from '../../assets/sounds/chatroom/kit/china.mp3';
 import crash1 from '../../assets/sounds/chatroom/kit/crash1.mp3';
 import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
-import { Card } from "@/components/ui/card";
+import { Card, CardTitle, CardContent } from "@/components/ui/card";
 import vinyl from '../../assets/images/vinyl.png';
 import { set } from "date-fns";
 
@@ -27,6 +27,7 @@ interface KeyStroke {
   };
 
 const MacroRecorder = ({eventId, user, allRecordings}) => {
+  const [showRecs, setShowRecs] = useState<boolean>(false);
   const [recording, setRecording] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
   const [recordings, setRecordings] = useState<KeyStroke[][]>([]);
@@ -225,13 +226,29 @@ const submitMix = () => {
     console.log(allRecordings[e.target.name])
     setRecordings(allRecordings[e.target.name].recording);
   }
+
+  const toggleShowRecs = (e) => {
+    setShowRecs(!showRecs);
+  }
   return (
     <div>
-    <div>    {
+   {!showRecs ? <div className="flex justify-center p-3">
+    <RainbowButton onClick={toggleShowRecs}>Show Submitted Recordings!</RainbowButton>
+    </div> :
+    <Card className="max-h-[200px] w-full overflow-hidden border border-gray-300 shadow-lg bg-slate-900">
+        <CardTitle>Submitted Recordings</CardTitle>
+      <CardContent className="max-h-[200px] overflow-y-auto p-2">
+        <div className="grid grid-cols-3 gap-2">
+       {
      allRecordings && allRecordings.map((recording, index) => (
-        <Button onClick={switchRecording} name={index}>{recording.userName || 'anon'}</Button>
+        <Button className="bg-fuchsia-300 hover:bg-fuchsia-500" onClick={switchRecording} name={index}>{recording.userName || 'anon'}</Button>
       ))
     }</div>
+    </CardContent>
+    <RainbowButton onClick={toggleShowRecs}>Close</RainbowButton>
+  </Card>
+}
+
     <Card className="bg-gradient-to-r from-gray-950 via-gray-700 to-gray-900 border-orange-700 text-white">
     <p className="hidden lg:flex justify-center font-bold text-gray-400 text-7xl"><em>MACRO RECORDER 2000</em></p>
     <div className='flex justify-center items-center'>
