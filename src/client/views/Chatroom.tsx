@@ -28,11 +28,12 @@ import WALK from '../assets/chatroom/walk/index';
 import SNAP from '../assets/chatroom/snap/index';
 import WAVE from '../assets/chatroom/wave/index';
 import EMOJIS from '../assets/chatroom/emojis';
-import vinyl from '../assets/images/vinyl.png';
+import djgamePic from '../assets/images/djgamePic.png';
+import smallBartender from '../assets/images/smallBartender.png'
 import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
-import { BsSend } from 'react-icons/bs';
+import { FaShip } from 'react-icons/fa';
 
 import {
   Container,
@@ -46,7 +47,6 @@ import {
   AnimatedSprite,
 } from 'pixi.js';
 import axios from 'axios';
-import temporaryMap from '../assets/images/chatImages/temporaryAImap.png' 
 import nightClubTileSet from '../assets/chatroom/tileSet';
 import { ChartNoAxesColumnDecreasing } from 'lucide-react';
 import { createAvatar } from '@dicebear/core';
@@ -106,10 +106,7 @@ function Chatroom() {
       alias: 'speech',
       src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
     },
-    {
-      alias: 'temporaryMap',
-      src: temporaryMap,
-    },
+    { alias: 'joint', src: EMOJIS['7']}, // joint,
     {  alias: '1', src: TILES['1'], },
     {  alias: '2', src: TILES['2'], },
     {  alias: '3', src: TILES['3'], },
@@ -249,7 +246,6 @@ function Chatroom() {
     { alias: '137', src: EMOJIS['4']},
     { alias: 'sad', src: EMOJIS['5']},//sad
     { alias: 'shades', src: EMOJIS['6']}, ///shades
-    { alias: 'joint', src: EMOJIS['7']}, // joint
     { alias: 'beer', src: EMOJIS['8']}, // beer
 
   ])
@@ -609,9 +605,57 @@ const [isReady, setIsReady] = useState(false);
 
       <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
         {isPlayingGames && !isPlayingQuiplash && !isPlayingDJ && (
-          <div className=" col-span-2">
-            <Button onClick={toggleDJ}>MIX CHAT</Button>
-            <Button onClick={toggleQuiplash}>Flamiliar</Button>
+          <div className=" col-span-2 ">
+            <div className="grid grid-cols-2 ">
+            <div className="">
+            <div onClick={toggleDJ} className="flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 shadow-sm border border-fuchsia-200 hover:border-4 hover:border-cyan-400 rounded-lg my-6 ">
+    <h4 className="p-6 text-center mb-1 text-xl font-semibold text-slate-100">
+      Mixed Signals
+    </h4>
+  <div className="m-2.5 overflow-hidden rounded-md flex justify-center items-center ">
+    <img className="h-80 object-cover " src={djgamePic} alt="profile-picture" />
+  </div>
+  <div className="p-6 text-center">
+    <p
+      className="text-sm font-semibold text-slate-100 uppercase">
+      <em>Communicate With Music!</em>
+    </p>
+    <p className="text-base text-xs text-slate-200 mt-4 font-light ">
+        Have fun recording a beat, then publish it for others in the chat to hear! Listen, Layer and/or combine your beats with others!
+    </p>
+  </div>
+  <div className="flex justify-center p-6 pt-2 gap-7">
+    <button onClick={toggleDJ} className="min-w-32 rounded-md bg-black py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-cyan-500 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+      Play Mixed Signals!
+    </button>
+  </div>
+</div>
+            </div>
+            <div onClick={toggleQuiplash}>
+            <div className="flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 shadow-sm border border-fuchsia-200 hover:border-4 hover:border-cyan-400 rounded-lg my-6   ">
+    <h4 className="p-6 text-center mb-1 text-xl font-semibold text-slate-100">
+      Flamiliar
+    </h4>
+  <div className="m-2.5 overflow-hidden rounded-md flex justify-center items-center ">
+    <img className="h-80 object-cover border-fuchsia-500"  src={smallBartender} alt="profile-picture" />
+  </div>
+  <div className="p-6 text-center">
+    <p
+      className="text-sm font-semibold text-slate-100 uppercase">
+      <em>Get Flamiliar with each other!</em>
+    </p>
+    <p className="text-base text-xs text-slate-200 mt-4 font-light ">
+        Our AI Bartender gives you a sentence, and players must finish it! Then vote for who had the best response!
+    </p>
+  </div>
+  <div className="flex justify-center p-6 pt-2 gap-7">
+    <button onClick={toggleQuiplash} className="min-w-32 rounded-md bg-black py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-cyan-500 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+      Play Flamiliar!
+    </button>
+  </div>
+</div>
+            </div>
+            </div>
           </div>
         )}
         {isPlayingQuiplash && isPlayingGames &&
@@ -775,7 +819,9 @@ const [isReady, setIsReady] = useState(false);
                                 initialFrame={0}
                                 animationSpeed={0.1}
                                 loop={true}
-                                scale={{ x: scaleFactor, y: scaleFactor }}
+                                scale={(scaleFactor, scaleFactor)}
+                                width={64}
+                                height={64}
                               />
                             )}
                           {isReady &&
@@ -791,7 +837,9 @@ const [isReady, setIsReady] = useState(false);
                                 initialFrame={0}
                                 animationSpeed={0.27}
                                 loop={true}
-                                scale={{ x: scaleFactor, y: scaleFactor }}
+                                scale={(scaleFactor, scaleFactor)}
+                                width={64}
+                                height={64}
                               />
                             )}
                           {isReady &&
@@ -808,7 +856,9 @@ const [isReady, setIsReady] = useState(false);
                                 initialFrame={0}
                                 animationSpeed={0.2}
                                 loop={true}
-                                scale={{ x: scaleFactor, y: scaleFactor }}
+                                scale={(scaleFactor, scaleFactor)}
+                                width={64}
+                                height={64}
                               />
                             )}
                             {isReady &&
@@ -871,16 +921,7 @@ const [isReady, setIsReady] = useState(false);
                               height={20}
                             ></pixiSprite>
                             )}
-                          {/* <pixiContainer>
-                <pixiSprite
-                  textures={ Assets.get('77') }
-                  x={0}
-                  y={0}
-                  scale={scaleFactor, scaleFactor}
-                  width={25}
-                  height={25}
-                />
-              </pixiContainer> */}
+                        
                         </pixiContainer>
                       ))}
                     </Application>
@@ -892,7 +933,7 @@ const [isReady, setIsReady] = useState(false);
         )}
         
         
-        {!isPlayingQuiplash && (
+        {!isPlayingGames && (
           <Card className="w-50 block sm:hidden bg-transparent border-transparent">
             <div className="flex flex-col items-center">
               <Button
@@ -940,13 +981,13 @@ const [isReady, setIsReady] = useState(false);
 <div className="block mt-2 p-4 h-96">
   <Card className="bg-transparent border-transparent">
     <div onClick={typing}>
-      <Card className="bg-gray-900 border-orange-700 flex items-center justify-center">
+      <Card className="bg-gray-900 border-fuchsia-200 flex items-center justify-center">
         {/* Message Box Container with Responsive Height */}
         <div className="h-[15vh] md: h-[24] lg:h-[50vh] w-full max-w-7xl overflow-y-auto">
           <AnimatedList>
             {allMessages.map((msg) => (
               <MsgBox
-                className="w-80 md:w-360 lg:w-565"
+                className="w-80 md:w-360 lg:w-565 "
                 msg={msg.message}
                 user={msg.username}
                 eventId={eventId}
@@ -966,16 +1007,16 @@ const [isReady, setIsReady] = useState(false);
       <div className="flex justify-center">
         <div className="relative">
           <Textarea
-            className="justify-center items-center border-orange-500 bg-gray-900 text-yellow-500 rounded-md w-72"
+            className="justify-center items-center border-fuchsia-200 bg-gray-900 text-yellow-500 rounded-md w-72"
             type="text"
             placeholder="Be kind to each other..."
             value={message}
             maxLength="150"
             onChange={(e) => setMessage(e.target.value)}
           />
-          <BsSend
+          <FaShip
             onClick={sendMessage}
-            className="absolute w-5 h-5 bottom-2.5 right-2.5 text-white hover:text-orange-500"
+            className="absolute w-5 h-5 bottom-2.5 right-2.5 text-white hover:text-fuchsia-500"
           />
         </div>
       </div>
@@ -1003,7 +1044,7 @@ const [isReady, setIsReady] = useState(false);
        
         </div>
         { onKeyboard && !isPlayingGames &&
-        <div className="col-span-3" >
+        <div className="hidden lg:block col-span-3" >
         <DJam eventId={eventId} user={user} />
         </div>
         }
