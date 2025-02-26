@@ -158,7 +158,7 @@ function CreateEvents() {
         selectedImages: formInfo.selectedImages,
         selectedTags: formInfo.selectedTags,
       };
-      console.log('sending venue data this is venue: ', formattedData.venue);
+      // console.log('sending venue data this is venue: ', formattedData.venue);
 
       await axios.post('/api/event', formattedData);
       setStep(1);
