@@ -43,6 +43,15 @@ import { Card, CardContent, CardDescription, CardTitle, CardFooter } from '@/com
 import Tutorial_1 from '../../assets/images/Tutorial_1.png'
 import Tutorial_2 from '../../assets/images/Tutorial_2.png'
 import Tutorial_3 from '../../assets/images/Tutorial_3.png'
+import BackgroundMusic from './Backgroundmusic';
+import clocktick from '../../assets/sounds/chatroom/clocktick.mp3';
+import laugh from '../../assets/sounds/chatroom/laugh.mp3';
+import votelaugh from '../../assets/sounds/chatroom/votelaugh.mp3';
+import winnermusic from '../../assets/sounds/chatroom/winnermusic.mp3';
+import menuselect from '../../assets/sounds/chatroom/menuselect.mp3';
+import menuswitch from '../../assets/sounds/chatroom/menuswitch.mp3';
+
+
 
 let socket = io(SOCKET_URL);
 
@@ -185,21 +194,29 @@ function QuipLash({wantsToPlay}) {
         // console.log('next question has arrived!');
         // console.log(text);
         setQuiplashPrompt(text);
+        let audio = new Audio(menuswitch);
+        audio.play();
       }
     );
 
+
     socket.on('promptGiven', (bool) => {
       setPromptGiven(bool);
+   
     });
 
     socket.on('showAnswers', (answers) => {
       // console.log(answers, 'the answers were received by client');
+       const audio = new Audio(votelaugh);
+          audio.play();
       setAnswersReceived(true);
       setPlayerAnswers(answers);
     });
 
     socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
       // console.log(winner);
+      let audio = new Audio(winnermusic);
+      audio.play();
       if(winner[0] === ''){
         winner[0] = 'No Winner :c'
         winner[1] = ''
@@ -223,6 +240,8 @@ function QuipLash({wantsToPlay}) {
         setColor('#f7f720');
       }
       if(time < 5){
+        let audio = new Audio(clocktick);
+        audio.play();
         setColor('#cf060a');
       }
       setTimer((time).toString())
@@ -247,7 +266,10 @@ function QuipLash({wantsToPlay}) {
   };
   const sendMessage = () => {
     // console.log(message);
+    let audio = new Audio(menuswitch);
+        audio.play();
     socket.emit('quiplashMessage', { message, eventId, user });
+    
     setMessage('');
   };
 
@@ -255,16 +277,24 @@ function QuipLash({wantsToPlay}) {
     // console.log('test is passing for onclick', e);
     if(e === user.username){
       // console.log('you cannot vote for yourself!');
+      let audio = new Audio(laugh);
+      audio.play();
     } else {
+      let audio = new Audio(menuselect);
+          audio.play();
     socket.emit('vote', e);
     }
   };
 
   const enlargePrompt = () => {
+    let audio = new Audio(menuselect);
+    
     if(sizeFactor === 1){
     setSizeFactor(1.3);
+    audio.play();
     } else {
       setSizeFactor(1);
+      audio.play();
     }
   }
   return (
@@ -330,9 +360,9 @@ function QuipLash({wantsToPlay}) {
     <div className="p-4">
     <div className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
     <div className="p-2">
-    <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video bg-transparent">
     { !isSuccess && <div className='p-15'><VelocityScroll >LOADING GAME</VelocityScroll></div> }
     { isSuccess && 
+    <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video bg-transparent">
     <Application 
     resizeTo={appRef}
     width={Math.floor(640)}
@@ -409,8 +439,9 @@ function QuipLash({wantsToPlay}) {
                   />}
                   </pixiContainer>
         </Application>
-}
+        <BackgroundMusic/>
         </div>        
+          }
         </div>  
         </div>
         </div> }
