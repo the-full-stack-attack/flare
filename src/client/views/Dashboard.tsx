@@ -280,7 +280,11 @@ function Dashboard() {
                 </div>
                 {
                   closestEvent ? (
-                    <Event event={closestEvent} getEvents={() => {}} />
+                    <Event
+                      event={closestEvent}
+                      getEvents={() => {}}
+                      disableBail={true}
+                    />
                   ) : (
                     <p className="text-gray-200 text-lg">
                       No upcoming events scheduled
