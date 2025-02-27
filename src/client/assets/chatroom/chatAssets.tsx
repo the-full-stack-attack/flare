@@ -1,3 +1,5 @@
+import { f } from "react-router/dist/development/fog-of-war-Cm1iXIp7";
+
 // Define Player type interface for better type checking
 interface PlayerInterface {
   username: string;
@@ -22,6 +24,8 @@ interface PlayerInterface {
   equip420: boolean;
   isSad: boolean;
   maxSpd: number;
+  sentMessage: boolean;
+  currentMessage: string;
 }
 
 // Create Player class in TypeScript
@@ -67,6 +71,9 @@ class Player {
 
   maxSpd: number;
 
+  sentMessage: boolean;
+
+  currentMessage: string;
 
   constructor(id: string, user: { username: string, avatar_uri: string }, eventId: string) {
     this.username = user.username;
@@ -88,6 +95,8 @@ class Player {
     this.equip420 = false;
     this.isSad = false;
     this.maxSpd = 15;
+    this.sentMessage = false;
+    this.currentMessage = '';
   }
 
   updatePosition() {

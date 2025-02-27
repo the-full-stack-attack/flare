@@ -69,7 +69,7 @@ extend({
 
 
 
-function QuipLash({wantsToPlay}) {
+function Flamiliar({wantsToPlay}) {
   const [sizeFactor, setSizeFactor] = useState(1);
   const style = new TextStyle({
     align: 'left',
@@ -121,7 +121,7 @@ function QuipLash({wantsToPlay}) {
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState('');
   const uniqueId = useId;
-  const [quiplashPrompt, setQuiplashPrompt] = useState('');
+  const [flamiliarPrompt, setFlamiliarPrompt] = useState('');
   const [timer, setTimer] = useState('30');
   const [gameRatio, setGameRatio] = useState(window.innerWidth / window.innerHeight)
   const [showReady, setShowReady] = useState(true);
@@ -129,9 +129,9 @@ function QuipLash({wantsToPlay}) {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   const [scaleFactor, setScaleFactor] = useState((gameRatio > 1.5) ? 0.8 : 1)
-  // QUIPLASH
+  // Flamiliar
   const [color, setColor] = useState('#ffffff');
-  const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
+  const [isPlayingFlamiliar, setIsPlayingFlamiliar] = useState(false);
   const appRef = useRef(null);
   const style2 = new TextStyle({
     align: 'left',
@@ -176,8 +176,8 @@ function QuipLash({wantsToPlay}) {
 
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
-    // console.log(user, 'quiplash user');
-    socket.emit('joinQuiplash', { user, eventId });
+    // console.log(user, 'Flamiliar user');
+    socket.emit('joinFlamiliar', { user, eventId });
     socket.on(
       'receivePrompt',
       ({
@@ -193,7 +193,7 @@ function QuipLash({wantsToPlay}) {
       }) => {
         // console.log('next question has arrived!');
         // console.log(text);
-        setQuiplashPrompt(text);
+        setFlamiliarPrompt(text);
         let audio = new Audio(menuswitch);
         audio.play();
       }
@@ -252,15 +252,15 @@ function QuipLash({wantsToPlay}) {
     await setIsTyping(!isTyping);
   };
 
-  const quitQuiplash = () => {
-    socket.emit('quitQuiplash');
+  const quitFlamiliar = () => {
+    socket.emit('quitFlamiliar');
     setQuit(true);
     console.log('the player has quit');
   };
   const toggleQuit = () => {
     setQuit(false);
   }
-  const readyForQuiplash = () => {
+  const readyForFlamiliar = () => {
     socket.emit('generatePrompt');
     setShowReady(false);
   };
@@ -268,7 +268,7 @@ function QuipLash({wantsToPlay}) {
     // console.log(message);
     let audio = new Audio(menuswitch);
         audio.play();
-    socket.emit('quiplashMessage', { message, eventId, user });
+    socket.emit('FlamiliarMessage', { message, eventId, user });
     
     setMessage('');
   };
@@ -355,7 +355,7 @@ function QuipLash({wantsToPlay}) {
 </div>
           </div>
           </div> } 
-      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700" onClick={quitQuiplash}>QUIT</Button> </div>}
+      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700" onClick={quitFlamiliar}>QUIT</Button> </div>}
       { !quit &&
     <div className="p-4">
     <div className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
@@ -393,7 +393,7 @@ function QuipLash({wantsToPlay}) {
               >
                 <pixiGraphics draw={speechBubble}>
                   <pixiText
-                    text={quiplashPrompt}
+                    text={flamiliarPrompt}
                     anchor={0.5}
                     x={120}
                     y={100}
@@ -480,7 +480,7 @@ function QuipLash({wantsToPlay}) {
               }}
             >
             {!promptGiven && !quit && showReady && (<div >
-      <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={readyForQuiplash}>GET FLAMILIAR!</Button>
+      <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={readyForFlamiliar}>GET FLAMILIAR!</Button>
       </div>
     )}
     </div>
@@ -491,4 +491,4 @@ function QuipLash({wantsToPlay}) {
   );
 }
 
-export default QuipLash;
+export default Flamiliar;

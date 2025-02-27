@@ -1,26 +1,20 @@
-import React, { useEffect, useState, useCallback, useContext, useRef, ref, useId } from 'react';
+import React, { useEffect, useState, useCallback, useContext, useRef, ref, useId, lazy, Suspense } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { Application, extend, useAssets } from '@pixi/react';
 import dayjs from 'dayjs';
-import { Viewport } from 'pixi-viewport';
-import { BackgroundGlow } from '../../components/ui/background-glow';
-import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { AnimatedList } from '../../components/ui/animated-list';
 import { Button } from '../../components/ui/button';
 import { RainbowButton } from '../../components/ui/rainbowbutton';
 import { Textarea } from '../../components/ui/textarea';
 import { VelocityScroll } from '../../components/ui/scroll-based-velocity';
-import  { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
-import { InteractiveHoverButton } from '../../components/ui/interactive-hover-button';
+import  { Card } from '../../components/ui/card';
 import { UserContext } from '../contexts/UserContext';
 import { Countdown } from '../components/chatroom/countdown';
-import QuipLash from '../components/chatroom/QuipLash';
-import MsgBox from '../components/chatroom/MsgBox';
-import Keyboard from '../components/chatroom/Piano'
-import DJam from '../components/chatroom/DJam';
-import MacroRecorder from '../components/chatroom/MacroRecorder'
+import Flamiliar from '../components/chatroom/Flamiliar';
+const MsgBox  = lazy(() => import('../components/chatroom/MsgBox'));
+const DJam = lazy(() => import('../components/chatroom/DJam'));
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
 import IDLE from '../assets/chatroom/idle/index';
@@ -34,6 +28,7 @@ import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
 import { FaShip } from 'react-icons/fa';
+
 
 import {
   Container,
@@ -62,7 +57,6 @@ extend({
   TextStyle,
   AnimatedSprite,
   Texture, // not worth it w/ useAssets...?
-  Viewport,
 });
 
 let socket = io(SOCKET_URL);
@@ -252,16 +246,11 @@ function Chatroom() {
   const { assets, isSuccess }  = useAssets(arrayForUse);
   
   const [ lobby, setLobby ] = useState([user]);
-  // const {
-  //   assets: [texture],
-  //   isSuccess,
-  // } = useAssets<Texture>([temporaryMap]);
-  // Collision Detection testing *relies on tilemaps, NOT READY
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
+ 
   // LOGIC
-
   const appRef = useRef(null);
   const [gameRatio, setGameRatio] = useState(window.innerWidth / window.innerHeight)
   const [scaleFactor, setScaleFactor] = useState((gameRatio > 1.5) ? 0.8 : 1)
@@ -274,7 +263,7 @@ function Chatroom() {
   const [gameHeight, setGameHeight] = useState(window.innerHeight);
   const spriteRef = useRef(null);
   const spriteRef2 = useRef(null);
-  const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
+  const [isPlayingFlamiliar, setIsPlayingFlamiliar] = useState(false);
   const [isPlayingDJ, setIsPlayingDJ] = useState(false);
   const [isPlayingGames, setIsPlayingGames] = useState(false);
   const [avatarImage, setAvatarImage] = useState<string | null>(user.avatar_uri);
@@ -308,7 +297,7 @@ const [isReady, setIsReady] = useState(false);
     
     }, []);
     
-  // QUIPLASH
+  // Flamiliar
   const toggleGames = () => {
     isPlayingGames ? setIsPlayingGames(false) : setIsPlayingGames(true);
   }
@@ -316,8 +305,8 @@ const [isReady, setIsReady] = useState(false);
   const toggleDJ = () => {
     isPlayingDJ ? setIsPlayingDJ(false) : setIsPlayingDJ(true);
   }
-  const toggleQuiplash = () => {
-    isPlayingQuiplash ? setIsPlayingQuiplash(false) : setIsPlayingQuiplash(true);
+  const toggleFlamiliar = () => {
+    isPlayingFlamiliar ? setIsPlayingFlamiliar(false) : setIsPlayingFlamiliar(true);
   }
   const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
@@ -604,7 +593,7 @@ const [isReady, setIsReady] = useState(false);
       )}
 
       <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
-        {isPlayingGames && !isPlayingQuiplash && !isPlayingDJ && (
+        {isPlayingGames && !isPlayingFlamiliar && !isPlayingDJ && (
           <div className=" col-span-2 ">
             <div className="grid grid-cols-2 ">
             <div className="">
@@ -631,7 +620,7 @@ const [isReady, setIsReady] = useState(false);
   </div>
 </div>
             </div>
-            <div onClick={toggleQuiplash}>
+            <div onClick={toggleFlamiliar}>
             <div className="flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 shadow-sm border border-fuchsia-200 hover:border-4 hover:border-cyan-400 rounded-lg my-6   ">
     <h4 className="p-6 text-center mb-1 text-xl font-semibold text-slate-100">
       Flamiliar
@@ -649,7 +638,7 @@ const [isReady, setIsReady] = useState(false);
     </p>
   </div>
   <div className="flex justify-center p-6 pt-2 gap-7">
-    <button onClick={toggleQuiplash} className="min-w-32 rounded-md bg-black py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-cyan-500 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+    <button onClick={toggleFlamiliar} className="min-w-32 rounded-md bg-black py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-cyan-500 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
       Play Flamiliar!
     </button>
   </div>
@@ -658,21 +647,23 @@ const [isReady, setIsReady] = useState(false);
             </div>
           </div>
         )}
-        {isPlayingQuiplash && isPlayingGames &&
+        {isPlayingFlamiliar && isPlayingGames &&
         <div className=" col-span-2">
           <div>
-          <Button onClick={toggleQuiplash}>Flamiliar</Button>
-        <QuipLash startTime={start_time} />
+          <Button onClick={toggleFlamiliar}>Flamiliar</Button>
+        <Flamiliar startTime={start_time} />
         </div>
         </div>
         }
         
         { isPlayingDJ && isPlayingGames &&
           <div className="col-span-2" >
+            <Suspense fallback={<div>Loading...</div>}>
             <div>
             <Button onClick={toggleDJ}>QUIT GAME</Button>
           <DJam eventId={eventId} user={user} />
           </div>
+          </Suspense>
           </div>
           }
         {!isPlayingGames && (
@@ -986,6 +977,7 @@ const [isReady, setIsReady] = useState(false);
         <div className="h-[15vh] md: h-[24] lg:h-[50vh] w-full max-w-7xl overflow-y-auto">
           <AnimatedList>
             {allMessages.map((msg) => (
+            <Suspense fallback={<div>loading msg</div>}>
               <MsgBox
                 className="w-80 md:w-360 lg:w-565 "
                 msg={msg.message}
@@ -993,6 +985,7 @@ const [isReady, setIsReady] = useState(false);
                 eventId={eventId}
                 avatar={msg.avatar}
               />
+            </Suspense>
             ))}
           </AnimatedList>
         </div>
