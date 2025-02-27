@@ -20,6 +20,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Player, PlayerInterface } from '../client/assets/chatroom/chatAssets';
 import { FlamiliarPlayer } from '../client/assets/chatroom/FlamiliarPlayer';
 import SOCKET_URL from '../../config';
+import { type SocketList, PlayerList, QuiplashList, QuiplashGames } from '../types/Players';
+import { Socket } from 'socket.io-client';
+
 dotenv.config();
 
 const googleGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
@@ -62,11 +65,11 @@ const modifiers = [
 ];
 const initializeSocket = (
   server: any,
-  PLAYER_LIST: any,
-  SOCKET_LIST: any,
-  QUIPLASH_LIST: any,
-  QUIPLASH_GAMES: any,
-  DEVELOPMENT: any
+  PLAYER_LIST: PlayerList,
+  SOCKET_LIST: SocketList,
+  QUIPLASH_LIST: QuiplashList,
+  QUIPLASH_GAMES: QuiplashGames,
+  DEVELOPMENT: any,
 ) => {
   let io;
   if (DEVELOPMENT === 'true') {
@@ -110,11 +113,11 @@ const initializeSocket = (
       try {
         delete QUIPLASH_LIST[socket.id];
         QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
-        if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
-          delete QUIPLASH_GAMES[socket.data.eventId];
-        }
       } catch (error) {
-        console.log('error caught');
+        console.log('cannot find player to delete');
+      }
+      if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
+        delete QUIPLASH_GAMES[socket.data.eventId];
       }
     });
 
@@ -137,7 +140,7 @@ const initializeSocket = (
             let initialIntervalId: NodeJS.Timeout;
             let initialTimer = 30;
 
-            let startInitialInterval = () => {
+            const startInitialInterval = () => {
               initialIntervalId = setInterval(() => {
                 initialTimer -= 1;
                 socket.nsp
@@ -169,7 +172,7 @@ const initializeSocket = (
               let intervalId: NodeJS.Timeout;
               let timer = 16;
 
-              let startInterval = () => {
+              const startInterval = () => {
                 intervalId = setInterval(() => {
                   timer -= 1;
                   socket.nsp
@@ -186,7 +189,7 @@ const initializeSocket = (
               }, 17000);
 
               setTimeout(() => {
-                let totalVotes: { [key: string]: any } = {};
+                const totalVotes: { [key: string]: number } = {};
                 let winner = ['', 0];
                 for (let i = 0; i < QUIPLASH_GAMES[eventId].votes.length; i++) {
                   // if the current name that was voted for is not in the object
@@ -218,7 +221,7 @@ const initializeSocket = (
                   delete QUIPLASH_GAMES[eventId].answers[prop];
                 }
                 QUIPLASH_GAMES[eventId].promptGiven = false;
-                let restartTime = 30;
+                const restartTime = 30;
                 socket.nsp
                   .to(`Quiplash room: ${socket.data.eventId}`)
                   .emit(`showWinner`, { winner, falsyBool, truthyBool });
