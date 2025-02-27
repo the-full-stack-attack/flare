@@ -37,6 +37,10 @@ event2Router.get('/', (req: any, res: Response) => {
     whereFilter['$Category.name$'] = { [Op.or]: req.query.catFilter };
   }
 
+  if (req.query.interestsFilter) {
+    whereFilter['$Interests.name$'] = req.query.interestsFilter;
+  }
+
   // Query DB for all event objects & send them back to the user
   Event.findAll({
     where: whereFilter,
@@ -68,12 +72,6 @@ event2Router.get('/', (req: any, res: Response) => {
     ],
   })
     .then((events: any) => {
-      // If an interests filter is being used, only grab events that contain an interest from the filter
-      if (req.query.interestsFilter) {
-        const intFilter: string[] = req.query.interestsFilter;
-        // Future Task: Optimize this approach. This will not scale well with a large amounts of events
-        events = events.filter((event: any) => event.Interests.some((interest: any) => intFilter.includes(interest.name)));
-      }
       res.status(200);
       res.send(events);
     })
