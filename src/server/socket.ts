@@ -85,11 +85,12 @@ const initializeSocket = (
       },
     });
   }
-
+  let playerRoom;
   io.on('connection', (socket) => {
     // Creates A Player for chatroom
     socket.on('joinChat', ({ user, eventId }) => {
       socket.data.name = socket.id;
+      playerRoom = eventId;
       socket.data.eventId = eventId;
       socket.join(eventId);
       const player = new Player(socket.id, user, eventId);
