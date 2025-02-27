@@ -58,35 +58,16 @@ extend({
 
 let socket = io(SOCKET_URL);
 
-const style = new TextStyle({
-  align: 'center',
-  fontFamily: 'sans-serif',
-  fontSize: 15,
-  fontWeight: 'bold',
-  fill: '#000000',
-  stroke: '#eef1f5',
-  letterSpacing: 5,
-  wordWrap: true,
-  wordWrapWidth: 350,
-});
-
 function Chatroom() {
   const { user } = useContext(UserContext);
   const location = useLocation();
   const start_time = location.state;
 
-  const [gameLoaded, setGameLoaded] = useState(false);
   // LOAD ASSETS
-  // const { assets, successfulLoad } = 
-  const [ arrayForUse, setArrayForUse ] = useState([
-    {
-      alias: 'bunny',
-      src: 'https://pixijs.com/assets/bunny.png',
-    },
-    {
-      alias: 'speech',
-      src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
-    },
+  const [gameLoaded, setGameLoaded] = useState(false);
+  const [ texturesToLoad, settexturesToLoad ] = useState([
+    { alias: 'bunny', src: 'https://pixijs.com/assets/bunny.png', },
+    { alias: 'speech', src: 'https://pixijs.io/pixi-react/img/speech-bubble.png', },
     { alias: 'joint', src: EMOJIS['7']}, // joint,
     {  alias: '1', src: TILES['1'], },
     {  alias: '2', src: TILES['2'], },
@@ -230,8 +211,8 @@ function Chatroom() {
     { alias: 'beer', src: EMOJIS['8']}, // beer
 
   ])
-  const { assets, isSuccess }  = useAssets(arrayForUse);
-  
+  const { assets, isSuccess }  = useAssets(texturesToLoad);
+
   const [ lobby, setLobby ] = useState([user]);
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
@@ -261,20 +242,44 @@ function Chatroom() {
   const [heartTextures, setHeartTextures] = useState([]);
   const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
   const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
-const [isReady, setIsReady] = useState(false);
-    useEffect(() => {
+  const [isReady, setIsReady] = useState(false);
+  const styleMessage = new TextStyle({
+    align: 'center',
+    fontFamily: 'sans-serif',
+    fontSize: 10,
+    fontWeight: 'bold',
+    fill: '#000000',
+    stroke: '#eef1f5',
+    letterSpacing: 2,
+    wordWrap: true,
+    wordWrapWidth: 80,
+    
+  })
+  
+  const styleUserName = new TextStyle({
+    align: 'center',
+    fontFamily: 'sans-serif',
+    fontSize: 15 ,
+    fontWeight: 'bold',
+    fill: '#000000',
+    stroke: '#eef1f5',
+    letterSpacing: 5,
+    wordWrap: true,
+    wordWrapWidth: 250,
+  })
+  useEffect(() => {
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
       for(let player in PLAYER_LIST ){
  
         if(!lobby.includes(PLAYER_LIST[player].username)){
           setLobby((prevItems) => [ ...prevItems, PLAYER_LIST[player].username ])
           // setTimeout( () => {
-           setArrayForUse((prevItems) => [...prevItems, { alias: PLAYER_LIST[player].username, src: PLAYER_LIST[player].avatar, }])
+           settexturesToLoad((prevItems) => [...prevItems, { alias: PLAYER_LIST[player].username, src: PLAYER_LIST[player].avatar, }])
           // }, 5000)
         }
       }
       // setTimeout( () => {
-      //      setArrayForUse((prevItems) => [...prevItems, { alias: PlayerList.user.username, src: PlayerList.user.avatar_uri, }])
+      //      settexturesToLoad((prevItems) => [...prevItems, { alias: PlayerList.user.username, src: PlayerList.user.avatar_uri, }])
       //     }, 5000)
       // console.log(PlayerList.user.username)
         })
@@ -285,7 +290,7 @@ const [isReady, setIsReady] = useState(false);
   const toggleGames = () => {
     isPlayingGames ? setIsPlayingGames(false) : setIsPlayingGames(true);
   }
-
+  
   const toggleDJ = () => {
     isPlayingDJ ? setIsPlayingDJ(false) : setIsPlayingDJ(true);
   }
@@ -491,11 +496,11 @@ const [isReady, setIsReady] = useState(false);
     await setIsTyping(false);
   }
   const sendMessage = () => {
-    // console.log(message);
     socket.emit('message', { message, eventId });
     displayMessage({message: message, username: user?.username, avatar: user?.avatar_uri });
     setMessage('');
   };
+
   // WINDOW SIZING
   const handleResize = () => {
     setGameRatio(window.innerWidth / window.innerHeight)
@@ -503,36 +508,13 @@ const [isReady, setIsReady] = useState(false);
     setGameHeight(window.innerHeight);
     setScaleFactor((gameRatio > 1.3) ? 0.75 : 1)
   };
+
   useEffect(() => {
     window.addEventListener('resize', handleResize);
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const styleMessage = new TextStyle({
-    align: 'center',
-    fontFamily: 'sans-serif',
-    fontSize: 10,
-    fontWeight: 'bold',
-    fill: '#000000',
-    stroke: '#eef1f5',
-    letterSpacing: 2,
-    wordWrap: true,
-    wordWrapWidth: 80,
-    
-  })
-
-  const styleUserName = new TextStyle({
-    align: 'center',
-    fontFamily: 'sans-serif',
-    fontSize: 15 ,
-    fontWeight: 'bold',
-    fill: '#000000',
-    stroke: '#eef1f5',
-    letterSpacing: 5,
-    wordWrap: true,
-    wordWrapWidth: 250,
-  })
 
   const handlePointerDown = (e) => {
     // console.log(e.target.name)
