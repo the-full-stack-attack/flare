@@ -27,63 +27,10 @@ import { UserContext } from '../../contexts/UserContext';
 
 import EventDrawerContent from './EventDrawerContent';
 
+import { EventData } from '@/types/Events';
+
 type EventProps = {
-  event: {
-    id: number;
-    title: string;
-    start_time: Date;
-    end_time: Date;
-    address: string;
-    description: string;
-    venue_id: number;
-    created_by: number;
-    chatroom_id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    hour_before_notif: number;
-    User_Event?: {
-      user_attending: boolean;
-    };
-    Users?: {
-      id: number;
-      username: string;
-      full_name: string;
-      User_Event: {
-        user_attending: boolean;
-      };
-    }[];
-    Category?: {
-      id: number;
-      name: string;
-    };
-    Interests: {
-      id: number;
-      name: string;
-    }[];
-    Venue: {
-      id: number;
-      name: string;
-      description: string | null;
-      street_address: string | null;
-      city_name: string | null;
-      state_name: string | null;
-      zip_code: number | null;
-      category: string | null;
-      phone: string | null;
-      popularTime: Date | null;
-      pricing: string | null;
-      serves_alcohol: boolean | null;
-      website: string | null;
-      wheelchair_accessible: boolean | null;
-      Venue_Tags: {
-        count: number;
-        tag: string;
-      }[];
-      Venue_Images: {
-        path: string;
-      }[];
-    };
-  };
+  event: EventData;
   getEvents: () => void;
 };
 
@@ -92,7 +39,7 @@ function Event({ event, getEvents }: EventProps) {
 
   const [venuePicIndex, setVenuePicIndex] = useState<number>(0);
 
-  const { title, start_time, end_time, Users, Venue } = event;
+  const { title, start_time, end_time, Users, Venue, Venue_Images } = event;
 
   const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-2 py-2 rounded-xl text-sm';
 
@@ -123,7 +70,9 @@ function Event({ event, getEvents }: EventProps) {
   }, [Users, user.id]);
 
   const venuePics: string[] = useMemo(() => (
-    Venue?.Venue_Images.map((image) => image.path)
+    Venue_Images
+      .sort((a, b) => a.Event_Venue_Image.display_order - b.Event_Venue_Image.display_order)
+      .map((image) => image.path)
   ), [Venue]);
 
   const postAttendEvent = () => {

@@ -67,11 +67,10 @@ function ChooseTask() {
   return (
     <div className="pt-3">
       <Toaster
-        position="top-center"
+        position="bottom-center"
         theme="dark"
         toastOptions={{
-          style: { backgroundColor: 'red' },
-          className: 'bg-red-500',
+          style: { background: 'red' },
         }}
       />
       <DialogBox

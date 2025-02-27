@@ -29,18 +29,20 @@ type VenueDetailsProps = {
     serves_alcohol: boolean | null;
     website: string | null;
     wheelchair_accessible: boolean | null;
-    Venue_Tags: {
-      count: number;
-      tag: string;
-    }[];
-    Venue_Images: {
-      path: string;
-    }[];
+    is_dog_friendly: boolean | null;
+    is_vegan_friendly: boolean | null;
   };
+  eventVenueTags: {
+    count: number;
+    tag: string;
+    Event_Venue_Tag: {
+      display_order: number;
+    };
+  }[];
   closeVenueDetails: () => void;
 }
 
-function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
+function VenueDetails({ venue, eventVenueTags, closeVenueDetails }: VenueDetailsProps) {
   const {
     name,
     description,
@@ -55,7 +57,8 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
     serves_alcohol,
     website,
     wheelchair_accessible,
-    Venue_Tags,
+    is_dog_friendly,
+    is_vegan_friendly,
   } = venue;
 
   const normalDrawerButton = 'bg-gradient-to-r from-black via-gray-900 to-pink-900 hover:from-black hover:via-gray-700 hover:to-pink-700 text-white';
@@ -69,11 +72,11 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
   `;
 
   const tags: string = useMemo(() => (
-    Venue_Tags
-      .sort((a, b) => b.count - a.count)
+    eventVenueTags
+      .sort((a, b) => a.Event_Venue_Tag.display_order - b.Event_Venue_Tag.display_order)
       .map(({ tag }) => tag)
       .join(', ')
-  ), [Venue_Tags]);
+  ), [eventVenueTags]);
 
   const venueDetailsTTS: string = useMemo(() => (
     `
@@ -86,7 +89,7 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
       ${pricing ? `Pricing: ${pricing}` : ''}
       ${serves_alcohol !== null ? `Serves Alcohol? ${serves_alcohol ? 'Yes.' : 'No.'}` : ''}
       ${wheelchair_accessible !== null ? `Wheelchair Accessible? ${wheelchair_accessible ? 'Yes.' : 'No.'}` : ''}
-      ${Venue_Tags.length > 0 ? `Tags: ${tags}` : ''}
+      ${eventVenueTags.length > 0 ? `Tags: ${tags}` : ''}
     `
   ), [venue, tags]);
 
@@ -200,7 +203,23 @@ function VenueDetails({ venue, closeVenueDetails }: VenueDetailsProps) {
             ) : null
           }
           {
-            Venue_Tags.length > 0 ? (
+            is_dog_friendly !== null ? (
+              <div>
+                <b>Dog Friendly:</b>
+                <p>{is_dog_friendly ? 'Yes' : 'No'}</p>
+              </div>
+            ) : null
+          }
+          {
+            is_vegan_friendly !== null ? (
+              <div>
+                <b>Vegan Friendly:</b>
+                <p>{is_vegan_friendly ? 'Yes' : 'No'}</p>
+              </div>
+            ) : null
+          }
+          {
+            eventVenueTags.length > 0 ? (
               <div className="col-span-2">
                 <b>Tags:</b>
                 <p>{tags}</p>

@@ -10,6 +10,7 @@ const Flare = database.define('Flare', {
   description: { type: Sequelize.STRING },
   value: { type: Sequelize.INTEGER, defaultValue: 0 },
   notification_message: { type: Sequelize.TEXT },
+  card_message: { type: Sequelize.TEXT },
 });
 
 export default Flare;

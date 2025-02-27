@@ -8,13 +8,15 @@ const userTaskRouter = Router();
 
 // GET requests to /api/userTask/complete/:id
 userTaskRouter.get('/complete/:id', async (req: any, res: Response) => {
+  const { filter } = req.query
   // Grab the user's id from the req.params
   const { id } = req.params;
-  User_Task.findAll({
-    where: { UserId: id, completed: true },
-    order: [['createdAt', 'DESC']],
-    include: [Task],
-  })
+  if (!filter) {
+    User_Task.findAll({
+      where: { UserId: id, completed: true },
+      order: [['createdAt', 'DESC']],
+      include: [Task],
+    })
     .then((userTasks) => {
       if (!userTasks) {
         res.sendStatus(404);
@@ -26,6 +28,22 @@ userTaskRouter.get('/complete/:id', async (req: any, res: Response) => {
       console.error('Error finding the userTasks: ', err);
       res.sendStatus(500);
     });
+  } else {
+    try {
+      const userTasks = await User_Task.findAll({
+        where: { UserId: id, completed: true },
+        order: [['createdAt', 'DESC']],
+        include: [Task],
+      })
+      const filterTasks = userTasks.filter((task: any) => {
+        return task.Task.type === filter;
+      })
+      res.status(200).send(filterTasks);
+    } catch (err) {
+      console.error('Error finding completed tasks with filter: ', err);
+      res.sendStatus(500);
+    }
+  }
 });
 
 // GET requests to /api/userTask/optOut/:id

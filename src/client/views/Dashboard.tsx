@@ -25,6 +25,14 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from '../../components/ui/dialog';
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import { UserContext } from '../contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
@@ -52,6 +60,8 @@ type FlareType = {
   achievement: string;
   milestone: string;
   description: string;
+  notification_message: string;
+  card_message: string;
   value: number;
 };
 
@@ -63,8 +73,12 @@ function Dashboard() {
   const [completeDisabled, setCompleteDisabled] = useState(false);
   const [userFlares, setUserFlares] = useState<FlareType[]>([]);
   const [unearnedFlares, setUnearnedFlares] = useState<FlareType[]>([]);
-  const [closestEvent, setClosestEvent] = useState<{ title: string } | null>(null);
+  const [closestEvent, setClosestEvent] = useState<{ title: string } | null>(
+    null
+  );
   const [latestFlare, setLatestFlare] = useState<{ name: string } | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [currFlare, setCurrFlare] = useState<null | FlareType>(null);
 
   const stats = [
     {
@@ -159,6 +173,15 @@ function Dashboard() {
     fetchData();
   }, [user.id]);
 
+  const handleFlareClick = (flare: FlareType) => {
+    setCurrFlare(flare);
+    setIsOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsOpen(false);
+    setCurrFlare(null);
+  }
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
@@ -215,9 +238,12 @@ function Dashboard() {
                   Rise Like a Phoenix
                 </h2>
                 <p className="text-gray-300 leading-relaxed">
-                  Like the mythical Phoenix rising from its ashes, we believe in continuous personal growth and renewal. 
-                  Flare helps you transform your social interactions and personal development through mindful challenges, 
-                  meaningful connections, and guided self-improvement. Let your social confidence soar to new heights.
+                  Like the mythical Phoenix rising from its ashes, we believe in
+                  continuous personal growth and renewal. Flare helps you
+                  transform your social interactions and personal development
+                  through mindful challenges, meaningful connections, and guided
+                  self-improvement. Let your social confidence soar to new
+                  heights.
                 </p>
               </div>
             </motion.div>
@@ -279,16 +305,33 @@ function Dashboard() {
                         </h3>
                       </div>
                     </div>
+                    {currFlare && (
+                      <Dialog open={isOpen} onOpenChange={handleDialogClose}>
+                        <DialogContent>
+                          <DialogTitle>{currFlare.name}</DialogTitle>
+                          <div className="flex items-start space-x-4">
+                            <img
+                              className="rounded-full w-24 h-24 object-cover"
+                              src={currFlare.icon}
+                            />
+                            <DialogDescription className="flex-grow">
+                              {currFlare.card_message}
+                            </DialogDescription>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    )}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {userFlares.reverse().map((flare: FlareType, index) => {
                         const colorClass = 'from-yellow-500 to-orange-500'; // fallback color
                         return (
                           <motion.div
                             key={index}
+                            onClick={() => { handleFlareClick(flare) }}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300"
+                            className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300 hover:cursor-pointer"
                           >
                             <div className="flex items-center gap-4">
                               <img
