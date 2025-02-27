@@ -23,6 +23,7 @@ interface TaskDisplayProps {
   task: Task;
   completeDisabled: Boolean;
   setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowFireworks: React.Dispatch<React.SetStateAction<boolean>>;
   setCompleteDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 type Task = {
@@ -38,6 +39,7 @@ function TaskDisplay({
   task,
   completeDisabled,
   setShowConfetti,
+  setShowFireworks,
   setCompleteDisabled,
 }: TaskDisplayProps) {
   const [openOptOut, setOpenOptOut] = useState(false);
@@ -57,8 +59,14 @@ function TaskDisplay({
         getUser();
       })
       .then(() => {
-        setShowConfetti(true);
-        setCompleteDisabled(true);
+        const randomNum = Math.random();
+        if (randomNum >= 0.5) {
+          setShowConfetti(true);
+          setCompleteDisabled(true);
+        } else {
+          setShowFireworks(true);
+          setCompleteDisabled(true);
+        }
         setTimeout(() => {
           setShowConfetti(false);
           setCompleteDisabled(false);
