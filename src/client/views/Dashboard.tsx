@@ -9,26 +9,11 @@ import {
   FaUsers,
   FaChartLine,
   FaStar,
-  FaRocket,
   FaTasks,
   FaMedal,
-  FaCheckCircle,
-  FaCloud,
-  FaSun,
-  FaMoon,
 } from 'react-icons/fa';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import {
   Dialog,
-  DialogTrigger,
-  DialogClose,
   DialogContent,
   DialogTitle,
   DialogDescription,
@@ -36,7 +21,6 @@ import {
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import { UserContext } from '../contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
-import cn from '../../../lib/utils';
 import PhoenixLogo from '../assets/logo/phoenix.png';
 import { Weather } from '../components/dashboard/Weather';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
