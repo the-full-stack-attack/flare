@@ -60,17 +60,21 @@ function TaskDisplay({
       })
       .then(() => {
         const randomNum = Math.random();
-        if (randomNum >= 0.5) {
+        if (randomNum >= 0.98) {
           setShowConfetti(true);
           setCompleteDisabled(true);
+          setTimeout(() => {
+            setShowFireworks(false);
+            setCompleteDisabled(false);
+          }, 10000);
         } else {
           setShowFireworks(true);
           setCompleteDisabled(true);
+          setTimeout(() => {
+            setShowConfetti(false);
+            setCompleteDisabled(false);
+          }, 30000);
         }
-        setTimeout(() => {
-          setShowConfetti(false);
-          setCompleteDisabled(false);
-        }, 30000);
       })
       .catch((err) => {
         console.error('Error completing task/user PATCH: ', err);

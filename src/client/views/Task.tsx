@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import Fireworks from '../components/Fireworks';
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import ChooseTask from '../components/tasks/ChooseTask';
 import CompletedTaskList from '../components/tasks/CompletedTaskList';
@@ -25,6 +26,7 @@ function Task() {
   const [task, setTask] = useState<object | null>({});
   const [width, height] = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showFireworks, setShowFireworks] = useState(false);
   const [completeDisabled, setCompleteDisabled] = useState(false);
   const [filter, setFilter] = React.useState<string | null>(null);
   // Use effect will call getTask if there is a change in user state
@@ -53,6 +55,9 @@ function Task() {
           recycle={false}
         />
       )}
+      {showFireworks && (
+        <Fireworks />
+      )}
       <div className="flex flex-col justify-center items-center">
         <div className="inline-flex justify-center text-white w-full py-3">
           Task Counts:
@@ -66,6 +71,7 @@ function Task() {
               task={task}
               completeDisabled={completeDisabled}
               setShowConfetti={setShowConfetti}
+              setShowFireworks={setShowFireworks}
               setCompleteDisabled={setCompleteDisabled}
             />
           ) : (
