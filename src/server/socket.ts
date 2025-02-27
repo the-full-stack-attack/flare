@@ -14,12 +14,12 @@
 /* eslint-enable no-restricted-syntax */
 /* eslint-enable react-hooks/rules-of-hooks */
 
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { Player, QuipLashPlayer } from '../client/assets/chatroom/chatAssets';
-import { useAnimationFrame } from 'framer-motion';
-
+import { Player } from '../client/assets/chatroom/chatAssets';
+import { FlamiliarPlayer } from '../client/assets/chatroom/FlamiliarPlayer';
+import SOCKET_URL from '../../config';
 dotenv.config();
 
 const googleGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
@@ -60,7 +60,6 @@ const modifiers = [
   'working in an office',
   'popular culture',
 ];
-import SOCKET_URL from '../../config';
 const initializeSocket = (
   server: any,
   PLAYER_LIST: any,
@@ -90,7 +89,7 @@ const initializeSocket = (
       socket.data.name = socket.id;
       socket.data.eventId = eventId;
       socket.join(eventId);
-      const player = Player(socket.id, user, eventId);
+      const player = new Player(socket.id, user, eventId);
       const stringName = socket.data.name;
       SOCKET_LIST[stringName] = socket;
       PLAYER_LIST[socket.id] = player;
@@ -123,7 +122,7 @@ const initializeSocket = (
     socket.on('joinQuiplash', ({ user, eventId }) => {
       socket.data.eventId = eventId;
       socket.join(`Quiplash room: ${eventId}`);
-      const quiplashPlayer = QuipLashPlayer(socket.id, user, eventId);
+      const quiplashPlayer = new FlamiliarPlayer(socket.id, user, eventId);
       QUIPLASH_LIST[socket.id] = quiplashPlayer;
 
       // Creates a game if one doesn't already exist
