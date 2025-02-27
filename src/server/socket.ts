@@ -4,10 +4,12 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Player, QuipLashPlayer } from '../client/assets/chatroom/chatAssets';
 import { useAnimationFrame } from 'framer-motion';
 
-dotenv.config()
+dotenv.config();
 
 const googleGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const bartenderAI = googleGenAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+const bartenderAI = googleGenAI.getGenerativeModel({
+  model: 'gemini-1.5-flash',
+});
 const modifiers = [
   'Meditation',
   'Philosophy',
@@ -49,11 +51,11 @@ const initializeSocket = (
   SOCKET_LIST: any,
   QUIPLASH_LIST: any,
   QUIPLASH_GAMES: any,
-  DEVELOPMENT: any,
+  DEVELOPMENT: any
 ) => {
-
   let io;
-  if(DEVELOPMENT === 'true'){ // environment variable based on development is passed in here
+  if (DEVELOPMENT === 'true') {
+    // environment variable based on development is passed in here
     io = new Server(server);
   } else {
     // https://socket.io/docs/v4/handling-cors/ <-- DOCS
@@ -61,11 +63,10 @@ const initializeSocket = (
       cors: {
         origin: SOCKET_URL, // or with an array of origins  // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],
         // allowedHeaders: ["my-custom-header"], // IF WE USE COOKIES
-         credentials: true // IF WE USE COOKIES
-      }
+        credentials: true, // IF WE USE COOKIES
+      },
     });
   }
-
 
   io.on('connection', (socket) => {
     // Creates A Player for chatroom
@@ -77,9 +78,7 @@ const initializeSocket = (
       const stringName = socket.data.name;
       SOCKET_LIST[stringName] = socket;
       PLAYER_LIST[socket.id] = player;
-      socket.nsp
-          .to(eventId)
-          .emit('newPlayerList', { PLAYER_LIST });
+      socket.nsp.to(eventId).emit('newPlayerList', { PLAYER_LIST });
     });
 
     // Removes player everywhere on disconnect
@@ -92,17 +91,16 @@ const initializeSocket = (
 
     // QUITTING
     socket.on('quitQuiplash', () => {
-      
       socket.leave(`Quiplash room: ${socket.data.eventId}`);
-      try{ 
+      try {
         delete QUIPLASH_LIST[socket.id];
-      QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
-      if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
-        delete QUIPLASH_GAMES[socket.data.eventId];
-      };
-    } catch(error){
-      console.log('error caught')
-    }
+        QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
+        if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
+          delete QUIPLASH_GAMES[socket.data.eventId];
+        }
+      } catch (error) {
+        console.log('error caught');
+      }
     });
 
     // JOINING
@@ -114,7 +112,6 @@ const initializeSocket = (
 
       // Creates a game if one doesn't already exist
       if (QUIPLASH_GAMES[eventId] === undefined) {
-
         QUIPLASH_GAMES[eventId] = {
           players: {}, // key = username // value = player
           votes: [], // array of usernames that was voted for
@@ -143,7 +140,7 @@ const initializeSocket = (
 
             // After 30 seconds, Show answers & begin next timer
             setTimeout(() => {
-              if(QUIPLASH_GAMES[eventId] === undefined ){
+              if (QUIPLASH_GAMES[eventId] === undefined) {
                 return;
               }
               QUIPLASH_GAMES[eventId].promptGiven = false;
@@ -200,7 +197,9 @@ const initializeSocket = (
                 const falsyBool = false;
                 const truthyBool = true;
                 QUIPLASH_GAMES[eventId].votes.length = 0;
-                for (const prop of Object.getOwnPropertyNames(QUIPLASH_GAMES[eventId].answers)){
+                for (const prop of Object.getOwnPropertyNames(
+                  QUIPLASH_GAMES[eventId].answers
+                )) {
                   delete QUIPLASH_GAMES[eventId].answers[prop];
                 }
                 QUIPLASH_GAMES[eventId].promptGiven = false;
@@ -211,11 +210,8 @@ const initializeSocket = (
                 socket.nsp
                   .to(`Quiplash room: ${socket.data.eventId}`)
                   .emit(`countDown`, restartTime);
-
               }, 17000);
-
             }, 33000);
-            
           },
         }; // END OF QUIPLASH GAME OBJECT
       } // END OF IF STATEMENT
@@ -303,35 +299,42 @@ const initializeSocket = (
       }
       if (inputId === 'Snap') {
         PLAYER_LIST[socket.id].isSnapping = state;
-        }
-        if (inputId === 'Wave') {
-          PLAYER_LIST[socket.id].isWaving = state;
-          }
-          if (inputId === 'EnergyWave') {
-            PLAYER_LIST[socket.id].isEnergyWaving = state;
-            }
-            if (inputId === 'Heart') {
-              PLAYER_LIST[socket.id].isHearting = state;
-              }
-              if (inputId === 'Shades') {
-                PLAYER_LIST[socket.id].equipShades = !PLAYER_LIST[socket.id].equipShades;
-                }
-                if (inputId === '420') {
-                  PLAYER_LIST[socket.id].equip420 = !PLAYER_LIST[socket.id].equip420;
-                  }
-                  if (inputId === 'Beer') {
-                    PLAYER_LIST[socket.id].equipBeer = !PLAYER_LIST[socket.id].equipBeer;
-                    }
-                    if (inputId === 'Sad') {
-                      PLAYER_LIST[socket.id].isSad = state;
-                      }
+      }
+      if (inputId === 'Wave') {
+        PLAYER_LIST[socket.id].isWaving = state;
+      }
+      if (inputId === 'EnergyWave') {
+        PLAYER_LIST[socket.id].isEnergyWaving = state;
+      }
+      if (inputId === 'Heart') {
+        PLAYER_LIST[socket.id].isHearting = state;
+      }
+      if (inputId === 'Shades') {
+        PLAYER_LIST[socket.id].equipShades =
+          !PLAYER_LIST[socket.id].equipShades;
+      }
+      if (inputId === '420') {
+        PLAYER_LIST[socket.id].equip420 = !PLAYER_LIST[socket.id].equip420;
+      }
+      if (inputId === 'Beer') {
+        PLAYER_LIST[socket.id].equipBeer = !PLAYER_LIST[socket.id].equipBeer;
+      }
+      if (inputId === 'Sad') {
+        PLAYER_LIST[socket.id].isSad = state;
+      }
     });
 
     socket.on('message', ({ message, eventId }) => {
       PLAYER_LIST[socket.id].sentMessage = true;
       PLAYER_LIST[socket.id].currentMessage = message;
-      
-      socket.to(eventId).emit('message', { message: message, username: PLAYER_LIST[socket.id].username, avatar: PLAYER_LIST[socket.id].avatar } );
+
+      socket
+        .to(eventId)
+        .emit('message', {
+          message: message,
+          username: PLAYER_LIST[socket.id].username,
+          avatar: PLAYER_LIST[socket.id].avatar,
+        });
       // Remove message after a few seconds
       setTimeout(() => {
         PLAYER_LIST[socket.id].sentMessage = false;
