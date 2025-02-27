@@ -1,12 +1,11 @@
 import '@/styles/main.css'; // Main styles
 import '@/styles/themes/dark-cosmic.css'; // Theme styles
 import '@/styles/themes/cyber-neon.css'; // Theme styles
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'; // Added Outlet import
 import {
   AiConversations,
-  Chatroom,
   CreateEvents,
   Events,
   Signup,
@@ -16,6 +15,7 @@ import {
   Notifications,
   AccountSettings,
 } from './views/index';
+const Chatroom = lazy(() => import('./views/Chatroom'));
 import { NavBar } from './components/NavBar';
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 
@@ -108,34 +108,52 @@ export default function App() {
       <UserContext.Provider value={userState}>
         <BrowserRouter>
           <Routes>
-          {/* Public routes with HomeLayout */}
-          <Route element={<HomeLayout />}>
-            <Route path="/" element={<Home />} />
-          </Route>
-
-          {/* Other routes with NavBar Layout */}
-          <Route element={<Layout />}>
-            <Route path="Signup" element={<Signup />} />
-            <Route path="logout" element={<Logout />} />
-            
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="AiConversations" element={<AiConversations />} />
-              <Route path="/Chatroom/*" element={<Chatroom />} />
-              <Route path="CreateEvents" element={<CreateEvents />} />
-              <Route path="Events" element={<Events />} />
-              <Route path="Task" element={<Task />} />
-              <Route path="Notifications" element={<Notifications />} />
-              <Route path="Dashboard" element={<Dashboard />} />
-              <Route path='Settings' element={<AccountSettings />} />
+            {/* Public routes with HomeLayout */}
+            <Route element={<HomeLayout />}>
+              <Route path="/" element={<Home />} />
             </Route>
 
-            {/* Catch-all route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </UserContext.Provider>
-  </AuthProvider>
-);
+            {/* Other routes with NavBar Layout */}
+            <Route element={<Layout />}>
+              <Route path="Signup" element={<Signup />} />
+              <Route path="logout" element={<Logout />} />
+
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="AiConversations" element={<AiConversations />} />
+                <Route
+                  path="/Chatroom/*"
+                  element={
+                    <Suspense
+                      fallback={
+                        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
+                          <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
+                          <div className="flex items-center justify-center w-screen pt-40">
+                            <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+                              Loading...
+                            </h1>
+                          </div>
+                        </div>
+                      }
+                    >
+                      <Chatroom />
+                    </Suspense>
+                  }
+                />
+                <Route path="CreateEvents" element={<CreateEvents />} />
+                <Route path="Events" element={<Events />} />
+                <Route path="Task" element={<Task />} />
+                <Route path="Notifications" element={<Notifications />} />
+                <Route path="Dashboard" element={<Dashboard />} />
+                <Route path="Settings" element={<AccountSettings />} />
+              </Route>
+
+              {/* Catch-all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </UserContext.Provider>
+    </AuthProvider>
+  );
 }

@@ -12,7 +12,7 @@ import { VelocityScroll } from '../../components/ui/scroll-based-velocity';
 import  { Card } from '../../components/ui/card';
 import { UserContext } from '../contexts/UserContext';
 import { Countdown } from '../components/chatroom/countdown';
-import Flamiliar from '../components/chatroom/Flamiliar';
+const Flamiliar = lazy(() => import('../components/chatroom/Flamiliar'));
 const MsgBox  = lazy(() => import('../components/chatroom/MsgBox'));
 const DJam = lazy(() => import('../components/chatroom/DJam'));
 import SOCKET_URL from '../../../config';
@@ -43,9 +43,6 @@ import {
 } from 'pixi.js';
 import axios from 'axios';
 import nightClubTileSet from '../assets/chatroom/tileSet';
-import { ChartNoAxesColumnDecreasing } from 'lucide-react';
-import { createAvatar } from '@dicebear/core';
-import { adventurer } from '@dicebear/collection';
 
 extend({
   Container,
@@ -60,17 +57,7 @@ extend({
 });
 
 let socket = io(SOCKET_URL);
-// if (process.env.REACT_APP_DEVELOPMENT_SOCKETS === 'true') {
-//   socket = io('http://localhost:4000');
-// } else {
-//   socket = io('https://slayer.events'); // NO COOKIES
-  // socket = io("DEPLOYED SITE GOES HERE", { // WITH COOKIES
-  //   withCredentials: true,
-  //   extraHeaders: {
-  //     "my-custom-header": "abcd" // IF WE NEED HEADERS
-  //   }
-  // });
-// };
+
 const style = new TextStyle({
   align: 'center',
   fontFamily: 'sans-serif',
@@ -259,14 +246,11 @@ function Chatroom() {
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [allMessages, setAllMessages] = useState([]);
-  const [gameWidth, setGameWidth] = useState(window.innerWidth);
-  const [gameHeight, setGameHeight] = useState(window.innerHeight);
   const spriteRef = useRef(null);
   const spriteRef2 = useRef(null);
   const [isPlayingFlamiliar, setIsPlayingFlamiliar] = useState(false);
   const [isPlayingDJ, setIsPlayingDJ] = useState(false);
   const [isPlayingGames, setIsPlayingGames] = useState(false);
-  const [avatarImage, setAvatarImage] = useState<string | null>(user.avatar_uri);
   const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
@@ -448,7 +432,7 @@ const [isReady, setIsReady] = useState(false);
     }).catch((error) => {
       console.error('ERROR GETTING PIC', error)
     })
-  }, [avatarImage])
+  }, [user.avatar_uri])
 
   const typing = async () => {
     await setIsTyping(true);
@@ -651,7 +635,9 @@ const [isReady, setIsReady] = useState(false);
         <div className=" col-span-2">
           <div>
           <Button onClick={toggleFlamiliar}>Flamiliar</Button>
+          <Suspense fallback={<div></div>}>
         <Flamiliar startTime={start_time} />
+        </Suspense>
         </div>
         </div>
         }
@@ -977,7 +963,11 @@ const [isReady, setIsReady] = useState(false);
         <div className="h-[15vh] md: h-[24] lg:h-[50vh] w-full max-w-7xl overflow-y-auto">
           <AnimatedList>
             {allMessages.map((msg) => (
-            <Suspense fallback={<div>loading msg</div>}>
+            <Suspense fallback={ <img
+              id="loading-image"
+              src={loading}
+              alt="Loading..."
+            ></img>}>
               <MsgBox
                 className="w-80 md:w-360 lg:w-565 "
                 msg={msg.message}
