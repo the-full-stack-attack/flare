@@ -1,3 +1,19 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/no-unused-state */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable consistent-return */
+/* eslint-disable no-restricted-syntax */
+/* eslint-enable no-console */
+/* eslint-enable @typescript-eslint/no-explicit-any */
+/* eslint-enable react/jsx-no-bind */
+/* eslint-enable react/no-unused-state */
+/* eslint-enable react-hooks/exhaustive-deps */
+/* eslint-enable consistent-return */
+/* eslint-enable no-restricted-syntax */
+/* eslint-enable react-hooks/rules-of-hooks */
+
 import { Server, Socket } from 'socket.io';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
