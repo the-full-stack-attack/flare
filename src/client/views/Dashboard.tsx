@@ -163,8 +163,13 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/events/nearest');
-        setClosestEvent(response.data);
+        const response = await axios.get('/api/event/attend/true', {
+          params: {
+            now: new Date().toISOString(),
+            limit: 1,
+          }
+        });
+        setClosestEvent(response.data[0]);
       } catch (error) {
         console.error('Error fetching closest event:', error);
       }
@@ -182,6 +187,7 @@ function Dashboard() {
     setIsOpen(false);
     setCurrFlare(null);
   }
+
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
