@@ -32,9 +32,10 @@ import { EventData } from '@/types/Events';
 type EventProps = {
   event: EventData;
   getEvents: () => void;
+  disableBail?: boolean;
 };
 
-function Event({ event, getEvents }: EventProps) {
+function Event({ event, getEvents, disableBail }: EventProps) {
   const { user } = useContext(UserContext);
 
   const [venuePicIndex, setVenuePicIndex] = useState<number>(0);
@@ -144,6 +145,7 @@ function Event({ event, getEvents }: EventProps) {
                     <EventDrawerContent
                       event={event}
                       category={category}
+                      disableBail={disableBail}
                       postAttendEvent={postAttendEvent}
                       patchAttendingEvent={patchAttendingEvent}
                     />

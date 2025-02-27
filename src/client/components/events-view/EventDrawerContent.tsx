@@ -24,11 +24,13 @@ type EventDrawerContentProps = {
   postAttendEvent: () => void;
   patchAttendingEvent: (isAttending: boolean) => void;
   category: string;
+  disableBail?: boolean;
 };
 
 function EventDrawerContent({
   event,
   category,
+  disableBail,
   postAttendEvent,
   patchAttendingEvent,
 }: EventDrawerContentProps) {
@@ -85,7 +87,7 @@ function EventDrawerContent({
             </Dialog>
           </div>
         ) : null}
-        {category === 'attending' ? (
+        {category === 'attending' && (!disableBail) ? (
           <Button className={warnDrawerButton} onClick={() => {
             patchAttendingEvent(false);
           }}>Bail {<TbCircleDashedLetterB />}</Button>
