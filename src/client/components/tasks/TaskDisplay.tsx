@@ -5,13 +5,9 @@ import { UserContext } from '../../contexts/UserContext';
 import DialogBox from './DialogBox';
 import {
   Dialog,
-  DialogPortal,
-  DialogOverlay,
   DialogTrigger,
   DialogClose,
   DialogContent,
-  DialogHeader,
-  DialogFooter,
   DialogTitle,
   DialogDescription,
 } from '../../../components/ui/dialog';
@@ -60,20 +56,20 @@ function TaskDisplay({
       })
       .then(() => {
         const randomNum = Math.random();
-        if (randomNum >= 0.98) {
+        if (randomNum >= 0.50) {
           setShowConfetti(true);
-          setCompleteDisabled(true);
-          setTimeout(() => {
-            setShowFireworks(false);
-            setCompleteDisabled(false);
-          }, 10000);
-        } else {
-          setShowFireworks(true);
           setCompleteDisabled(true);
           setTimeout(() => {
             setShowConfetti(false);
             setCompleteDisabled(false);
           }, 30000);
+        } else {
+          setShowFireworks(true);
+          setCompleteDisabled(true);
+          setTimeout(() => {
+            setShowFireworks(false);
+            setCompleteDisabled(false);
+          }, 20000);
         }
       })
       .catch((err) => {
