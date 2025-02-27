@@ -17,7 +17,7 @@
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { Player } from '../client/assets/chatroom/chatAssets';
+import { Player, PlayerInterface } from '../client/assets/chatroom/chatAssets';
 import { FlamiliarPlayer } from '../client/assets/chatroom/FlamiliarPlayer';
 import SOCKET_URL from '../../config';
 dotenv.config();

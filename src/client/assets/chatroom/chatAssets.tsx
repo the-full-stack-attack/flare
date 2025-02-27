@@ -1,5 +1,5 @@
 // Define Player type interface for better type checking
-interface Player {
+interface PlayerInterface {
   username: string;
   avatar: string;
   name: string;
@@ -27,27 +27,46 @@ interface Player {
 // Create Player class in TypeScript
 class Player {
   username: string;
+
   avatar: string;
+
   name: string;
+
   eventId: string;
+
   data: {
     x: number;
     y: number;
   };
+
   pressingRight: boolean;
+
   pressingLeft: boolean;
+
   pressingUp: boolean;
+
   pressingDown: boolean;
+
   isWalking: boolean;
+
   isSnapping: boolean;
+
   isWaving: boolean;
+
   isEnergyWaving: boolean;
+
   isHearting: boolean;
+
   equipBeer: boolean;
+
   equipShades: boolean;
+
   equip420: boolean;
+
   isSad: boolean;
+
   maxSpd: number;
+
 
   constructor(id: string, user: { username: string, avatar_uri: string }, eventId: string) {
     this.username = user.username;
@@ -95,4 +114,4 @@ class Player {
   }
 }
 
-export { Player };
+export { Player, PlayerInterface };
