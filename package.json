@@ -111,6 +111,7 @@
     "@tabler/icons-react": "^3.29.0",
     "@tsparticles/engine": "^3.8.0",
     "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.8.1",
     "apify-client": "^2.11.1",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
