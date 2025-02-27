@@ -4,6 +4,7 @@ import { UserContext } from '../contexts/UserContext';
 import Confetti from 'react-confetti';
 import { useWindowSize } from '@react-hook/window-size';
 import { BackgroundGlow } from '@/components/ui/background-glow';
+import { Toaster } from 'sonner';
 import {
   Select,
   SelectContent,
@@ -133,6 +134,13 @@ function Task() {
           </div>
         </div>
       </div>
+      <Toaster
+        position="bottom-center"
+        theme="dark"
+        toastOptions={{
+          style: { background: 'red' },
+        }}
+      />
     </div>
   );
 }
