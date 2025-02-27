@@ -40,6 +40,9 @@ event2Router.get('/', (req: any, res: Response) => {
   // Query DB for all event objects & send them back to the user
   Event.findAll({
     where: whereFilter,
+    order: [
+      ['start_time', 'ASC']
+    ],
     include: [
       {
         model: User,
@@ -131,6 +134,9 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     where: {
       id: req.user.id,
     },
+    order: [
+      [Event, 'start_time', 'ASC']
+    ],
     include: {
       model: Event,
       where: { end_time: { [Op.gt]: now } },

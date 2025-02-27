@@ -136,8 +136,6 @@ function Events() {
     getEvents();
   }, [locationFilter, catFilter, interestsFilter]);
 
-  console.log(events);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
