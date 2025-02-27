@@ -1,69 +1,117 @@
-// Creates a player object with their own state... (replace with keyword 'this'?)
-const Player = function (id: any, user: any, eventId: any): any {
-  const self = {
-    username: user.username,
-    avatar: user.avatar_uri,
-    name: id,
-    eventId,
-    data: {
-      // positions
-      x: 25,
-      y: 25,
-    },
-    pressingRight: false, // states of movement
-    pressingLeft: false,
-    pressingUp: false,
-    pressingDown: false,
-    isWalking: false,
-    isSnapping: false,
-    isWaving: false,
-    isEnergyWaving: false,
-    isHearting: false,
-    equipBeer: false,
-    equipShades: false,
-    equip420: false,
-    isSad: false,
-    maxSpd: 15,
-    updatePosition() {
-      // method for updating state of movement
-      if (self.pressingRight) {
-        if( !(( self.data.x + self.maxSpd) > 620)) {
-        self.data.x += self.maxSpd;
-        };
-      }
-      if (self.pressingLeft) {
-        if( !(( self.data.x - self.maxSpd) < 0)) {
-        self.data.x -= self.maxSpd;
-        };
-      }
-      if (self.pressingUp) {
-        if( !((self.data.y - self.maxSpd) < 0)) {
-          self.data.y -= self.maxSpd
-        };
-      }
-      if (self.pressingDown) {
-        if( !((self.data.y + self.maxSpd) > 340)) {
-        self.data.y += self.maxSpd;
-        };
-      }
-    },
+// Define Player type interface for better type checking
+interface PlayerInterface {
+  username: string;
+  avatar: string;
+  name: string;
+  eventId: string;
+  data: {
+    x: number;
+    y: number;
   };
-  return self;
-};
-
-const QuipLashPlayer = function ( id: any, user: any, eventId: any ): any {
-  const quip = {
-    username: user.username,
-    name: id,
-    playingQuiplash: false,
-    quipResponse: '',
-    sentResponse: false,
-    eventId,
-    updatePlayingQuiplash() {
-      quip.playingQuiplash = !quip.playingQuiplash;
-    },
-  };
-  return quip;
+  pressingRight: boolean;
+  pressingLeft: boolean;
+  pressingUp: boolean;
+  pressingDown: boolean;
+  isWalking: boolean;
+  isSnapping: boolean;
+  isWaving: boolean;
+  isEnergyWaving: boolean;
+  isHearting: boolean;
+  equipBeer: boolean;
+  equipShades: boolean;
+  equip420: boolean;
+  isSad: boolean;
+  maxSpd: number;
 }
 
-export { Player, QuipLashPlayer };
+// Create Player class in TypeScript
+class Player {
+  username: string;
+
+  avatar: string;
+
+  name: string;
+
+  eventId: string;
+
+  data: {
+    x: number;
+    y: number;
+  };
+
+  pressingRight: boolean;
+
+  pressingLeft: boolean;
+
+  pressingUp: boolean;
+
+  pressingDown: boolean;
+
+  isWalking: boolean;
+
+  isSnapping: boolean;
+
+  isWaving: boolean;
+
+  isEnergyWaving: boolean;
+
+  isHearting: boolean;
+
+  equipBeer: boolean;
+
+  equipShades: boolean;
+
+  equip420: boolean;
+
+  isSad: boolean;
+
+  maxSpd: number;
+
+
+  constructor(id: string, user: { username: string, avatar_uri: string }, eventId: string) {
+    this.username = user.username;
+    this.avatar = user.avatar_uri;
+    this.name = id;
+    this.eventId = eventId;
+    this.data = { x: 25, y: 25 };
+    this.pressingRight = false;
+    this.pressingLeft = false;
+    this.pressingUp = false;
+    this.pressingDown = false;
+    this.isWalking = false;
+    this.isSnapping = false;
+    this.isWaving = false;
+    this.isEnergyWaving = false;
+    this.isHearting = false;
+    this.equipBeer = false;
+    this.equipShades = false;
+    this.equip420 = false;
+    this.isSad = false;
+    this.maxSpd = 15;
+  }
+
+  updatePosition() {
+    if (this.pressingRight) {
+      if (!(this.data.x + this.maxSpd > 620)) {
+        this.data.x += this.maxSpd;
+      }
+    }
+    if (this.pressingLeft) {
+      if (!(this.data.x - this.maxSpd < 0)) {
+        this.data.x -= this.maxSpd;
+      }
+    }
+    if (this.pressingUp) {
+      if (!(this.data.y - this.maxSpd < 0)) {
+        this.data.y -= this.maxSpd;
+      }
+    }
+    if (this.pressingDown) {
+      if (!(this.data.y + this.maxSpd > 340)) {
+        this.data.y += this.maxSpd;
+      }
+    }
+  }
+}
+
+export { Player, PlayerInterface };
