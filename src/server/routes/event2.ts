@@ -130,13 +130,15 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     isAttending = false;
   }
 
-  User.findOne({
+  User_Event.findAll({
     where: {
-      id: req.user.id,
+      UserId: req.user.id,
+      user_attending: isAttending,
     },
     order: [
       [Event, 'start_time', 'ASC']
     ],
+    attributes: [],
     include: {
       model: Event,
       where: { end_time: { [Op.gt]: now } },
@@ -166,12 +168,9 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     },
   })
     .then((data) => {
+      const events: any = data.map((userEvent: any) => userEvent.Event);
       res.status(200);
-      res.send(
-        data?.dataValues.Events.filter(
-          (event: any) => event.User_Event.user_attending === isAttending
-        )
-      );
+      res.send(events);
     })
     .catch((err: unknown) => {
       console.error('Failed to GET /api/event/attend', err);
