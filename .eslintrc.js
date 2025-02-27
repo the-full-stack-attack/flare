@@ -36,16 +36,16 @@ module.exports = {
   ],
   rules: {
     // Add any custom rules here
-    'react/prop-types/': 'warn', // turn warn prop types since we're using Typescript
-    '@typescript-eslint/no-var-requires': 'warn',
-    '@typescript-eslint/naming-convention': 'warn',
-    '@typescript-eslint/comma-dangle': 'warn',
-    'no-console': 'warn',
-    'object-curly-newline': 'warn',
-    '@typescript-eslint/operator-linebreak': 'warn',
-    'no-param-reassign': 'warn',
+    'react/prop-types/': 'off', // turn off prop types since we're using Typescript
+    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/naming-convention': 'off',
+    '@typescript-eslint/comma-dangle': 'off',
+    'no-console': 'off',
+    'object-curly-newline': 'off',
+    '@typescript-eslint/operator-linebreak': 'off',
+    'no-param-reassign': 'off',
     '@typescript-eslint/lines-between-class-members':
-      'warn',
+      '[{ exceptAfterSingleLine: true }]',
   },
   // Ignore files in the test directory
   ignorePatterns: [
