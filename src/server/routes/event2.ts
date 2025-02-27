@@ -136,7 +136,6 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     order: [
       [Event, 'start_time', 'ASC']
     ],
-    attributes: [],
     include: {
       model: Event,
       where: { end_time: { [Op.gt]: now } },
@@ -166,7 +165,11 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     },
   })
     .then((data) => {
-      const events: any = data.map((userEvent: any) => userEvent.Event);
+      let events: any = data.map((userEvent: any) => userEvent.Event);
+      // Sequelize is having issues with limit interacting with order and where clauses for associated models
+      if (req.query.limit) {
+        events = events.slice(0, +(req.query.limit));
+      }
       res.status(200);
       res.send(events);
     })
