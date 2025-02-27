@@ -430,7 +430,9 @@ function QuipLash({wantsToPlay}) {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
+            
              <BsSend onClick={sendMessage} className="absolute w-5 h-5 bottom-1.5 right-2.5 text-black hover:text-orange-500" />
+             
               </div>
              
            
