@@ -179,6 +179,29 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
     // supports text input and textarea types
     const EditableField = ({ label, value, fieldName, type = 'text' }) => {
         const isEditing = editingFields[fieldName];
+        
+        // Use uncontrolled input with defaultValue instead
+        const handleSave = () => {
+            const inputElement = document.getElementById(`edit-${fieldName}`);
+            if (inputElement) {
+                const newValue = inputElement.value;
+                
+                // Update the form state
+                handleFieldChange(fieldName, newValue);
+                
+                // Also update the tempValues state to keep it in sync
+                setTempValues(prev => ({
+                    ...prev,
+                    [fieldName]: newValue
+                }));
+            }
+            
+            // Close the edit mode
+            setEditingFields(prev => ({
+                ...prev,
+                [fieldName]: false
+            }));
+        };
 
         // initialize temp value when entering edit mode
         React.useEffect(() => {
@@ -198,15 +221,15 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
                         <div className="flex flex-col sm:flex-row gap-2">
                             {type === 'textarea' ? (
                                 <Textarea
-                                    value={tempValues[fieldName] ?? value ?? ''}
-                                    onChange={(e) => handleTempChange(fieldName, e.target.value)}
+                                    id={`edit-${fieldName}`}
+                                    defaultValue={value ?? ''}
                                     className="flex-1 bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white text-sm sm:text-base"
                                     autoFocus
                                 />
                             ) : (
                                 <Input
-                                    value={tempValues[fieldName] ?? value ?? ''}
-                                    onChange={(e) => handleTempChange(fieldName, e.target.value)}
+                                    id={`edit-${fieldName}`}
+                                    defaultValue={value ?? ''}
                                     className="flex-1 bg-black/80 border-orange-500/30 focus:ring-2 focus:ring-orange-500/50 text-white text-sm sm:text-base"
                                     autoFocus
                                 />
@@ -219,7 +242,7 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
                                     <X className="w-5 h-5 text-gray-400 hover:text-white" />
                                 </button>
                                 <button
-                                    onClick={() => toggleEdit(fieldName, true)}
+                                    onClick={handleSave}
                                     className="p-2 hover:bg-orange-500/20 rounded-md"
                                 >
                                     <Check className="w-5 h-5 text-orange-500 hover:text-orange-400" />
