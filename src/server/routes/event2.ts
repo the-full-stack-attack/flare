@@ -37,6 +37,10 @@ event2Router.get('/', (req: any, res: Response) => {
     whereFilter['$Category.name$'] = { [Op.or]: req.query.catFilter };
   }
 
+  if (req.query.interestsFilter) {
+    whereFilter['$Interests.name$'] = req.query.interestsFilter;
+  }
+
   // Query DB for all event objects & send them back to the user
   Event.findAll({
     where: whereFilter,
@@ -68,12 +72,6 @@ event2Router.get('/', (req: any, res: Response) => {
     ],
   })
     .then((events: any) => {
-      // If an interests filter is being used, only grab events that contain an interest from the filter
-      if (req.query.interestsFilter) {
-        const intFilter: string[] = req.query.interestsFilter;
-        // Future Task: Optimize this approach. This will not scale well with a large amounts of events
-        events = events.filter((event: any) => event.Interests.some((interest: any) => intFilter.includes(interest.name)));
-      }
       res.status(200);
       res.send(events);
     })
@@ -130,9 +128,10 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     isAttending = false;
   }
 
-  User.findOne({
+  User_Event.findAll({
     where: {
-      id: req.user.id,
+      UserId: req.user.id,
+      user_attending: isAttending,
     },
     order: [
       [Event, 'start_time', 'ASC']
@@ -166,12 +165,13 @@ event2Router.get('/attend/:isAttending', (req: any, res: Response) => {
     },
   })
     .then((data) => {
+      let events: any = data.map((userEvent: any) => userEvent.Event);
+      // Sequelize is having issues with limit interacting with order and where clauses for associated models
+      if (req.query.limit) {
+        events = events.slice(0, +(req.query.limit));
+      }
       res.status(200);
-      res.send(
-        data?.dataValues.Events.filter(
-          (event: any) => event.User_Event.user_attending === isAttending
-        )
-      );
+      res.send(events);
     })
     .catch((err: unknown) => {
       console.error('Failed to GET /api/event/attend', err);
