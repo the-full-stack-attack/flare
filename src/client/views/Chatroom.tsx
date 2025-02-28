@@ -607,11 +607,13 @@ function Chatroom() {
       <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
         {isPlayingGames && !isPlayingFlamiliar && !isPlayingDJ && (
           <div className="col-span-2">
-            <Suspense fallback={  <img
+            <Suspense fallback={ <div className="flex justify-center align-center">
+                            <img
                               id="loading-image"
                               src={loading}
                               alt="Loading..."
-                            ></img>}>
+                            ></img>
+                            </div>}>
             <Menu
               toggleDJ={toggleDJ}
               djgamePic={djgamePic}
@@ -624,11 +626,13 @@ function Chatroom() {
         {isPlayingFlamiliar && isPlayingGames && (
           <div className=" col-span-2">
             <div>
-              <Suspense fallback={  <img
+              <Suspense fallback={  <div className="flex justify-center align-center">
+                            <img
                               id="loading-image"
                               src={loading}
                               alt="Loading..."
-                            ></img>}>
+                            ></img>
+                            </div>}>
                 <Flamiliar startTime={start_time} toggleFlamiliar={toggleFlamiliar} />
               </Suspense>
             </div>
@@ -637,11 +641,13 @@ function Chatroom() {
 
         {isPlayingDJ && isPlayingGames && (
           <div className="col-span-2">
-            <Suspense fallback={  <img
+            <Suspense fallback={  <div className="flex justify-center align-center">
+                            <img
                               id="loading-image"
                               src={loading}
                               alt="Loading..."
-                            ></img>}>
+                            ></img>
+                            </div>}>
               <div >
                 <div className="flex justify-center">
                 <Button className={'bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700 mt-2'}onClick={toggleDJ}>QUIT GAME</Button>
@@ -891,11 +897,13 @@ function Chatroom() {
                       {allMessages.map((msg) => (
                         <Suspense
                           fallback={
+                            <div className="flex justify-center align-center">
                             <img
                               id="loading-image"
                               src={loading}
                               alt="Loading..."
                             ></img>
+                            </div>
                           }
                         >
                           <MsgBox
@@ -957,7 +965,13 @@ function Chatroom() {
         {onKeyboard && !isPlayingGames && (
           <Suspense
             fallback={
-              <img id="loading-image" src={loading} alt="Loading..."></img>
+              <div className="flex justify-center align-center">
+              <img
+                id="loading-image"
+                src={loading}
+                alt="Loading..."
+              ></img>
+              </div>
             }
           >
             <div className="hidden lg:block col-span-3">
