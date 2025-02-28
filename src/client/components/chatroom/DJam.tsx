@@ -5,12 +5,12 @@ import vinyl from '../../assets/images/vinyl.png';
 import axios from "axios";
 import { isErrored } from "stream";
 import { Button } from "@/components/ui/button";
-const DJam = function ({eventId, user}) {
+const DJam = function ({eventId, user, toggleDJ}) {
 
   const [allRecordings, setAllRecordings] = useState<Array[]>([]) 
 
   useEffect(() => {
-    console.log(user)
+
     axios.get('/api/chatroom/chats',
     { 
       params: 
@@ -25,7 +25,6 @@ const DJam = function ({eventId, user}) {
       arrayOfAllChats.forEach((chat) => {
         let recording = chat.macro
         let userName = chat.username 
-        console.log(recording, userName)
         setAllRecordings((prev) => [...prev, { userName, recording } ])
       })
     })
@@ -37,7 +36,7 @@ const DJam = function ({eventId, user}) {
   return (
     <div>
 
-      <MacroRecorder allRecordings={allRecordings} eventId={eventId} user={user}></MacroRecorder>
+      <MacroRecorder allRecordings={allRecordings} eventId={eventId} user={user} toggleDJ={toggleDJ}></MacroRecorder>
       <Keyboard></Keyboard>
       </div>
   )

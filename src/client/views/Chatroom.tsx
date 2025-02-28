@@ -551,8 +551,6 @@ function Chatroom() {
   // WINDOW SIZING
   const handleResize = () => {
     setGameRatio(window.innerWidth / window.innerHeight);
-    setGameWidth(window.innerWidth);
-    setGameHeight(window.innerHeight);
     setScaleFactor(gameRatio > 1.3 ? 0.75 : 1);
   };
 
@@ -650,9 +648,8 @@ function Chatroom() {
                             </div>}>
               <div >
                 <div className="flex justify-center">
-                <Button className={'bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700 mt-2'}onClick={toggleDJ}>QUIT GAME</Button>
                 </div>
-                <DJam eventId={eventId} user={user} />
+                <DJam eventId={eventId} toggleDJ={toggleDJ} user={user} />
               </div>
             </Suspense>
           </div>
