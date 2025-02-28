@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import NOTES from '../../assets/sounds/chatroom/notes/index'
 import china from '../../assets/sounds/chatroom/kit/china.mp3';
 import crash1 from '../../assets/sounds/chatroom/kit/crash1.mp3';
@@ -18,24 +18,57 @@ function Keyboard() {
 
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [playingSounds, setPlayingSounds] = useState<{ [key: string]: HTMLAudioElement }>({});
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Function to play a sound
+  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+
+  useEffect(() => {
+    // Preload all sounds once
+    const preloadedAudio: { [key: string]: HTMLAudioElement } = {};
+    Object.keys(keySounds).forEach((key) => {
+      preloadedAudio[key] = new Audio(keySounds[key]);
+    });
+    audioRefs.current = preloadedAudio;
+  
+    // Cleanup function to release memory
+    return () => {
+      Object.values(preloadedAudio).forEach((audio) => {
+        audio.pause();
+        audio.src = '';
+      });
+    };
+  }, []);
+  
   const playSound = (key: string) => {
-    console.log('piano event listener to play')
-    if (keySounds[key]) {
-      const audio = new Audio(keySounds[key]);
-      audio.currentTime = 0;
+    const audio = audioRefs.current[key];
+    if (audio) {
+      audio.currentTime = 0; // Restart the sound
       audio.play();
       setActiveKey(key);
-      setTimeout(() => setActiveKey(null), 200);
-
+  
+      // Ensure timeout is cleared before setting a new one
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+  
+      timeoutRef.current = setTimeout(() => {
+        setActiveKey(null);
+        timeoutRef.current = null;
+      }, 200);
+  
       // Store looping sounds
       if (key === '=' || key === '-' || key === '0') {
         setPlayingSounds((prev) => ({ ...prev, [key]: audio }));
       }
     }
   };
-
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
   // Function to stop looping sounds
   const stopSound = (key: string) => {
     if (playingSounds[key]) {
