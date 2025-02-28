@@ -152,7 +152,7 @@ function Events() {
               locationFilter={locationFilter}
               handleSetLocationFilter={handleSetLocationFilter}
             />
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-1">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-1 gap-0">
               <CategoryFilter
                 catFilter={catFilter}
                 handleSetCatFilter={handleSetCatFilter}
