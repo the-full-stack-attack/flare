@@ -1,15 +1,7 @@
 import React, { useState, useContext } from 'react';
-import dayjs from 'dayjs';
 import axios from 'axios';
 import { Button } from '@headlessui/react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from '../../../components/ui/card';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 import TypeButton from './TypeButton';
 import DifficultyButton from './DifficultyButton';
 import DialogBox from './DialogBox';
@@ -38,7 +30,7 @@ function ChooseTask() {
     const date: string = new Date(
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
     ).toISOString()
-    // Assing date and userId to copyTask
+    // Passing date and userId to copyTask
     copyTask.date = date;
     copyTask.userId = userId;
     const config = {
@@ -66,13 +58,6 @@ function ChooseTask() {
   };
   return (
     <div className="pt-3">
-      <Toaster
-        position="bottom-center"
-        theme="dark"
-        toastOptions={{
-          style: { background: 'red' },
-        }}
-      />
       <DialogBox
         isOpen={isOpen}
         confirm={chooseTask}
