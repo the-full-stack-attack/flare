@@ -350,10 +350,8 @@ const initializeSocket = (
    }
 
  
- }, 1000 / 20);
- process.on('SIGINT', () => {
-  clearInterval(frames);
-});
+ }, 1000 / 1);
+
 };
 
 export default initializeSocket;

@@ -66,8 +66,6 @@ extend({
   Texture, // not worth it w/ useAssets...?
 });
 
-let socket = io(SOCKET_URL);
-
 function Chatroom() {
   const { user } = useContext(UserContext);
   const location = useLocation();
@@ -257,7 +255,7 @@ function Chatroom() {
   const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
   const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
   const [isReady, setIsReady] = useState(false);
-
+  const socketRef = useRef();
   const styleMessage = new TextStyle({
     align: 'center',
     fontFamily: 'sans-serif',
@@ -283,7 +281,11 @@ function Chatroom() {
   });
 
   useEffect(() => {
-    socket.on('newPlayerList', ({ PLAYER_LIST }) => {
+    socketRef.current = io(SOCKET_URL);
+  });
+
+  useEffect(() => {
+    socketRef.current.on('newPlayerList', ({ PLAYER_LIST }) => {
       for (let player in PLAYER_LIST) {
         if (!lobby.includes(PLAYER_LIST[player].username)) {
           setLobby((prevItems) => [...prevItems, PLAYER_LIST[player].username]);
@@ -325,74 +327,79 @@ function Chatroom() {
     // console.log(key, 'key caught')
     if (isTyping === false) {
       if (key === 'ArrowUp' || key === 'w') {
-        socket.emit('keyPress', { inputId: 'Up', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Up', state: true });
       } else if (key === 'ArrowDown' || key === 's') {
-        socket.emit('keyPress', { inputId: 'Down', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Down', state: true });
       } else if (key === 'ArrowLeft' || key === 'a') {
-        socket.emit('keyPress', { inputId: 'Left', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Left', state: true });
       } else if (key === 'ArrowRight' || key === 'd') {
-        socket.emit('keyPress', { inputId: 'Right', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Right', state: true });
       }
       if (key === 'q' || key === 'Q') {
-        socket.emit('keyPress', { inputId: 'Snap', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Snap', state: true });
       }
       if (key === 'e' || key === 'E') {
-        socket.emit('keyPress', { inputId: 'Wave', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Wave', state: true });
       }
       if (key === 'r' || key === 'R') {
-        socket.emit('keyPress', { inputId: 'EnergyWave', state: true });
+        socketRef.current.emit('keyPress', {
+          inputId: 'EnergyWave',
+          state: true,
+        });
       }
       if (key === 'f' || key === 'F') {
-        socket.emit('keyPress', { inputId: 'Heart', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Heart', state: true });
       }
       if (key === '2' || key === '2') {
-        socket.emit('keyPress', { inputId: '420', state: true });
+        socketRef.current.emit('keyPress', { inputId: '420', state: true });
       }
       if (key === '3' || key === '3') {
-        socket.emit('keyPress', { inputId: 'Shades', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Shades', state: true });
       }
       if (key === '4' || key === '4') {
-        socket.emit('keyPress', { inputId: 'Beer', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Beer', state: true });
       }
       if (key === '`' || key === '`') {
-        socket.emit('keyPress', { inputId: 'Sad', state: true });
+        socketRef.current.emit('keyPress', { inputId: 'Sad', state: true });
       }
     }
   };
   const keyUp = ({ key }: any) => {
     if (key === 'ArrowUp' || key === 'w') {
-      socket.emit('keyPress', { inputId: 'Up', state: false });
+      socketRef.current.emit('keyPress', { inputId: 'Up', state: false });
     } else if (key === 'ArrowDown' || key === 's') {
-      socket.emit('keyPress', { inputId: 'Down', state: false });
+      socketRef.current.emit('keyPress', { inputId: 'Down', state: false });
     } else if (key === 'ArrowLeft' || key === 'a') {
-      socket.emit('keyPress', { inputId: 'Left', state: false });
+      socketRef.current.emit('keyPress', { inputId: 'Left', state: false });
     } else if (key === 'ArrowRight' || key === 'd') {
-      socket.emit('keyPress', { inputId: 'Right', state: false });
+      socketRef.current.emit('keyPress', { inputId: 'Right', state: false });
     }
     if (key === 'q' || key === 'Q') {
-      socket.emit('keyPress', { inputId: 'Snap', state: false });
+      socketRef.current.emit('keyPress', { inputId: 'Snap', state: false });
     }
     if (key === 'e' || key === 'E') {
-      socket.emit('keyPress', { inputId: 'Wave', state: false });
+      socketRef.current.emit('keyPress', { inputId: 'Wave', state: false });
     }
     if (key === 'r' || key === 'R') {
-      socket.emit('keyPress', { inputId: 'EnergyWave', state: false });
+      socketRef.current.emit('keyPress', {
+        inputId: 'EnergyWave',
+        state: false,
+      });
     }
     if (key === 'f' || key === 'F') {
-      socket.emit('keyPress', { inputId: 'Heart', state: false });
+      socketRef.current.emit('keyPress', { inputId: 'Heart', state: false });
     }
     if (key === '`' || key === '`') {
-      socket.emit('keyPress', { inputId: 'Sad', state: false });
+      socketRef.current.emit('keyPress', { inputId: 'Sad', state: false });
     }
   };
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
     axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
-    socket.emit('joinChat', { user, eventId });
-    socket.on('message', (msg) => {
-      displayMessage(msg);
-    });
-    socket.on('newPositions', (data) => {
+
+    socketRef.current.emit('joinChat', { user, eventId });
+
+    const handleNewPositions = (data) => {
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
         if (data[i].room === eventId) {
@@ -439,8 +446,18 @@ function Chatroom() {
         }
       }
       setAllPlayers(allPlayerInfo);
-    });
-  }, []);
+      
+    };
+
+    socketRef.current.on('message', displayMessage);
+    socketRef.current.on('newPositions', handleNewPositions);
+
+    // Cleanup function to prevent multiple event listeners
+    return () => {
+      socketRef.current.off('message', displayMessage);
+      socketRef.current.off('newPositions', handleNewPositions);
+    };
+  }, [eventId, user]);
   // EVENT LISTENERS FOR TYPING
   useEffect(() => {
     if (isTyping === false) {
@@ -539,7 +556,7 @@ function Chatroom() {
     await setIsTyping(false);
   };
   const sendMessage = () => {
-    socket.emit('message', { message, eventId });
+    socketRef.current.emit('message', { message, eventId });
     displayMessage({
       message: message,
       username: user?.username,
@@ -605,33 +622,40 @@ function Chatroom() {
       <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
         {isPlayingGames && !isPlayingFlamiliar && !isPlayingDJ && (
           <div className="col-span-2">
-            <Suspense fallback={ <div className="flex justify-center align-center">
-                            <img
-                              id="loading-image"
-                              src={loading}
-                              alt="Loading..."
-                            ></img>
-                            </div>}>
-            <Menu
-              toggleDJ={toggleDJ}
-              djgamePic={djgamePic}
-              toggleFlamiliar={toggleFlamiliar}
-              smallBartender={smallBartender}
-            />
+            <Suspense
+              fallback={
+                <div className="flex justify-center align-center">
+                  <img id="loading-image" src={loading} alt="Loading..."></img>
+                </div>
+              }
+            >
+              <Menu
+                toggleDJ={toggleDJ}
+                djgamePic={djgamePic}
+                toggleFlamiliar={toggleFlamiliar}
+                smallBartender={smallBartender}
+              />
             </Suspense>
           </div>
         )}
         {isPlayingFlamiliar && isPlayingGames && (
           <div className=" col-span-2">
             <div>
-              <Suspense fallback={  <div className="flex justify-center align-center">
-                            <img
-                              id="loading-image"
-                              src={loading}
-                              alt="Loading..."
-                            ></img>
-                            </div>}>
-                <Flamiliar startTime={start_time} toggleFlamiliar={toggleFlamiliar} />
+              <Suspense
+                fallback={
+                  <div className="flex justify-center align-center">
+                    <img
+                      id="loading-image"
+                      src={loading}
+                      alt="Loading..."
+                    ></img>
+                  </div>
+                }
+              >
+                <Flamiliar
+                  startTime={start_time}
+                  toggleFlamiliar={toggleFlamiliar}
+                />
               </Suspense>
             </div>
           </div>
@@ -639,16 +663,15 @@ function Chatroom() {
 
         {isPlayingDJ && isPlayingGames && (
           <div className="col-span-2">
-            <Suspense fallback={  <div className="flex justify-center align-center">
-                            <img
-                              id="loading-image"
-                              src={loading}
-                              alt="Loading..."
-                            ></img>
-                            </div>}>
-              <div >
-                <div className="flex justify-center">
+            <Suspense
+              fallback={
+                <div className="flex justify-center align-center">
+                  <img id="loading-image" src={loading} alt="Loading..."></img>
                 </div>
+              }
+            >
+              <div>
+                <div className="flex justify-center"></div>
                 <DJam eventId={eventId} toggleDJ={toggleDJ} user={user} />
               </div>
             </Suspense>
@@ -895,11 +918,11 @@ function Chatroom() {
                         <Suspense
                           fallback={
                             <div className="flex justify-center align-center">
-                            <img
-                              id="loading-image"
-                              src={loading}
-                              alt="Loading..."
-                            ></img>
+                              <img
+                                id="loading-image"
+                                src={loading}
+                                alt="Loading..."
+                              ></img>
                             </div>
                           }
                         >
@@ -963,11 +986,7 @@ function Chatroom() {
           <Suspense
             fallback={
               <div className="flex justify-center align-center">
-              <img
-                id="loading-image"
-                src={loading}
-                alt="Loading..."
-              ></img>
+                <img id="loading-image" src={loading} alt="Loading..."></img>
               </div>
             }
           >
