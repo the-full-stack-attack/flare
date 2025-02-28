@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 
+import { toast } from 'sonner';
+
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 
 import {
-  Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 
 type FilterButtonsDialogProps = {
@@ -111,7 +111,10 @@ function FilterButtonsDialog({
         <DialogClose asChild>
           <Button
             className={footerButtonStyle}
-            onClick={() => setFilter(selectedList)}
+            onClick={() => {
+              setFilter(selectedList);
+              toast(`${itemType} Filter ${selectedList.length ? 'Set.' : 'Removed.'}`)
+            }}
           >
             Submit
           </Button>
