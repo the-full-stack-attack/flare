@@ -69,7 +69,7 @@ extend({
 
 
 
-function Flamiliar({wantsToPlay}) {
+function Flamiliar({wantsToPlay, toggleFlamiliar}) {
   const [sizeFactor, setSizeFactor] = useState(1);
   const style = new TextStyle({
     align: 'left',
@@ -123,6 +123,7 @@ function Flamiliar({wantsToPlay}) {
   const uniqueId = useId;
   const [flamiliarPrompt, setFlamiliarPrompt] = useState('');
   const [timer, setTimer] = useState('30');
+  const [showButton, setShowButton] = useState(timer === '30' ? true : false)
   const [gameRatio, setGameRatio] = useState(window.innerWidth / window.innerHeight)
   const [showReady, setShowReady] = useState(true);
   const displayMessage = (msg: string) => {
@@ -156,10 +157,6 @@ function Flamiliar({wantsToPlay}) {
     graphics.cursor = 'pointer';
     graphics.label = 'HELLO';
   }, [sizeFactor]);
-
-  function onTouchstart(param, e) {
-    // console.log(e);
-  }
 
   // WINDOW SIZING
   const handleResize = () => {
@@ -246,8 +243,6 @@ function Flamiliar({wantsToPlay}) {
     });
 
     socket.on('countDown', (time) => {
-      // console.log('countdownrunning')
-      console.log(time);
       if(time >= 11 ){
         setColor('#55ff00');
       } else if(time >= 5){
@@ -278,7 +273,7 @@ function Flamiliar({wantsToPlay}) {
   const quitFlamiliar = () => {
     socket.emit('quitFlamiliar');
     setQuit(true);
-    console.log('the player has quit');
+    toggleFlamiliar()
   };
   const toggleQuit = () => {
     setQuit(false);
@@ -296,9 +291,7 @@ function Flamiliar({wantsToPlay}) {
   };
 
   const test = (e) => {
-    // console.log('test is passing for onclick', e);
     if(e === user.username){
-      // console.log('you cannot vote for yourself!');
       let audio = new Audio(laugh);
       audio.play();
     } else {
@@ -325,7 +318,8 @@ function Flamiliar({wantsToPlay}) {
       { quit && 
       <div>
       <div className="flex justify-center items-center mt-2" >
-        <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={toggleQuit}>
+
+          <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={toggleQuit}>
           Get Flamiliar!
           </Button>
           </div>
@@ -377,7 +371,7 @@ function Flamiliar({wantsToPlay}) {
 </div>
           </div>
           </div> } 
-      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700" onClick={quitFlamiliar}>QUIT</Button> </div>}
+      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700 mt-2" onClick={quitFlamiliar}>QUIT</Button> </div>}
       { !quit &&
     <div className="p-4">
     <div className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
@@ -501,7 +495,7 @@ function Flamiliar({wantsToPlay}) {
                 marginTop: '20px',
               }}
             >
-            {!promptGiven && !quit && showReady && (<div >
+            {!promptGiven && !quit && showReady && timer === '30' && (<div >
       <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={readyForFlamiliar}>GET FLAMILIAR!</Button>
       </div>
     )}
