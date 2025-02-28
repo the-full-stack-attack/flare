@@ -33,6 +33,18 @@ function FilterButtonsDialog({
 
   const notSelectedButtonStyle = 'text-xs sm:text-base w-full bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30'
   const selectedButtonStyle = 'text-xs sm:text-base w-full bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50';
+  const footerButtonStyle = 'bg-gradient-to-r from-yellow-500/80 via-orange-500/80 to-pink-500/80 border-orange-500/90 hover:from-yellow-600/90 hover:via-orange-600/90 hover:to-pink-600/90 text-white px-4 py-4 rounded-xl text-base';
+
+
+  const handleSelect = (item: string) => {
+    const newList: string[] = [...selectedList, item];
+    setSelectedList(newList);
+  };
+
+  const handleRemove = (item: string) => {
+    const newList: string[] = selectedList.filter(elem => elem !== item);
+    setSelectedList(newList);
+  };
 
   return (
     <DialogContent className="bg-black/80 rounded-xl border-transparent">
@@ -43,7 +55,7 @@ function FilterButtonsDialog({
       <div className="space-y-4">
         <div>
           <Label className="text-gray-200 mb-2 block">
-            Available
+            Add Category To Filter
           </Label>
           <div className="grid grid-cols-2 gap-2">
             {
@@ -53,6 +65,7 @@ function FilterButtonsDialog({
                   <Button
                     key={item}
                     className={notSelectedButtonStyle}
+                    onClick={() => handleSelect(item)}
                   >
                     {item}
                   </Button>
@@ -62,15 +75,16 @@ function FilterButtonsDialog({
         </div>
         <div>
           <Label className="text-gray-200 mb-2 block">
-            Chosen
+            Remove Category From Filter
           </Label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {
               selectedList
                 .map((item) => (
                   <Button
                     key={item}
                     className={selectedButtonStyle}
+                    onClick={() => handleRemove(item)}
                   >
                     {item}
                   </Button>
@@ -81,8 +95,11 @@ function FilterButtonsDialog({
       </div>
       <DialogFooter>
         <DialogClose asChild>
-          <Button>
-            Close
+          <Button
+            className={footerButtonStyle}
+            onClick={() => setFilter(selectedList)}
+          >
+            {selectedList.length ? 'Set Filter' : 'No Filter'}
           </Button>
         </DialogClose>
       </DialogFooter>
