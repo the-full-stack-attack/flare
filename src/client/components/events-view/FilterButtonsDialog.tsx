@@ -31,21 +31,21 @@ function FilterButtonsDialog({
 }: FilterButtonsDialogProps) {
   const [selectedList, setSelectedList] = useState<string[]>(initialSelection);
 
-  const notSelectedButtonStyle = 'w-full bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30'
-  const selectedButtonStyle = 'w-full bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50';
+  const notSelectedButtonStyle = 'text-xs sm:text-base w-full bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30'
+  const selectedButtonStyle = 'text-xs sm:text-base w-full bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50';
 
   return (
-    <DialogContent>
+    <DialogContent className="bg-black/80 rounded-xl border-transparent">
       <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
+        <DialogTitle className="text-gray-200">{title}</DialogTitle>
+        <DialogDescription className="text-gray-400">{description}</DialogDescription>
       </DialogHeader>
       <div className="space-y-4">
         <div>
           <Label className="text-gray-200 mb-2 block">
             Available
           </Label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {
               choicesList
                 .filter(item => !selectedList.includes(item))
