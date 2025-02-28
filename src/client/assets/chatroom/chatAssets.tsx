@@ -94,7 +94,7 @@ class Player {
     this.equipShades = false;
     this.equip420 = false;
     this.isSad = false;
-    this.maxSpd = 15;
+    this.maxSpd = 5;
     this.sentMessage = false;
     this.currentMessage = '';
   }

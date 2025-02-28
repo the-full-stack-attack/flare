@@ -15,6 +15,7 @@ import { Countdown } from '../components/chatroom/countdown';
 const Flamiliar = lazy(() => import('../components/chatroom/Flamiliar'));
 const MsgBox  = lazy(() => import('../components/chatroom/MsgBox'));
 const DJam = lazy(() => import('../components/chatroom/DJam'));
+const Menu = lazy(() => import('../components/chatroom/Menu'));
 import SOCKET_URL from '../../../config';
 import TILES from '../assets/chatroom/tiles/index';
 import IDLE from '../assets/chatroom/idle/index';
@@ -243,6 +244,7 @@ function Chatroom() {
   const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
   const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
   const [isReady, setIsReady] = useState(false);
+
   const styleMessage = new TextStyle({
     align: 'center',
     fontFamily: 'sans-serif',
@@ -267,23 +269,17 @@ function Chatroom() {
     wordWrap: true,
     wordWrapWidth: 250,
   })
+
   useEffect(() => {
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
       for(let player in PLAYER_LIST ){
  
         if(!lobby.includes(PLAYER_LIST[player].username)){
           setLobby((prevItems) => [ ...prevItems, PLAYER_LIST[player].username ])
-          // setTimeout( () => {
            settexturesToLoad((prevItems) => [...prevItems, { alias: PLAYER_LIST[player].username, src: PLAYER_LIST[player].avatar, }])
-          // }, 5000)
         }
       }
-      // setTimeout( () => {
-      //      settexturesToLoad((prevItems) => [...prevItems, { alias: PlayerList.user.username, src: PlayerList.user.avatar_uri, }])
-      //     }, 5000)
-      // console.log(PlayerList.user.username)
-        })
-    
+    })
     }, []);
     
   // Flamiliar
@@ -300,6 +296,11 @@ function Chatroom() {
   const speechBubble = useCallback((graphics: unknown) => {
     graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
     graphics?.scale.set(.75, .26);
+    let timer = setTimeout(() => {
+      graphics?.clear();
+      clearTimeout(timer);
+    }, 70);
+   
   }, []);
   // CONTROLS
   const keyPress = ({ key }: any) => {
@@ -366,7 +367,6 @@ function Chatroom() {
       socket.emit('keyPress', {inputId: 'Sad', state: false});
     }
   };
-  let variable = 'temporaryMap'
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
     axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
@@ -430,14 +430,6 @@ function Chatroom() {
     };
   }, [isTyping]);
   // MESSAGING
-  useEffect(() => {
-    axios.get('/api/chatroom/image')
-    .then((avatarURI) => {
-      // console.log('received successful pic', avatarURI);
-    }).catch((error) => {
-      console.error('ERROR GETTING PIC', error)
-    })
-  }, [user.avatar_uri])
 
   const typing = async () => {
     await setIsTyping(true);
@@ -560,58 +552,7 @@ function Chatroom() {
 
       <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
         {isPlayingGames && !isPlayingFlamiliar && !isPlayingDJ && (
-          <div className=" col-span-2 ">
-            <div className="grid grid-cols-2 ">
-            <div className="">
-            <div onClick={toggleDJ} className="flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 shadow-sm border border-fuchsia-200 hover:border-4 hover:border-cyan-400 rounded-lg my-6 ">
-    <h4 className="p-6 text-center mb-1 text-xl font-semibold text-slate-100">
-      Mixed Signals
-    </h4>
-  <div className="m-2.5 overflow-hidden rounded-md flex justify-center items-center ">
-    <img className="h-80 object-cover " src={djgamePic} alt="profile-picture" />
-  </div>
-  <div className="p-6 text-center">
-    <p
-      className="text-sm font-semibold text-slate-100 uppercase">
-      <em>Communicate With Music!</em>
-    </p>
-    <p className="text-base text-xs text-slate-200 mt-4 font-light ">
-        Have fun recording a beat, then publish it for others in the chat to hear! Listen, Layer and/or combine your beats with others!
-    </p>
-  </div>
-  <div className="flex justify-center p-6 pt-2 gap-7">
-    <button onClick={toggleDJ} className="min-w-32 rounded-md bg-black py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-cyan-500 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
-      Play Mixed Signals!
-    </button>
-  </div>
-</div>
-            </div>
-            <div onClick={toggleFlamiliar}>
-            <div className="flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 shadow-sm border border-fuchsia-200 hover:border-4 hover:border-cyan-400 rounded-lg my-6   ">
-    <h4 className="p-6 text-center mb-1 text-xl font-semibold text-slate-100">
-      Flamiliar
-    </h4>
-  <div className="m-2.5 overflow-hidden rounded-md flex justify-center items-center ">
-    <img className="h-80 object-cover border-fuchsia-500"  src={smallBartender} alt="profile-picture" />
-  </div>
-  <div className="p-6 text-center">
-    <p
-      className="text-sm font-semibold text-slate-100 uppercase">
-      <em>Get Flamiliar with each other!</em>
-    </p>
-    <p className="text-base text-xs text-slate-200 mt-4 font-light ">
-        Our AI Bartender gives you a sentence, and players must finish it! Then vote for who had the best response!
-    </p>
-  </div>
-  <div className="flex justify-center p-6 pt-2 gap-7">
-    <button onClick={toggleFlamiliar} className="min-w-32 rounded-md bg-black py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-cyan-500 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
-      Play Flamiliar!
-    </button>
-  </div>
-</div>
-            </div>
-            </div>
-          </div>
+          <div><Menu toggleDJ={toggleDJ} djgamePic={djgamePic} toggleFlamiliar={toggleFlamiliar} smallBartender={smallBartender}/></div>
         )}
         {isPlayingFlamiliar && isPlayingGames &&
         <div className=" col-span-2">
@@ -665,13 +606,13 @@ function Chatroom() {
                   {isSuccess && (
                     <Application
                       resizeTo={appRef}
-                      width={Math.floor(640)}
-                      height={Math.floor(360)}
+                      width={640}
+                      height={360}
                       backgroundColor={' #FFFFFF'}
                       resolution={2.5}
                     >
-                      {mapPack.layers.map((objLay, index) => (
-                        <pixiContainer key={index}>
+                      {mapPack.layers.map((objLay, layerIndex) => (
+                        <pixiContainer key={layerIndex}>
                           {objLay.tiles.map((objTiles, index) => (
                             <pixiSprite
                               texture={Assets.get(
@@ -688,7 +629,16 @@ function Chatroom() {
                           ))}
                         </pixiContainer>
                       ))}
-                      {allPlayers.map((player) => (
+                       {allPlayers.map((player) => {
+      const getPlayerAnimation = () => {
+        if (player.isSnapping) return snapTextures;
+        if (player.isWalking) return walkTextures;
+        if (player.isEnergyWaving) return energyWaveTextures;
+        if (player.isWaving) return waveTextures;
+        return textures; // Default standing animation
+      };
+
+      return (
                         <pixiContainer
                           x={player.x}
                           y={player.y}
@@ -696,12 +646,11 @@ function Chatroom() {
                           scale={(1.24, 1.24)}
                         >
                           {player.sentMessage && (
+                            <>
                             <pixiGraphics
                               draw={speechBubble}
                               key={crypto.randomUUID()}
                             />
-                          )}
-                          {player.sentMessage && (
                             <pixiText
                               text={player.currentMessage}
                               anchor={0.5}
@@ -711,7 +660,9 @@ function Chatroom() {
                               scale={(1.1, 1.1)}
                               style={styleMessage}
                             />
+                            </>
                           )}
+                         
                           <pixiText
                             text={player.username}
                             anchor={0.5}
@@ -728,99 +679,21 @@ function Chatroom() {
                             width={25}
                             height={25}
                           ></pixiSprite>
-                          {isReady &&
-                            !player.isWalking &&
-                            !player.isSnapping &&
-                            !player.isWaving &&
-                            !player.isEnergyWaving && (
-                              <pixiAnimatedSprite
-                                textures={textures}
-                                x={-18.6}
-                                y={-21}
-                                ref={(spriteRef) => {
-                                  spriteRef?.play();
-                                }}
-                                initialFrame={0}
-                                animationSpeed={0.1}
-                                loop={true}
-                                scale={(scaleFactor, scaleFactor)}
-                                width={64}
-                                height={64}
-                              />
-                            )}
-                          {isReady && player.isWalking && (
-                            <pixiAnimatedSprite
-                              textures={walkTextures}
-                              x={-18.6}
-                              y={-21}
-                              ref={(spriteRef) => {
-                                spriteRef?.play();
-                              }}
-                              initialFrame={0}
-                              animationSpeed={0.4}
-                              loop={true}
-                              scale={(scaleFactor, scaleFactor)}
-                              width={64}
-                              height={64}
-                            />
-                          )}
-                          {isReady &&
-                            !player.isWalking &&
-                            !player.isSnapping &&
-                            player.isWaving && (
-                              <pixiAnimatedSprite
-                                textures={waveTextures}
-                                x={-18.6}
-                                y={-21}
-                                ref={(spriteRef) => {
-                                  spriteRef?.play();
-                                }}
-                                initialFrame={0}
-                                animationSpeed={0.1}
-                                loop={true}
-                                scale={(scaleFactor, scaleFactor)}
-                                width={64}
-                                height={64}
-                              />
-                            )}
-                          {isReady &&
-                            player.isSnapping &&
-                            !player.isWalking && (
-                              <pixiAnimatedSprite
-                                textures={snapTextures}
-                                x={-18.6}
-                                y={-21}
-                                ref={(spriteRef) => {
-                                  spriteRef?.play();
-                                }}
-                                initialFrame={0}
-                                animationSpeed={0.27}
-                                loop={true}
-                                scale={(scaleFactor, scaleFactor)}
-                                width={64}
-                                height={64}
-                              />
-                            )}
-                          {isReady &&
-                            !player.isSnapping &&
-                            !player.isWalking &&
-                            player.isEnergyWaving && (
-                              <pixiAnimatedSprite
-                                textures={energyWaveTextures}
-                                x={-18.6}
-                                y={-21}
-                                ref={(spriteRef) => {
-                                  spriteRef?.play();
-                                }}
-                                initialFrame={0}
-                                animationSpeed={0.2}
-                                loop={true}
-                                scale={(scaleFactor, scaleFactor)}
-                                width={64}
-                                height={64}
-                              />
-                            )}
-                            {isReady &&
+                           {isReady && (
+            <pixiAnimatedSprite
+              textures={getPlayerAnimation()}
+              x={-18.6}
+              y={-21}
+              ref={(spriteRef) => spriteRef?.play()}
+              initialFrame={0}
+              animationSpeed={player.isSnapping ? 0.27 : 0.1}
+              loop={true}
+              scale={(scaleFactor, scaleFactor)}
+              width={64}
+              height={64}
+            />
+          )}
+              {isReady &&
                               player.isHearting && (
                               <pixiAnimatedSprite
                                 textures={heartTextures}
@@ -836,55 +709,28 @@ function Chatroom() {
                                 scale={{ x: scaleFactor / 10, y: scaleFactor / 10 }}
                               />
                             )}
-                            {isReady && player.equip420 && (
-                              <pixiSprite
-                              texture={Assets.get('joint')}
-                              ref={spriteRef2}
-                              x={-1}
-                              y={5}
-                              scale={(scaleFactor, scaleFactor)}
-                              width={10}
-                              height={10}
-                            ></pixiSprite>
-                            )}
-                            {isReady && player.equipBeer && (
-                              <pixiSprite
-                              texture={Assets.get('beer')}
-                              ref={spriteRef2}
-                              x={-5}
-                              y={5}
-                              scale={(scaleFactor, scaleFactor)}
-                              width={15}
-                              height={15}
-                            ></pixiSprite>
-                            )}
-                            {isReady && player.equipShades && (
-                              <pixiSprite
-                              texture={Assets.get('shades')}
-                              ref={spriteRef2}
-                              x={2}
-                              y={-9}
-                              scale={(scaleFactor, scaleFactor)}
-                              width={20}
-                              height={20}
-                            ></pixiSprite>
-                            )}
-                            {isReady && player.isSad && (
-                              <pixiSprite
-                              texture={Assets.get('sad')}
-                              ref={spriteRef2}
-                              x={2}
-                              y={-33}
-                              scale={(scaleFactor, scaleFactor)}
-                              width={20}
-                              height={20}
-                            ></pixiSprite>
-                            )}
-                        
-                        </pixiContainer>
-                      ))}
-                    </Application>
-                  )}
+          {/* Equipments & Emotes */}
+          {isReady && (
+            <>
+              {player.equip420 && (
+                <pixiSprite texture={Assets.get('joint')} x={-1} y={5} width={10} height={10} />
+              )}
+              {player.equipBeer && (
+                <pixiSprite texture={Assets.get('beer')} x={-5} y={5} width={15} height={15} />
+              )}
+              {player.equipShades && (
+                <pixiSprite texture={Assets.get('shades')} x={2} y={-9} width={20} height={20} />
+              )}
+              {player.isSad && (
+                <pixiSprite texture={Assets.get('sad')} x={2} y={-33} width={20} height={20} />
+              )}
+            </>
+          )}
+        </pixiContainer>
+      );
+    })}
+  </Application>
+)}
                 </div>
               </div>
             </div>
@@ -1009,9 +855,15 @@ function Chatroom() {
        
         </div>
         { onKeyboard && !isPlayingGames &&
+        <Suspense fallback={ <img
+          id="loading-image"
+          src={loading}
+          alt="Loading..."
+        ></img>}>
         <div className="hidden lg:block col-span-3" >
         <DJam eventId={eventId} user={user} />
         </div>
+        </Suspense>
         }
       </div>
     </div>
