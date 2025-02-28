@@ -95,6 +95,7 @@ function CategoryFilter({ catFilter, handleSetCatFilter }: CategoryFilterProps) 
         <FilterButtonsDialog 
           choicesList={simpleCatList}
           initialSelection={catFilter}
+          itemType="Category"
           title="Filter by Category"
           description="Choose which categories you want to filter upcoming events by."
           setFilter={handleSetCatFilter}
