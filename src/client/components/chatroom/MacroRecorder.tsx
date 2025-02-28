@@ -7,7 +7,7 @@ import china from '../../assets/sounds/chatroom/kit/china.mp3';
 import crash1 from '../../assets/sounds/chatroom/kit/crash1.mp3';
 import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
-import { Card, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import vinyl from '../../assets/images/vinyl.png';
 import { set } from 'date-fns';
 
@@ -315,21 +315,24 @@ setCount(count + 1);
           <RainbowButton className={'ml-4'}onClick={toggleColor}>Change Colors</RainbowButton>
         </div>
       ) : (
-        <Card className="max-h-[200px] w-full overflow-hidden border border-gray-300 shadow-lg bg-slate-900">
-          <CardTitle>Submitted Recordings</CardTitle>
+        <Card className="max-h-[200px] w-full overflow-hidden border border-gray-300 shadow-lg bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border-orange-800 mt-2 mb-2">
+          <CardTitle className="flex justify-center text-white text-opacity-25 mt-2">Submitted Recordings</CardTitle>
           <CardContent className="max-h-[200px] overflow-y-auto p-2">
             <div className="grid grid-cols-3 gap-2">
+            <Card className=" bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 col-span-3 grid grid-cols-4 gap-3 border-orange-800">
+            <CardTitle className="col-span-4 flex justify-center mt-2 ml-2 text-white text-opacity-75"><p1>Clicking on a recording will load that users track into your Macro-Recorder! You can remix it and submit it as your own!</p1></CardTitle>
               {allRecordings &&
                 allRecordings.map((recording, index) => (
                   <Button
-                  className={' bg-gradient-to-r from-slate-700 via-slate-500 to-slate-700 text-white mt-2 ml-2 mr-2 '}
-                    className="w-20 h-8 text-xs px-4 py-4 mb-4 text-black mt-2 ml-2 mr-2 bg-fuchsia-300 hover:bg-fuchsia-500"
+                  
+                    className="col-span-1 h-8 text-lg px-4 py-4 mb-4 text-white mt-2 ml-2 mr-2 bg-gray-950  hover:bg-orange-500 text-white"
                     onClick={switchRecording}
                     name={index}
                   >
                     {recording.userName || 'anon'}
                   </Button>
                 ))}
+            </Card>
             </div>
           </CardContent>
           <div className='grid grid-cols-3'>

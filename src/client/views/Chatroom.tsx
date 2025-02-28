@@ -34,6 +34,7 @@ import SNAP from '../assets/chatroom/snap/index';
 import WAVE from '../assets/chatroom/wave/index';
 import EMOJIS from '../assets/chatroom/emojis';
 import djgamePic from '../assets/images/djgamePic.png';
+import speechbubble from '../assets/images/speechbubble.png'
 import smallBartender from '../assets/images/smallBartender.png';
 import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
@@ -66,6 +67,8 @@ extend({
   Texture, // not worth it w/ useAssets...?
 });
 
+let socket = io(SOCKET_URL);
+
 function Chatroom() {
   const { user } = useContext(UserContext);
   const location = useLocation();
@@ -75,10 +78,10 @@ function Chatroom() {
   const [gameLoaded, setGameLoaded] = useState(false);
   const [texturesToLoad, settexturesToLoad] = useState([
     { alias: 'bunny', src: 'https://pixijs.com/assets/bunny.png' },
-    {
-      alias: 'speech',
-      src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
-    },
+     {
+       alias: 'speech',
+       src: speechbubble,
+     },
     { alias: 'joint', src: EMOJIS['7'] }, // joint,
     { alias: '1', src: TILES['1'] },
     { alias: '2', src: TILES['2'] },
@@ -255,7 +258,7 @@ function Chatroom() {
   const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
   const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
   const [isReady, setIsReady] = useState(false);
-  const socketRef = useRef();
+
   const styleMessage = new TextStyle({
     align: 'center',
     fontFamily: 'sans-serif',
@@ -281,11 +284,7 @@ function Chatroom() {
   });
 
   useEffect(() => {
-    socketRef.current = io(SOCKET_URL);
-  });
-
-  useEffect(() => {
-    socketRef.current.on('newPlayerList', ({ PLAYER_LIST }) => {
+    socket.on('newPlayerList', ({ PLAYER_LIST }) => {
       for (let player in PLAYER_LIST) {
         if (!lobby.includes(PLAYER_LIST[player].username)) {
           setLobby((prevItems) => [...prevItems, PLAYER_LIST[player].username]);
@@ -314,92 +313,80 @@ function Chatroom() {
       ? setIsPlayingFlamiliar(false)
       : setIsPlayingFlamiliar(true);
   };
-  const speechBubble = useCallback((graphics: unknown) => {
-    graphics?.texture(Assets.get('speech'), 0xffffff, 10, -200, 180);
-    graphics?.scale.set(0.75, 0.26);
-    let timer = setTimeout(() => {
-      graphics?.clear();
-      clearTimeout(timer);
-    }, 70);
-  }, []);
+
   // CONTROLS
   const keyPress = ({ key }: any) => {
     // console.log(key, 'key caught')
     if (isTyping === false) {
       if (key === 'ArrowUp' || key === 'w') {
-        socketRef.current.emit('keyPress', { inputId: 'Up', state: true });
+        socket.emit('keyPress', { inputId: 'Up', state: true });
       } else if (key === 'ArrowDown' || key === 's') {
-        socketRef.current.emit('keyPress', { inputId: 'Down', state: true });
+        socket.emit('keyPress', { inputId: 'Down', state: true });
       } else if (key === 'ArrowLeft' || key === 'a') {
-        socketRef.current.emit('keyPress', { inputId: 'Left', state: true });
+        socket.emit('keyPress', { inputId: 'Left', state: true });
       } else if (key === 'ArrowRight' || key === 'd') {
-        socketRef.current.emit('keyPress', { inputId: 'Right', state: true });
+        socket.emit('keyPress', { inputId: 'Right', state: true });
       }
       if (key === 'q' || key === 'Q') {
-        socketRef.current.emit('keyPress', { inputId: 'Snap', state: true });
+        socket.emit('keyPress', { inputId: 'Snap', state: true });
       }
       if (key === 'e' || key === 'E') {
-        socketRef.current.emit('keyPress', { inputId: 'Wave', state: true });
+        socket.emit('keyPress', { inputId: 'Wave', state: true });
       }
       if (key === 'r' || key === 'R') {
-        socketRef.current.emit('keyPress', {
-          inputId: 'EnergyWave',
-          state: true,
-        });
+        socket.emit('keyPress', { inputId: 'EnergyWave', state: true });
       }
       if (key === 'f' || key === 'F') {
-        socketRef.current.emit('keyPress', { inputId: 'Heart', state: true });
+        socket.emit('keyPress', { inputId: 'Heart', state: true });
       }
       if (key === '2' || key === '2') {
-        socketRef.current.emit('keyPress', { inputId: '420', state: true });
+        socket.emit('keyPress', { inputId: '420', state: true });
       }
       if (key === '3' || key === '3') {
-        socketRef.current.emit('keyPress', { inputId: 'Shades', state: true });
+        socket.emit('keyPress', { inputId: 'Shades', state: true });
       }
       if (key === '4' || key === '4') {
-        socketRef.current.emit('keyPress', { inputId: 'Beer', state: true });
+        socket.emit('keyPress', { inputId: 'Beer', state: true });
       }
       if (key === '`' || key === '`') {
-        socketRef.current.emit('keyPress', { inputId: 'Sad', state: true });
+        socket.emit('keyPress', { inputId: 'Sad', state: true });
       }
     }
   };
   const keyUp = ({ key }: any) => {
     if (key === 'ArrowUp' || key === 'w') {
-      socketRef.current.emit('keyPress', { inputId: 'Up', state: false });
+      socket.emit('keyPress', { inputId: 'Up', state: false });
     } else if (key === 'ArrowDown' || key === 's') {
-      socketRef.current.emit('keyPress', { inputId: 'Down', state: false });
+      socket.emit('keyPress', { inputId: 'Down', state: false });
     } else if (key === 'ArrowLeft' || key === 'a') {
-      socketRef.current.emit('keyPress', { inputId: 'Left', state: false });
+      socket.emit('keyPress', { inputId: 'Left', state: false });
     } else if (key === 'ArrowRight' || key === 'd') {
-      socketRef.current.emit('keyPress', { inputId: 'Right', state: false });
+      socket.emit('keyPress', { inputId: 'Right', state: false });
     }
     if (key === 'q' || key === 'Q') {
-      socketRef.current.emit('keyPress', { inputId: 'Snap', state: false });
+      socket.emit('keyPress', { inputId: 'Snap', state: false });
     }
     if (key === 'e' || key === 'E') {
-      socketRef.current.emit('keyPress', { inputId: 'Wave', state: false });
+      socket.emit('keyPress', { inputId: 'Wave', state: false });
     }
     if (key === 'r' || key === 'R') {
-      socketRef.current.emit('keyPress', {
-        inputId: 'EnergyWave',
-        state: false,
-      });
+      socket.emit('keyPress', { inputId: 'EnergyWave', state: false });
     }
     if (key === 'f' || key === 'F') {
-      socketRef.current.emit('keyPress', { inputId: 'Heart', state: false });
+      socket.emit('keyPress', { inputId: 'Heart', state: false });
     }
     if (key === '`' || key === '`') {
-      socketRef.current.emit('keyPress', { inputId: 'Sad', state: false });
+      socket.emit('keyPress', { inputId: 'Sad', state: false });
     }
   };
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
     axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
-
-    socketRef.current.emit('joinChat', { user, eventId });
-
-    const handleNewPositions = (data) => {
+    socket.emit('joinChat', { user, eventId });
+    socket.on('message', (msg) => {
+      displayMessage(msg);
+    });
+    socket.on('newPositions', (data) => {
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
         if (data[i].room === eventId) {
@@ -446,18 +433,8 @@ function Chatroom() {
         }
       }
       setAllPlayers(allPlayerInfo);
-      
-    };
-
-    socketRef.current.on('message', displayMessage);
-    socketRef.current.on('newPositions', handleNewPositions);
-
-    // Cleanup function to prevent multiple event listeners
-    return () => {
-      socketRef.current.off('message', displayMessage);
-      socketRef.current.off('newPositions', handleNewPositions);
-    };
-  }, [eventId, user]);
+    });
+  }, []);
   // EVENT LISTENERS FOR TYPING
   useEffect(() => {
     if (isTyping === false) {
@@ -556,7 +533,7 @@ function Chatroom() {
     await setIsTyping(false);
   };
   const sendMessage = () => {
-    socketRef.current.emit('message', { message, eventId });
+    socket.emit('message', { message, eventId });
     displayMessage({
       message: message,
       username: user?.username,
@@ -591,13 +568,9 @@ function Chatroom() {
         <img src={TILES['1']} alt="" />
       </div>
       <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '80px',
-        }}
+        className={`${isPlayingGames ? 'invisible': ''} flex justify-center mt-6`}
       >
-        <Countdown endTime={dayjs(start_time)} />
+        <Countdown  endTime={dayjs(start_time)} />
       </div>
       {(!isPlayingGames && (
         <div className="flex justify-center">
@@ -622,40 +595,33 @@ function Chatroom() {
       <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
         {isPlayingGames && !isPlayingFlamiliar && !isPlayingDJ && (
           <div className="col-span-2">
-            <Suspense
-              fallback={
-                <div className="flex justify-center align-center">
-                  <img id="loading-image" src={loading} alt="Loading..."></img>
-                </div>
-              }
-            >
-              <Menu
-                toggleDJ={toggleDJ}
-                djgamePic={djgamePic}
-                toggleFlamiliar={toggleFlamiliar}
-                smallBartender={smallBartender}
-              />
+            <Suspense fallback={ <div className="flex justify-center align-center">
+                            <img
+                              id="loading-image"
+                              src={loading}
+                              alt="Loading..."
+                            ></img>
+                            </div>}>
+            <Menu
+              toggleDJ={toggleDJ}
+              djgamePic={djgamePic}
+              toggleFlamiliar={toggleFlamiliar}
+              smallBartender={smallBartender}
+            />
             </Suspense>
           </div>
         )}
         {isPlayingFlamiliar && isPlayingGames && (
           <div className=" col-span-2">
             <div>
-              <Suspense
-                fallback={
-                  <div className="flex justify-center align-center">
-                    <img
-                      id="loading-image"
-                      src={loading}
-                      alt="Loading..."
-                    ></img>
-                  </div>
-                }
-              >
-                <Flamiliar
-                  startTime={start_time}
-                  toggleFlamiliar={toggleFlamiliar}
-                />
+              <Suspense fallback={  <div className="flex justify-center align-center">
+                            <img
+                              id="loading-image"
+                              src={loading}
+                              alt="Loading..."
+                            ></img>
+                            </div>}>
+                <Flamiliar startTime={start_time} toggleFlamiliar={toggleFlamiliar} />
               </Suspense>
             </div>
           </div>
@@ -663,15 +629,16 @@ function Chatroom() {
 
         {isPlayingDJ && isPlayingGames && (
           <div className="col-span-2">
-            <Suspense
-              fallback={
-                <div className="flex justify-center align-center">
-                  <img id="loading-image" src={loading} alt="Loading..."></img>
+            <Suspense fallback={  <div className="flex justify-center align-center">
+                            <img
+                              id="loading-image"
+                              src={loading}
+                              alt="Loading..."
+                            ></img>
+                            </div>}>
+              <div >
+                <div className="flex justify-center">
                 </div>
-              }
-            >
-              <div>
-                <div className="flex justify-center"></div>
                 <DJam eventId={eventId} toggleDJ={toggleDJ} user={user} />
               </div>
             </Suspense>
@@ -681,10 +648,10 @@ function Chatroom() {
           <div className=" col-span-2 p-4">
             <div
               onClick={notTyping}
-              className="card aspect-w-16 aspect-h-9 max-w-4xl max-h-[100] bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden "
+              className="card aspect-w-16 aspect-h-9 max-w-6xl bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden "
             >
               <div className="p-2">
-                <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
+                <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video align-center ">
                   {!isSuccess && (
                     <div>
                       <div>
@@ -749,15 +716,22 @@ function Chatroom() {
                           >
                             {player.sentMessage && (
                               <>
-                                <pixiGraphics
-                                  draw={speechBubble}
+                                <pixiSprite
+                                  texture={Assets.get('speech')}
                                   key={player.username}
+                                  anchor={0.5}
+                                  x={70}
+                                  y={-30}
+                                  key={player.username}
+                                  scale={(1.1, 1.1)}
+                                  width={player.currentMessage.length >= 70 ? 125: 110}
+                                  height={player.currentMessage.length >= 70 ? player.currentMessage.length >= 90 ? 140 : 110 : 70}
                                 />
                                 <pixiText
                                   text={player.currentMessage}
                                   anchor={0.5}
                                   x={70}
-                                  y={-30}
+                                  y={-40}
                                   key={player.username}
                                   scale={(1.1, 1.1)}
                                   style={styleMessage}
@@ -918,11 +892,11 @@ function Chatroom() {
                         <Suspense
                           fallback={
                             <div className="flex justify-center align-center">
-                              <img
-                                id="loading-image"
-                                src={loading}
-                                alt="Loading..."
-                              ></img>
+                            <img
+                              id="loading-image"
+                              src={loading}
+                              alt="Loading..."
+                            ></img>
                             </div>
                           }
                         >
@@ -986,7 +960,11 @@ function Chatroom() {
           <Suspense
             fallback={
               <div className="flex justify-center align-center">
-                <img id="loading-image" src={loading} alt="Loading..."></img>
+              <img
+                id="loading-image"
+                src={loading}
+                alt="Loading..."
+              ></img>
               </div>
             }
           >

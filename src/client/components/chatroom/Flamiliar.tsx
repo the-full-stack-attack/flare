@@ -50,7 +50,7 @@ import votelaugh from '../../assets/sounds/chatroom/votelaugh.mp3';
 import winnermusic from '../../assets/sounds/chatroom/winnermusic.mp3';
 import menuselect from '../../assets/sounds/chatroom/menuselect.mp3';
 import menuswitch from '../../assets/sounds/chatroom/menuswitch.mp3';
-
+import speechbubble from '../../assets/images/speechbubble.png'
 
 
 let socket = io(SOCKET_URL);
@@ -74,13 +74,13 @@ function Flamiliar({wantsToPlay, toggleFlamiliar}) {
   const style = new TextStyle({
     align: 'left',
     fontFamily: 'sans-serif',
-    fontSize: 17 * sizeFactor,
+    fontSize: 17 * sizeFactor * sizeFactor,
     fontWeight: 'bold',
     fill: '#000000',
     stroke: '#eef1f5',
-    letterSpacing: 2 * sizeFactor,
+    letterSpacing: 2 * sizeFactor * sizeFactor,
     wordWrap: true,
-    wordWrapWidth: 150,
+    wordWrapWidth: 180 * sizeFactor * sizeFactor,
     breakWords: true,
   });
 
@@ -91,7 +91,7 @@ function Flamiliar({wantsToPlay, toggleFlamiliar}) {
     },
     {
       alias: 'speech',
-      src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
+      src: speechbubble,
     },
     {
       alias: 'background',
@@ -146,17 +146,10 @@ function Flamiliar({wantsToPlay, toggleFlamiliar}) {
     lineJoin: 'round',
     letterSpacing: 4,
     wordWrap: true,
-    wordWrapWidth: 150,
+    wordWrapWidth: 170,
     breakWords: true,
   });
   // EXAMPLES
-  const speechBubble = useCallback((graphics: unknown, element) => {
-    // if(sizeFactor )
-    graphics?.texture(Assets.get('speech'), 0xffffff, 10, 0, 270);
-    graphics?.scale.set(1 * sizeFactor, 0.7 * sizeFactor);
-    graphics.cursor = 'pointer';
-    graphics.label = 'HELLO';
-  }, [sizeFactor]);
 
   // WINDOW SIZING
   const handleResize = () => {
@@ -286,7 +279,7 @@ function Flamiliar({wantsToPlay, toggleFlamiliar}) {
     const audio = audioRefs.current.menuswitch;
     audio.currentTime = 0;
     audio.play().catch((error) => console.error('Failed to play sound:', error));
-    socket.emit('FlamiliarMessage', { message: 'someMessage', eventId: 'someEventId', user });
+    socket.emit('FlamiliarMessage', { message: message, eventId: eventId, user });
     setMessage('');
   };
 
@@ -407,15 +400,22 @@ function Flamiliar({wantsToPlay, toggleFlamiliar}) {
                 y={30}
               
               >
-                <pixiGraphics draw={speechBubble}>
+                <pixiSprite 
+                  texture={Assets.get('speech')}
+                  height={210 * ( sizeFactor * sizeFactor )}
+                  width={220 * ( sizeFactor * sizeFactor)}
+                  x={20}
+                  y={-15}
+                  
+                >
+                  </pixiSprite>
                   <pixiText
                     text={flamiliarPrompt}
                     anchor={0.5}
-                    x={120}
-                    y={100}
+                    x={120 * sizeFactor * sizeFactor}
+                    y={80 * sizeFactor * sizeFactor}
                     style={style}
-                  />
-                </pixiGraphics>
+                    />
               </pixiContainer>)
                   }
           </pixiContainer>
@@ -431,15 +431,20 @@ function Flamiliar({wantsToPlay, toggleFlamiliar}) {
                 y={30 + i * 150}
                 key={ useId }
               >
-                <pixiGraphics draw={speechBubble}>
+                <pixiSprite 
+                texture={Assets.get('speech')}
+                height={180}
+                width={200}
+                
+                >
+                  </pixiSprite>
                   <pixiText
                     text={`${tupleAnswer[1]} \n - ${tupleAnswer[0]}`}
                     anchor={0.5}
-                    x={120}
-                    y={100}
+                    x={100}
+                    y={60}
                     style={style}
-                  />
-                </pixiGraphics>
+                    />
               </pixiContainer>
             ))}
             <pixiContainer

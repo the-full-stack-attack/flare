@@ -350,7 +350,7 @@ const initializeSocket = (
    }
 
  
- }, 1000 / 1);
+ }, 1000 / 20);
 
 };
 
