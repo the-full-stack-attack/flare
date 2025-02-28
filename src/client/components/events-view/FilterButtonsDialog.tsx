@@ -96,7 +96,7 @@ function FilterButtonsDialog({
           </div>
         </div>
       </div>
-      <DialogFooter>
+      <DialogFooter className="grid grid-cols-2 gap-4">
         {
           selectedList.length
             ? (
@@ -106,7 +106,7 @@ function FilterButtonsDialog({
               >
                 Clear
               </Button>
-            ) : null
+            ) : <div> </div>
         }
         <DialogClose asChild>
           <Button
