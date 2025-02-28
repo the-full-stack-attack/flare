@@ -194,9 +194,9 @@ function Events() {
       </div>
       <Toaster
         toastOptions={{
-          className: 'isolate rounded-xl backdrop-blur-sm bg-gray-800/50 shadow-lg ring-1 ring-black/5 border-transparent text-white'
+          className: 'isolate rounded-xl backdrop-blur-sm bg-black/80 shadow-lg ring-1 ring-black/5 border-transparent text-white'
         }}
-        position="top-center"
+        position="bottom-center"
       />
     </div>
   );
