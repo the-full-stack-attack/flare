@@ -318,7 +318,7 @@ function Chatroom() {
     let timer = setTimeout(() => {
       graphics?.clear();
       clearTimeout(timer);
-    }, 70);
+    }, 2000);
   }, []);
   // CONTROLS
   const keyPress = ({ key }: any) => {
@@ -574,13 +574,9 @@ function Chatroom() {
         <img src={TILES['1']} alt="" />
       </div>
       <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '80px',
-        }}
+        className={`${isPlayingGames ? 'invisible': ''} flex justify-center mt-6`}
       >
-        <Countdown endTime={dayjs(start_time)} />
+        <Countdown  endTime={dayjs(start_time)} />
       </div>
       {(!isPlayingGames && (
         <div className="flex justify-center">
@@ -658,10 +654,10 @@ function Chatroom() {
           <div className=" col-span-2 p-4">
             <div
               onClick={notTyping}
-              className="card aspect-w-16 aspect-h-9 max-w-4xl max-h-[100] bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden "
+              className="card aspect-w-16 aspect-h-9 max-w-6xl bg-black border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden "
             >
               <div className="p-2">
-                <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video ">
+                <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video align-center ">
                   {!isSuccess && (
                     <div>
                       <div>

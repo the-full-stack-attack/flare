@@ -14,7 +14,7 @@ function Menu({ toggleDJ, djgamePic, toggleFlamiliar, smallBartender }) {
   return (
     <div className=" col-span-2 ">
       <div className="grid grid-cols-2 ">
-        <div className="">
+        <div className="p-4">
           <div
             onClick={toggleDJ}
             className="flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 shadow-sm border border-fuchsia-200 hover:border-4 hover:border-cyan-400 rounded-lg my-6 "
@@ -50,7 +50,7 @@ function Menu({ toggleDJ, djgamePic, toggleFlamiliar, smallBartender }) {
             </div>
           </div>
         </div>
-        <div onClick={toggleFlamiliar}>
+        <div className='p-4' onClick={toggleFlamiliar}>
           <div className="flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 shadow-sm border border-fuchsia-200 hover:border-4 hover:border-cyan-400 rounded-lg my-6   ">
             <h4 className="p-6 text-center mb-1 text-xl font-semibold text-slate-100">
               Flamiliar
