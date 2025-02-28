@@ -7,17 +7,6 @@ import axios from 'axios';
 
 const MsgBox = ({ msg, user, eventId, avatar }) => {
  let timeSent = dayjs().fromNow();
-// let formatted = timeSent.format('HH:mm:ss')
-
-// useEffect(() => {
-//   axios.post('/api/chatroom/chat', { msg, user, eventId})
-//   .then(() => {
-//     console.log('success')
-//   }).catch((err) => {
-//     console.error(err);
-//   })
-// })
-
   return (
     <figure
       className={cn(
