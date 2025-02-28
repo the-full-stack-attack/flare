@@ -97,6 +97,17 @@ function FilterButtonsDialog({
         </div>
       </div>
       <DialogFooter>
+        {
+          selectedList.length
+            ? (
+              <Button
+                className={footerButtonStyle}
+                onClick={() => setSelectedList([])}
+              >
+                Clear
+              </Button>
+            ) : null
+        }
         <DialogClose asChild>
           <Button
             className={footerButtonStyle}
