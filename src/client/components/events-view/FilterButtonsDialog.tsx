@@ -17,6 +17,7 @@ import {
 type FilterButtonsDialogProps = {
   choicesList: string[];
   initialSelection: string[];
+  itemType: string;
   title: string;
   description: string;
   setFilter: (items: string[]) => void;
@@ -25,6 +26,7 @@ type FilterButtonsDialogProps = {
 function FilterButtonsDialog({
   choicesList,
   initialSelection,
+  itemType,
   title,
   description,
   setFilter,
@@ -49,13 +51,13 @@ function FilterButtonsDialog({
   return (
     <DialogContent className="bg-black/80 rounded-xl border-transparent">
       <DialogHeader>
-        <DialogTitle className="text-gray-200">{title}</DialogTitle>
-        <DialogDescription className="text-gray-400">{description}</DialogDescription>
+        <DialogTitle className="text-gray-200 text-xl">{title}</DialogTitle>
+        <DialogDescription className="text-gray-400 text-base">{description}</DialogDescription>
       </DialogHeader>
       <div className="space-y-4">
         <div>
-          <Label className="text-gray-200 mb-2 block">
-            Add Category To Filter
+          <Label className="text-gray-200 mb-2 block text-lg">
+            {`Add ${itemType}`}
           </Label>
           <div className="grid grid-cols-2 gap-2">
             {
@@ -74,13 +76,13 @@ function FilterButtonsDialog({
           </div>
         </div>
         <div>
-          <Label className="text-gray-200 mb-2 block">
-            Remove Category From Filter
+          <Label className="text-gray-200 mb-2 block text-lg">
+          {`Current ${itemType} Filter`}
           </Label>
           <div className="grid grid-cols-2 gap-2">
             {
-              selectedList
-                .map((item) => (
+              selectedList.length
+              ? selectedList.map((item) => (
                   <Button
                     key={item}
                     className={selectedButtonStyle}
@@ -89,6 +91,7 @@ function FilterButtonsDialog({
                     {item}
                   </Button>
                 ))
+              : <p className="text-center col-span-2 text-gray-400"><em>None</em></p>
             }
           </div>
         </div>
@@ -99,7 +102,7 @@ function FilterButtonsDialog({
             className={footerButtonStyle}
             onClick={() => setFilter(selectedList)}
           >
-            {selectedList.length ? 'Set Filter' : 'No Filter'}
+            Submit
           </Button>
         </DialogClose>
       </DialogFooter>
