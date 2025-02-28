@@ -39,6 +39,43 @@ const MacroRecorder = ({eventId, user, allRecordings}) => {
   const loopKeyStateRef = useRef<{ [key: string]: boolean }>({}); // Track loop key state
   const [allMacros, setAllMacros] = useState(allRecordings);
 
+  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+
+  useEffect(() => {
+    // Preload all sounds once
+    const preloadedAudio: { [key: string]: HTMLAudioElement } = {};
+    Object.keys(keySounds).forEach((key) => {
+      preloadedAudio[key] = new Audio(keySounds[key]);
+    });
+    audioRefs.current = preloadedAudio;
+  
+    // Cleanup function to release memory
+    return () => {
+      Object.values(preloadedAudio).forEach((audio) => {
+        audio.pause();
+        audio.src = '';
+      });
+    };
+  }, []);
+  
+  const playSound = (key: string): HTMLAudioElement | null => {
+    if (mute) return null; // Do not play sound if muted
+  
+    const lowercaseKey = key.toLowerCase();
+    const audio = audioRefs.current[lowercaseKey];
+  
+    if (audio) {
+      audio.currentTime = 0; // Restart sound
+      audio
+        .play()
+        .catch((error) => console.error('Failed to play sound:', error));
+  
+      return audio;
+    }
+  
+    return null;
+  };
+  
 const submitMix = () => {
   console.log(recordings)
     axios.post('/api/chatroom/chats',
@@ -58,21 +95,6 @@ const submitMix = () => {
       console.error(error, 'ERROR submitting')
     })
   }
-  // Play a sound for a given key
-  const playSound = (key: string) => {
-    if (mute) return; // Do not play sound if muted
-
-    const lowercaseKey = key.toLowerCase();
-    if (keySounds[lowercaseKey]) {
-      const audio = new Audio(keySounds[lowercaseKey]);
-      audio.currentTime = 0;
-      audio.play().catch((error) => {
-        console.error('Failed to play sound:', error);
-      });
-      return audio;
-    }
-    return null;
-  };
 
   // Stop a specific sound
   const stopSound = (key: string) => {
