@@ -129,6 +129,7 @@ function Flamiliar({wantsToPlay}) {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   const [scaleFactor, setScaleFactor] = useState((gameRatio > 1.5) ? 0.8 : 1)
+  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
   // Flamiliar
   const [color, setColor] = useState('#ffffff');
   const [isPlayingFlamiliar, setIsPlayingFlamiliar] = useState(false);
@@ -172,11 +173,26 @@ function Flamiliar({wantsToPlay}) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-
+  useEffect(() => {
+    audioRefs.current = {
+      clocktick: new Audio(clocktick),
+      laugh: new Audio(laugh),
+      votelaugh: new Audio(votelaugh),
+      winnermusic: new Audio(winnermusic),
+      menuselect: new Audio(menuselect),
+      menuswitch: new Audio(menuswitch),
+    };
+    return () => {
+      Object.values(audioRefs.current).forEach((audio) => {
+        audio.pause();
+        audio.src = '';
+      });
+    };
+  }, []);
 
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
-    // console.log(user, 'Flamiliar user');
+
     socket.emit('joinFlamiliar', { user, eventId });
     socket.on(
       'receivePrompt',
@@ -191,11 +207,10 @@ function Flamiliar({wantsToPlay}) {
           ],
         },
       }) => {
-        // console.log('next question has arrived!');
-        // console.log(text);
         setFlamiliarPrompt(text);
-        let audio = new Audio(menuswitch);
-        audio.play();
+        const audio = audioRefs.current.menuswitch;
+        audio.currentTime = 0;
+        audio.play().catch((error) => console.error('Failed to play sound:', error));
       }
     );
 
@@ -206,21 +221,20 @@ function Flamiliar({wantsToPlay}) {
     });
 
     socket.on('showAnswers', (answers) => {
-      // console.log(answers, 'the answers were received by client');
-       const audio = new Audio(votelaugh);
-          audio.play();
+      const audio = audioRefs.current.votelaugh;
+      audio.currentTime = 0;
+      audio.play().catch((error) => console.error('Failed to play sound:', error));
       setAnswersReceived(true);
       setPlayerAnswers(answers);
     });
 
     socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
-      // console.log(winner);
-      let audio = new Audio(winnermusic);
-      audio.play();
-      if(winner[0] === ''){
-        winner[0] = 'No Winner :c'
-        winner[1] = ''
-
+      const audio = audioRefs.current.winnermusic;
+      audio.currentTime = 0;
+      audio.play().catch((error) => console.error('Failed to play sound:', error));
+      if (winner[0] === '') {
+        winner[0] = 'No Winner :c';
+        winner[1] = '';
       }
       setAnswersReceived(falsyBool);
       setShowWinner(truthyBool);
@@ -240,12 +254,21 @@ function Flamiliar({wantsToPlay}) {
         setColor('#f7f720');
       }
       if(time < 5){
-        let audio = new Audio(clocktick);
-        audio.play();
+        const audio = audioRefs.current.clocktick;
+        audio.currentTime = 0;
+        audio.play().catch((error) => console.error('Failed to play sound:', error));
         setColor('#cf060a');
       }
       setTimer((time).toString())
     })
+
+    return () => {
+      // Remove listeners on unmount if necessary
+      socket.off('receivePrompt');
+      socket.off('showAnswers');
+      socket.off('showWinner');
+      socket.off('countDown');
+    };
   }, []);
 
   const typing = async () => {
@@ -265,11 +288,10 @@ function Flamiliar({wantsToPlay}) {
     setShowReady(false);
   };
   const sendMessage = () => {
-    // console.log(message);
-    let audio = new Audio(menuswitch);
-        audio.play();
-    socket.emit('FlamiliarMessage', { message, eventId, user });
-    
+    const audio = audioRefs.current.menuswitch;
+    audio.currentTime = 0;
+    audio.play().catch((error) => console.error('Failed to play sound:', error));
+    socket.emit('FlamiliarMessage', { message: 'someMessage', eventId: 'someEventId', user });
     setMessage('');
   };
 
