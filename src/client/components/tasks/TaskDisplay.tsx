@@ -5,13 +5,9 @@ import { UserContext } from '../../contexts/UserContext';
 import DialogBox from './DialogBox';
 import {
   Dialog,
-  DialogPortal,
-  DialogOverlay,
   DialogTrigger,
   DialogClose,
   DialogContent,
-  DialogHeader,
-  DialogFooter,
   DialogTitle,
   DialogDescription,
 } from '../../../components/ui/dialog';
@@ -23,6 +19,7 @@ interface TaskDisplayProps {
   task: Task;
   completeDisabled: Boolean;
   setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowFireworks: React.Dispatch<React.SetStateAction<boolean>>;
   setCompleteDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 type Task = {
@@ -38,6 +35,7 @@ function TaskDisplay({
   task,
   completeDisabled,
   setShowConfetti,
+  setShowFireworks,
   setCompleteDisabled,
 }: TaskDisplayProps) {
   const [openOptOut, setOpenOptOut] = useState(false);
@@ -57,12 +55,22 @@ function TaskDisplay({
         getUser();
       })
       .then(() => {
-        setShowConfetti(true);
-        setCompleteDisabled(true);
-        setTimeout(() => {
-          setShowConfetti(false);
-          setCompleteDisabled(false);
-        }, 30000);
+        const randomNum = Math.random();
+        if (randomNum >= 0.50) {
+          setShowConfetti(true);
+          setCompleteDisabled(true);
+          setTimeout(() => {
+            setShowConfetti(false);
+            setCompleteDisabled(false);
+          }, 30000);
+        } else {
+          setShowFireworks(true);
+          setCompleteDisabled(true);
+          setTimeout(() => {
+            setShowFireworks(false);
+            setCompleteDisabled(false);
+          }, 20000);
+        }
       })
       .catch((err) => {
         console.error('Error completing task/user PATCH: ', err);

@@ -148,7 +148,7 @@ async function sendFlareObject(flare: FlareType, user: UserType) {
       const newNotification = {
         title: `${flare.name} Achieved`,
         message: notification_message,
-        send_time: new Date(now + 3000),
+        send_time: new Date(now - 5000),
       };
       const notification: any = await Notification.create(newNotification);
       const notificationId = notification.id;

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
+import Fireworks from '../components/Fireworks';
 import { useWindowSize } from '@react-hook/window-size';
 import {
   FaTrophy,
@@ -9,26 +10,11 @@ import {
   FaUsers,
   FaChartLine,
   FaStar,
-  FaRocket,
   FaTasks,
   FaMedal,
-  FaCheckCircle,
-  FaCloud,
-  FaSun,
-  FaMoon,
 } from 'react-icons/fa';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import {
   Dialog,
-  DialogTrigger,
-  DialogClose,
   DialogContent,
   DialogTitle,
   DialogDescription,
@@ -36,7 +22,6 @@ import {
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import { UserContext } from '../contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
-import cn from '../../../lib/utils';
 import PhoenixLogo from '../assets/logo/phoenix.png';
 import { Weather } from '../components/dashboard/Weather';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
@@ -72,6 +57,7 @@ function Dashboard() {
   const [task, setTask] = useState<Task | object>({});
   const [width, height] = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showFireworks, setShowFireworks] = useState(false);
   const [completeDisabled, setCompleteDisabled] = useState(false);
   const [userFlares, setUserFlares] = useState<FlareType[]>([]);
   const [unearnedFlares, setUnearnedFlares] = useState<FlareType[]>([]);
@@ -202,6 +188,9 @@ function Dashboard() {
             recycle={false}
           />
         )}
+        {showFireworks && (
+          <Fireworks />
+        )}
         <div className="relative z-10 container mx-auto px-4 md:px-6 lg:px-8">
           {/* Header Section with Total Tasks */}
           <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-8">
@@ -304,6 +293,7 @@ function Dashboard() {
                   task={task}
                   completeDisabled={completeDisabled}
                   setShowConfetti={setShowConfetti}
+                  setShowFireworks={setShowFireworks}
                   setCompleteDisabled={setCompleteDisabled}
                 />
               </motion.div>
