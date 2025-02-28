@@ -1,9 +1,13 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import axios from 'axios';
 
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+
+import FilterButtonsDialog from './FilterButtonsDialog';
 
 type ChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
@@ -67,67 +71,26 @@ function InterestsFilter({ interestsFilter, handleSetInterestsFilter }: Interest
   }, [interestsFilter]);
 
   return (
-      <div className="container mx-auto px-4 mt-4">
-        {
-          changeInterestsFilter ? (
-            <div className="grid grid-cols-2 gap-4 ">
-              <div>
-                <Button
-                  className={buttonColor}
-                  onClick={handleSetInterestsFilterClick}
-                >
-                  Set Filter
-                </Button>
-              </div>
-              <div>
-                { interestsFilter.length === 0 ? (
-                    <Button
-                      className={buttonColor}
-                      onClick={handleChangeInterestsFilterForm}
-                    >
-                      Cancel
-                    </Button>
-                  ) : (
-                    <Button
-                      className={buttonColor}
-                      onClick={handleClearInterestsFilter}
-                    >
-                      Clear
-                    </Button>
-                  )
-                }
-              </div>
-            </div>
-          ) : (
-            <Button
-              className={buttonColor}
-              onClick={handleChangeInterestsFilterForm}
-            >
-              Select Interests
-            </Button>
-          )
-        }
-        {
-          changeInterestsFilter ? interestsList.map((int) => (
-            <div key={int}>
-              <label className="text-gray-200">
-                <input
-                  type="checkbox"
-                  value={int}
-                  checked={selectedInterests.includes(int)}
-                  onChange={handleCheckboxChange}
-                />
-                {` ${int}`}
-              </label>
-            </div>
-          )) : (
-            <p className="text-gray-200 mt-2">
-              {interestsFilter.length === 0 ? '' : `Showing Interests: ${interestsFilter.join(', ')}`}
-            </p>
-          )
-        }
-      </div>
-    );
+    <div className="container mx-auto px-4 mt-4">
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            className={buttonColor}
+          >
+            Select Interests
+          </Button>
+        </DialogTrigger>
+        <FilterButtonsDialog
+          choicesList={interestsList}
+          initialSelection={interestsFilter}
+          itemType="Interest"
+          title="Filter by Interest"
+          description="Choose which interests you want to filter upcoming events by."
+          setFilter={handleSetInterestsFilter}
+        />
+      </Dialog>
+    </div>
+  );
 }
 
 export default InterestsFilter;
