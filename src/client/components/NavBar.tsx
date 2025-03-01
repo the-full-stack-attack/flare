@@ -117,7 +117,7 @@ export const NavBar = () => {
             </motion.button>
           </div>
 
-          {/* Logo - centered on mobile, left on desktop */}
+          {/* Logo */}
           <div className={cn(
             "flex items-center justify-center",
             "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
@@ -125,30 +125,27 @@ export const NavBar = () => {
             isOpen ? "hidden" : "flex"
           )}>
             <Link to="/dashboard" className="flex items-center">
-             <Logo size="md" animate={true} className="h-8 md:h-10 lg:h-12" />
+              <Logo size="md" animate={true} className="h-8 md:h-10 lg:h-12" />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {navItems.map(({ title, url, icon: Icon }) => (
-              <motion.a
+              <Link
                 key={title}
-                href={url}
-                className="px-3 lg:px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-2 group text-sm lg:text-base"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                to={url}
+                className="group px-3 lg:px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-2 text-sm lg:text-base"
               >
                 <Icon className="text-yellow-500 group-hover:text-orange-500 transition-colors h-5 w-5 lg:h-6 lg:w-6" />
-                <span className="hidden lg:inline">{title}</span>
-              </motion.a>
+                <span>{title}</span>
+              </Link>
             ))}
           </div>
 
-          {/* Right side items (Notifications & User Menu) */}
+          {/* Right side items */}
           <div className="flex items-center space-x-2 md:space-x-4">
             <NotificationBell count={user.Notifications?.length || 0} />
-
             <div className="relative">
               <motion.button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -191,16 +188,15 @@ export const NavBar = () => {
         >
           <div className="px-4 py-3 space-y-1">
             {navItems.map(({ title, url, icon: Icon }) => (
-              <motion.a
+              <Link
                 key={title}
-                href={url}
+                to={url}
                 className="block px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-3"
-                whileHover={{ x: 10 }}
                 onClick={() => setIsOpen(false)}
               >
                 <Icon className="text-yellow-500 h-5 w-5" />
                 {title}
-              </motion.a>
+              </Link>
             ))}
           </div>
         </motion.div>
