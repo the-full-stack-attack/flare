@@ -15,9 +15,10 @@ import { NotificationBell } from './NavBar/NotificationBell';
 import { UserMenu } from './NavBar/UserMenu';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { createAvatar } from '@dicebear/core';
+import { createAvatar, Options, StyleOptions } from '@dicebear/core';
 import { adventurer } from '@dicebear/collection';
 import { FaBars, FaTimes } from 'react-icons/fa';
+import { UserAvatar, AvatarConfig, AdventurerOptions } from '@/types/avatar';
 
 export const NavBar = () => {
   const { user } = useContext(UserContext);
@@ -53,10 +54,11 @@ export const NavBar = () => {
     }
   };
 
-  const generateAvatar = (avatarConfig) => {
+  const generateAvatar = async (avatarConfig: AdventurerOptions) => {
     try {
       const avatar = createAvatar(adventurer, avatarConfig);
-      return avatar.toDataUriSync();
+      const uri = await avatar.toDataUri();
+      return uri;
     } catch (error) {
       console.error('Error generating avatar:', error);
       return null;
@@ -66,25 +68,41 @@ export const NavBar = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user?.User_Avatar) {
-      try {
-        const avatar = createAvatar(adventurer, {
-          seed: 'Felix',
-          skinColor: [user.User_Avatar.skin],
-          hair: [user.User_Avatar.hair],
-          hairColor: [user.User_Avatar.hair_color],
-          eyebrows: [user.User_Avatar.eyebrows],
-          eyes: [user.User_Avatar.eyes],
-          mouth: [user.User_Avatar.mouth],
-        });
-        setAvatarUrl(avatar.toDataUriSync());
-      } catch (error) {
-        console.error('Error generating avatar:', error);
-        setAvatarUrl(user.avatar_uri || null);
+    const generateAndSetAvatar = async () => {
+      if (user?.User_Avatar) {
+        try {
+          const avatarConfig: AdventurerOptions = {
+            backgroundColor: ['transparent'],
+            seed: 'Felix',
+            size: 128,
+          };
+
+          // Default values in case the schema is undefined
+          const defaultVariant = 'variant01';
+
+          const avatar = createAvatar(adventurer, {
+            ...avatarConfig,
+            backgroundColor: ['transparent'],
+            skinColor: [user.User_Avatar.skin],
+            hairColor: [user.User_Avatar.hair_color],
+            eyebrows: [user.User_Avatar.eyebrows || defaultVariant],
+            eyes: [user.User_Avatar.eyes || defaultVariant],
+            mouth: [user.User_Avatar.mouth || defaultVariant],
+            hair: [user.User_Avatar.hair || defaultVariant],
+          } as AdventurerOptions);
+
+          const uri = await avatar.toDataUri();
+          setAvatarUrl(uri);
+        } catch (error) {
+          console.error('Error generating avatar:', error);
+          setAvatarUrl(user.avatar_uri || null);
+        }
+      } else if (user?.avatar_uri) {
+        setAvatarUrl(user.avatar_uri);
       }
-    } else if (user?.avatar_uri) {
-      setAvatarUrl(user.avatar_uri);
-    }
+    };
+
+    generateAndSetAvatar();
   }, [user]);
 
   return (
