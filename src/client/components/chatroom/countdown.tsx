@@ -2,7 +2,7 @@
 /* eslint-disable import/prefer-default-export */
 import dayjs, { Dayjs } from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 dayjs.extend(duration);
 
@@ -20,7 +20,7 @@ export const Countdown: React.FC<CountdownProps> = ({ endTime }) => {
     let duration = dayjs.duration(diffTime * 1000, 'milliseconds');
     let interval = 1000;
     const twoDP = (n: number) => (n > 9 ? n : '0' + n);
-    let nothing = null
+
     setInterval(function () {
       duration = dayjs.duration(
         duration.asMilliseconds() - interval,

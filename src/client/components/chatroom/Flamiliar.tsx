@@ -50,7 +50,7 @@ import votelaugh from '../../assets/sounds/chatroom/votelaugh.mp3';
 import winnermusic from '../../assets/sounds/chatroom/winnermusic.mp3';
 import menuselect from '../../assets/sounds/chatroom/menuselect.mp3';
 import menuswitch from '../../assets/sounds/chatroom/menuswitch.mp3';
-
+import speechbubble from '../../assets/images/speechbubble.png'
 
 
 let socket = io(SOCKET_URL);
@@ -69,18 +69,18 @@ extend({
 
 
 
-function QuipLash({wantsToPlay}) {
+function Flamiliar({wantsToPlay, toggleFlamiliar}) {
   const [sizeFactor, setSizeFactor] = useState(1);
   const style = new TextStyle({
     align: 'left',
     fontFamily: 'sans-serif',
-    fontSize: 17 * sizeFactor,
+    fontSize: 17 * sizeFactor * sizeFactor,
     fontWeight: 'bold',
     fill: '#000000',
     stroke: '#eef1f5',
-    letterSpacing: 2 * sizeFactor,
+    letterSpacing: 2 * sizeFactor * sizeFactor,
     wordWrap: true,
-    wordWrapWidth: 150,
+    wordWrapWidth: 180 * sizeFactor * sizeFactor,
     breakWords: true,
   });
 
@@ -91,7 +91,7 @@ function QuipLash({wantsToPlay}) {
     },
     {
       alias: 'speech',
-      src: 'https://pixijs.io/pixi-react/img/speech-bubble.png',
+      src: speechbubble,
     },
     {
       alias: 'background',
@@ -121,17 +121,19 @@ function QuipLash({wantsToPlay}) {
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState('');
   const uniqueId = useId;
-  const [quiplashPrompt, setQuiplashPrompt] = useState('');
+  const [flamiliarPrompt, setFlamiliarPrompt] = useState('');
   const [timer, setTimer] = useState('30');
+  const [showButton, setShowButton] = useState(timer === '30' ? true : false)
   const [gameRatio, setGameRatio] = useState(window.innerWidth / window.innerHeight)
   const [showReady, setShowReady] = useState(true);
   const displayMessage = (msg: string) => {
     // setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
   const [scaleFactor, setScaleFactor] = useState((gameRatio > 1.5) ? 0.8 : 1)
-  // QUIPLASH
+  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+  // Flamiliar
   const [color, setColor] = useState('#ffffff');
-  const [isPlayingQuiplash, setIsPlayingQuiplash] = useState(false);
+  const [isPlayingFlamiliar, setIsPlayingFlamiliar] = useState(false);
   const appRef = useRef(null);
   const style2 = new TextStyle({
     align: 'left',
@@ -144,21 +146,10 @@ function QuipLash({wantsToPlay}) {
     lineJoin: 'round',
     letterSpacing: 4,
     wordWrap: true,
-    wordWrapWidth: 150,
+    wordWrapWidth: 170,
     breakWords: true,
   });
   // EXAMPLES
-  const speechBubble = useCallback((graphics: unknown, element) => {
-    // if(sizeFactor )
-    graphics?.texture(Assets.get('speech'), 0xffffff, 10, 0, 270);
-    graphics?.scale.set(1 * sizeFactor, 0.7 * sizeFactor);
-    graphics.cursor = 'pointer';
-    graphics.label = 'HELLO';
-  }, [sizeFactor]);
-
-  function onTouchstart(param, e) {
-    // console.log(e);
-  }
 
   // WINDOW SIZING
   const handleResize = () => {
@@ -172,12 +163,27 @@ function QuipLash({wantsToPlay}) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-
+  useEffect(() => {
+    audioRefs.current = {
+      clocktick: new Audio(clocktick),
+      laugh: new Audio(laugh),
+      votelaugh: new Audio(votelaugh),
+      winnermusic: new Audio(winnermusic),
+      menuselect: new Audio(menuselect),
+      menuswitch: new Audio(menuswitch),
+    };
+    return () => {
+      Object.values(audioRefs.current).forEach((audio) => {
+        audio.pause();
+        audio.src = '';
+      });
+    };
+  }, []);
 
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
-    // console.log(user, 'quiplash user');
-    socket.emit('joinQuiplash', { user, eventId });
+
+    socket.emit('joinFlamiliar', { user, eventId });
     socket.on(
       'receivePrompt',
       ({
@@ -191,11 +197,10 @@ function QuipLash({wantsToPlay}) {
           ],
         },
       }) => {
-        // console.log('next question has arrived!');
-        // console.log(text);
-        setQuiplashPrompt(text);
-        let audio = new Audio(menuswitch);
-        audio.play();
+        setFlamiliarPrompt(text);
+        const audio = audioRefs.current.menuswitch;
+        audio.currentTime = 0;
+        audio.play().catch((error) => console.error('Failed to play sound:', error));
       }
     );
 
@@ -206,21 +211,20 @@ function QuipLash({wantsToPlay}) {
     });
 
     socket.on('showAnswers', (answers) => {
-      // console.log(answers, 'the answers were received by client');
-       const audio = new Audio(votelaugh);
-          audio.play();
+      const audio = audioRefs.current.votelaugh;
+      audio.currentTime = 0;
+      audio.play().catch((error) => console.error('Failed to play sound:', error));
       setAnswersReceived(true);
       setPlayerAnswers(answers);
     });
 
     socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
-      // console.log(winner);
-      let audio = new Audio(winnermusic);
-      audio.play();
-      if(winner[0] === ''){
-        winner[0] = 'No Winner :c'
-        winner[1] = ''
-
+      const audio = audioRefs.current.winnermusic;
+      audio.currentTime = 0;
+      audio.play().catch((error) => console.error('Failed to play sound:', error));
+      if (winner[0] === '') {
+        winner[0] = 'No Winner :c';
+        winner[1] = '';
       }
       setAnswersReceived(falsyBool);
       setShowWinner(truthyBool);
@@ -232,51 +236,55 @@ function QuipLash({wantsToPlay}) {
     });
 
     socket.on('countDown', (time) => {
-      // console.log('countdownrunning')
-      console.log(time);
       if(time >= 11 ){
         setColor('#55ff00');
       } else if(time >= 5){
         setColor('#f7f720');
       }
       if(time < 5){
-        let audio = new Audio(clocktick);
-        audio.play();
+        const audio = audioRefs.current.clocktick;
+        audio.currentTime = 0;
+        audio.play().catch((error) => console.error('Failed to play sound:', error));
         setColor('#cf060a');
       }
       setTimer((time).toString())
     })
+
+    return () => {
+      // Remove listeners on unmount if necessary
+      socket.off('receivePrompt');
+      socket.off('showAnswers');
+      socket.off('showWinner');
+      socket.off('countDown');
+    };
   }, []);
 
   const typing = async () => {
     await setIsTyping(!isTyping);
   };
 
-  const quitQuiplash = () => {
-    socket.emit('quitQuiplash');
+  const quitFlamiliar = () => {
+    socket.emit('quitFlamiliar');
     setQuit(true);
-    console.log('the player has quit');
+    toggleFlamiliar()
   };
   const toggleQuit = () => {
     setQuit(false);
   }
-  const readyForQuiplash = () => {
+  const readyForFlamiliar = () => {
     socket.emit('generatePrompt');
     setShowReady(false);
   };
   const sendMessage = () => {
-    // console.log(message);
-    let audio = new Audio(menuswitch);
-        audio.play();
-    socket.emit('quiplashMessage', { message, eventId, user });
-    
+    const audio = audioRefs.current.menuswitch;
+    audio.currentTime = 0;
+    audio.play().catch((error) => console.error('Failed to play sound:', error));
+    socket.emit('FlamiliarMessage', { message: message, eventId: eventId, user });
     setMessage('');
   };
 
   const test = (e) => {
-    // console.log('test is passing for onclick', e);
     if(e === user.username){
-      // console.log('you cannot vote for yourself!');
       let audio = new Audio(laugh);
       audio.play();
     } else {
@@ -303,7 +311,8 @@ function QuipLash({wantsToPlay}) {
       { quit && 
       <div>
       <div className="flex justify-center items-center mt-2" >
-        <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={toggleQuit}>
+
+          <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={toggleQuit}>
           Get Flamiliar!
           </Button>
           </div>
@@ -355,7 +364,7 @@ function QuipLash({wantsToPlay}) {
 </div>
           </div>
           </div> } 
-      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700" onClick={quitQuiplash}>QUIT</Button> </div>}
+      {!quit && <div className="flex justify-center " > <Button className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700 mt-2" onClick={quitFlamiliar}>QUIT</Button> </div>}
       { !quit &&
     <div className="p-4">
     <div className="card aspect-w-16 aspect-h-9 w-full h-full mx-auto bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 border border-black rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden ">
@@ -391,15 +400,22 @@ function QuipLash({wantsToPlay}) {
                 y={30}
               
               >
-                <pixiGraphics draw={speechBubble}>
+                <pixiSprite 
+                  texture={Assets.get('speech')}
+                  height={210 * ( sizeFactor * sizeFactor )}
+                  width={220 * ( sizeFactor * sizeFactor)}
+                  x={20}
+                  y={-15}
+                  
+                >
+                  </pixiSprite>
                   <pixiText
-                    text={quiplashPrompt}
+                    text={flamiliarPrompt}
                     anchor={0.5}
-                    x={120}
-                    y={100}
+                    x={120 * sizeFactor * sizeFactor}
+                    y={80 * sizeFactor * sizeFactor}
                     style={style}
-                  />
-                </pixiGraphics>
+                    />
               </pixiContainer>)
                   }
           </pixiContainer>
@@ -415,15 +431,20 @@ function QuipLash({wantsToPlay}) {
                 y={30 + i * 150}
                 key={ useId }
               >
-                <pixiGraphics draw={speechBubble}>
+                <pixiSprite 
+                texture={Assets.get('speech')}
+                height={180}
+                width={200}
+                
+                >
+                  </pixiSprite>
                   <pixiText
                     text={`${tupleAnswer[1]} \n - ${tupleAnswer[0]}`}
                     anchor={0.5}
-                    x={120}
-                    y={100}
+                    x={100}
+                    y={60}
                     style={style}
-                  />
-                </pixiGraphics>
+                    />
               </pixiContainer>
             ))}
             <pixiContainer
@@ -479,8 +500,8 @@ function QuipLash({wantsToPlay}) {
                 marginTop: '20px',
               }}
             >
-            {!promptGiven && !quit && showReady && (<div >
-      <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={readyForQuiplash}>GET FLAMILIAR!</Button>
+            {!promptGiven && !quit && showReady && timer === '30' && (<div >
+      <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={readyForFlamiliar}>GET FLAMILIAR!</Button>
       </div>
     )}
     </div>
@@ -491,4 +512,4 @@ function QuipLash({wantsToPlay}) {
   );
 }
 
-export default QuipLash;
+export default Flamiliar;
