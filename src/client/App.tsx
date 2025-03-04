@@ -32,7 +32,10 @@ function LayoutContent() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
-      {isAuthenticated && <NavBar />}
+      {/* Add a higher z-index for the navbar container */}
+      <div className="relative z-20">
+        {isAuthenticated && <NavBar />}
+      </div>
       <main className="flex-grow relative z-10">
         <Outlet />
       </main>
