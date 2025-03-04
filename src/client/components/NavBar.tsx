@@ -108,13 +108,13 @@ export const NavBar = () => {
   return (
     <nav
       className={cn(
-        'fixed w-full z-50 transition-all duration-300',
+        'fixed w-full transition-all duration-300 isolate',
         scrolled
           ? 'bg-black/50 backdrop-blur-lg border-b border-yellow-500/20'
-          : 'bg-transparent border-b border-white/10'
+          : 'before:absolute before:inset-0 before:bg-transparent before:z-0 border-b border-white/10'
       )}
     >
-      <div className="max-w-[2000px] mx-auto">
+      <div className="max-w-[2000px] mx-auto relative z-10">
         <div className="flex justify-between h-16 md:h-20 px-4 md:px-6 lg:px-8">
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
@@ -136,14 +136,18 @@ export const NavBar = () => {
           </div>
 
           {/* Logo */}
-          <div className={cn(
-            "flex items-center justify-center",
-            "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
-            "md:static md:left-0 md:transform-none",
-            isOpen ? "hidden" : "flex"
-          )}>
-            <Link to="/dashboard" className="flex items-center">
-              <Logo size="md" animate={true} className="h-8 md:h-10 lg:h-12" />
+          <div
+            className={cn(
+              "flex items-center justify-center relative z-10",
+              "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+              "md:static md:left-0 md:transform-none",
+              isOpen ? "hidden" : "flex"
+            )}
+          >
+            <Link to="/dashboard" className="flex items-center relative isolate">
+              <div className="relative z-10">
+                <Logo size="md" animate={true} className="h-8 md:h-10 lg:h-12" />
+              </div>
             </Link>
           </div>
 
