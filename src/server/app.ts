@@ -211,7 +211,13 @@ app.get('/logout', async (req: any, res: any) => {
   });
 });
 
-app.get('*', verifySessionView, (req: any, res: any) => {
+app.get('/dashboard', verifySessionView, (req: any, res: any) => {
+  res.sendFile('index.html', {
+    root: path.resolve(__dirname, '..', '..', 'dist'),
+  });
+});
+
+app.get('/signup', verifySessionView, (req: any, res: any) => {
   res.sendFile('index.html', {
     root: path.resolve(__dirname, '..', '..', 'dist'),
   });
