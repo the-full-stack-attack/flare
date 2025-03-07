@@ -125,7 +125,9 @@ const initializeSocket = (
             let initialTimer = 30;
 
             QUIPLASH_GAMES[eventId].countdownInterval = setInterval(() => {
+              if (!eventId) return;
               if (initialTimer <= 0) {
+                if (!QUIPLASH_GAMES[eventId]) return;
                 clearInterval(QUIPLASH_GAMES[eventId].countdownInterval!);
                 QUIPLASH_GAMES[eventId].countdownInterval = null;
               } else {
@@ -139,6 +141,7 @@ const initializeSocket = (
             setTimeout(() => {
               if (!QUIPLASH_GAMES[eventId]) return;
               QUIPLASH_GAMES[eventId].promptGiven = false;
+              if (!eventId) return;
               socket.nsp.to(`Flamiliar room: ${eventId}`).emit(`promptGiven`, false);
               socket.nsp.to(`Flamiliar room: ${eventId}`).emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
     
@@ -152,19 +155,14 @@ const initializeSocket = (
                   timer--;
                 }
               }, 1000);
-              
-
-              
-
-              // Stop the interval after 15 seconds
-              // setTimeout(() => {
-              //   clearInterval(intervalId);
-              // }, 17000);
 
               setTimeout(() => {
+                if (!QUIPLASH_GAMES[eventId]) return;
+                if (!eventId) return;
                 const totalVotes: { [key: string]: number } = {};
                 let winner: [string, number] = ['', 0];
                 for (let i = 0; i < QUIPLASH_GAMES[eventId].votes.length; i++) {
+                  if (!eventId) return;
                     if ( totalVotes[QUIPLASH_GAMES[eventId].votes[i]] === undefined){
                     totalVotes[QUIPLASH_GAMES[eventId].votes[i]] = 1;
                   } else {
@@ -177,7 +175,7 @@ const initializeSocket = (
                     winner = [key, totalVotes[key]];
                   }
                 }
-
+                if (!eventId) return;
                 QUIPLASH_GAMES[eventId].votes.length = 0;
                 QUIPLASH_GAMES[eventId].answers = {};
 
@@ -195,7 +193,7 @@ const initializeSocket = (
           },
         }; // END OF QUIPLASH GAME OBJECT
       } // END OF IF STATEMENT
-
+      if (!eventId) return;
       // if a game already exists, add the player to it
       QUIPLASH_GAMES[eventId].players[user.username] = flamiliarPlayer;
       QUIPLASH_GAMES[eventId].playerCount += 1;
@@ -208,6 +206,7 @@ const initializeSocket = (
 
     // triggered when its time to give a new prompt
     socket.on('generatePrompt', async () => {
+      if (!socket.data.eventId) return;
       // generate quiplash prompt that is unique
       let mod = Math.floor(Math.random() * 70);
       let prompt = `Generate a single quiplash prompt related to ${modifiers[mod]} without using possessive pronouns`;
@@ -261,6 +260,10 @@ const initializeSocket = (
 
     // Controls movement. Update their respective state via socket.id
     socket.on('keyPress', ({ inputId, state }) => {
+      if(!PLAYER_LIST[socket.id]){
+        console.error('failure to move character, not found in player list');
+        return;
+      }
       if (inputId === 'Up') {
         PLAYER_LIST[socket.id].pressingUp = state;
         PLAYER_LIST[socket.id].isWalking = state;
@@ -305,6 +308,10 @@ const initializeSocket = (
     });
 
     socket.on('message', ({ message, eventId }) => {
+      if(!PLAYER_LIST[socket.id]){
+        console.error('failure to find character, no message sent');
+        return;
+      }
       PLAYER_LIST[socket.id].sentMessage = true;
       PLAYER_LIST[socket.id].currentMessage = message;
 
