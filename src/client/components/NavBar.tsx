@@ -20,7 +20,7 @@ import { adventurer } from '@dicebear/collection';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
 export const NavBar = () => {
-  const { user } = useContext(UserContext);
+  const { user, getUser } = useContext(UserContext);
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +42,8 @@ export const NavBar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(getUser, []);
 
   const handleLogout = async () => {
     try {
