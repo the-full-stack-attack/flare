@@ -43,7 +43,15 @@ export const NavBar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(getUser, []);
+  useEffect(() => {
+    getUser();
+    let intervalId = setInterval(() => {
+      getUser();
+    }, 5000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -134,7 +142,7 @@ export const NavBar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {navItems.map(({ title, url, icon: Icon }) => (
-              <motion.a
+              <motion.div
                 key={title}
                 // href={url}
                 className="px-3 lg:px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-2 group text-sm lg:text-base"
@@ -145,7 +153,7 @@ export const NavBar = () => {
                   <Icon className="text-yellow-500 group-hover:text-orange-500 transition-colors h-5 w-5 lg:h-6 lg:w-6" />
                   <span className="hidden lg:inline">{title}</span>
                 </Link>
-              </motion.a>
+              </motion.div>
             ))}
           </div>
 
@@ -195,16 +203,18 @@ export const NavBar = () => {
         >
           <div className="px-4 py-3 space-y-1">
             {navItems.map(({ title, url, icon: Icon }) => (
-              <motion.a
+              <motion.div
                 key={title}
-                href={url}
+                // href={url}
                 className="block px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-3"
                 whileHover={{ x: 10 }}
                 onClick={() => setIsOpen(false)}
               >
-                <Icon className="text-yellow-500 h-5 w-5" />
-                {title}
-              </motion.a>
+                <Link to={url}>
+                  <Icon className="text-yellow-500 h-5 w-5" />
+                  {title}
+                </Link>
+              </motion.div>
             ))}
           </div>
         </motion.div>
