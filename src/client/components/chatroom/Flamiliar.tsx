@@ -489,7 +489,7 @@ function Flamiliar({wantsToPlay, toggleFlamiliar}) {
              
            
           </div>
-        )}
+        ) }
 
 
  
@@ -503,7 +503,7 @@ function Flamiliar({wantsToPlay, toggleFlamiliar}) {
             {!promptGiven && !quit && showReady && timer === '30' && (<div >
       <Button className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 text-grey-700" onClick={readyForFlamiliar}>GET FLAMILIAR!</Button>
       </div>
-    )}
+    ) || !quit && <h6 className="text-white">Game In Progress...</h6> }
     </div>
     
     {showWinner && <VelocityScroll className="text-white">{winner}</VelocityScroll>}
