@@ -54,6 +54,7 @@ import {
 } from 'pixi.js';
 import axios from 'axios';
 import nightClubTileSet from '../assets/chatroom/tileSet';
+import { ChatroomContext, ToggleDJContext } from '../contexts/ChatroomContext';
 
 extend({
   Container,
@@ -298,6 +299,9 @@ function Chatroom() {
         }
       }
     });
+    return () => {
+      socket.off('newPlayerList');
+    };
   }, []);
 
   // Flamiliar
@@ -316,7 +320,6 @@ function Chatroom() {
 
   // CONTROLS
   const keyPress = ({ key }: any) => {
-    // console.log(key, 'key caught')
     if (isTyping === false) {
       if (key === 'ArrowUp' || key === 'w') {
         socket.emit('keyPress', { inputId: 'Up', state: true });
@@ -387,6 +390,7 @@ function Chatroom() {
       displayMessage(msg);
     });
     socket.on('newPositions', (data) => {
+      console.log(data);
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
         if (data[i].room === eventId) {
@@ -427,13 +431,19 @@ function Chatroom() {
               data[i].x < 412 ||
               ((data[i].y < 112 || data[i].y > 150) && onKeyboard)
             ) {
+              if(onKeyboard){
               setOnKeyboard(false);
+              }
             }
           }
         }
       }
       setAllPlayers(allPlayerInfo);
     });
+    return () => {
+      socket.off('newPositions');
+      socket.off('message');
+    };
   }, []);
   // EVENT LISTENERS FOR TYPING
   useEffect(() => {
@@ -555,7 +565,6 @@ function Chatroom() {
   }, []);
 
   const handlePointerDown = (e) => {
-    // console.log(e.target.name)
     keyPress({ key: e.target.name }); // Adjust the timeout as needed
   };
 
@@ -639,7 +648,11 @@ function Chatroom() {
               <div >
                 <div className="flex justify-center">
                 </div>
-                <DJam eventId={eventId} toggleDJ={toggleDJ} user={user} />
+                <ToggleDJContext value={toggleDJ}>
+                <ChatroomContext.Provider value={eventId}>
+                <DJam />
+                </ChatroomContext.Provider>
+                </ToggleDJContext>
               </div>
             </Suspense>
           </div>
@@ -692,7 +705,7 @@ function Chatroom() {
                               ref={spriteRef2}
                               x={32 * objTiles.x * 1.25}
                               y={32 * objTiles.y * 1.25}
-                              scale={(1.25, 1.25)}
+                              scale={1.25}
                               key={index}
                             />
                           ))}
@@ -712,7 +725,7 @@ function Chatroom() {
                             x={player.x}
                             y={player.y}
                             key={player.id}
-                            scale={(1.24, 1.24)}
+                            scale={1.24}
                           >
                             {player.sentMessage && (
                               <>
@@ -723,7 +736,7 @@ function Chatroom() {
                                   x={70}
                                   y={-30}
                                   key={player.username}
-                                  scale={(1.1, 1.1)}
+                                  scale={1.1}
                                   width={player.currentMessage.length >= 70 ? 125: 110}
                                   height={player.currentMessage.length >= 70 ? player.currentMessage.length >= 90 ? 140 : 110 : 70}
                                 />
@@ -733,7 +746,7 @@ function Chatroom() {
                                   x={70}
                                   y={-40}
                                   key={player.username}
-                                  scale={(1.1, 1.1)}
+                                  scale={1.1}
                                   style={styleMessage}
                                 />
                               </>
@@ -751,7 +764,7 @@ function Chatroom() {
                               ref={spriteRef2}
                               x={0}
                               y={-13}
-                              scale={(scaleFactor, scaleFactor)}
+                              scale={scaleFactor}
                               width={25}
                               height={25}
                             ></pixiSprite>
@@ -764,7 +777,7 @@ function Chatroom() {
                                 initialFrame={0}
                                 animationSpeed={player.isSnapping ? 0.27 : 0.1}
                                 loop={true}
-                                scale={(scaleFactor, scaleFactor)}
+                                scale={scaleFactor}
                                 width={64}
                                 height={64}
                               />

@@ -1,16 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import MacroRecorder from "./MacroRecorder";
 import Keyboard from "./Piano";
 import vinyl from '../../assets/images/vinyl.png';
 import axios from "axios";
 import { isErrored } from "stream";
 import { Button } from "@/components/ui/button";
-const DJam = function ({eventId, user, toggleDJ}) {
+import { UserContext } from '../../contexts/UserContext';
+import { ChatroomContext } from "@/client/contexts/ChatroomContext";
+
+type DJamProps = {
+    toggleDJ: () => void,
+}
+
+
+const DJam = function () {
 
   const [allRecordings, setAllRecordings] = useState<Array[]>([]) 
+  const { user } = useContext(UserContext);
+  const eventId = useContext(ChatroomContext);
+ 
 
   useEffect(() => {
-
+    console.log(eventId, 'event id')
     axios.get('/api/chatroom/chats',
     { 
       params: 
@@ -35,8 +46,7 @@ const DJam = function ({eventId, user, toggleDJ}) {
 
   return (
     <div>
-
-      <MacroRecorder allRecordings={allRecordings} eventId={eventId} user={user} toggleDJ={toggleDJ}></MacroRecorder>
+      <MacroRecorder allRecordings={allRecordings} user={user}></MacroRecorder>
       <Keyboard></Keyboard>
       </div>
   )

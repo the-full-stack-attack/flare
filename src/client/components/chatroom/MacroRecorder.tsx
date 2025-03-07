@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Button } from '../../../components/ui/button';
 import { RainbowButton } from '../../../components/ui/rainbowbutton';
 import axios from 'axios';
@@ -10,7 +10,7 @@ import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
 import { Card, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import vinyl from '../../assets/images/vinyl.png';
 import { set } from 'date-fns';
-
+import { ChatroomContext, ToggleDJContext } from '@/client/contexts/ChatroomContext';
 interface KeyStroke {
   key: string;
   time: number; // Time relative to the start of the recording
@@ -48,7 +48,9 @@ const keySounds = {
   '0': NOTES['RaccoonCityMassacreBeat'],
 };
 
-const MacroRecorder = ({ eventId, user, allRecordings, toggleDJ }) => {
+const MacroRecorder = ({user, allRecordings }) => {
+  const eventId = useContext(ChatroomContext);
+  const toggleDJ = useContext(ToggleDJContext);
   const [showRecs, setShowRecs] = useState<boolean>(false);
   const [recording, setRecording] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
@@ -77,6 +79,7 @@ const MacroRecorder = ({ eventId, user, allRecordings, toggleDJ }) => {
   const [macroBgColor, setMacroBgColor] = useState(bgColors[count]);
   const [macroTxtColor, setMacroTxtColor] = useState(txtColors[count]);
   useEffect(() => {
+    console.log(eventId)
     // Preload all sounds once
     const preloadedAudio: { [key: string]: HTMLAudioElement } = {};
     Object.keys(keySounds).forEach((key) => {
