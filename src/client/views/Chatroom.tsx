@@ -33,9 +33,7 @@ import WALK from '../assets/chatroom/walk/index';
 import SNAP from '../assets/chatroom/snap/index';
 import WAVE from '../assets/chatroom/wave/index';
 import EMOJIS from '../assets/chatroom/emojis';
-import djgamePic from '../assets/images/djgamePic.png';
 import speechbubble from '../assets/images/speechbubble.png'
-import smallBartender from '../assets/images/smallBartender.png';
 import loading from '../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../assets/chatroom/energy/index';
 import mapPack from '../assets/chatroom/mapPack';
@@ -613,9 +611,9 @@ function Chatroom() {
                             </div>}>
             <Menu
               toggleDJ={toggleDJ}
-              djgamePic={djgamePic}
+           
               toggleFlamiliar={toggleFlamiliar}
-              smallBartender={smallBartender}
+    
             />
             </Suspense>
           </div>

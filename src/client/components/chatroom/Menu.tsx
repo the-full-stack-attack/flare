@@ -1,16 +1,13 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useContext,
-  useRef,
-  ref,
-  useId,
-  lazy,
-  Suspense,
-} from 'react';
+import { ImageResource, ImageSource } from 'pixi.js';
+import React from 'react';
+import smallBartender from '../../assets/images/smallBartender.png';
+import djgamePic from '../../assets/images/djgamePic.png';
+type MenuPropType = {
+  toggleDJ: () => void,
+  toggleFlamiliar: () => void,
+}
 
-function Menu({ toggleDJ, djgamePic, toggleFlamiliar, smallBartender }) {
+function Menu({ toggleDJ, toggleFlamiliar, }: MenuPropType) {
   return (
     <div className=" col-span-2 ">
       <div className="grid grid-cols-2 ">

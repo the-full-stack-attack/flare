@@ -18,38 +18,38 @@ interface KeyStroke {
   type: 'keydown' | 'keyup';
 }
 
-const keySounds = {
-  a: NOTES['C4'],
-  s: NOTES['D4'],
-  d: NOTES['E4'],
-  f: NOTES['F4'],
-  g: NOTES['G4'],
-  h: NOTES['A4'],
-  j: NOTES['B4'],
-  w: NOTES['A04'],
-  e: NOTES['G04'],
-  r: NOTES['D04'],
-  k: NOTES['C5'],
-  z: kick,
-  x: kick,
-  c: snare,
-  v: crash1,
-  '.': china,
-  '=': NOTES['beatbass'],
-  '-': NOTES['bassloop'],
-  p: NOTES['bass1'],
-  o: NOTES['bass2'],
-  i: NOTES['bass3'],
-  u: NOTES['bass4'],
-  '9': NOTES['bass5'],
-  '8': NOTES['bass6'],
-  '5': NOTES['bass8'],
-  '3': NOTES['bass10'],
-  '1': NOTES['bass11'],
-  '0': NOTES['RaccoonCityMassacreBeat'],
-};
 
 const MacroRecorder = () => {
+  let keySounds = {
+    a: NOTES['C4'],
+    s: NOTES['D4'],
+    d: NOTES['E4'],
+    f: NOTES['F4'],
+    g: NOTES['G4'],
+    h: NOTES['A4'],
+    j: NOTES['B4'],
+    w: NOTES['A04'],
+    e: NOTES['G04'],
+    r: NOTES['D04'],
+    k: NOTES['C5'],
+    z: kick,
+    x: kick,
+    c: snare,
+    v: crash1,
+    '.': china,
+    '=': NOTES['beatbass'],
+    '-': NOTES['bassloop'],
+    p: NOTES['bass1'],
+    o: NOTES['bass2'],
+    i: NOTES['bass3'],
+    u: NOTES['bass4'],
+    '9': NOTES['bass5'],
+    '8': NOTES['bass6'],
+    '5': NOTES['bass8'],
+    '3': NOTES['bass10'],
+    '1': NOTES['bass11'],
+    '0': NOTES['RaccoonCityMassacreBeat'],
+  };
   const { user } = useContext(UserContext);
   const eventId = useContext(ChatroomContext);
   const toggleDJ = useContext(ToggleDJContext);
@@ -64,8 +64,8 @@ const MacroRecorder = () => {
   const loopSoundsRef = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Track loop sounds
   const loopKeyStateRef = useRef<{ [key: string]: boolean }>({}); // Track loop key state
   const [allRecordings, setAllRecordings] = useState<Array[]>([]) 
-  const [allMacros, setAllMacros] = useState(allRecordings);
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+  
   const bgColors = {
     1: 'bg-gradient-to-r from-gray-950 via-gray-700 to-gray-950',
     2: 'bg-gradient-to-r from-slate-950 via-fuchsia-950 to-slate-950',
@@ -329,6 +329,7 @@ setCount(count + 1);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      keySounds = null;
     };
   }, [recording]);
 
@@ -357,7 +358,9 @@ setCount(count + 1);
           <CardContent className="max-h-[200px] overflow-y-auto p-2">
             <div className="grid grid-cols-3 gap-2">
             <Card className=" bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 col-span-3 grid grid-cols-4 gap-3 border-orange-800">
-            <CardTitle className="col-span-4 flex justify-center mt-2 ml-2 text-white text-opacity-75"><p1>Clicking on a recording will load that users track into your Macro-Recorder! You can remix it and submit it as your own!</p1></CardTitle>
+            <CardTitle className="col-span-4 flex justify-center mt-2 ml-2 text-white text-opacity-75">
+              <p>Clicking on a recording will load that users track into your Macro-Recorder! You can remix it and submit it as your own!</p>
+              </CardTitle>
               {allRecordings &&
                 allRecordings.map((recording, index) => (
                   <Button
