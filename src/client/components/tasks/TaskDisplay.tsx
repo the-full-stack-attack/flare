@@ -95,14 +95,6 @@ function TaskDisplay({
   };
   return (
     <div className="pt-3">
-      <Toaster
-        position="top-center"
-        theme="dark"
-        toastOptions={{
-          style: { backgroundColor: 'red' },
-          className: 'bg-red-500',
-        }}
-      />
       <DialogBox
         isOpen={openOptOut}
         confirm={optOut}
