@@ -95,7 +95,7 @@ const initializeSocket = (
         delete QUIPLASH_LIST[socket.id];
         QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
       } catch (error) {
-        console.log('cannot find player to delete');
+        console.error('cannot find player to delete')
       }
       if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
         delete QUIPLASH_GAMES[socket.data.eventId];

@@ -112,7 +112,6 @@ const MacroRecorder = () => {
   }, [])
 
   useEffect(() => {
-    console.log(eventId)
     // Preload all sounds once
     const preloadedAudio: { [key: string]: HTMLAudioElement } = {};
     Object.keys(keySounds).forEach((key) => {
@@ -162,7 +161,6 @@ setCount(count + 1);
   };
 
   const submitMix = () => {
-    console.log(recordings);
     axios
       .post('/api/chatroom/chats', {
         body: {
@@ -173,7 +171,6 @@ setCount(count + 1);
         },
       })
       .then(() => {
-        console.log('SUBMITTED!');
         grabAllRecordings();
       })
       .catch((error) => {
@@ -334,8 +331,6 @@ setCount(count + 1);
   }, [recording]);
 
   const switchRecording = (e) => {
-    console.log(e.target.name);
-    console.log(allRecordings[e.target.name]);
     setRecordings(allRecordings[e.target.name].recording);
   };
 

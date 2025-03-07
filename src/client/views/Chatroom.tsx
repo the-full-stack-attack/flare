@@ -388,7 +388,6 @@ function Chatroom() {
       displayMessage(msg);
     });
     socket.on('newPositions', (data) => {
-      console.log(data);
       let allPlayerInfo = [];
       for (let i = 0; i < data.length; i++) {
         if (data[i].room === eventId) {
