@@ -1,12 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useContext,
-  useRef,
-  ref,
-  useId,
-} from 'react';
+import React from 'react';
 import {
   Carousel,
   CarouselContent,

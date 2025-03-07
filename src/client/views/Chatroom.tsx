@@ -648,11 +648,11 @@ function Chatroom() {
               <div >
                 <div className="flex justify-center">
                 </div>
-                <ToggleDJContext value={toggleDJ}>
+                <ToggleDJContext.Provider value={toggleDJ}>
                 <ChatroomContext.Provider value={eventId}>
                 <DJam />
                 </ChatroomContext.Provider>
-                </ToggleDJContext>
+                </ToggleDJContext.Provider>
               </div>
             </Suspense>
           </div>
@@ -982,7 +982,11 @@ function Chatroom() {
             }
           >
             <div className="hidden lg:block col-span-3">
-              <DJam eventId={eventId} user={user} />
+            <ToggleDJContext.Provider value={toggleDJ}>
+            <ChatroomContext.Provider value={eventId}>
+              <DJam/>
+              </ChatroomContext.Provider >
+              </ToggleDJContext.Provider >
             </div>
           </Suspense>
         )}

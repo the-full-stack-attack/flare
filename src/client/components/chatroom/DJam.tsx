@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React from "react";
 import MacroRecorder from "./MacroRecorder";
 import Keyboard from "./Piano";
 
