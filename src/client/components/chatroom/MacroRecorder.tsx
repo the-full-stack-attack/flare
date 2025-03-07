@@ -11,6 +11,7 @@ import { Card, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import vinyl from '../../assets/images/vinyl.png';
 import { set } from 'date-fns';
 import { ChatroomContext, ToggleDJContext } from '@/client/contexts/ChatroomContext';
+import { UserContext } from '../../contexts/UserContext';
 interface KeyStroke {
   key: string;
   time: number; // Time relative to the start of the recording
@@ -48,7 +49,8 @@ const keySounds = {
   '0': NOTES['RaccoonCityMassacreBeat'],
 };
 
-const MacroRecorder = ({user, allRecordings }) => {
+const MacroRecorder = () => {
+  const { user } = useContext(UserContext);
   const eventId = useContext(ChatroomContext);
   const toggleDJ = useContext(ToggleDJContext);
   const [showRecs, setShowRecs] = useState<boolean>(false);
@@ -61,6 +63,7 @@ const MacroRecorder = ({user, allRecordings }) => {
   const isPlaybackRef = useRef<boolean>(false); // Flag to distinguish playback strokes
   const loopSoundsRef = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Track loop sounds
   const loopKeyStateRef = useRef<{ [key: string]: boolean }>({}); // Track loop key state
+  const [allRecordings, setAllRecordings] = useState<Array[]>([]) 
   const [allMacros, setAllMacros] = useState(allRecordings);
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
   const bgColors = {
@@ -78,6 +81,36 @@ const MacroRecorder = ({user, allRecordings }) => {
   const [count, setCount] = useState<Number>(1)
   const [macroBgColor, setMacroBgColor] = useState(bgColors[count]);
   const [macroTxtColor, setMacroTxtColor] = useState(txtColors[count]);
+ 
+
+  const grabAllRecordings = () => {
+    axios.get('/api/chatroom/chats',
+      { 
+        params: 
+        {
+        eventId,
+        user: user.username,
+        userId: user.id,
+        }
+      })
+      .then((mixChats) => {
+        let arrayOfAllChats = mixChats.data;
+       
+          setAllRecordings(arrayOfAllChats.map((chat) => {
+            let recording = chat.macro
+            let userName = chat.username 
+            return { userName, recording };
+        })
+      )})
+      .catch((error) => {
+        console.error(error, 'ERROR')
+      })
+  }
+  useEffect(() => {
+    grabAllRecordings();
+   
+  }, [])
+
   useEffect(() => {
     console.log(eventId)
     // Preload all sounds once
@@ -141,6 +174,7 @@ setCount(count + 1);
       })
       .then(() => {
         console.log('SUBMITTED!');
+        grabAllRecordings();
       })
       .catch((error) => {
         console.error(error, 'ERROR submitting');
