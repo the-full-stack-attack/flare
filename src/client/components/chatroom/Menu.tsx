@@ -8,6 +8,7 @@ type MenuPropType = {
 }
 
 function Menu({ toggleDJ, toggleFlamiliar, }: MenuPropType) {
+  console.log('menu rendered')
   return (
     <div className=" col-span-2 ">
       <div className="grid grid-cols-2 ">

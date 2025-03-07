@@ -1,7 +1,6 @@
 import React, {
   useEffect,
   useState,
-  useCallback,
   useContext,
   useRef,
   ref,
@@ -27,25 +26,9 @@ import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
 import { VelocityScroll } from '../../../components/ui/scroll-based-velocity';
 import { Button } from '../../../components/ui/button';
-import MagicCard from '../../../components/ui/magicCard';
-import { InteractiveHoverButton } from '../../../components/ui/interactive-hover-button';
 import bartender from '../../assets/images/chatImages/bartender.jpg';
 import { UserContext } from '../../contexts/UserContext';
 import SOCKET_URL from '../../../../config';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-  CardFooter,
-} from '@/components/ui/card';
 import FlamiliarTutorial from './FlamiliarTutorial';
 import BackgroundMusic from './Backgroundmusic';
 import clocktick from '../../assets/sounds/chatroom/clocktick.mp3';
@@ -69,7 +52,8 @@ extend({
   AnimatedSprite,
 });
 
-function Flamiliar({ wantsToPlay, toggleFlamiliar }) {
+function Flamiliar() {
+  console.log('flamiliar rendered')
   const [sizeFactor, setSizeFactor] = useState(1);
   const style = new TextStyle({
     align: 'left',

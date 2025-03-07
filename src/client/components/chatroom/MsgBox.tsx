@@ -6,6 +6,7 @@ dayjs.extend(relativeTime);
 import axios from 'axios';
 
 const MsgBox = ({ msg, user, eventId, avatar }) => {
+  console.log('msgbox rendered')
  let timeSent = dayjs().fromNow();
   return (
     <figure

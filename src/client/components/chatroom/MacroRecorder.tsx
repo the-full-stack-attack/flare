@@ -20,6 +20,7 @@ interface KeyStroke {
 
 
 const MacroRecorder = () => {
+  console.log('macrorecorder rendered')
   let keySounds = {
     a: NOTES['C4'],
     s: NOTES['D4'],

@@ -69,6 +69,7 @@ extend({
 let socket = io(SOCKET_URL);
 
 function Chatroom() {
+  console.log('chatroom rendered')
   const { user } = useContext(UserContext);
   const location = useLocation();
   const start_time = location.state;
@@ -627,7 +628,7 @@ function Chatroom() {
                               alt="Loading..."
                             ></img>
                             </div>}>
-                <Flamiliar startTime={start_time} toggleFlamiliar={toggleFlamiliar} />
+                <Flamiliar />
               </Suspense>
             </div>
           </div>

@@ -4,7 +4,7 @@ import Keyboard from "./Piano";
 
 const DJam = function () {
 
-
+console.log('DJAM rendered')
 
   return (
     <div>
