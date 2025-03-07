@@ -51,11 +51,11 @@ function TaskDisplay({
     const config = { ids: { userId, taskId } };
     axios
       .patch('/api/task/complete', config)
-      .then(({ data }) => {
+      .then(() => {
         getUser();
       })
       .then(() => {
-        const randomNum = Math.random();
+        let randomNum = Math.random();
         if (randomNum >= 0.50) {
           setShowConfetti(true);
           setCompleteDisabled(true);
@@ -95,14 +95,6 @@ function TaskDisplay({
   };
   return (
     <div className="pt-3">
-      <Toaster
-        position="top-center"
-        theme="dark"
-        toastOptions={{
-          style: { backgroundColor: 'red' },
-          className: 'bg-red-500',
-        }}
-      />
       <DialogBox
         isOpen={openOptOut}
         confirm={optOut}
