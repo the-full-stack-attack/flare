@@ -1,12 +1,11 @@
 import '@/styles/main.css';
 import '@/styles/themes/dark-cosmic.css';
 import '@/styles/themes/cyber-neon.css';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import {
   AiConversations,
-  Chatroom,
   CreateEvents,
   Events,
   Signup,
@@ -16,6 +15,7 @@ import {
   Notifications,
   AccountSettings,
 } from './views/index';
+const Chatroom = lazy(() => import('./views/Chatroom'));
 import { NavBar } from './components/NavBar';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
@@ -105,6 +105,7 @@ export default function App() {
       <UserContext.Provider value={userState}>
         <BrowserRouter>
           <Routes>
+
             <Route element={<Layout />}>
               {/* Public routes */}
               <Route path="/" element={<Home />} />
@@ -114,7 +115,25 @@ export default function App() {
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/aiconversations" element={<AiConversations />} />
-                <Route path="/chatroom/*" element={<Chatroom />} />
+                <Route
+                  path="/chatroom/*"
+                  element={
+                    <Suspense
+                      fallback={
+                        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
+                          <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
+                          <div className="flex items-center justify-center w-screen pt-40">
+                            <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+                              Loading...
+                            </h1>
+                          </div>
+                        </div>
+                      }
+                    >
+                      <Chatroom />
+                    </Suspense>
+                  }
+                />
                 <Route path="/createevents" element={<CreateEvents />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/task" element={<Task />} />
@@ -122,7 +141,7 @@ export default function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/settings" element={<AccountSettings />} />
               </Route>
-
+              
               {/* Catch-all route */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
