@@ -51,11 +51,11 @@ function TaskDisplay({
     const config = { ids: { userId, taskId } };
     axios
       .patch('/api/task/complete', config)
-      .then(({ data }) => {
+      .then(() => {
         getUser();
       })
       .then(() => {
-        const randomNum = Math.random();
+        let randomNum = Math.random();
         if (randomNum >= 0.50) {
           setShowConfetti(true);
           setCompleteDisabled(true);
