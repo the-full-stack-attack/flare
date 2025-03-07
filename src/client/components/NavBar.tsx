@@ -134,13 +134,15 @@ export const NavBar = () => {
             {navItems.map(({ title, url, icon: Icon }) => (
               <motion.a
                 key={title}
-                href={url}
+                // href={url}
                 className="px-3 lg:px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-2 group text-sm lg:text-base"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Icon className="text-yellow-500 group-hover:text-orange-500 transition-colors h-5 w-5 lg:h-6 lg:w-6" />
-                <span className="hidden lg:inline">{title}</span>
+                <Link to={url}>
+                  <Icon className="text-yellow-500 group-hover:text-orange-500 transition-colors h-5 w-5 lg:h-6 lg:w-6" />
+                  <span className="hidden lg:inline">{title}</span>
+                </Link>
               </motion.a>
             ))}
           </div>
