@@ -1,24 +1,17 @@
 import React, {
   useEffect,
   useState,
-  useCallback,
   useContext,
-  useRef,
-  ref,
-  useId,
   lazy,
-  useMemo,
   Suspense,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import io from 'socket.io-client';
 import dayjs from 'dayjs';
 import { Label } from '../../components/ui/label';
 import { AnimatedList } from '../../components/ui/animated-list';
 import { Button } from '../../components/ui/button';
 import { RainbowButton } from '../../components/ui/rainbowbutton';
 import { Textarea } from '../../components/ui/textarea';
-import { VelocityScroll } from '../../components/ui/scroll-based-velocity';
 import { Card } from '../../components/ui/card';
 import { UserContext } from '../contexts/UserContext';
 import { Countdown } from '../components/chatroom/countdown';
@@ -26,15 +19,13 @@ const Flamiliar = lazy(() => import('../components/chatroom/Flamiliar'));
 const MsgBox = lazy(() => import('../components/chatroom/MsgBox'));
 const DJam = lazy(() => import('../components/chatroom/DJam'));
 const Menu = lazy(() => import('../components/chatroom/Menu'));
-// import SOCKET_URL from '../../../config';
-import loading from '../assets/chatroom/loading.gif';
-
-import { FaShip } from 'react-icons/fa';
 const MainChat = lazy(() => import('../components/chatroom/MainChat'));
+import loading from '../assets/chatroom/loading.gif';
+import { FaShip } from 'react-icons/fa';
 import axios from 'axios';
 
 import { ChatroomContext, ToggleDJContext } from '../contexts/ChatroomContext';
-import SocketContext from '../contexts/SocketContext';
+import { SocketContext } from '../contexts/SocketContext';
 
 function Chatroom() {
   console.log('chatroom rendered');
@@ -47,9 +38,6 @@ function Chatroom() {
     { alias: any; src: any }[]
   >([]);
   const [lobby, setLobby] = useState([user]);
-  const [playerY, setPlayerY] = useState(0);
-  const [playerX, setPlayerX] = useState(0);
-  const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
   // LOGIC
 
   const [eventId, setEventId] = useState(document.location.pathname.slice(10));
@@ -63,14 +51,11 @@ function Chatroom() {
   const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
-
   const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
-
   // Flamiliar
   const toggleGames = () => {
     isPlayingGames ? setIsPlayingGames(false) : setIsPlayingGames(true);
   };
-
   const toggleDJ = () => {
     isPlayingDJ ? setIsPlayingDJ(false) : setIsPlayingDJ(true);
   };
@@ -223,11 +208,11 @@ function Chatroom() {
   };
 
   const handlePointerDown = (e) => {
-    keyPress({ key: e.target.name }); // Adjust the timeout as needed
+    keyPress({ key: e.target.name });
   };
 
   const handlePointerUp = (e) => {
-    keyUp({ key: e.target.name }); // Adjust the timeout as needed
+    keyUp({ key: e.target.name }); 
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">

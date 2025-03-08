@@ -38,7 +38,7 @@ import winnermusic from '../../assets/sounds/chatroom/winnermusic.mp3';
 import menuselect from '../../assets/sounds/chatroom/menuselect.mp3';
 import menuswitch from '../../assets/sounds/chatroom/menuswitch.mp3';
 import speechbubble from '../../assets/images/speechbubble.png';
-import SocketContext from '../../contexts/SocketContext';
+import { SocketContextType } from '../../contexts/SocketContext';
 
 extend({
   Container,
@@ -51,7 +51,11 @@ extend({
   AnimatedSprite,
 });
 
-function Flamiliar({toggleFlamiliar, socket}) {
+type FlamiliarPropTypes = {
+  toggleFlamiliar: () => void,
+  socket: SocketContextType,
+}
+function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
  // const { socket } = useContext(SocketContext)
   console.log('flamiliar rendered')
   const [sizeFactor, setSizeFactor] = useState(1);
@@ -69,10 +73,9 @@ function Flamiliar({toggleFlamiliar, socket}) {
   });
 
   useAssets([
-    {
-      alias: 'bunny',
-      src: 'https://pixijs.com/assets/bunny.png',
-    },
+    { alias: 'bunny',
+      src: speechbubble,
+     },
     {
       alias: 'speech',
       src: speechbubble,
@@ -91,34 +94,23 @@ function Flamiliar({toggleFlamiliar, socket}) {
   const [quit, setQuit] = useState(true);
   // LOGIC
   const { user } = useContext(UserContext);
-  const [allPlayers, setAllPlayers] = useState([]);
   const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   const [message, setMessage] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [allMessages, setAllMessages] = useState([]);
-  const [gameWidth, setGameWidth] = useState(window.innerWidth);
-  const [gameHeight, setGameHeight] = useState(window.innerHeight);
-  const [promptGiven, setPromptGiven] = useState(false);
-  const [playerAnswers, setPlayerAnswers] = useState(false);
-  const [answersReceived, setAnswersReceived] = useState(false);
-  const [showWinner, setShowWinner] = useState(false);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [promptGiven, setPromptGiven] = useState<boolean>(false);
+  const [playerAnswers, setPlayerAnswers] = useState<boolean>(false);
+  const [answersReceived, setAnswersReceived] = useState<boolean>(false);
+  const [showWinner, setShowWinner] = useState<boolean>(false);
   const [winner, setWinner] = useState('');
-  const uniqueId = useId;
   const [flamiliarPrompt, setFlamiliarPrompt] = useState('');
   const [timer, setTimer] = useState('30');
-  const [showButton, setShowButton] = useState(timer === '30' ? true : false);
   const [gameRatio, setGameRatio] = useState(
     window.innerWidth / window.innerHeight
   );
   const [showReady, setShowReady] = useState(true);
-  const displayMessage = (msg: string) => {
-    // setAllMessages((prevMessages) => [...prevMessages, msg]);
-  };
-  const [scaleFactor, setScaleFactor] = useState(gameRatio > 1.5 ? 0.8 : 1);
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
   // Flamiliar
-  const [color, setColor] = useState('#ffffff');
-  const [isPlayingFlamiliar, setIsPlayingFlamiliar] = useState(false);
+  const [color, setColor] = useState<string>('#ffffff');
   const appRef = useRef(null);
   const style2 = new TextStyle({
     align: 'left',
@@ -139,8 +131,6 @@ function Flamiliar({toggleFlamiliar, socket}) {
   // WINDOW SIZING
   const handleResize = () => {
     setGameRatio(window.innerWidth / window.innerHeight);
-    setGameWidth(window.innerWidth);
-    setGameHeight(window.innerHeight);
     setScaleFactor(gameRatio > 1.3 ? 0.75 : 1);
   };
   useEffect(() => {

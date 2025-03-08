@@ -35,7 +35,7 @@ import loading from '../../assets/chatroom/loading.gif';
 import ENERGYWAVE from '../../assets/chatroom/energy/index';
 import mapPack from '../../assets/chatroom/mapPack';
 import nightClubTileSet from '../../assets/chatroom/tileSet';
-import DecoyText from './decoyText';
+import PlayerCharacter from './PlayerCharacter';
 import {
   ChatroomContext,
   DataContext,
@@ -214,18 +214,18 @@ const MainChat = ({ onKeyboard, chatSetOnKeyboard, avatarTextures }) => {
     ...avatarTextures,
   ]);
   const appRef = useRef(null);
-  const [gameRatio, setGameRatio] = useState(
+  const [gameRatio, setGameRatio] = useState<Number>(
     window.innerWidth / window.innerHeight
   );
-  const [scaleFactor, setScaleFactor] = useState(gameRatio > 1.5 ? 0.8 : 1);
+  const [scaleFactor, setScaleFactor] = useState<Number>(gameRatio > 1.5 ? 0.8 : 1);
   const spriteRef = useRef(null);
   const spriteRef2 = useRef(null);
-  const [textures, setTextures] = useState([]);
-  const [walkTextures, setWalkTextures] = useState([]);
-  const [snapTextures, setSnapTextures] = useState([]);
-  const [waveTextures, setWaveTextures] = useState([]);
-  const [heartTextures, setHeartTextures] = useState([]);
-  const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
+  const [textures, setTextures] = useState<Texture[]>([]);
+  const [walkTextures, setWalkTextures] = useState<Texture[]>([]);
+  const [snapTextures, setSnapTextures] = useState<Texture[]>([]);
+  const [waveTextures, setWaveTextures] = useState<Texture[]>([]);
+  const [heartTextures, setHeartTextures] = useState<Texture[]>([]);
+  const [energyWaveTextures, setEnergyWaveTextures] = useState<Texture[]>([]);
 
   useEffect(() => {
     console.log('mounting');
@@ -384,7 +384,7 @@ const MainChat = ({ onKeyboard, chatSetOnKeyboard, avatarTextures }) => {
               chatSetOnKeyboard,
             }}
           >
-            <DecoyText
+            <PlayerCharacter
               snapTextures={snapTextures}
               walkTextures={walkTextures}
               energyWaveTextures={energyWaveTextures}

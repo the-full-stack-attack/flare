@@ -15,7 +15,7 @@ import {
   ChatroomContext,
   DataContext,
 } from '@/client/contexts/ChatroomContext';
-import SocketContext from '@/client/contexts/SocketContext';
+import { SocketContext } from '@/client/contexts/SocketContext';
 
 extend({
   Container,
@@ -51,14 +51,22 @@ const styleUserName = new TextStyle({
   wordWrapWidth: 250,
 });
 
-const DecoyText = ({ 
+interface PlayerCharacterProps {
+  snapTextures?: Texture[],
+  walkTextures?: Texture[],
+  energyWaveTextures?: Texture[],
+  waveTextures?: Texture[],
+  textures?: Texture[],
+  heartTextures?: Texture[],
+}
+const PlayerCharacter = ({ 
   snapTextures,
   walkTextures,
   energyWaveTextures,
   waveTextures,
   textures,
   heartTextures,
-   }) => {
+   }: PlayerCharacterProps) => {
   const {
     onKeyboard,
     chatSetOnKeyboard,
@@ -96,7 +104,6 @@ const DecoyText = ({
             equipBeer: data[i].equipBeer,
             isSad: data[i].isSad,
           });
-
           if (data[i].username === user.username) {
             if (
               data[i].x < 466 &&
@@ -107,28 +114,23 @@ const DecoyText = ({
             ) {
               chatSetOnKeyboard(true);
             }
-
             if (
               data[i].x > 466 ||
               data[i].x < 412 ||
               ((data[i].y < 112 || data[i].y > 150) && onKeyboard)
             ) {
-             
                 chatSetOnKeyboard(false);
-              
             }
           }
         }
       }
       setAllPlayers(allPlayerInfo);
     };
-
-    socket.off('newPositions');
-    socket.on('newPositions', updatePos);
-
+    socket?.off('newPositions');
+    socket?.on('newPositions', updatePos);
     return () => {
-      socket.removeAllListeners('newPositions');
-      socket.off('newPositions');
+      socket?.removeAllListeners('newPositions');
+      socket?.off('newPositions');
     };
   }, [eventId, user, socket]);
 
@@ -148,13 +150,8 @@ const DecoyText = ({
     };
   }, [isReady]);
 
-  useEffect(() => {
-   
-  }, []);
-
   return isReady && allPlayers.map((player) => {
     if (!player) return null;
-
     const getPlayerAnimation = () => {
       if (player.isSnapping && snapTextures) return snapTextures;
       if (player.isWalking && walkTextures) return walkTextures;
@@ -282,4 +279,4 @@ const DecoyText = ({
   });
 };
 
-export default DecoyText;
+export default PlayerCharacter;

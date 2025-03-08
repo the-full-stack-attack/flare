@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import flamiliarmp3 from '../../assets/sounds/chatroom/flamiliarmp3.mp3';
 
-const BackgroundMusic = () => {
+const BackgroundMusic = React.memo(() => {
   console.log('background music rendered')
   const audioRef = useRef(null);
 
@@ -25,6 +25,6 @@ const BackgroundMusic = () => {
   }, []);
 
   return null;
-};
+});
 
 export default BackgroundMusic;

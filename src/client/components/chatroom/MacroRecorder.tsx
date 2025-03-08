@@ -79,8 +79,8 @@ const MacroRecorder = () => {
     4:  'text-white  text-7xl',
   }
   const [count, setCount] = useState<Number>(1)
-  const [macroBgColor, setMacroBgColor] = useState(bgColors[count]);
-  const [macroTxtColor, setMacroTxtColor] = useState(txtColors[count]);
+  const [macroBgColor, setMacroBgColor] = useState<string>(bgColors[count]);
+  const [macroTxtColor, setMacroTxtColor] = useState<string>(txtColors[count]);
  
 
   const grabAllRecordings = () => {
