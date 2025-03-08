@@ -81,24 +81,22 @@ function VenueDetails({ venue, eventVenueTags, closeVenueDetails }: VenueDetails
   const venueDetailsTTS: string = useMemo(() => (
     `
       Venue Name: ${name}
-      Venue Description: ${description}
+      ${description !== null ? `Venue Description: ${description}` : ''}
       ${phone ? `Phone Number: ${phone.split('').join('-')}` : ''}
       ${website ? `Website: ${website}` : ''}
       ${category ? `Category: ${category}` : ''}
       ${popularTime ? `Popular Time: ${dayjs(new Date(popularTime)).format('h:mm A')}` : ''}
       ${pricing ? `Pricing: ${pricing}` : ''}
-      ${serves_alcohol !== null ? `Serves Alcohol? ${serves_alcohol ? 'Yes.' : 'No.'}` : ''}
-      ${wheelchair_accessible !== null ? `Wheelchair Accessible? ${wheelchair_accessible ? 'Yes.' : 'No.'}` : ''}
+      ${serves_alcohol !== null ? `Serves Alcohol: ${serves_alcohol ? 'Yes.' : 'No.'}` : ''}
+      ${wheelchair_accessible !== null ? `Wheelchair Accessible: ${wheelchair_accessible ? 'Yes.' : 'No.'}` : ''}
+      ${is_dog_friendly !== null ? `Dog Friendly: ${is_dog_friendly ? 'Yes.' : 'No.'}` : ''}
+      ${is_vegan_friendly !== null ? `Vegan Friendly: ${is_vegan_friendly ? 'Yes.' : 'No.'}` : ''}
       ${eventVenueTags.length > 0 ? `Tags: ${tags}` : ''}
     `
   ), [venue, tags]);
 
   const openInNewTab = (url: string) => {
     window.open(url, '_blank');
-  };
-
-  const extractHostname = (url: string) => {
-    const urlHost = url.split('/')[2];
   };
 
   return (
