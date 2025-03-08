@@ -32,7 +32,7 @@ function InterestsFilter({ interestsFilter, handleSetInterestsFilter }: Interest
   }, []);
 
   return (
-    <div className="container mx-auto px-4 mt-4">
+    <div className="container">
       <Dialog>
         <DialogTrigger asChild>
           <Button

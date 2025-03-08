@@ -135,13 +135,9 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
   }, [geoLocation]);
 
   return (
-    <div className="container mx-auto px-4 mt-4">
-      <p className="text-gray-200">
-        Upcoming Events from
-        <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
-      </p>
+    <div className="container">
       {!changeLocFilter ? (
-        <Button className={'mt-2 ' + buttonColor} onClick={toggleChangeLocFilter}>
+        <Button className={buttonColor} onClick={toggleChangeLocFilter}>
           Location
         </Button>
       ) : (
