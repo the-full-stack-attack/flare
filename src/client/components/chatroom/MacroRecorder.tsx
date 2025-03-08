@@ -9,7 +9,6 @@ import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
 import { Card, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import vinyl from '../../assets/images/vinyl.png';
-import { set } from 'date-fns';
 import { ChatroomContext, ToggleDJContext } from '@/client/contexts/ChatroomContext';
 import { UserContext } from '../../contexts/UserContext';
 interface KeyStroke {
@@ -20,7 +19,7 @@ interface KeyStroke {
 
 
 const MacroRecorder = () => {
-  console.log('macrorecorder rendered')
+  console.log('macrorecorder')
   let keySounds = {
     a: NOTES['C4'],
     s: NOTES['D4'],

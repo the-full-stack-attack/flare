@@ -69,7 +69,8 @@ const initializeSocket = (
       SOCKET_LIST[stringName] = socket;
       PLAYER_LIST[socket.id] = player;
       socket.nsp.to(eventId).emit('newPlayerList', { PLAYER_LIST });
-    
+    console.log('socket id', socket.id)
+    console.log('playerlist', PLAYER_LIST); 
     });
 
     socket.on('disconnect', () => {
@@ -84,7 +85,7 @@ const initializeSocket = (
         );
       }
       }
-
+      socket.removeAllListeners();
     });
 
     socket.on('quitFlamiliar', () => {

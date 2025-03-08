@@ -19,7 +19,7 @@ export const Countdown: React.FC<CountdownProps> = ({ endTime }) => {
     let interval = 1000;
     const twoDP = (n: number) => (n > 9 ? n : '0' + n);
 
-    setInterval(function () {
+    const ticker = setInterval(function () {
       duration = dayjs.duration(
         duration.asMilliseconds() - interval,
         'milliseconds'
@@ -30,6 +30,9 @@ export const Countdown: React.FC<CountdownProps> = ({ endTime }) => {
         )}s`;
       setTime(timestamp);
     }, interval);
+    return ()=> {
+      clearInterval(ticker)
+    }
   }, []);
   return <h4 className="text-white text-[34px]">{time}</h4>;
 };

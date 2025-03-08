@@ -52,7 +52,7 @@ extend({
   AnimatedSprite,
 });
 
-function Flamiliar() {
+function Flamiliar({toggleFlamiliar}) {
   console.log('flamiliar rendered')
   const [sizeFactor, setSizeFactor] = useState(1);
   const style = new TextStyle({
