@@ -38,7 +38,7 @@ function InterestsFilter({ interestsFilter, handleSetInterestsFilter }: Interest
           <Button
             className={buttonColor}
           >
-            Select Interests
+            Interests
           </Button>
         </DialogTrigger>
         <FilterButtonsDialog

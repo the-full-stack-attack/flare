@@ -50,7 +50,7 @@ function CategoryFilter({ catFilter, handleSetCatFilter }: CategoryFilterProps) 
           <Button
             className={buttonColor}
           >
-            Select Categories
+            Categories
           </Button>
         </DialogTrigger>
         <FilterButtonsDialog

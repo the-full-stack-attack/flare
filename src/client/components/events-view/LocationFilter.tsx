@@ -142,7 +142,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
       </p>
       {!changeLocFilter ? (
         <Button className={'mt-2 ' + buttonColor} onClick={toggleChangeLocFilter}>
-          Change Location
+          Location
         </Button>
       ) : (
         <div className="mt-2 grid grid-cols-2 gap-4">
