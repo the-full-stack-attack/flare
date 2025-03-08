@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Button } from '../../../components/ui/button';
 import { RainbowButton } from '../../../components/ui/rainbowbutton';
 import axios from 'axios';
@@ -9,46 +9,50 @@ import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
 import { Card, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import vinyl from '../../assets/images/vinyl.png';
-import { set } from 'date-fns';
-
+import { ChatroomContext, ToggleDJContext } from '@/client/contexts/ChatroomContext';
+import { UserContext } from '../../contexts/UserContext';
 interface KeyStroke {
   key: string;
   time: number; // Time relative to the start of the recording
   type: 'keydown' | 'keyup';
 }
 
-const keySounds = {
-  a: NOTES['C4'],
-  s: NOTES['D4'],
-  d: NOTES['E4'],
-  f: NOTES['F4'],
-  g: NOTES['G4'],
-  h: NOTES['A4'],
-  j: NOTES['B4'],
-  w: NOTES['A04'],
-  e: NOTES['G04'],
-  r: NOTES['D04'],
-  k: NOTES['C5'],
-  z: kick,
-  x: kick,
-  c: snare,
-  v: crash1,
-  '.': china,
-  '=': NOTES['beatbass'],
-  '-': NOTES['bassloop'],
-  p: NOTES['bass1'],
-  o: NOTES['bass2'],
-  i: NOTES['bass3'],
-  u: NOTES['bass4'],
-  '9': NOTES['bass5'],
-  '8': NOTES['bass6'],
-  '5': NOTES['bass8'],
-  '3': NOTES['bass10'],
-  '1': NOTES['bass11'],
-  '0': NOTES['RaccoonCityMassacreBeat'],
-};
 
-const MacroRecorder = ({ eventId, user, allRecordings, toggleDJ }) => {
+const MacroRecorder = () => {
+  console.log('macrorecorder')
+  let keySounds = {
+    a: NOTES['C4'],
+    s: NOTES['D4'],
+    d: NOTES['E4'],
+    f: NOTES['F4'],
+    g: NOTES['G4'],
+    h: NOTES['A4'],
+    j: NOTES['B4'],
+    w: NOTES['A04'],
+    e: NOTES['G04'],
+    r: NOTES['D04'],
+    k: NOTES['C5'],
+    z: kick,
+    x: kick,
+    c: snare,
+    v: crash1,
+    '.': china,
+    '=': NOTES['beatbass'],
+    '-': NOTES['bassloop'],
+    p: NOTES['bass1'],
+    o: NOTES['bass2'],
+    i: NOTES['bass3'],
+    u: NOTES['bass4'],
+    '9': NOTES['bass5'],
+    '8': NOTES['bass6'],
+    '5': NOTES['bass8'],
+    '3': NOTES['bass10'],
+    '1': NOTES['bass11'],
+    '0': NOTES['RaccoonCityMassacreBeat'],
+  };
+  const { user } = useContext(UserContext);
+  const eventId = useContext(ChatroomContext);
+  const toggleDJ = useContext(ToggleDJContext);
   const [showRecs, setShowRecs] = useState<boolean>(false);
   const [recording, setRecording] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
@@ -59,8 +63,9 @@ const MacroRecorder = ({ eventId, user, allRecordings, toggleDJ }) => {
   const isPlaybackRef = useRef<boolean>(false); // Flag to distinguish playback strokes
   const loopSoundsRef = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Track loop sounds
   const loopKeyStateRef = useRef<{ [key: string]: boolean }>({}); // Track loop key state
-  const [allMacros, setAllMacros] = useState(allRecordings);
+  const [allRecordings, setAllRecordings] = useState<Array[]>([]) 
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+  
   const bgColors = {
     1: 'bg-gradient-to-r from-gray-950 via-gray-700 to-gray-950',
     2: 'bg-gradient-to-r from-slate-950 via-fuchsia-950 to-slate-950',
@@ -74,8 +79,38 @@ const MacroRecorder = ({ eventId, user, allRecordings, toggleDJ }) => {
     4:  'text-white  text-7xl',
   }
   const [count, setCount] = useState<Number>(1)
-  const [macroBgColor, setMacroBgColor] = useState(bgColors[count]);
-  const [macroTxtColor, setMacroTxtColor] = useState(txtColors[count]);
+  const [macroBgColor, setMacroBgColor] = useState<string>(bgColors[count]);
+  const [macroTxtColor, setMacroTxtColor] = useState<string>(txtColors[count]);
+ 
+
+  const grabAllRecordings = () => {
+    axios.get('/api/chatroom/chats',
+      { 
+        params: 
+        {
+        eventId,
+        user: user.username,
+        userId: user.id,
+        }
+      })
+      .then((mixChats) => {
+        let arrayOfAllChats = mixChats.data;
+       
+          setAllRecordings(arrayOfAllChats.map((chat) => {
+            let recording = chat.macro
+            let userName = chat.username 
+            return { userName, recording };
+        })
+      )})
+      .catch((error) => {
+        console.error(error, 'ERROR')
+      })
+  }
+  useEffect(() => {
+    grabAllRecordings();
+   
+  }, [])
+
   useEffect(() => {
     // Preload all sounds once
     const preloadedAudio: { [key: string]: HTMLAudioElement } = {};
@@ -126,7 +161,6 @@ setCount(count + 1);
   };
 
   const submitMix = () => {
-    console.log(recordings);
     axios
       .post('/api/chatroom/chats', {
         body: {
@@ -137,7 +171,7 @@ setCount(count + 1);
         },
       })
       .then(() => {
-        console.log('SUBMITTED!');
+        grabAllRecordings();
       })
       .catch((error) => {
         console.error(error, 'ERROR submitting');
@@ -292,12 +326,11 @@ setCount(count + 1);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      keySounds = null;
     };
   }, [recording]);
 
   const switchRecording = (e) => {
-    console.log(e.target.name);
-    console.log(allRecordings[e.target.name]);
     setRecordings(allRecordings[e.target.name].recording);
   };
 
@@ -320,7 +353,9 @@ setCount(count + 1);
           <CardContent className="max-h-[200px] overflow-y-auto p-2">
             <div className="grid grid-cols-3 gap-2">
             <Card className=" bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 col-span-3 grid grid-cols-4 gap-3 border-orange-800">
-            <CardTitle className="col-span-4 flex justify-center mt-2 ml-2 text-white text-opacity-75"><p1>Clicking on a recording will load that users track into your Macro-Recorder! You can remix it and submit it as your own!</p1></CardTitle>
+            <CardTitle className="col-span-4 flex justify-center mt-2 ml-2 text-white text-opacity-75">
+              <p>Clicking on a recording will load that users track into your Macro-Recorder! You can remix it and submit it as your own!</p>
+              </CardTitle>
               {allRecordings &&
                 allRecordings.map((recording, index) => (
                   <Button

@@ -21,7 +21,7 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 import { UserType, UserContext } from './contexts/UserContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-
+import { SocketProvider } from './contexts/SocketContext';
 import { BackgroundGlow } from '@/components/ui/background-glow';
 import { Logout } from './components/auth/Logout';
 import { Footer } from '../components/ui/footer';
@@ -130,7 +130,9 @@ export default function App() {
                         </div>
                       }
                     >
+                      <SocketProvider>
                       <Chatroom />
+                      </SocketProvider>
                     </Suspense>
                   }
                 />

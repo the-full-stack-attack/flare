@@ -5,7 +5,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import axios from 'axios';
 
-const MsgBox = ({ msg, user, eventId, avatar }) => {
+const MsgBox = React.memo(({ msg, user, eventId, avatar }) => {
  let timeSent = dayjs().fromNow();
   return (
     <figure
@@ -39,6 +39,6 @@ const MsgBox = ({ msg, user, eventId, avatar }) => {
       </div>
     </figure>
   );
-};
+});
 
 export default MsgBox;
