@@ -38,8 +38,7 @@ import winnermusic from '../../assets/sounds/chatroom/winnermusic.mp3';
 import menuselect from '../../assets/sounds/chatroom/menuselect.mp3';
 import menuswitch from '../../assets/sounds/chatroom/menuswitch.mp3';
 import speechbubble from '../../assets/images/speechbubble.png';
-
-let socket = io(SOCKET_URL);
+import SocketContext from '../../contexts/SocketContext';
 
 extend({
   Container,
@@ -52,7 +51,8 @@ extend({
   AnimatedSprite,
 });
 
-function Flamiliar({toggleFlamiliar}) {
+function Flamiliar({toggleFlamiliar, socket}) {
+ // const { socket } = useContext(SocketContext)
   console.log('flamiliar rendered')
   const [sizeFactor, setSizeFactor] = useState(1);
   const style = new TextStyle({
@@ -181,6 +181,7 @@ function Flamiliar({toggleFlamiliar}) {
           ],
         },
       }) => {
+        console.log('on receive prompt')
         setFlamiliarPrompt(text);
         const audio = audioRefs.current.menuswitch;
         audio.currentTime = 0;
@@ -191,10 +192,12 @@ function Flamiliar({toggleFlamiliar}) {
     );
 
     socket.on('promptGiven', (bool) => {
+      console.log('on promptgiven')
       setPromptGiven(bool);
     });
 
     socket.on('showAnswers', (answers) => {
+      console.log('on show answers')
       const audio = audioRefs.current.votelaugh;
       audio.currentTime = 0;
       audio
@@ -205,6 +208,7 @@ function Flamiliar({toggleFlamiliar}) {
     });
 
     socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
+      console.log('on show winner')
       const audio = audioRefs.current.winnermusic;
       audio.currentTime = 0;
       audio
@@ -224,6 +228,7 @@ function Flamiliar({toggleFlamiliar}) {
     });
 
     socket.on('countDown', (time) => {
+      console.log('on time')
       if (time >= 11) {
         setColor('#55ff00');
       } else if (time >= 5) {
@@ -241,14 +246,31 @@ function Flamiliar({toggleFlamiliar}) {
     });
 
     return () => {
+      console.log('unmounted')
       // Remove listeners on unmount if necessary
       socket.off('promptGiven')
-      socket.off('receivePrompt');
-      socket.off('showAnswers');
-      socket.off('showWinner');
-      socket.off('countDown');
+      
+      socket.off('receivePrompt')
+      
+      socket.off('showAnswers')
+      
+      socket.off('showWinner')
+      
+      socket.off('countDown')
+      socket.removeAllListeners('promptGiven')
+      
+      socket.removeAllListeners('receivePrompt')
+      
+      socket.removeAllListeners('showAnswers')
+      
+      socket.removeAllListeners('showWinner')
+      
+      socket.removeAllListeners('countDown')
+
+      
+
     };
-  }, []);
+  }, [socket]);
 
   const typing = async () => {
     await setIsTyping(!isTyping);

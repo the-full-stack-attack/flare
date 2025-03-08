@@ -38,7 +38,6 @@ import nightClubTileSet from '../../assets/chatroom/tileSet';
 import DecoyText from './decoyText';
 import {
   ChatroomContext,
-  SocketContext,
   DataContext,
 } from '@/client/contexts/ChatroomContext';
 import { VelocityScroll } from '../../../components/ui/scroll-based-velocity';
@@ -54,18 +53,16 @@ extend({
   Texture, // not worth it w/ useAssets...?
 });
 
-
 const MainChat = ({ onKeyboard, chatSetOnKeyboard, avatarTextures }) => {
   // LOAD ASSETS
-console.log('MainChat rendered')
+  console.log('MainChat rendered');
   let adds = avatarTextures.flat();
   const { user } = useContext(UserContext);
   const eventId = useContext(ChatroomContext);
-  const socket = useContext(SocketContext);
   const [gameLoaded, setGameLoaded] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [texturesToLoad, setTexturesToLoad] = useState([
-    { alias: 'bunny', src: 'https://pixijs.com/assets/bunny.png' },
+    { alias: 'testImg', src: TILES['1'] },
     {
       alias: 'speech',
       src: speechbubble,
@@ -216,17 +213,11 @@ console.log('MainChat rendered')
     ...texturesToLoad,
     ...avatarTextures,
   ]);
-
-  const [playerY, setPlayerY] = useState(0);
-  const [playerX, setPlayerX] = useState(0);
- 
   const appRef = useRef(null);
   const [gameRatio, setGameRatio] = useState(
     window.innerWidth / window.innerHeight
   );
-
   const [scaleFactor, setScaleFactor] = useState(gameRatio > 1.5 ? 0.8 : 1);
-
   const spriteRef = useRef(null);
   const spriteRef2 = useRef(null);
   const [textures, setTextures] = useState([]);
@@ -235,54 +226,39 @@ console.log('MainChat rendered')
   const [waveTextures, setWaveTextures] = useState([]);
   const [heartTextures, setHeartTextures] = useState([]);
   const [energyWaveTextures, setEnergyWaveTextures] = useState([]);
-  // const memoizedPlayers = useMemo(() => allPlayers, [allPlayers])
-
-
-
 
   useEffect(() => {
-    console.log('mounting')
+    console.log('mounting');
     return () => {
       // Component unmounting, unload assets
       if (assets) {
-        console.log('unmounting')
+        console.log('unmounting');
         Object.keys(assets).forEach((key) => {
           console.log(key, ' the key');
           if (assets[key] instanceof Texture) {
             console.log('condition met');
             Assets.unload(key).then(() => {
               console.log('unloaded');
+              assets[key].destroy();
             });
           }
         });
       }
-      setIsReady(false); // Reset isReady state
-      setTextures([]); // Reset textures
-      setWalkTextures([]); // Reset walkTextures
-      setSnapTextures([]); // Reset snapTextures
-      setWaveTextures([]); // Reset waveTextures
-      setHeartTextures([]); // Reset heartTextures
-      setEnergyWaveTextures([]); // Reset energyWaveTextures
+      setIsReady(false); 
+      setTextures([]); 
+      setWalkTextures([]); 
+      setSnapTextures([]); // Reset Textures
+      setWaveTextures([]); 
+      setHeartTextures([]); 
+      setEnergyWaveTextures([]);
     };
   }, []);
-
 
   useEffect(() => {
     if (spriteRef.current && isReady) {
       spriteRef.current.play(); // Explicitly start animation
     }
   }, []);
-
-  useEffect(() => {
-    return () => {
-      // Cleanup sprite texture when unmounting
-      if (spriteRef2.current) {
-        // spriteRef2.current.texture?.destroy(true);
-        // spriteRef2.current = null Prevent stale reference
-      }
-    };
-  }, []);
-
 
   useEffect(() => {
     console.log('hey');
@@ -345,7 +321,6 @@ console.log('MainChat rendered')
     }
   }, [isSuccess, assets]); // Re-run when assets load
 
- 
   // WINDOW SIZING
   const handleResize = () => {
     setGameRatio(window.innerWidth / window.innerHeight);
@@ -399,33 +374,26 @@ console.log('MainChat rendered')
             ))}
           </pixiContainer>
         ))}
-        { 
-          
-(
-            
-               
-  <DataContext.Provider value={{ 
-                scaleFactor,
-                isReady,
-                
-                heartTextures,
-                 onKeyboard,
-                 chatSetOnKeyboard, }}>
-                 <DecoyText 
-               snapTextures={snapTextures}
-               walkTextures={walkTextures}
-               energyWaveTextures={energyWaveTextures}
-               waveTextures={waveTextures}
-               textures={textures}
-               heartTextures={heartTextures}
-               />
-            </DataContext.Provider>     
-               
-              
-
-              
-          )
-      }
+        {
+          <DataContext.Provider
+            value={{
+              scaleFactor,
+              isReady,
+              heartTextures,
+              onKeyboard,
+              chatSetOnKeyboard,
+            }}
+          >
+            <DecoyText
+              snapTextures={snapTextures}
+              walkTextures={walkTextures}
+              energyWaveTextures={energyWaveTextures}
+              waveTextures={waveTextures}
+              textures={textures}
+              heartTextures={heartTextures}
+            />
+          </DataContext.Provider>
+        }
       </Application>
     ))
   );

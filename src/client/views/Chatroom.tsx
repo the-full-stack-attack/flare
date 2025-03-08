@@ -7,6 +7,7 @@ import React, {
   ref,
   useId,
   lazy,
+  useMemo,
   Suspense,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -25,49 +26,46 @@ const Flamiliar = lazy(() => import('../components/chatroom/Flamiliar'));
 const MsgBox = lazy(() => import('../components/chatroom/MsgBox'));
 const DJam = lazy(() => import('../components/chatroom/DJam'));
 const Menu = lazy(() => import('../components/chatroom/Menu'));
-import SOCKET_URL from '../../../config';
+// import SOCKET_URL from '../../../config';
 import loading from '../assets/chatroom/loading.gif';
 
 import { FaShip } from 'react-icons/fa';
 const MainChat = lazy(() => import('../components/chatroom/MainChat'));
 import axios from 'axios';
 
-import { ChatroomContext, ToggleDJContext, SocketContext } from '../contexts/ChatroomContext';
-
-
-let socket = io(SOCKET_URL);
+import { ChatroomContext, ToggleDJContext } from '../contexts/ChatroomContext';
+import SocketContext from '../contexts/SocketContext';
 
 function Chatroom() {
-  console.log('chatroom rendered')
+  console.log('chatroom rendered');
+  const socket = useContext(SocketContext);
   const { user } = useContext(UserContext);
   const location = useLocation();
   const start_time = location.state;
-  
-  const [avatarTextures, setAvatarTextures] = useState<{ alias: any; src: any; }[]>([])
+
+  const [avatarTextures, setAvatarTextures] = useState<
+    { alias: any; src: any }[]
+  >([]);
   const [lobby, setLobby] = useState([user]);
   const [playerY, setPlayerY] = useState(0);
   const [playerX, setPlayerX] = useState(0);
   const [playerPosition, setPlayerPosition] = useState([playerY, playerX]);
   // LOGIC
-  
-  
 
   const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [allMessages, setAllMessages] = useState([]);
-  
+
   const [isPlayingFlamiliar, setIsPlayingFlamiliar] = useState(false);
   const [isPlayingDJ, setIsPlayingDJ] = useState(false);
   const [isPlayingGames, setIsPlayingGames] = useState(false);
   const displayMessage = (msg: any) => {
     setAllMessages((prevMessages) => [...prevMessages, msg]);
   };
- 
+
   const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
 
-
-  
   // Flamiliar
   const toggleGames = () => {
     isPlayingGames ? setIsPlayingGames(false) : setIsPlayingGames(true);
@@ -147,31 +145,30 @@ function Chatroom() {
     }
   };
 
+  // SOCKET ACTIVITY & MAP LOAD
+  useEffect(() => {
+    console.log('new player list retriggers');
+    socket.on('newPlayerList', ({ PLAYER_LIST }) => {
+      console.log(PLAYER_LIST);
+      console.log(lobby);
+      for (let player in PLAYER_LIST) {
+        if (!lobby.includes(PLAYER_LIST[player].username)) {
+          setLobby((prevItems) => [...prevItems, PLAYER_LIST[player].username]);
+          setAvatarTextures((prevItems) => [
+            ...prevItems,
+            {
+              alias: PLAYER_LIST[player].username,
+              src: PLAYER_LIST[player].avatar,
+            },
+          ]);
+        }
+      }
+    });
 
-        // SOCKET ACTIVITY & MAP LOAD
-        useEffect(() => {
-          console.log('new player list retriggers')
-          socket.on('newPlayerList', ({ PLAYER_LIST }) => {
-            console.log(PLAYER_LIST)
-            console.log(lobby)
-            for (let player in PLAYER_LIST) {
-              if (!lobby.includes(PLAYER_LIST[player].username)) {
-                setLobby((prevItems) => [...prevItems, PLAYER_LIST[player].username]);
-                setAvatarTextures((prevItems) => [
-                  ...prevItems,
-                  {
-                    alias: PLAYER_LIST[player].username,
-                    src: PLAYER_LIST[player].avatar,
-                  },
-                ]);
-              }
-            }
-          });
-   
-          return () => {
-            socket.off('newPlayerList')
-          }
-        }, [avatarTextures]);
+    return () => {
+      socket.off('newPlayerList');
+    };
+  }, [avatarTextures]);
   // EVENT LISTENERS FOR TYPING
   useEffect(() => {
     if (isTyping === false) {
@@ -191,10 +188,9 @@ function Chatroom() {
   const typing = async () => {
     await setIsTyping(true);
   };
-  //////////////////////////////////////////////////
+
   useEffect(() => {}, [setOnKeyboard]);
- 
-  ///////////////////////////////////////////
+
   const notTyping = async () => {
     await setIsTyping(false);
   };
@@ -208,22 +204,23 @@ function Chatroom() {
     setMessage('');
   };
 
-useEffect(() => {
-  console.log('message retriggers')
-  socket.emit('joinChat', { user, eventId });
-  axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
-  socket.on('message', (msg) => {
-    displayMessage(msg);
-  });
+  useEffect(() => {
+    console.log('message retriggers');
+    socket.emit('joinChat', { user, eventId });
+    axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
+    socket.on('message', (msg) => {
+      displayMessage(msg);
+    });
 
-  return () => {
-    socket.off('message');
-  }
-}, [])
+    return () => {
+      socket.off('message');
+      socket.disconnect();
+    };
+  }, [socket]);
 
-const chatSetOnKeyboard = (val) => {
+  const chatSetOnKeyboard = (val) => {
     setOnKeyboard(val);
-}
+  };
 
   const handlePointerDown = (e) => {
     keyPress({ key: e.target.name }); // Adjust the timeout as needed
@@ -234,16 +231,15 @@ const chatSetOnKeyboard = (val) => {
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
-     
       <div
-        className={`${isPlayingGames ? 'invisible': ''} flex justify-center mt-6`}
+        className={`${isPlayingGames ? 'invisible' : ''} flex justify-center mt-24`}
       >
-        <Countdown  endTime={dayjs(start_time)} />
+        <Countdown endTime={dayjs(start_time)} />
       </div>
       {(!isPlayingGames && (
         <div className="flex justify-center">
           <RainbowButton
-            className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1"
+            className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-2"
             onClick={toggleGames}
           >
             Ice-Breaker Games
@@ -259,37 +255,40 @@ const chatSetOnKeyboard = (val) => {
           </RainbowButton>
         </div>
       )}
-
       <div className="lg:grid grid-flow-row-dense lg:grid-cols-3 gap-2">
         {isPlayingGames && !isPlayingFlamiliar && !isPlayingDJ && (
           <div className="col-span-2">
-            <Suspense fallback={ <div className="flex justify-center align-center">
-                            <img
-                              id="loading-image"
-                              src={loading}
-                              alt="Loading..."
-                            ></img>
-                            </div>}>
-            <Menu
-              toggleDJ={toggleDJ}
-           
-              toggleFlamiliar={toggleFlamiliar}
-    
-            />
+            <Suspense
+              fallback={
+                <div className="flex justify-center align-center">
+                  <img id="loading-image" src={loading} alt="Loading..."></img>
+                </div>
+              }
+            >
+              <Menu toggleDJ={toggleDJ} toggleFlamiliar={toggleFlamiliar} />
             </Suspense>
           </div>
         )}
         {isPlayingFlamiliar && isPlayingGames && (
           <div className=" col-span-2">
             <div>
-              <Suspense fallback={  <div className="flex justify-center align-center">
-                            <img
-                              id="loading-image"
-                              src={loading}
-                              alt="Loading..."
-                            ></img>
-                            </div>}>
-                <Flamiliar toggleFlamiliar={toggleFlamiliar}/>
+              <Suspense
+                fallback={
+                  <div className="flex justify-center align-center">
+                    <img
+                      id="loading-image"
+                      src={loading}
+                      alt="Loading..."
+                    ></img>
+                  </div>
+                }
+              >
+                <ChatroomContext.Provider value={eventId}>
+                  <Flamiliar
+                    toggleFlamiliar={toggleFlamiliar}
+                    socket={socket}
+                  />
+                </ChatroomContext.Provider>
               </Suspense>
             </div>
           </div>
@@ -297,20 +296,19 @@ const chatSetOnKeyboard = (val) => {
 
         {isPlayingDJ && isPlayingGames && (
           <div className="col-span-2">
-            <Suspense fallback={  <div className="flex justify-center align-center">
-                            <img
-                              id="loading-image"
-                              src={loading}
-                              alt="Loading..."
-                            ></img>
-                            </div>}>
-              <div >
-                <div className="flex justify-center">
+            <Suspense
+              fallback={
+                <div className="flex justify-center align-center">
+                  <img id="loading-image" src={loading} alt="Loading..."></img>
                 </div>
+              }
+            >
+              <div>
+                <div className="flex justify-center"></div>
                 <ToggleDJContext.Provider value={toggleDJ}>
-                <ChatroomContext.Provider value={eventId}>
-                <DJam />
-                </ChatroomContext.Provider>
+                  <ChatroomContext.Provider value={eventId}>
+                    <DJam />
+                  </ChatroomContext.Provider>
                 </ToggleDJContext.Provider>
               </div>
             </Suspense>
@@ -324,19 +322,25 @@ const chatSetOnKeyboard = (val) => {
             >
               <div className="p-2">
                 <div className="flex justify-center aspect-w-16 aspect-h-9 relative aspect-video align-center ">
-                <Suspense fallback={ <div className="flex justify-center align-center">
-                            <img
-                              id="loading-image"
-                              src={loading}
-                              alt="Loading..."
-                            ></img>
-                            </div>}>
-                  <SocketContext.Provider value={socket}>
-                  <ChatroomContext.Provider value={eventId}>
-                   <MainChat onKeyboard={onKeyboard} chatSetOnKeyboard={chatSetOnKeyboard} avatarTextures={avatarTextures}/>
-                   </ChatroomContext.Provider>
-                   </SocketContext.Provider>
-                   </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="flex justify-center align-center">
+                        <img
+                          id="loading-image"
+                          src={loading}
+                          alt="Loading..."
+                        ></img>
+                      </div>
+                    }
+                  >
+                    <ChatroomContext.Provider value={eventId}>
+                      <MainChat
+                        onKeyboard={onKeyboard}
+                        chatSetOnKeyboard={chatSetOnKeyboard}
+                        avatarTextures={avatarTextures}
+                      />
+                    </ChatroomContext.Provider>
+                  </Suspense>
                 </div>
               </div>
             </div>
@@ -396,11 +400,11 @@ const chatSetOnKeyboard = (val) => {
                         <Suspense
                           fallback={
                             <div className="flex justify-center align-center">
-                            <img
-                              id="loading-image"
-                              src={loading}
-                              alt="Loading..."
-                            ></img>
+                              <img
+                                id="loading-image"
+                                src={loading}
+                                alt="Loading..."
+                              ></img>
                             </div>
                           }
                         >
@@ -464,20 +468,16 @@ const chatSetOnKeyboard = (val) => {
           <Suspense
             fallback={
               <div className="flex justify-center align-center">
-              <img
-                id="loading-image"
-                src={loading}
-                alt="Loading..."
-              ></img>
+                <img id="loading-image" src={loading} alt="Loading..."></img>
               </div>
             }
           >
             <div className="hidden lg:block col-span-3">
-            <ToggleDJContext.Provider value={toggleDJ}>
-            <ChatroomContext.Provider value={eventId}>
-              <DJam/>
-              </ChatroomContext.Provider >
-              </ToggleDJContext.Provider >
+              <ToggleDJContext.Provider value={toggleDJ}>
+                <ChatroomContext.Provider value={eventId}>
+                  <DJam />
+                </ChatroomContext.Provider>
+              </ToggleDJContext.Provider>
             </div>
           </Suspense>
         )}

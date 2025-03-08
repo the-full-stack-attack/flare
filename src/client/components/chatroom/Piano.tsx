@@ -6,7 +6,7 @@ import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
 import { Button } from '../../../components/ui/button.tsx';
 import { Card } from '../../../components/ui/card';
-function Keyboard() {
+const Keyboard = React.memo(() => {
   console.log('piano rendered')
   const keySounds = {
     'a': NOTES['C4'], 's': NOTES['D4'], 'd': NOTES['E4'], 'f': NOTES['F4'], 'g': NOTES['G4'], 'h': NOTES['A4'], 'j': NOTES['B4'],
@@ -131,6 +131,6 @@ function Keyboard() {
     </div>
     </Card>
   );
-}
+})
 
 export default Keyboard;

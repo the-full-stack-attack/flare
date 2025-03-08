@@ -13,9 +13,9 @@ import {
 import { UserContext } from '../../contexts/UserContext';
 import {
   ChatroomContext,
-  SocketContext,
   DataContext,
 } from '@/client/contexts/ChatroomContext';
+import SocketContext from '@/client/contexts/SocketContext';
 
 extend({
   Container,
@@ -123,11 +123,12 @@ const DecoyText = ({
       setAllPlayers(allPlayerInfo);
     };
 
-    socket.off('newPositions', updatePos);
+    socket.off('newPositions');
     socket.on('newPositions', updatePos);
 
     return () => {
-      socket.off('newPositions', updatePos);
+      socket.removeAllListeners('newPositions');
+      socket.off('newPositions');
     };
   }, [eventId, user, socket]);
 
@@ -135,9 +136,6 @@ const DecoyText = ({
     if (spriteRef.current && isReady) {
       spriteRef.current.play();
     }
-  }, [isReady]);
-
-  useEffect(() => {
     return () => {
       if (spriteRef2.current) {
          spriteRef2.current.texture?.destroy(true);
@@ -148,6 +146,10 @@ const DecoyText = ({
          spriteRef.current = null;
       }
     };
+  }, [isReady]);
+
+  useEffect(() => {
+   
   }, []);
 
   return isReady && allPlayers.map((player) => {

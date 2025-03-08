@@ -96,12 +96,19 @@ const initializeSocket = (
         delete QUIPLASH_LIST[socket.id];
         QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
       } catch (error) {
-        console.error('cannot find player to delete')
+        console.error('Cannot find player to delete:', error);
       }
       if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
+        // Clear intervals before deleting the game
+        if (QUIPLASH_GAMES[socket.data.eventId].countdownInterval) {
+          clearInterval(QUIPLASH_GAMES[socket.data.eventId].countdownInterval);
+        }
+        if (QUIPLASH_GAMES[socket.data.eventId].answerInterval) {
+          clearInterval(QUIPLASH_GAMES[socket.data.eventId].answerInterval);
+        }
         delete QUIPLASH_GAMES[socket.data.eventId];
       }
-      playerRoom = null
+      playerRoom = null;
     });
 
     socket.on('joinFlamiliar', ({ user, eventId }) => {
@@ -325,7 +332,9 @@ const initializeSocket = (
         });
       // Remove message after a few seconds
       setTimeout(() => {
+        if(PLAYER_LIST[socket.id]){
         PLAYER_LIST[socket.id].sentMessage = false;
+        }
       }, 2000);
     });
   });
@@ -380,7 +389,16 @@ let frames = setInterval(() => {
     }
   }
 }, 1000 / 20);
-
+// Add cleanup logic
+process.on('SIGINT', () => {
+  clearInterval(frames);
+  console.log('Server shutting down. Clearing intervals...');
+  process.exit();
+});
+setInterval(() => {
+  const used = process.memoryUsage().heapUsed / 1024 / 1024;
+  console.log(`Memory usage: ${Math.round(used * 100) / 100} MB`);
+}, 10000);
 };
 
 export default initializeSocket;
