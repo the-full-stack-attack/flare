@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect, useMemo, useContext } from 'react';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { toast } from 'sonner';
@@ -40,6 +41,8 @@ function ScheduleTextDialog({
   const [updateMode, setUpdateMode] = useState<boolean>(false);
 
   const { user } = useContext(UserContext);
+
+  const navigate = useNavigate();
 
   const normalDialogButton = 'bg-gradient-to-r from-gray-700 to-pink-700 hover:from-gray-900 hover:to-pink-900 text-white';
   
@@ -260,14 +263,23 @@ function ScheduleTextDialog({
       <DialogFooter>
         {newTextMode ? (
           <div className="grid grid-cols-2 gap-2">
-            <DialogClose asChild>
-              <Button type="submit" className={normalDialogButton} onClick={() => {
-                postPatchText();
-                updateMode ? toast('Scheduled text has been updated.') : toast('A text message has been scheduled.');
-              }}>
-                Schedule Text
-              </Button>
-            </DialogClose>
+              {
+                user.phone_number !== null ? (
+                  <DialogClose asChild>
+                    <Button type="submit" className={normalDialogButton} onClick={() => {
+                      postPatchText();
+                      updateMode ? toast('Scheduled text has been updated.') : toast('A text message has been scheduled.');
+                    }}>
+                      Schedule Text
+                    </Button>
+                  </DialogClose>
+                ) : (
+                  <Button className={normalDialogButton} onClick={() => { navigate('/settings'); }}>
+                    Update Phone Number
+                  </Button>
+                )
+              }
+              
             {updateMode ? <Button className={reverseNormalDialogButton} onClick={getText}>Cancel</Button> : null}
           </div>
         ) : (
