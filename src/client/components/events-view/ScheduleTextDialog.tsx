@@ -1,7 +1,9 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useState, useEffect, useMemo, useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { toast } from 'sonner';
+
+import { UserContext } from '../../contexts/UserContext';
 
 import {
   DialogContent,
@@ -36,6 +38,8 @@ function ScheduleTextDialog({
   const [message, setMessage] = useState<string>('');
   const [newTextMode, setNewTextMode] = useState<boolean>(true);
   const [updateMode, setUpdateMode] = useState<boolean>(false);
+
+  const { user } = useContext(UserContext);
 
   const normalDialogButton = 'bg-gradient-to-r from-gray-700 to-pink-700 hover:from-gray-900 hover:to-pink-900 text-white';
   
@@ -173,6 +177,7 @@ function ScheduleTextDialog({
             </div>
           </div>
         </div>
+
         <Label htmlFor="Send Time" className="text-left">
           Send a Text During the Event
         </Label>
