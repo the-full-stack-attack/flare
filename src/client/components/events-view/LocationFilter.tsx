@@ -5,6 +5,17 @@ import { Button } from '@/components/ui/button';
 
 import { Input } from '@/components/ui/input';
 
+import {
+  Dialog,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
 type InputChangeEvent = React.ChangeEvent<HTMLInputElement>;
 type ButtonClickEvent = React.MouseEvent<HTMLButtonElement>;
 
