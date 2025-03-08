@@ -113,9 +113,9 @@ const DecoyText = ({
               data[i].x < 412 ||
               ((data[i].y < 112 || data[i].y > 150) && onKeyboard)
             ) {
-              if (onKeyboard) {
+             
                 chatSetOnKeyboard(false);
-              }
+              
             }
           }
         }
@@ -129,7 +129,7 @@ const DecoyText = ({
     return () => {
       socket.off('newPositions', updatePos);
     };
-  }, [eventId, user, onKeyboard, chatSetOnKeyboard, socket]);
+  }, [eventId, user, socket]);
 
   useEffect(() => {
     if (spriteRef.current && isReady) {
