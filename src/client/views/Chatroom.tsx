@@ -28,7 +28,6 @@ import { ChatroomContext, ToggleDJContext } from '../contexts/ChatroomContext';
 import { SocketContext } from '../contexts/SocketContext';
 
 function Chatroom() {
-  console.log('chatroom rendered');
   const socket = useContext(SocketContext);
   const { user } = useContext(UserContext);
   const location = useLocation();
@@ -132,10 +131,7 @@ function Chatroom() {
 
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
-    console.log('new player list retriggers');
     socket.on('newPlayerList', ({ PLAYER_LIST }) => {
-      console.log(PLAYER_LIST);
-      console.log(lobby);
       for (let player in PLAYER_LIST) {
         if (!lobby.includes(PLAYER_LIST[player].username)) {
           setLobby((prevItems) => [...prevItems, PLAYER_LIST[player].username]);
@@ -190,7 +186,6 @@ function Chatroom() {
   };
 
   useEffect(() => {
-    console.log('message retriggers');
     socket.emit('joinChat', { user, eventId });
     axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
     socket.on('message', (msg) => {

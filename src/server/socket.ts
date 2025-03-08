@@ -69,8 +69,6 @@ const initializeSocket = (
       SOCKET_LIST[stringName] = socket;
       PLAYER_LIST[socket.id] = player;
       socket.nsp.to(eventId).emit('newPlayerList', { PLAYER_LIST });
-    console.log('socket id', socket.id)
-    console.log('playerlist', PLAYER_LIST); 
     });
 
     socket.on('disconnect', () => {
@@ -392,13 +390,13 @@ let frames = setInterval(() => {
 // Add cleanup logic
 process.on('SIGINT', () => {
   clearInterval(frames);
-  console.log('Server shutting down. Clearing intervals...');
+  // console.log('Server shutting down. Clearing intervals...');
   process.exit();
 });
-setInterval(() => {
-  const used = process.memoryUsage().heapUsed / 1024 / 1024;
-  console.log(`Memory usage: ${Math.round(used * 100) / 100} MB`);
-}, 10000);
+// setInterval(() => {
+//   const used = process.memoryUsage().heapUsed / 1024 / 1024;
+//   console.log(`Memory usage: ${Math.round(used * 100) / 100} MB`);
+// }, 10000);
 };
 
 export default initializeSocket;

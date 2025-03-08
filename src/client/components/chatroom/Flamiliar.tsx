@@ -28,7 +28,6 @@ import { VelocityScroll } from '../../../components/ui/scroll-based-velocity';
 import { Button } from '../../../components/ui/button';
 import bartender from '../../assets/images/chatImages/bartender.jpg';
 import { UserContext } from '../../contexts/UserContext';
-import SOCKET_URL from '../../../../config';
 import FlamiliarTutorial from './FlamiliarTutorial';
 import BackgroundMusic from './Backgroundmusic';
 import clocktick from '../../assets/sounds/chatroom/clocktick.mp3';
@@ -56,8 +55,6 @@ type FlamiliarPropTypes = {
   socket: SocketContextType,
 }
 function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
- // const { socket } = useContext(SocketContext)
-  console.log('flamiliar rendered')
   const [sizeFactor, setSizeFactor] = useState(1);
   const style = new TextStyle({
     align: 'left',
@@ -171,7 +168,6 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
           ],
         },
       }) => {
-        console.log('on receive prompt')
         setFlamiliarPrompt(text);
         const audio = audioRefs.current.menuswitch;
         audio.currentTime = 0;
@@ -182,12 +178,10 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     );
 
     socket.on('promptGiven', (bool) => {
-      console.log('on promptgiven')
       setPromptGiven(bool);
     });
 
     socket.on('showAnswers', (answers) => {
-      console.log('on show answers')
       const audio = audioRefs.current.votelaugh;
       audio.currentTime = 0;
       audio
@@ -198,7 +192,6 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     });
 
     socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
-      console.log('on show winner')
       const audio = audioRefs.current.winnermusic;
       audio.currentTime = 0;
       audio
@@ -218,7 +211,6 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     });
 
     socket.on('countDown', (time) => {
-      console.log('on time')
       if (time >= 11) {
         setColor('#55ff00');
       } else if (time >= 5) {
@@ -236,29 +228,16 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     });
 
     return () => {
-      console.log('unmounted')
-      // Remove listeners on unmount if necessary
       socket.off('promptGiven')
-      
       socket.off('receivePrompt')
-      
       socket.off('showAnswers')
-      
       socket.off('showWinner')
-      
       socket.off('countDown')
       socket.removeAllListeners('promptGiven')
-      
       socket.removeAllListeners('receivePrompt')
-      
       socket.removeAllListeners('showAnswers')
-      
       socket.removeAllListeners('showWinner')
-      
       socket.removeAllListeners('countDown')
-
-      
-
     };
   }, [socket]);
 
@@ -430,7 +409,6 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
           </div>
         </div>
       )}
-
       {promptGiven && !answersReceived && !quit && (
         <div className="flex justify-center">
           <div className="justify-center items-center">

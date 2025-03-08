@@ -55,7 +55,6 @@ extend({
 
 const MainChat = ({ onKeyboard, chatSetOnKeyboard, avatarTextures }) => {
   // LOAD ASSETS
-  console.log('MainChat rendered');
   let adds = avatarTextures.flat();
   const { user } = useContext(UserContext);
   const eventId = useContext(ChatroomContext);
@@ -228,17 +227,12 @@ const MainChat = ({ onKeyboard, chatSetOnKeyboard, avatarTextures }) => {
   const [energyWaveTextures, setEnergyWaveTextures] = useState<Texture[]>([]);
 
   useEffect(() => {
-    console.log('mounting');
     return () => {
       // Component unmounting, unload assets
       if (assets) {
-        console.log('unmounting');
         Object.keys(assets).forEach((key) => {
-          console.log(key, ' the key');
           if (assets[key] instanceof Texture) {
-            console.log('condition met');
             Assets.unload(key).then(() => {
-              console.log('unloaded');
               assets[key].destroy();
             });
           }
@@ -261,10 +255,8 @@ const MainChat = ({ onKeyboard, chatSetOnKeyboard, avatarTextures }) => {
   }, []);
 
   useEffect(() => {
-    console.log('hey');
 
     if (isSuccess) {
-      console.log('loaded');
       const loadedTextures = [
         assets['107'],
         assets['108'],

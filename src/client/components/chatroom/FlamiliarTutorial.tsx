@@ -23,7 +23,6 @@ type FlamiliarTutorialProps = {
 };
 
 const FlamiliarTutorial = ({toggleQuit}: FlamiliarTutorialProps) => {
-  console.log('flamiliar tutorial renderd')
   return (
     <div>
     <div className="flex justify-center items-center mt-2">
