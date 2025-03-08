@@ -15,9 +15,10 @@ import { NotificationBell } from './NavBar/NotificationBell';
 import { UserMenu } from './NavBar/UserMenu';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { createAvatar } from '@dicebear/core';
+import { createAvatar, Options, StyleOptions } from '@dicebear/core';
 import { adventurer } from '@dicebear/collection';
 import { FaBars, FaTimes } from 'react-icons/fa';
+import { UserAvatar, AvatarConfig, AdventurerOptions } from '@/types/avatar';
 
 export const NavBar = () => {
   const { user } = useContext(UserContext);
@@ -53,10 +54,11 @@ export const NavBar = () => {
     }
   };
 
-  const generateAvatar = (avatarConfig) => {
+  const generateAvatar = async (avatarConfig: AdventurerOptions) => {
     try {
       const avatar = createAvatar(adventurer, avatarConfig);
-      return avatar.toDataUriSync();
+      const uri = await avatar.toDataUri();
+      return uri;
     } catch (error) {
       console.error('Error generating avatar:', error);
       return null;
@@ -66,37 +68,53 @@ export const NavBar = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user?.User_Avatar) {
-      try {
-        const avatar = createAvatar(adventurer, {
-          seed: 'Felix',
-          skinColor: [user.User_Avatar.skin],
-          hair: [user.User_Avatar.hair],
-          hairColor: [user.User_Avatar.hair_color],
-          eyebrows: [user.User_Avatar.eyebrows],
-          eyes: [user.User_Avatar.eyes],
-          mouth: [user.User_Avatar.mouth],
-        });
-        setAvatarUrl(avatar.toDataUriSync());
-      } catch (error) {
-        console.error('Error generating avatar:', error);
-        setAvatarUrl(user.avatar_uri || null);
+    const generateAndSetAvatar = async () => {
+      if (user?.User_Avatar) {
+        try {
+          const avatarConfig: AdventurerOptions = {
+            backgroundColor: ['transparent'],
+            seed: 'Felix',
+            size: 128,
+          };
+
+          // Default values in case the schema is undefined
+          const defaultVariant = 'variant01';
+
+          const avatar = createAvatar(adventurer, {
+            ...avatarConfig,
+            backgroundColor: ['transparent'],
+            skinColor: [user.User_Avatar.skin],
+            hairColor: [user.User_Avatar.hair_color],
+            eyebrows: [user.User_Avatar.eyebrows || defaultVariant],
+            eyes: [user.User_Avatar.eyes || defaultVariant],
+            mouth: [user.User_Avatar.mouth || defaultVariant],
+            hair: [user.User_Avatar.hair || defaultVariant],
+          } as AdventurerOptions);
+
+          const uri = await avatar.toDataUri();
+          setAvatarUrl(uri);
+        } catch (error) {
+          console.error('Error generating avatar:', error);
+          setAvatarUrl(user.avatar_uri || null);
+        }
+      } else if (user?.avatar_uri) {
+        setAvatarUrl(user.avatar_uri);
       }
-    } else if (user?.avatar_uri) {
-      setAvatarUrl(user.avatar_uri);
-    }
+    };
+
+    generateAndSetAvatar();
   }, [user]);
 
   return (
     <nav
       className={cn(
-        'fixed w-full z-50 transition-all duration-300',
+        'fixed w-full transition-all duration-300 isolate',
         scrolled
           ? 'bg-black/50 backdrop-blur-lg border-b border-yellow-500/20'
-          : 'bg-transparent border-b border-white/10'
+          : 'before:absolute before:inset-0 before:bg-transparent before:z-0 border-b border-white/10'
       )}
     >
-      <div className="max-w-[2000px] mx-auto">
+      <div className="max-w-[2000px] mx-auto relative z-10">
         <div className="flex justify-between h-16 md:h-20 px-4 md:px-6 lg:px-8">
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
@@ -117,38 +135,39 @@ export const NavBar = () => {
             </motion.button>
           </div>
 
-          {/* Logo - centered on mobile, left on desktop */}
-          <div className={cn(
-            "flex items-center justify-center",
-            "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
-            "md:static md:left-0 md:transform-none",
-            isOpen ? "hidden" : "flex"
-          )}>
-            <Link to="/dashboard" className="flex items-center">
-             <Logo size="md" animate={true} className="h-8 md:h-10 lg:h-12" />
+          {/* Logo */}
+          <div
+            className={cn(
+              "flex items-center justify-center relative z-10",
+              "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+              "md:static md:left-0 md:transform-none",
+              isOpen ? "hidden" : "flex"
+            )}
+          >
+            <Link to="/dashboard" className="flex items-center relative isolate">
+              <div className="relative z-10">
+                <Logo size="md" animate={true} className="h-8 md:h-10 lg:h-12" />
+              </div>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {navItems.map(({ title, url, icon: Icon }) => (
-              <motion.a
+              <Link
                 key={title}
-                href={url}
-                className="px-3 lg:px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-2 group text-sm lg:text-base"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                to={url}
+                className="group px-3 lg:px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-2 text-sm lg:text-base"
               >
                 <Icon className="text-yellow-500 group-hover:text-orange-500 transition-colors h-5 w-5 lg:h-6 lg:w-6" />
-                <span className="hidden lg:inline">{title}</span>
-              </motion.a>
+                <span>{title}</span>
+              </Link>
             ))}
           </div>
 
-          {/* Right side items (Notifications & User Menu) */}
+          {/* Right side items */}
           <div className="flex items-center space-x-2 md:space-x-4">
             <NotificationBell count={user.Notifications?.length || 0} />
-
             <div className="relative">
               <motion.button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -191,16 +210,15 @@ export const NavBar = () => {
         >
           <div className="px-4 py-3 space-y-1">
             {navItems.map(({ title, url, icon: Icon }) => (
-              <motion.a
+              <Link
                 key={title}
-                href={url}
+                to={url}
                 className="block px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-3"
-                whileHover={{ x: 10 }}
                 onClick={() => setIsOpen(false)}
               >
                 <Icon className="text-yellow-500 h-5 w-5" />
                 {title}
-              </motion.a>
+              </Link>
             ))}
           </div>
         </motion.div>
