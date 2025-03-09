@@ -52,6 +52,35 @@ type FlamiliarPropTypes = {
 }
 function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
 
+  
+  useAssets([
+    { alias: 'bunny', src: speechbubble },
+    { alias: 'speech', src: speechbubble },
+    { alias: 'background', src: bartender },
+  ]);
+  
+  const {
+    assets: [background],
+    isSuccess,
+  } = useAssets<Texture>([bartender]);
+  
+  const [quit, setQuit] = useState<boolean>(true);
+  const { user } = useContext(UserContext);
+  const [eventId, setEventId] = useState<string>(document.location.pathname.slice(10));
+  const [message, setMessage] = useState<string>('');
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [promptGiven, setPromptGiven] = useState<boolean>(false);
+  const [playerAnswers, setPlayerAnswers] = useState<[string, string] | boolean>(false);
+  const [answersReceived, setAnswersReceived] = useState<boolean>(false);
+  const [showWinner, setShowWinner] = useState<boolean>(false);
+  const [winner, setWinner] = useState<string | [string, string | number]>('');
+  const [flamiliarPrompt, setFlamiliarPrompt] = useState<string>('');
+  const [timer, setTimer] = useState<string | number>('30');
+  const [showReady, setShowReady] = useState<boolean>(true);
+  const [color, setColor] = useState<string>('#ffffff');
+  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+  const appRef = useRef(null);
+
   const [sizeFactor, setSizeFactor] = useState<number>(1);
   const style = new TextStyle({
     align: 'left',
@@ -80,35 +109,6 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     wordWrapWidth: 170,
     breakWords: true,
   });
-
-  useAssets([
-    { alias: 'bunny', src: speechbubble },
-    { alias: 'speech', src: speechbubble },
-    { alias: 'background', src: bartender },
-  ]);
-
-  const {
-    assets: [background],
-    isSuccess,
-  } = useAssets<Texture>([bartender]);
-  
-  const [quit, setQuit] = useState<boolean>(true);
-  const { user } = useContext(UserContext);
-  const [eventId, setEventId] = useState<string>(document.location.pathname.slice(10));
-  const [message, setMessage] = useState<string>('');
-  const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [promptGiven, setPromptGiven] = useState<boolean>(false);
-  const [playerAnswers, setPlayerAnswers] = useState<[string, string] | boolean>(false);
-  const [answersReceived, setAnswersReceived] = useState<boolean>(false);
-  const [showWinner, setShowWinner] = useState<boolean>(false);
-  const [winner, setWinner] = useState<string | [string, string | number]>('');
-  const [flamiliarPrompt, setFlamiliarPrompt] = useState<string>('');
-  const [timer, setTimer] = useState<string | number>('30');
-  const [showReady, setShowReady] = useState<boolean>(true);
-  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
-  const [color, setColor] = useState<string>('#ffffff');
-  const appRef = useRef(null);
-
   useEffect(() => {
     audioRefs.current = {
       clocktick: new Audio(clocktick),
