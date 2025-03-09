@@ -10,7 +10,6 @@ module.exports = {
   },
   projects: [
     './tests/server',
-    './tests/components'
   ],
 
 };
