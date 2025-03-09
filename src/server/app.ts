@@ -52,8 +52,8 @@ app.use(
     saveUninitialized: false,
     // Cookie settings
     cookie: {
-      // The cookie will last one hour from when it is created/re-saved
-      maxAge: 60000 * 60,
+      // The cookie will last four hours from when it is created/re-saved
+      maxAge: 60000 * 60 * 4,
     },
   })
 );
