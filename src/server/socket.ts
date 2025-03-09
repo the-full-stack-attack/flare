@@ -394,10 +394,10 @@ process.on('SIGINT', () => {
   // console.log('Server shutting down. Clearing intervals...');
   process.exit();
 });
-setInterval(() => {
-  const used = process.memoryUsage().heapUsed / 1024 / 1024;
-  console.log(`Memory usage: ${Math.round(used * 100) / 100} MB`);
-}, 10000);
+// setInterval(() => {
+//   const used = process.memoryUsage().heapUsed / 1024 / 1024;
+//   console.log(`Memory usage: ${Math.round(used * 100) / 100} MB`);
+// }, 10000);
 };
 
 export default initializeSocket;
