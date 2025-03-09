@@ -44,6 +44,8 @@ type LocationFilterProps = {
   handleSetLocationFilter: (arg0: Location) => void;
 };
 
+const wait = () => new Promise((resolve) => setTimeout(resolve, 0));
+
 function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFilterProps) {
   // The latitude and longitude of the user will be stored in state on page load
   const [geoLocation, setGeoLocation] = useState<GeoLocation>({
@@ -56,7 +58,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
     state: '',
   });
 
-  const [changeLocFilter, setChangeLocFilter] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [city, setCity] = useState<string>('');
   const [state, setState] = useState<string>('');
 
@@ -102,10 +104,6 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
     }
   };
 
-  const toggleChangeLocFilter = () => {
-    setChangeLocFilter(!changeLocFilter);
-  };
-
   const handleCityInput = ({ target }: InputChangeEvent) => {
     setCity(target.value);
   };
@@ -144,7 +142,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
 
   return (
     <div className="container">
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className={buttonColor}>
             Location
@@ -180,6 +178,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
               onKeyUp={({ key }) => {
                 if (key === 'Enter') {
                   handleSubmitLocFilter();
+                  wait().then(() => setOpen(false));
                 }
               }}
             />
@@ -191,6 +190,7 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
               onKeyUp={({ key }) => {
                 if (key === 'Enter') {
                   handleSubmitLocFilter();
+                  wait().then(() => setOpen(false));
                 }
               }}
             />
