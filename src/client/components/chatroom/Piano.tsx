@@ -6,7 +6,8 @@ import snare from '../../assets/sounds/chatroom/kit/snare.mp3';
 import kick from '../../assets/sounds/chatroom/kit/kick.mp3';
 import { Button } from '../../../components/ui/button.tsx';
 import { Card } from '../../../components/ui/card';
-function Keyboard() {
+
+const Keyboard = React.memo(() => {
   const keySounds = {
     'a': NOTES['C4'], 's': NOTES['D4'], 'd': NOTES['E4'], 'f': NOTES['F4'], 'g': NOTES['G4'], 'h': NOTES['A4'], 'j': NOTES['B4'],
     'w': NOTES['A04'], 'e': NOTES['G04'], 'r': NOTES['D04'], 'k': NOTES['C5'],
@@ -39,6 +40,14 @@ function Keyboard() {
     };
   }, []);
   
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+  
   const playSound = (key: string) => {
     const audio = audioRefs.current[key];
     if (audio) {
@@ -62,13 +71,6 @@ function Keyboard() {
       }
     }
   };
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
   // Function to stop looping sounds
   const stopSound = (key: string) => {
     if (playingSounds[key]) {
@@ -130,6 +132,6 @@ function Keyboard() {
     </div>
     </Card>
   );
-}
+})
 
 export default Keyboard;
