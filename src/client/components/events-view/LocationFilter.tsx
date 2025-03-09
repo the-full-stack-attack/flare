@@ -119,14 +119,12 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
       return;
     }
     handleSetLocationFilter({ city, state: state.toUpperCase() });
-    setChangeLocFilter(false);
     setCity('');
     setState('');
   };
 
   const handleClearLocFilter = () => {
     handleSetLocationFilter({ city: '', state: '' });
-    setChangeLocFilter(false);
   };
 
   const handleResetLocFilter = () => {
@@ -134,7 +132,6 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
       city: location.city,
       state: location.state,
     });
-    setChangeLocFilter(false);
   };
 
   useEffect(() => {
@@ -147,62 +144,74 @@ function LocationFilter({ locationFilter, handleSetLocationFilter }: LocationFil
 
   return (
     <div className="container">
-      {!changeLocFilter ? (
-        <Button className={buttonColor} onClick={toggleChangeLocFilter}>
-          Location
-        </Button>
-      ) : (
-        <div className="mt-2 grid grid-cols-2 gap-4">
-          <Button
-            className={'col-span-2 ' + buttonColor}
-            onClick={({ target }: ButtonClickEvent) => {
-              if ((target as HTMLButtonElement).innerText === 'Cancel') {
-                toggleChangeLocFilter();
-              }
-              if ((target as HTMLButtonElement).innerText === 'Current Location') {
-                handleResetLocFilter();
-              }
-            }}
-          >
-            {locationFilter.city === location.city && locationFilter.state === location.state ? 'Cancel' : 'Current Location'}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className={buttonColor}>
+            Location
           </Button>
-          <Input
-            className="col-span-2 text-gray-200"
-            value={city}
-            placeholder="City Name"
-            onChange={handleCityInput}
-            onKeyUp={({ key }) => {
-              if (key === 'Enter') {
-                handleSubmitLocFilter();
-              }
-            }}
-          />
-          <Input
-            className="col-span-2 text-gray-200"
-            value={state}
-            placeholder="State Initials, XX"
-            onChange={handleStateInput}
-            onKeyUp={({ key }) => {
-              if (key === 'Enter') {
-                handleSubmitLocFilter();
-              }
-            }}
-          />
-          <Button
-            className={'col-span-2 ' + buttonColor}
-            onClick={({ target }: ButtonClickEvent) => {
-              if ((target as HTMLButtonElement).innerText === 'Remove Filter') {
-                handleClearLocFilter();
-              }
-              if ((target as HTMLButtonElement).innerText === 'Set Filter') {
-                handleSubmitLocFilter();
-              }
-            }}
-          >
-            {city === '' || state === '' ? 'Remove Filter' : 'Set Filter'}
-          </Button>
-        </div>
-      )}
+        </DialogTrigger>
+        <DialogContent className="bg-black/80 rounded-xl border-transparent">
+          <DialogHeader>
+            <DialogTitle className="text-gray-200 text-xl">
+              Filter by Location
+            </DialogTitle>
+            <DialogDescription className="text-gray-400 text-base">
+              Input the city and state where you would like to look for events to attend.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-2 grid grid-cols-2 gap-4">
+            <DialogClose asChild>
+              <Button
+                className={'col-span-2 ' + buttonColor}
+                onClick={({ target }: ButtonClickEvent) => {
+                  if ((target as HTMLButtonElement).innerText === 'Current Location') {
+                    handleResetLocFilter();
+                  }
+                }}
+              >
+                {locationFilter.city === location.city && locationFilter.state === location.state ? 'Cancel' : 'Current Location'}
+              </Button>
+            </DialogClose>
+            <Input
+              className="col-span-2 text-gray-200"
+              value={city}
+              placeholder="City Name"
+              onChange={handleCityInput}
+              onKeyUp={({ key }) => {
+                if (key === 'Enter') {
+                  handleSubmitLocFilter();
+                }
+              }}
+            />
+            <Input
+              className="col-span-2 text-gray-200"
+              value={state}
+              placeholder="State Initials, XX"
+              onChange={handleStateInput}
+              onKeyUp={({ key }) => {
+                if (key === 'Enter') {
+                  handleSubmitLocFilter();
+                }
+              }}
+            />
+            <DialogClose asChild>
+              <Button
+                className={'col-span-2 ' + buttonColor}
+                onClick={({ target }: ButtonClickEvent) => {
+                  if ((target as HTMLButtonElement).innerText === 'Remove Filter') {
+                    handleClearLocFilter();
+                  }
+                  if ((target as HTMLButtonElement).innerText === 'Set Filter') {
+                    handleSubmitLocFilter();
+                  }
+                }}
+              >
+                {city === '' || state === '' ? 'Remove Filter' : 'Set Filter'}
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
