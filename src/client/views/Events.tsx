@@ -141,18 +141,24 @@ function Events() {
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
       <div className="container mx-auto px-4 content-center pt-5">
         <div className="grid grid-cols-1 lg:grid-cols-6 md:grid-cols-4">
-          <div>
-            <Button
-              className={buttonColor + 'mx-auto mx-4 mt-4 text-white'}
-              onClick={() => { navigate('/createevents'); }}
-            >
-              {<FaCalendarPlus />} Host an Event
-            </Button>
-            <LocationFilter
-              locationFilter={locationFilter}
-              handleSetLocationFilter={handleSetLocationFilter}
-            />
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-1 gap-0">
+          <div className="container pt-4 px-4 mx-auto">
+            <div className="pb-4 flex justify-center sm:justify-start">
+              <Button
+                className={buttonColor + ' text-white'}
+                onClick={() => { navigate('/createevents'); }}
+              >
+                {<FaCalendarPlus />} Host an Event
+              </Button>
+            </div>
+            <p className="text-gray-200">
+              Upcoming Events from
+              <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
+            </p>
+            <div className="inline-flex justify-center content-center sm:grid grid-cols-1 gap-2 pt-2">
+              <LocationFilter
+                locationFilter={locationFilter}
+                handleSetLocationFilter={handleSetLocationFilter}
+              />
               <CategoryFilter
                 catFilter={catFilter}
                 handleSetCatFilter={handleSetCatFilter}

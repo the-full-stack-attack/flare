@@ -21,7 +21,7 @@ import { FaBars, FaTimes } from 'react-icons/fa';
 import { UserAvatar, AvatarConfig, AdventurerOptions } from '@/types/avatar';
 
 export const NavBar = () => {
-  const { user } = useContext(UserContext);
+  const { user, getUser } = useContext(UserContext);
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -104,6 +104,16 @@ export const NavBar = () => {
 
     generateAndSetAvatar();
   }, [user]);
+
+  useEffect(() => {
+    getUser();
+    let intervalId = setInterval(() => {
+      getUser();
+    }, 5000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   return (
     <nav
