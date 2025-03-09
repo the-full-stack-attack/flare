@@ -77,6 +77,7 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
   const [flamiliarPrompt, setFlamiliarPrompt] = useState<string>('');
   const [timer, setTimer] = useState<string | number>('30');
   const [showReady, setShowReady] = useState<boolean>(true);
+  const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [color, setColor] = useState<string>('#ffffff');
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
   const appRef = useRef(null);
@@ -161,6 +162,7 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     }
     const showWinnerHandler = ({ winner, falsyBool, truthyBool }: {winner: [ string, string | number ], falsyBool: boolean, truthyBool: boolean}) => {
       if(!isMounted) return;
+      setHasVoted(false);
       const audio = audioRefs.current.winnermusic;
       audio.currentTime = 0;
       audio
@@ -208,7 +210,7 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
 
     return () => {
       isMounted = false;
-    
+      setHasVoted(false);
       socket.off('receivePrompt', receivePromptHandler);
       socket.off('promptGiven', promptGivenHandler);
       socket.off('showAnswers', showAnswersHandler);
@@ -255,9 +257,12 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
       let audio = new Audio(laugh);
       audio.play();
     } else {
+      if(!hasVoted){
       let audio = new Audio(menuselect);
       audio.play();
       socket.emit('vote', e);
+      setHasVoted(true);
+      }
     }
   };
   const enlargePrompt = () => {
@@ -351,8 +356,8 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
                             test(tupleAnswer[0]);
                           }}
                           scale={(0.7, 0.7)}
-                          x={35}
-                          y={30 + i * 140}
+                          x={ i < 2 ? 35 : i < 4 ? 180 : i < 6 ? 325 : 460 }
+                          y={i < 2 ? 30 + i * 140 : i < 4 ? 30 + ( i - 2 ) * 140 :  i < 6 ? 30 + ( i - 4 ) * 140 : 30 + ( i - 6 ) * 140 }
                           key={tupleAnswer[0]}
                         >
                           <pixiSprite

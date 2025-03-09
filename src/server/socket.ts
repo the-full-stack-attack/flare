@@ -259,6 +259,7 @@ const initializeSocket = (
 
     // VOTE
     socket.on('vote', (e) => {
+      console.log(e)
       QUIPLASH_GAMES[socket.data.eventId].votes.push(e);
     });
 
