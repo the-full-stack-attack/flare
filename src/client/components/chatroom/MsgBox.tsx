@@ -3,9 +3,8 @@ import cn from './../../../../lib/utils';
 import dayjs from 'dayjs';
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
-import axios from 'axios';
 
-const MsgBox = React.memo(({ msg, user, eventId, avatar }) => {
+const MsgBox = React.memo(({ msg, user, eventId, avatar }: {msg: string | undefined, user: string | undefined, eventId: string, avatar: string | undefined}) => {
  let timeSent = dayjs().fromNow();
   return (
     <figure

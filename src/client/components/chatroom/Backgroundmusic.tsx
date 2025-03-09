@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import flamiliarmp3 from '../../assets/sounds/chatroom/flamiliarmp3.mp3';
 
+
 const BackgroundMusic = React.memo(() => {
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const audio = new Audio(flamiliarmp3);

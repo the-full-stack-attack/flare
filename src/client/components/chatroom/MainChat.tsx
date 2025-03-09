@@ -2,14 +2,7 @@ import { Application, extend, useAssets } from '@pixi/react';
 import React, {
   useEffect,
   useState,
-  useCallback,
-  useContext,
   useRef,
-  ref,
-  useId,
-  lazy,
-  Suspense,
-  useMemo,
 } from 'react';
 
 import {
@@ -18,12 +11,10 @@ import {
   Sprite,
   Texture,
   Assets,
-  NineSliceSprite, // failing
   Text,
   TextStyle,
   AnimatedSprite,
 } from 'pixi.js';
-import { UserContext } from '../../contexts/UserContext';
 import TILES from '../../assets/chatroom/tiles/index';
 import IDLE from '../../assets/chatroom/idle/index';
 import WALK from '../../assets/chatroom/walk/index';
@@ -36,17 +27,13 @@ import ENERGYWAVE from '../../assets/chatroom/energy/index';
 import mapPack from '../../assets/chatroom/mapPack';
 import nightClubTileSet from '../../assets/chatroom/tileSet';
 import PlayerCharacter from './PlayerCharacter';
-import {
-  ChatroomContext,
-  DataContext,
-} from '@/client/contexts/ChatroomContext';
+import { DataContext } from '@/client/contexts/ChatroomContext';
 import { VelocityScroll } from '../../../components/ui/scroll-based-velocity';
 extend({
   Container,
   Graphics,
   Sprite,
   Texture,
-  NineSliceSprite,
   Text,
   TextStyle,
   AnimatedSprite,
@@ -55,10 +42,6 @@ extend({
 
 const MainChat = ({ onKeyboard, chatSetOnKeyboard, avatarTextures }) => {
   // LOAD ASSETS
-  let adds = avatarTextures.flat();
-  const { user } = useContext(UserContext);
-  const eventId = useContext(ChatroomContext);
-  const [gameLoaded, setGameLoaded] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [texturesToLoad, setTexturesToLoad] = useState([
     { alias: 'testImg', src: TILES['1'] },
@@ -213,10 +196,10 @@ const MainChat = ({ onKeyboard, chatSetOnKeyboard, avatarTextures }) => {
     ...avatarTextures,
   ]);
   const appRef = useRef(null);
-  const [gameRatio, setGameRatio] = useState<Number>(
+  const [gameRatio, setGameRatio] = useState<number>(
     window.innerWidth / window.innerHeight
   );
-  const [scaleFactor, setScaleFactor] = useState<Number>(gameRatio > 1.5 ? 0.8 : 1);
+  const [scaleFactor, setScaleFactor] = useState<number>(gameRatio > 1.5 ? 0.8 : 1);
   const spriteRef = useRef(null);
   const spriteRef2 = useRef(null);
   const [textures, setTextures] = useState<Texture[]>([]);

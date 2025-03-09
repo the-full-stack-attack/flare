@@ -6,7 +6,6 @@ import React, {
   ref,
   useId,
 } from 'react';
-import io from 'socket.io-client';
 import { BsSend } from 'react-icons/bs';
 import { Application, extend, useAssets } from '@pixi/react';
 import '@pixi/events';
@@ -16,11 +15,9 @@ import {
   Sprite,
   Texture,
   Assets,
-  NineSliceSprite, // failing
   Text,
   TextStyle,
   AnimatedSprite,
-  Rectangle,
 } from 'pixi.js';
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
@@ -44,7 +41,6 @@ extend({
   Graphics,
   Sprite,
   Texture,
-  NineSliceSprite,
   Text,
   TextStyle,
   AnimatedSprite,
@@ -52,10 +48,11 @@ extend({
 
 type FlamiliarPropTypes = {
   toggleFlamiliar: () => void,
-  socket: SocketContextType,
+  socket: any,
 }
 function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
-  const [sizeFactor, setSizeFactor] = useState(1);
+
+  const [sizeFactor, setSizeFactor] = useState<number>(1);
   const style = new TextStyle({
     align: 'left',
     fontFamily: 'sans-serif',
@@ -69,46 +66,6 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     breakWords: true,
   });
 
-  useAssets([
-    { alias: 'bunny',
-      src: speechbubble,
-     },
-    {
-      alias: 'speech',
-      src: speechbubble,
-    },
-    {
-      alias: 'background',
-      src: bartender,
-    },
-  ]);
-
-  const {
-    assets: [background],
-    isSuccess,
-  } = useAssets<Texture>([bartender]);
-
-  const [quit, setQuit] = useState(true);
-  // LOGIC
-  const { user } = useContext(UserContext);
-  const [eventId, setEventId] = useState(document.location.pathname.slice(10));
-  const [message, setMessage] = useState('');
-  const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [promptGiven, setPromptGiven] = useState<boolean>(false);
-  const [playerAnswers, setPlayerAnswers] = useState<boolean>(false);
-  const [answersReceived, setAnswersReceived] = useState<boolean>(false);
-  const [showWinner, setShowWinner] = useState<boolean>(false);
-  const [winner, setWinner] = useState('');
-  const [flamiliarPrompt, setFlamiliarPrompt] = useState('');
-  const [timer, setTimer] = useState('30');
-  const [gameRatio, setGameRatio] = useState(
-    window.innerWidth / window.innerHeight
-  );
-  const [showReady, setShowReady] = useState(true);
-  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
-  // Flamiliar
-  const [color, setColor] = useState<string>('#ffffff');
-  const appRef = useRef(null);
   const style2 = new TextStyle({
     align: 'left',
     fontFamily: '\"Trebuchet MS\", Helvetica, sans-serif',
@@ -123,17 +80,34 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     wordWrapWidth: 170,
     breakWords: true,
   });
-  // EXAMPLES
 
-  // WINDOW SIZING
-  const handleResize = () => {
-    setGameRatio(window.innerWidth / window.innerHeight);
-    setScaleFactor(gameRatio > 1.3 ? 0.75 : 1);
-  };
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  useAssets([
+    { alias: 'bunny', src: speechbubble },
+    { alias: 'speech', src: speechbubble },
+    { alias: 'background', src: bartender },
+  ]);
+
+  const {
+    assets: [background],
+    isSuccess,
+  } = useAssets<Texture>([bartender]);
+  
+  const [quit, setQuit] = useState<boolean>(true);
+  const { user } = useContext(UserContext);
+  const [eventId, setEventId] = useState<string>(document.location.pathname.slice(10));
+  const [message, setMessage] = useState<string>('');
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [promptGiven, setPromptGiven] = useState<boolean>(false);
+  const [playerAnswers, setPlayerAnswers] = useState<[string, string] | boolean>(false);
+  const [answersReceived, setAnswersReceived] = useState<boolean>(false);
+  const [showWinner, setShowWinner] = useState<boolean>(false);
+  const [winner, setWinner] = useState<string | [string, string | number]>('');
+  const [flamiliarPrompt, setFlamiliarPrompt] = useState<string>('');
+  const [timer, setTimer] = useState<string | number>('30');
+  const [showReady, setShowReady] = useState<boolean>(true);
+  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+  const [color, setColor] = useState<string>('#ffffff');
+  const appRef = useRef(null);
 
   useEffect(() => {
     audioRefs.current = {
@@ -152,36 +126,31 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     };
   }, []);
 
-  // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
+    let isMounted = true; // Track component mount status
     socket.emit('joinFlamiliar', { user, eventId });
-    socket.on(
-      'receivePrompt',
-      ({
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [{ text }],
-              },
+
+    const receivePromptHandler = ({
+      response: {
+        candidates: [
+          {
+            content: {
+              parts: [{ text }],
             },
-          ],
-        },
-      }) => {
-        setFlamiliarPrompt(text);
-        const audio = audioRefs.current.menuswitch;
-        audio.currentTime = 0;
-        audio
-          .play()
-          .catch((error) => console.error('Failed to play sound:', error));
-      }
-    );
-
-    socket.on('promptGiven', (bool) => {
-      setPromptGiven(bool);
-    });
-
-    socket.on('showAnswers', (answers) => {
+          },
+        ],
+      },
+    }) => {
+      if(!isMounted) return;
+      setFlamiliarPrompt(text);
+      const audio = audioRefs.current.menuswitch;
+      audio.currentTime = 0;
+      audio
+        .play()
+        .catch((error) => console.error('Failed to play sound:', error));
+    }
+    const showAnswersHandler = (answers: any) => {
+      if(!isMounted) return;
       const audio = audioRefs.current.votelaugh;
       audio.currentTime = 0;
       audio
@@ -189,9 +158,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
         .catch((error) => console.error('Failed to play sound:', error));
       setAnswersReceived(true);
       setPlayerAnswers(answers);
-    });
-
-    socket.on('showWinner', ({ winner, falsyBool, truthyBool }) => {
+    }
+    const showWinnerHandler = ({ winner, falsyBool, truthyBool }: {winner: [ string, string | number ], falsyBool: boolean, truthyBool: boolean}) => {
+      if(!isMounted) return;
       const audio = audioRefs.current.winnermusic;
       audio.currentTime = 0;
       audio
@@ -208,9 +177,10 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
         setShowWinner(falsyBool);
         setShowReady(true);
       }, 5000);
-    });
+    }
 
-    socket.on('countDown', (time) => {
+    const countDownHandler = (time: number) => {
+      if(!isMounted) return;
       if (time >= 11) {
         setColor('#55ff00');
       } else if (time >= 5) {
@@ -225,14 +195,25 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
         setColor('#cf060a');
       }
       setTimer(time.toString());
-    });
+    }
+    const promptGivenHandler = (bool: boolean) => { 
+      if(isMounted) setPromptGiven(bool)
+      }
+
+    socket.on('receivePrompt', receivePromptHandler);
+    socket.on('promptGiven', promptGivenHandler);
+    socket.on('showAnswers', showAnswersHandler);
+    socket.on('showWinner', showWinnerHandler);
+    socket.on('countDown', countDownHandler);
 
     return () => {
-      socket.off('promptGiven')
-      socket.off('receivePrompt')
-      socket.off('showAnswers')
-      socket.off('showWinner')
-      socket.off('countDown')
+      isMounted = false;
+    
+      socket.off('receivePrompt', receivePromptHandler);
+      socket.off('promptGiven', promptGivenHandler);
+      socket.off('showAnswers', showAnswersHandler);
+      socket.off('showWinner', showWinnerHandler);
+      socket.off('countDown', countDownHandler);
       socket.removeAllListeners('promptGiven')
       socket.removeAllListeners('receivePrompt')
       socket.removeAllListeners('showAnswers')
@@ -244,7 +225,6 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
   const typing = async () => {
     await setIsTyping(!isTyping);
   };
-
   const quitFlamiliar = () => {
     socket.emit('quitFlamiliar');
     setQuit(true);
@@ -270,8 +250,7 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     });
     setMessage('');
   };
-
-  const test = (e) => {
+  const test = (e: string) => {
     if (e === user.username) {
       let audio = new Audio(laugh);
       audio.play();
@@ -281,7 +260,6 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
       socket.emit('vote', e);
     }
   };
-
   const enlargePrompt = () => {
     let audio = new Audio(menuselect);
 
@@ -293,6 +271,7 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
       audio.play();
     }
   };
+
   return (
     <div>
       {quit && (
@@ -373,8 +352,8 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
                           }}
                           scale={(0.7, 0.7)}
                           x={35}
-                          y={30 + i * 150}
-                          key={useId}
+                          y={30 + i * 140}
+                          key={tupleAnswer[0]}
                         >
                           <pixiSprite
                             texture={Assets.get('speech')}

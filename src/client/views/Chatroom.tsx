@@ -5,7 +5,7 @@ import React, {
   lazy,
   Suspense,
 } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Label } from '../../components/ui/label';
 import { AnimatedList } from '../../components/ui/animated-list';
@@ -23,7 +23,7 @@ const MainChat = lazy(() => import('../components/chatroom/MainChat'));
 import loading from '../assets/chatroom/loading.gif';
 import { FaShip } from 'react-icons/fa';
 import axios from 'axios';
-
+import { Msg } from '@/types/Chatroom';
 import { ChatroomContext, ToggleDJContext } from '../contexts/ChatroomContext';
 import { SocketContext } from '../contexts/SocketContext';
 
@@ -32,106 +32,157 @@ function Chatroom() {
   const { user } = useContext(UserContext);
   const location = useLocation();
   const start_time = location.state;
-
-  const [avatarTextures, setAvatarTextures] = useState<
-    { alias: any; src: any }[]
-  >([]);
+  const [avatarTextures, setAvatarTextures] = useState<{ alias: any; src: any }[]>([]);
   const [lobby, setLobby] = useState([user]);
-  // LOGIC
-
   const [eventId, setEventId] = useState(document.location.pathname.slice(10));
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [allMessages, setAllMessages] = useState([]);
-
+  const [allMessages, setAllMessages] = useState<Msg[]>([]);
   const [isPlayingFlamiliar, setIsPlayingFlamiliar] = useState(false);
   const [isPlayingDJ, setIsPlayingDJ] = useState(false);
   const [isPlayingGames, setIsPlayingGames] = useState(false);
-  const displayMessage = (msg: any) => {
-    setAllMessages((prevMessages) => [...prevMessages, msg]);
-  };
   const [onKeyboard, setOnKeyboard] = useState<boolean>(false);
-  // Flamiliar
+  
+  // FUN INTERACTIVE KEYBOARD TRIGGER
+  const chatSetOnKeyboard = (val: boolean) => {
+    setOnKeyboard(val);
+  };
+
+  // GAME TOGGLERS
   const toggleGames = () => {
     isPlayingGames ? setIsPlayingGames(false) : setIsPlayingGames(true);
   };
+  
   const toggleDJ = () => {
     isPlayingDJ ? setIsPlayingDJ(false) : setIsPlayingDJ(true);
   };
+  
   const toggleFlamiliar = () => {
-    isPlayingFlamiliar
-      ? setIsPlayingFlamiliar(false)
-      : setIsPlayingFlamiliar(true);
+    isPlayingFlamiliar ? setIsPlayingFlamiliar(false) : setIsPlayingFlamiliar(true);
+  };
+    
+  // MOBILE CONTROL BY BUTTON
+  const handlePointerDown = (e: any) => {
+    keyPress({ key: e.target.name });
+  };
+    
+  const handlePointerUp = (e: any) => {
+    keyUp({ key: e.target.name }); 
   };
 
-  // CONTROLS
+  // CONTROL BY KEYBOARD
   const keyPress = ({ key }: any) => {
     if (isTyping === false) {
-      if (key === 'ArrowUp' || key === 'w') {
-        socket.emit('keyPress', { inputId: 'Up', state: true });
-      } else if (key === 'ArrowDown' || key === 's') {
-        socket.emit('keyPress', { inputId: 'Down', state: true });
-      } else if (key === 'ArrowLeft' || key === 'a') {
-        socket.emit('keyPress', { inputId: 'Left', state: true });
-      } else if (key === 'ArrowRight' || key === 'd') {
-        socket.emit('keyPress', { inputId: 'Right', state: true });
+      // Moving
+      if (key === 'ArrowUp' || key === 'w' || key === 'W') {
+        socket?.emit('keyPress', { inputId: 'Up', state: true });
+      } else if (key === 'ArrowDown' || key === 's' || key === 'S') {
+        socket?.emit('keyPress', { inputId: 'Down', state: true });
+      } else if (key === 'ArrowLeft' || key === 'a' || key === 'A') {
+        socket?.emit('keyPress', { inputId: 'Left', state: true });
+      } else if (key === 'ArrowRight' || key === 'd' || key === 'D') {
+        socket?.emit('keyPress', { inputId: 'Right', state: true });
       }
+      // ANIMATIONS
       if (key === 'q' || key === 'Q') {
-        socket.emit('keyPress', { inputId: 'Snap', state: true });
+        socket?.emit('keyPress', { inputId: 'Snap', state: true });
       }
       if (key === 'e' || key === 'E') {
-        socket.emit('keyPress', { inputId: 'Wave', state: true });
+        socket?.emit('keyPress', { inputId: 'Wave', state: true });
       }
       if (key === 'r' || key === 'R') {
-        socket.emit('keyPress', { inputId: 'EnergyWave', state: true });
+        socket?.emit('keyPress', { inputId: 'EnergyWave', state: true });
       }
       if (key === 'f' || key === 'F') {
-        socket.emit('keyPress', { inputId: 'Heart', state: true });
+        socket?.emit('keyPress', { inputId: 'Heart', state: true });
       }
       if (key === '2' || key === '2') {
-        socket.emit('keyPress', { inputId: '420', state: true });
+        socket?.emit('keyPress', { inputId: '420', state: true });
       }
       if (key === '3' || key === '3') {
-        socket.emit('keyPress', { inputId: 'Shades', state: true });
+        socket?.emit('keyPress', { inputId: 'Shades', state: true });
       }
       if (key === '4' || key === '4') {
-        socket.emit('keyPress', { inputId: 'Beer', state: true });
+        socket?.emit('keyPress', { inputId: 'Beer', state: true });
       }
       if (key === '`' || key === '`') {
-        socket.emit('keyPress', { inputId: 'Sad', state: true });
+        socket?.emit('keyPress', { inputId: 'Sad', state: true });
       }
     }
   };
+  
   const keyUp = ({ key }: any) => {
-    if (key === 'ArrowUp' || key === 'w') {
-      socket.emit('keyPress', { inputId: 'Up', state: false });
-    } else if (key === 'ArrowDown' || key === 's') {
-      socket.emit('keyPress', { inputId: 'Down', state: false });
-    } else if (key === 'ArrowLeft' || key === 'a') {
-      socket.emit('keyPress', { inputId: 'Left', state: false });
-    } else if (key === 'ArrowRight' || key === 'd') {
-      socket.emit('keyPress', { inputId: 'Right', state: false });
+    if (key === 'ArrowUp' || key === 'w' || key === 'W') {
+      socket?.emit('keyPress', { inputId: 'Up', state: false });
+    } else if (key === 'ArrowDown' || key === 's' || key === 'S' ) {
+      socket?.emit('keyPress', { inputId: 'Down', state: false });
+    } else if (key === 'ArrowLeft' || key === 'a'  || key === 'A') {
+      socket?.emit('keyPress', { inputId: 'Left', state: false });
+    } else if (key === 'ArrowRight' || key === 'd' || key === 'D') {
+      socket?.emit('keyPress', { inputId: 'Right', state: false });
     }
     if (key === 'q' || key === 'Q') {
-      socket.emit('keyPress', { inputId: 'Snap', state: false });
+      socket?.emit('keyPress', { inputId: 'Snap', state: false });
     }
     if (key === 'e' || key === 'E') {
-      socket.emit('keyPress', { inputId: 'Wave', state: false });
+      socket?.emit('keyPress', { inputId: 'Wave', state: false });
     }
     if (key === 'r' || key === 'R') {
-      socket.emit('keyPress', { inputId: 'EnergyWave', state: false });
+      socket?.emit('keyPress', { inputId: 'EnergyWave', state: false });
     }
     if (key === 'f' || key === 'F') {
-      socket.emit('keyPress', { inputId: 'Heart', state: false });
+      socket?.emit('keyPress', { inputId: 'Heart', state: false });
     }
     if (key === '`' || key === '`') {
-      socket.emit('keyPress', { inputId: 'Sad', state: false });
+      socket?.emit('keyPress', { inputId: 'Sad', state: false });
     }
   };
+  
+  
+  // MESSAGING
+  const typing = async () => {
+    await setIsTyping(true);
+  };
+  
+  const notTyping = async () => {
+    await setIsTyping(false);
+  };
+  
+  const sendMessage = () => {
+    socket?.emit('message', { message, eventId });
+    displayMessage({
+      message: message,
+      username: user?.username,
+      avatar: user?.avatar_uri,
+    });
+    setMessage('');
+  };
+  
+  const displayMessage = (msg: Msg) => {
+    setAllMessages((prevMessages) => [...prevMessages, msg]);
+  };
+  
+  // EVENT LISTENERS FOR TYPING
+  useEffect(() => {
+    if (isTyping === false) {
+      document.addEventListener('keydown', keyPress);
+      document.addEventListener('keyup', keyUp);
+    } else {
+      document.removeEventListener('keydown', keyPress);
+      document.removeEventListener('keyup', keyUp);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', keyPress);
+      document.removeEventListener('keyup', keyUp);
+    };
+
+  }, [isTyping]);
 
   // SOCKET ACTIVITY & MAP LOAD
   useEffect(() => {
-    socket.on('newPlayerList', ({ PLAYER_LIST }) => {
+    // ADDS THE AVATAR TO THE ARRAY OF PLAYERS IN THE LOBBY AND GIVES THE ALIAS THE RESPECTIVE USERNAME
+    socket?.on('newPlayerList', ({ PLAYER_LIST }) => {
       for (let player in PLAYER_LIST) {
         if (!lobby.includes(PLAYER_LIST[player].username)) {
           setLobby((prevItems) => [...prevItems, PLAYER_LIST[player].username]);
@@ -147,68 +198,26 @@ function Chatroom() {
     });
 
     return () => {
-      socket.off('newPlayerList');
+      socket?.off('newPlayerList');
     };
+
   }, [avatarTextures]);
-  // EVENT LISTENERS FOR TYPING
+  
   useEffect(() => {
-    if (isTyping === false) {
-      document.addEventListener('keydown', keyPress);
-      document.addEventListener('keyup', keyUp);
-    } else {
-      document.removeEventListener('keydown', keyPress);
-      document.removeEventListener('keyup', keyUp);
-    }
-    return () => {
-      document.removeEventListener('keydown', keyPress);
-      document.removeEventListener('keyup', keyUp);
-    };
-  }, [isTyping]);
-  // MESSAGING
-
-  const typing = async () => {
-    await setIsTyping(true);
-  };
-
-  useEffect(() => {}, [setOnKeyboard]);
-
-  const notTyping = async () => {
-    await setIsTyping(false);
-  };
-  const sendMessage = () => {
-    socket.emit('message', { message, eventId });
-    displayMessage({
-      message: message,
-      username: user?.username,
-      avatar: user?.avatar_uri,
-    });
-    setMessage('');
-  };
-
-  useEffect(() => {
-    socket.emit('joinChat', { user, eventId });
+    socket?.emit('joinChat', { user, eventId });
+    // CONFIRMS IF THE CHATROOM EXISTS, IF NOT. NO PENALTY
     axios.get(`api/chatroom/${eventId}`).catch((err) => console.error(err));
-    socket.on('message', (msg) => {
+    socket?.on('message', (msg: Msg) => {
       displayMessage(msg);
     });
 
     return () => {
-      socket.off('message');
-      socket.disconnect();
+      socket?.off('message');
+      socket?.disconnect();
     };
   }, [socket]);
 
-  const chatSetOnKeyboard = (val) => {
-    setOnKeyboard(val);
-  };
 
-  const handlePointerDown = (e) => {
-    keyPress({ key: e.target.name });
-  };
-
-  const handlePointerUp = (e) => {
-    keyUp({ key: e.target.name }); 
-  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
       <div
@@ -376,7 +385,7 @@ function Chatroom() {
                   {/* Message Box Container with Responsive Height */}
                   <div className="h-[15vh] md: h-[24] lg:h-[50vh] w-full max-w-7xl overflow-y-auto">
                     <AnimatedList>
-                      {allMessages.map((msg) => (
+                      {allMessages.map((msg: Msg) => (
                         <Suspense
                           fallback={
                             <div className="flex justify-center align-center">
@@ -389,11 +398,10 @@ function Chatroom() {
                           }
                         >
                           <MsgBox
-                            className="w-80 md:w-360 lg:w-565 "
-                            msg={msg.message}
                             user={msg.username}
                             eventId={eventId}
                             avatar={msg.avatar}
+                            msg={msg.message}
                           />
                         </Suspense>
                       ))}
@@ -411,15 +419,15 @@ function Chatroom() {
                   <div className="relative">
                     <Textarea
                       className="justify-center items-center border-fuchsia-200 bg-gray-900 text-yellow-500 rounded-md w-72"
-                      type="text"
                       placeholder="Be kind to each other..."
                       value={message}
-                      maxLength="150"
+                      maxLength={150}
                       onChange={(e) => setMessage(e.target.value)}
                     />
                     <FaShip
                       onClick={sendMessage}
                       className="absolute w-5 h-5 bottom-2.5 right-2.5 text-white hover:text-fuchsia-500"
+                      data-testid="FaShip"
                     />
                   </div>
                 </div>

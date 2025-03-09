@@ -19,7 +19,6 @@ interface KeyStroke {
 
 
 const MacroRecorder = () => {
-  console.log('macrorecorder')
   let keySounds = {
     a: NOTES['C4'],
     s: NOTES['D4'],
@@ -81,7 +80,14 @@ const MacroRecorder = () => {
   const [count, setCount] = useState<Number>(1)
   const [macroBgColor, setMacroBgColor] = useState<string>(bgColors[count]);
   const [macroTxtColor, setMacroTxtColor] = useState<string>(txtColors[count]);
- 
+  
+  const toggleColor = () => {
+    if (count >= 4) {
+      setCount(1);
+      return;
+    }
+    setCount(count + 1);
+  }
 
   const grabAllRecordings = () => {
     axios.get('/api/chatroom/chats',
@@ -106,9 +112,9 @@ const MacroRecorder = () => {
         console.error(error, 'ERROR')
       })
   }
+
   useEffect(() => {
-    grabAllRecordings();
-   
+    grabAllRecordings(); 
   }, [])
 
   useEffect(() => {
@@ -128,13 +134,22 @@ const MacroRecorder = () => {
     };
   }, []);
 
-  const toggleColor = () => {
-if(count >= 4){
-  setCount(1);
-  return;
-}
-setCount(count + 1);
-  }
+  // Add event listeners for keydown and keyup
+  useEffect(() => {
+    if (recording) {
+      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keyup', handleKeyUp);
+    } else {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    }
+  
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      keySounds = null;
+    };
+  }, [recording]);
 
   useEffect(() => {
     setMacroBgColor(bgColors[String(count)]);
@@ -204,7 +219,7 @@ setCount(count + 1);
 
     const time = startTimeRef.current ? Date.now() - startTimeRef.current : 0;
     const key = event.key;
-
+    
     // Handle loop sounds
     if (key === '-' || key === '=' || key === '0') {
       if (!loopKeyStateRef.current[key]) {
@@ -257,27 +272,6 @@ setCount(count + 1);
     setRecording((prev) => !prev);
   };
 
-  // Play the previous recording
-  const playPreviousRecording = () => {
-    if (recordings.length === 0) return;
-
-    isPlaybackRef.current = true; // Set playback flag
-    const previousRecording = recordings.flat();
-
-    previousRecording.forEach(({ key, time, type }) => {
-      setTimeout(() => {
-        if (type === 'keydown') {
-          playSound(key);
-        }
-      }, time);
-    });
-
-    // Reset playback flag after the recording finishes
-    const maxTime = Math.max(...previousRecording.map((stroke) => stroke.time));
-    setTimeout(() => {
-      isPlaybackRef.current = false;
-    }, maxTime + 100);
-  };
 
   // Play all recordings
   const playAllRecordings = () => {
@@ -313,22 +307,6 @@ setCount(count + 1);
   const clearRecordings = () => {
     setRecordings([]);
   };
-  // Add event listeners for keydown and keyup
-  useEffect(() => {
-    if (recording) {
-      window.addEventListener('keydown', handleKeyDown);
-      window.addEventListener('keyup', handleKeyUp);
-    } else {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    }
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      keySounds = null;
-    };
-  }, [recording]);
 
   const switchRecording = (e) => {
     setRecordings(allRecordings[e.target.name].recording);
@@ -337,6 +315,7 @@ setCount(count + 1);
   const toggleShowRecs = (e) => {
     setShowRecs(!showRecs);
   };
+
   return (
     <div>
       {!showRecs ? (

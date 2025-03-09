@@ -40,6 +40,14 @@ const Keyboard = React.memo(() => {
     };
   }, []);
   
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+  
   const playSound = (key: string) => {
     const audio = audioRefs.current[key];
     if (audio) {
@@ -63,13 +71,6 @@ const Keyboard = React.memo(() => {
       }
     }
   };
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
   // Function to stop looping sounds
   const stopSound = (key: string) => {
     if (playingSounds[key]) {

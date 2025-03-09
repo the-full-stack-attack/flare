@@ -1,5 +1,10 @@
 import '@testing-library/jest-dom';
+// jest.setup.js
+// we need to npm install @types/Text encoder for this to work. it is too close to presentation for this
+// import { TextEncoder, TextDecoder } from 'text-encoding';
 
+// global.TextEncoder = TextEncoder;
+// global.TextDecoder = TextDecoder;
 // Add type definitions for custom matchers
 declare global {
   namespace jest {

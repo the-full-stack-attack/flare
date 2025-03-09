@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { Application, extend, useAssets } from '@pixi/react';
+import { extend } from '@pixi/react';
 import {
   Container,
   Graphics,
@@ -16,7 +16,7 @@ import {
   DataContext,
 } from '@/client/contexts/ChatroomContext';
 import { SocketContext } from '@/client/contexts/SocketContext';
-
+import { PlayerData } from '@/types/Players';
 extend({
   Container,
   Graphics,
@@ -74,7 +74,7 @@ const PlayerCharacter = ({
     scaleFactor,
   } = useContext(DataContext);
   const socket = useContext(SocketContext);
-  const [allPlayers, setAllPlayers] = useState([]);
+  const [allPlayers, setAllPlayers] = useState<PlayerData[]>([]);
   const eventId = useContext(ChatroomContext);
   const { user } = useContext(UserContext);
   const spriteRef = useRef(null);

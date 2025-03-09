@@ -25,6 +25,7 @@
     "src/**/*.d.ts",
     ".eslintrc.js",
     "lib",
+    "declarations.d.ts"
   ],
   "exclude": [
     "./src/components/ui/**",
