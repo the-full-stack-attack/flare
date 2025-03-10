@@ -11,8 +11,8 @@ const BackgroundMusic = React.memo(() => {
     audioRef.current = audio;
     
     const playAudio = () => {
+      audio.volume = 0.3; //
       audio.play().catch((error) => console.error("Audio play error:", error));
-        audio.volume = 0.3; //
     };
 
     playAudio();
@@ -22,6 +22,9 @@ const BackgroundMusic = React.memo(() => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
+        audio.src = "";
+        audio.load();
+        audioRef.current = null;
       }
     };
   }, []);

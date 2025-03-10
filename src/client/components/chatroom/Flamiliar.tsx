@@ -81,7 +81,7 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
   const [color, setColor] = useState<string>('#ffffff');
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
   const appRef = useRef(null);
-
+  const [bGMusic, setBGMusic] = useState(true);
   const [sizeFactor, setSizeFactor] = useState<number>(1);
   const style = new TextStyle({
     align: 'left',
@@ -296,6 +296,10 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     }
   };
 
+  const toggleMusic = () => {
+    setBGMusic(!bGMusic);
+  }
+
   return (
     <div>
       {quit && (
@@ -305,11 +309,13 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
         <div className="flex justify-center ">
           {' '}
           <Button
-            className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700 mt-2"
+            className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700 mt-2 ml-2"
             onClick={quitFlamiliar}
           >
             QUIT
           </Button>{' '}
+          <Button  className={`${bGMusic === true ? 'bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700' : 'bg-gradient-to-r from-red-500 via-red-800 to-red-500 text-grey-700' } mt-2 ml-2`}
+          onClick={toggleMusic}>{'MUSIC'}</Button>
         </div>
       )}
       {!quit && (
@@ -405,7 +411,7 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
                       )}
                     </pixiContainer>
                   </Application>
-                  <BackgroundMusic />
+                  { bGMusic && <BackgroundMusic /> }
                 </div>
               )}
             </div>
