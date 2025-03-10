@@ -25,6 +25,7 @@ const seedUsers = async () => {
     await User.create(user1);
     await User.create(user2);
     await User.create(user3);
+    console.log('3 users seeded.');
   } catch (error: unknown) {
     console.error('Failed to seed users for showcase:', error);
   }
