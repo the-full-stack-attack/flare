@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
+import Fireworks from '../components/Fireworks';
 import { useWindowSize } from '@react-hook/window-size';
 import {
   FaTrophy,
@@ -9,26 +10,11 @@ import {
   FaUsers,
   FaChartLine,
   FaStar,
-  FaRocket,
   FaTasks,
   FaMedal,
-  FaCheckCircle,
-  FaCloud,
-  FaSun,
-  FaMoon,
 } from 'react-icons/fa';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import {
   Dialog,
-  DialogTrigger,
-  DialogClose,
   DialogContent,
   DialogTitle,
   DialogDescription,
@@ -36,10 +22,11 @@ import {
 import TaskDisplay from '../components/tasks/TaskDisplay';
 import { UserContext } from '../contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
-import cn from '../../../lib/utils';
 import PhoenixLogo from '../assets/logo/phoenix.png';
 import { Weather } from '../components/dashboard/Weather';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
+import Event from '../components/events-view/Event';
+import { EventData } from '@/types/Events';
 
 type Task = {
   id: number;
@@ -70,10 +57,11 @@ function Dashboard() {
   const [task, setTask] = useState<Task | object>({});
   const [width, height] = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showFireworks, setShowFireworks] = useState(false);
   const [completeDisabled, setCompleteDisabled] = useState(false);
   const [userFlares, setUserFlares] = useState<FlareType[]>([]);
   const [unearnedFlares, setUnearnedFlares] = useState<FlareType[]>([]);
-  const [closestEvent, setClosestEvent] = useState<{ title: string } | null>(
+  const [closestEvent, setClosestEvent] = useState<EventData | null>(
     null
   );
   const [latestFlare, setLatestFlare] = useState<{ name: string } | null>(null);
@@ -163,8 +151,13 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/events/nearest');
-        setClosestEvent(response.data);
+        const response = await axios.get('/api/event/attend/true', {
+          params: {
+            now: new Date().toISOString(),
+            limit: 1,
+          }
+        });
+        setClosestEvent(response.data[0]);
       } catch (error) {
         console.error('Error fetching closest event:', error);
       }
@@ -182,6 +175,7 @@ function Dashboard() {
     setIsOpen(false);
     setCurrFlare(null);
   }
+
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
@@ -193,6 +187,9 @@ function Dashboard() {
             numberOfPieces={height * 5}
             recycle={false}
           />
+        )}
+        {showFireworks && (
+          <Fireworks />
         )}
         <div className="relative z-10 container mx-auto px-4 md:px-6 lg:px-8">
           {/* Header Section with Total Tasks */}
@@ -270,9 +267,19 @@ function Dashboard() {
                     Next Event
                   </h2>
                 </div>
-                <p className="text-gray-200 text-lg">
-                  {closestEvent?.title || 'No upcoming events scheduled'}
-                </p>
+                {
+                  closestEvent ? (
+                    <Event
+                      event={closestEvent}
+                      getEvents={() => {}}
+                      disableBail={true}
+                    />
+                  ) : (
+                    <p className="text-gray-200 text-lg">
+                      No upcoming events scheduled
+                    </p>
+                  )
+                }
               </motion.div>
 
               {/* Task Display */}
@@ -286,6 +293,7 @@ function Dashboard() {
                   task={task}
                   completeDisabled={completeDisabled}
                   setShowConfetti={setShowConfetti}
+                  setShowFireworks={setShowFireworks}
                   setCompleteDisabled={setCompleteDisabled}
                 />
               </motion.div>

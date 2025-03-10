@@ -3,21 +3,9 @@ import cn from './../../../../lib/utils';
 import dayjs from 'dayjs';
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
-import axios from 'axios';
 
-const MsgBox = ({ msg, user, eventId, avatar }) => {
+const MsgBox = React.memo(({ msg, user, eventId, avatar }: {msg: string | undefined, user: string | undefined, eventId: string, avatar: string | undefined}) => {
  let timeSent = dayjs().fromNow();
-// let formatted = timeSent.format('HH:mm:ss')
-
-// useEffect(() => {
-//   axios.post('/api/chatroom/chat', { msg, user, eventId})
-//   .then(() => {
-//     console.log('success')
-//   }).catch((err) => {
-//     console.error(err);
-//   })
-// })
-
   return (
     <figure
       className={cn(
@@ -50,6 +38,6 @@ const MsgBox = ({ msg, user, eventId, avatar }) => {
       </div>
     </figure>
   );
-};
+});
 
 export default MsgBox;

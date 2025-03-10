@@ -17,10 +17,10 @@
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { Player, PlayerInterface } from '../client/assets/chatroom/chatAssets';
+import { Player } from '../client/assets/chatroom/chatAssets';
 import { FlamiliarPlayer } from '../client/assets/chatroom/FlamiliarPlayer';
 import SOCKET_URL from '../../config';
-import { type SocketList, PlayerList, QuiplashList, QuiplashGames } from '../types/Players';
+import { type SocketList, PlayerList, QuiplashList, QuiplashGames, PlayersPack } from '../types/Players';
 import { Socket } from 'socket.io-client';
 
 dotenv.config();
@@ -30,38 +30,11 @@ const bartenderAI = googleGenAI.getGenerativeModel({
   model: 'gemini-1.5-flash',
 });
 const modifiers = [
-  'Meditation',
-  'Philosophy',
-  'Relationships',
-  'Cheating',
-  'risky behavior',
-  'war',
-  'furries',
-  'fighting',
-  'social anxiety',
-  'income inequality',
-  'rehab',
-  'drinking alcohol',
-  'javascript',
-  'artificial intelligence',
-  'Arts & Crafts',
-  'Music',
-  'Gaming',
-  'Movies & TV',
-  'Comics & Anime',
-  'Books & Reading',
-  'Technology',
-  'Nature',
-  'Food & Cooking',
-  'Nightlife',
-  'Coffee & Tea',
-  'Health & Wellness',
-  'Pets & Animals',
-  'Sports & Recreation',
-  'Community Events',
-  'social media',
-  'working in an office',
-  'popular culture',
+  'Meditation', 'Philosophy', 'Relationships', 'Cheating', 'risky behavior', 'war', 'furries', 'fighting', 
+  'social anxiety', 'income inequality', 'rehab', 'drinking alcohol', 'javascript', 'artificial intelligence', 
+  'Arts & Crafts', 'Music', 'Gaming', 'Movies & TV', 'Comics & Anime', 'Books & Reading', 'Technology', 'Nature', 
+  'Food & Cooking', 'Nightlife', 'Coffee & Tea', 'Health & Wellness', 'Pets & Animals', 'Sports & Recreation', 
+  'Community Events', 'social media', 'working in an office', 'popular culture'
 ];
 const initializeSocket = (
   server: any,
@@ -73,22 +46,20 @@ const initializeSocket = (
 ) => {
   let io;
   if (DEVELOPMENT === 'true') {
-    // environment variable based on development is passed in here
     io = new Server(server);
   } else {
-    // https://socket.io/docs/v4/handling-cors/ <-- DOCS
     io = new Server(server, {
       cors: {
-        origin: SOCKET_URL, // or with an array of origins  // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],
-        // allowedHeaders: ["my-custom-header"], // IF WE USE COOKIES
-        credentials: true, // IF WE USE COOKIES
+        origin: SOCKET_URL,
+        credentials: true, 
       },
     });
   }
   let playerRoom;
   io.on('connection', (socket) => {
-    // Creates A Player for chatroom
+
     socket.on('joinChat', ({ user, eventId }) => {
+      if (!eventId) return;
       socket.data.name = socket.id;
       playerRoom = eventId;
       socket.data.eventId = eventId;
@@ -100,36 +71,51 @@ const initializeSocket = (
       socket.nsp.to(eventId).emit('newPlayerList', { PLAYER_LIST });
     });
 
-    // Removes player everywhere on disconnect
     socket.on('disconnect', () => {
+      socket.disconnect(true);
+      if (socket.data.eventId){
       socket.leave(socket.data.eventId);
       delete SOCKET_LIST[socket.id];
       delete PLAYER_LIST[socket.id];
+      if (pack[socket.data.eventId]) {
+        pack[socket.data.eventId] = pack[socket.data.eventId].filter(
+          (p) => p.id !== socket.id
+        );
+      }
+      }
+      socket.removeAllListeners();
     });
-    // QUIPLASH SOCKETS
 
-    // QUITTING
-    socket.on('quitQuiplash', () => {
-      socket.leave(`Quiplash room: ${socket.data.eventId}`);
+    socket.on('quitFlamiliar', () => {
+      if (!socket.data.eventId) return; // Prevent errors
+
+      socket.leave(`Flamiliar room: ${socket.data.eventId}`);
       try {
         delete QUIPLASH_LIST[socket.id];
         QUIPLASH_GAMES[socket.data.eventId].playerCount -= 1;
       } catch (error) {
-        console.log('cannot find player to delete');
+        console.error('Cannot find player to delete:', error);
       }
       if (QUIPLASH_GAMES[socket.data.eventId].playerCount <= 0) {
+        // Clear intervals before deleting the game
+        if (QUIPLASH_GAMES[socket.data.eventId].countdownInterval) {
+          clearInterval(QUIPLASH_GAMES[socket.data.eventId].countdownInterval);
+        }
+        if (QUIPLASH_GAMES[socket.data.eventId].answerInterval) {
+          clearInterval(QUIPLASH_GAMES[socket.data.eventId].answerInterval);
+        }
         delete QUIPLASH_GAMES[socket.data.eventId];
       }
+      playerRoom = null;
     });
 
-    // JOINING
-    socket.on('joinQuiplash', ({ user, eventId }) => {
+    socket.on('joinFlamiliar', ({ user, eventId }) => {
+      if (!eventId || !user) return; // Prevent errors
       socket.data.eventId = eventId;
-      socket.join(`Quiplash room: ${eventId}`);
-      const quiplashPlayer = new FlamiliarPlayer(socket.id, user, eventId);
-      QUIPLASH_LIST[socket.id] = quiplashPlayer;
+      socket.join(`Flamiliar room: ${eventId}`);
+      const flamiliarPlayer = new FlamiliarPlayer(socket.id, user, eventId);
+      QUIPLASH_LIST[socket.id] = flamiliarPlayer;
 
-      // Creates a game if one doesn't already exist
       if (QUIPLASH_GAMES[eventId] === undefined) {
         QUIPLASH_GAMES[eventId] = {
           players: {}, // key = username // value = player
@@ -137,109 +123,88 @@ const initializeSocket = (
           playerCount: 0,
           answers: {},
           promptGiven: false,
+          countdownInterval: null as NodeJS.Timeout | null,
+          answerInterval: null as NodeJS.Timeout | null,
+
           startTimer() {
-            let initialIntervalId: NodeJS.Timeout;
+            // let initialIntervalId: NodeJS.Timeout;
             let initialTimer = 30;
 
-            const startInitialInterval = () => {
-              initialIntervalId = setInterval(() => {
-                initialTimer -= 1;
-                socket.nsp
-                  .to(`Quiplash room: ${socket.data.eventId}`)
-                  .emit(`countDown`, initialTimer);
-              }, 1000); // Run every 1 second
-            };
+            QUIPLASH_GAMES[eventId].countdownInterval = setInterval(() => {
+              if (!eventId) return;
+              if (initialTimer <= 0) {
+                if (!QUIPLASH_GAMES[eventId]) return;
+                clearInterval(QUIPLASH_GAMES[eventId].countdownInterval!);
+                QUIPLASH_GAMES[eventId].countdownInterval = null;
+              } else {
+                socket.nsp.to(`Flamiliar room: ${eventId}`).emit(`countDown`, initialTimer);
+                initialTimer--;
+              }
+            }, 1000);
 
-            startInitialInterval();
-
-            // Stop the interval after 30 seconds
-            setTimeout(() => {
-              clearInterval(initialIntervalId);
-            }, 31000);
 
             // After 30 seconds, Show answers & begin next timer
             setTimeout(() => {
-              if (QUIPLASH_GAMES[eventId] === undefined) {
-                return;
-              }
+              if (!QUIPLASH_GAMES[eventId]) return;
               QUIPLASH_GAMES[eventId].promptGiven = false;
-              socket.nsp
-                .to(`Quiplash room: ${socket.data.eventId}`)
-                .emit(`promptGiven`, QUIPLASH_GAMES[eventId].promptGiven);
-              socket.nsp
-                .to(`Quiplash room: ${socket.data.eventId}`)
-                .emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
-
-              let intervalId: NodeJS.Timeout;
-              let timer = 16;
-
-              const startInterval = () => {
-                intervalId = setInterval(() => {
-                  timer -= 1;
-                  socket.nsp
-                    .to(`Quiplash room: ${socket.data.eventId}`)
-                    .emit(`countDown`, timer);
-                }, 1000); // Run every 1 second
-              };
-
-              startInterval();
-
-              // Stop the interval after 15 seconds
-              setTimeout(() => {
-                clearInterval(intervalId);
-              }, 17000);
+              if (!eventId) return;
+              socket.nsp.to(`Flamiliar room: ${eventId}`).emit(`promptGiven`, false);
+              socket.nsp.to(`Flamiliar room: ${eventId}`).emit(`showAnswers`, QUIPLASH_GAMES[eventId].answers);
+    
+              let timer = 15;
+              QUIPLASH_GAMES[eventId].answerInterval = setInterval(() => {
+                if (timer <= 0) {
+                  clearInterval(QUIPLASH_GAMES[eventId].answerInterval!);
+                  QUIPLASH_GAMES[eventId].answerInterval = null;
+                } else {
+                  socket.nsp.to(`Flamiliar room: ${eventId}`).emit(`countDown`, timer);
+                  timer--;
+                }
+              }, 1000);
 
               setTimeout(() => {
+                if (!QUIPLASH_GAMES[eventId]) return;
+                if (!eventId) return;
                 const totalVotes: { [key: string]: number } = {};
-                let winner = ['', 0];
+                let winner: [string, number] = ['', 0];
                 for (let i = 0; i < QUIPLASH_GAMES[eventId].votes.length; i++) {
-                  // if the current name that was voted for is not in the object
-                  if (
-                    totalVotes[QUIPLASH_GAMES[eventId].votes[i]] === undefined
-                  ) {
-                    // add them to the object , set their vote to 1
+                  if (!eventId) return;
+                    if ( totalVotes[QUIPLASH_GAMES[eventId].votes[i]] === undefined){
                     totalVotes[QUIPLASH_GAMES[eventId].votes[i]] = 1;
                   } else {
-                    // if they are already in the object, add 1 to that persons name
                     totalVotes[QUIPLASH_GAMES[eventId].votes[i]] += 1;
                   }
                 }
-                // SET THE WINNER
+
                 for (let key in totalVotes) {
-                  let currentContestant = [key, totalVotes[key]];
-                  if (winner[1] < currentContestant[1]) {
-                    winner = currentContestant;
+                  if (winner[1] < totalVotes[key]) {
+                    winner = [key, totalVotes[key]];
                   }
                 }
-
-                // reset all properties
-                const falsyBool = false;
-                const truthyBool = true;
+                if (!eventId) return;
                 QUIPLASH_GAMES[eventId].votes.length = 0;
-                for (const prop of Object.getOwnPropertyNames(
-                  QUIPLASH_GAMES[eventId].answers
-                )) {
-                  delete QUIPLASH_GAMES[eventId].answers[prop];
-                }
+                QUIPLASH_GAMES[eventId].answers = {};
+
                 QUIPLASH_GAMES[eventId].promptGiven = false;
-                const restartTime = 30;
+
                 socket.nsp
-                  .to(`Quiplash room: ${socket.data.eventId}`)
-                  .emit(`showWinner`, { winner, falsyBool, truthyBool });
+                  .to(`Flamiliar room: ${socket.data.eventId}`)
+                  .emit(`showWinner`, { winner, falsyBool: false, truthyBool: true });
                 socket.nsp
-                  .to(`Quiplash room: ${socket.data.eventId}`)
-                  .emit(`countDown`, restartTime);
-              }, 17000);
+                  .to(`Flamiliar room: ${socket.data.eventId}`)
+                  .emit(`countDown`, 30);
+              }, 16000);
             }, 33000);
+            
           },
         }; // END OF QUIPLASH GAME OBJECT
       } // END OF IF STATEMENT
-
+      if (!eventId) return;
       // if a game already exists, add the player to it
-      QUIPLASH_GAMES[eventId].players[user.username] = quiplashPlayer;
+      QUIPLASH_GAMES[eventId].players[user.username] = flamiliarPlayer;
       QUIPLASH_GAMES[eventId].playerCount += 1;
       socket.nsp
-        .to(`Quiplash room: ${socket.data.eventId}`)
+        .to(`Flamiliar room: ${socket.data.eventId}`)
         .emit('ongoingPrompt', QUIPLASH_GAMES[eventId].promptGiven);
     });
 
@@ -247,6 +212,7 @@ const initializeSocket = (
 
     // triggered when its time to give a new prompt
     socket.on('generatePrompt', async () => {
+      if (!socket.data.eventId) return;
       // generate quiplash prompt that is unique
       let mod = Math.floor(Math.random() * 70);
       let prompt = `Generate a single quiplash prompt related to ${modifiers[mod]} without using possessive pronouns`;
@@ -260,7 +226,7 @@ const initializeSocket = (
       try {
         const result = await bartenderAI.generateContent(prompt);
         socket.nsp
-          .to(`Quiplash room: ${socket.data.eventId}`)
+          .to(`Flamiliar room: ${socket.data.eventId}`)
           .emit('receivePrompt', result);
       } catch (err) {
         const boo = {
@@ -275,24 +241,25 @@ const initializeSocket = (
           },
         };
         socket.nsp
-          .to(`Quiplash room: ${socket.data.eventId}`)
+          .to(`Flamiliar room: ${socket.data.eventId}`)
           .emit('receivePrompt', boo);
       }
       QUIPLASH_GAMES[socket.data.eventId].promptGiven = true;
       QUIPLASH_GAMES[socket.data.eventId].startTimer();
       socket.nsp
-        .to(`Quiplash room: ${socket.data.eventId}`)
+        .to(`Flamiliar room: ${socket.data.eventId}`)
         .emit(`promptGiven`, QUIPLASH_GAMES[socket.data.eventId].promptGiven);
     });
 
     // Quiplash Answer Submissions
 
-    socket.on('quiplashMessage', ({ message, eventId, user }) => {
+    socket.on('FlamiliarMessage', ({ message, eventId, user }) => {
       QUIPLASH_GAMES[socket.data.eventId].answers[user.username] = message;
     });
 
     // VOTE
     socket.on('vote', (e) => {
+      console.log(e)
       QUIPLASH_GAMES[socket.data.eventId].votes.push(e);
     });
 
@@ -300,6 +267,10 @@ const initializeSocket = (
 
     // Controls movement. Update their respective state via socket.id
     socket.on('keyPress', ({ inputId, state }) => {
+      if(!PLAYER_LIST[socket.id]){
+        console.error('failure to move character, not found in player list');
+        return;
+      }
       if (inputId === 'Up') {
         PLAYER_LIST[socket.id].pressingUp = state;
         PLAYER_LIST[socket.id].isWalking = state;
@@ -344,6 +315,10 @@ const initializeSocket = (
     });
 
     socket.on('message', ({ message, eventId }) => {
+      if(!PLAYER_LIST[socket.id]){
+        console.error('failure to find character, no message sent');
+        return;
+      }
       PLAYER_LIST[socket.id].sentMessage = true;
       PLAYER_LIST[socket.id].currentMessage = message;
 
@@ -356,42 +331,73 @@ const initializeSocket = (
         });
       // Remove message after a few seconds
       setTimeout(() => {
+        if(PLAYER_LIST[socket.id]){
         PLAYER_LIST[socket.id].sentMessage = false;
+        }
       }, 2000);
     });
   });
 
-  setInterval(() => {
-    let pack = []; // package to store players
-    for (let key in PLAYER_LIST) {
-      let player = PLAYER_LIST[key];
-      player.updatePosition();
-      pack.push({
-        id: player.name,
-        avatar: player.avatar,
-        x: player.data.x,
-        y: player.data.y,
-        username: player.username,
-        sentMessage: player.sentMessage,
-        currentMessage: player.currentMessage,
-        room: player.eventId,
-        isWalking: player.isWalking,
-        isSnapping: player.isSnapping,
-        isWaving: player.isWaving,
-        isEnergyWaving: player.isEnergyWaving,
-        isHearting: player.isHearting,
-        equip420: player.equip420,
-        equipShades: player.equipShades,
-        equipBeer: player.equipBeer,
-        isSad: player.isSad,
-      });
+let pack: PlayersPack = {}; // Reuse the pack object
+
+let frames = setInterval(() => {
+  // Clear previous data instead of creating a new object
+  for (let key in pack) {
+    pack[key].length = 0; // Reset the array for each eventId
+  }
+
+  for (let key in PLAYER_LIST) {
+    let player = PLAYER_LIST[key];
+    player.updatePosition();
+
+    if (!pack[player.eventId]) {
+      pack[player.eventId] = [];
     }
-    // loop through the sockets and send the package to each of them
-    for (let key in SOCKET_LIST) {
-      let socket = SOCKET_LIST[key];
-      socket.emit('newPositions', pack);
+
+    // Only send necessary data to reduce memory overhead
+    pack[player.eventId].push({
+      id: player.name,
+      avatar: player.avatar,
+      x: player.data.x,
+      y: player.data.y,
+      username: player.username,
+      sentMessage: player.sentMessage,
+      currentMessage: player.currentMessage,
+      room: player.eventId,
+      isWalking: player.isWalking,
+      isSnapping: player.isSnapping,
+      isWaving: player.isWaving,
+      isEnergyWaving: player.isEnergyWaving,
+      isHearting: player.isHearting,
+      equip420: player.equip420,
+      equipShades: player.equipShades,
+      equipBeer: player.equipBeer,
+      isSad: player.isSad,
+    });
+  }
+
+  for (let key in SOCKET_LIST) {
+    let socket = SOCKET_LIST[key];
+    let eventId = socket.data.eventId;
+    if (!eventId) return; // Prevent errors
+
+    // Only emit if there's data to send
+    
+    if (pack[eventId] && pack[eventId].length > 0) {
+      socket.nsp.to(eventId).emit('newPositions', pack[eventId]);
     }
-  }, 1000 / 20);
+  }
+}, 1000 / 20);
+// Add cleanup logic
+process.on('SIGINT', () => {
+  clearInterval(frames);
+  // console.log('Server shutting down. Clearing intervals...');
+  process.exit();
+});
+// setInterval(() => {
+//   const used = process.memoryUsage().heapUsed / 1024 / 1024;
+//   console.log(`Memory usage: ${Math.round(used * 100) / 100} MB`);
+// }, 10000);
 };
 
 export default initializeSocket;

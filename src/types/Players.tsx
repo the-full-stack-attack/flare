@@ -1,20 +1,13 @@
 import { Socket } from 'socket.io';
-
+import { Player } from '@/client/assets/chatroom/chatAssets';
 // Lists of Sockets and Players, key will be socket.id
-type Player = {
+type PlayerData = {
+  id: string;
   username: string;
   avatar: string;
-  name: string;
-  eventId: string;
-  data: {
     // positions
     x: number;
     y: number;
-  };
-  pressingRight: boolean; // states of movement
-  pressingLeft: boolean;
-  pressingUp: boolean;
-  pressingDown: boolean;
   isWalking: boolean;
   isSnapping: boolean;
   isWaving: boolean;
@@ -24,14 +17,20 @@ type Player = {
   equipShades: boolean;
   equip420: boolean;
   isSad: boolean;
-  maxSpd: number;
+  sentMessage: boolean,
+  currentMessage: string,
+  room: string,
+}
+
+type PlayersPack = {
+  [key: string]: PlayerData[];
 }
 
 type SocketList = {
   [key: string]: Socket;
 }
 type PlayerList = {
-  [key: string]: any;
+  [key: string]: Player;
 }
 type QuiplashList = {
   [key: string]: any;
@@ -40,4 +39,4 @@ type QuiplashGames = {
   [key: string]: any;
 }
 
-export { type SocketList, PlayerList, QuiplashList, QuiplashGames, Player }
+export { type SocketList, PlayerList, QuiplashList, QuiplashGames, PlayerData, PlayersPack, }

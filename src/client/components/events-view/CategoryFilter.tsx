@@ -1,16 +1,19 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import axios from 'axios';
 
-import { toast } from 'sonner';
-
 import { Button } from '@/components/ui/button';
+
+import {
+  Dialog,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+
+import FilterButtonsDialog from './FilterButtonsDialog';
 
 type Category = {
   name: string;
   id: number;
 };
-
-type ChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
 type CategoryFilterProps = {
   catFilter: string[];
@@ -20,11 +23,11 @@ type CategoryFilterProps = {
 function CategoryFilter({ catFilter, handleSetCatFilter }: CategoryFilterProps) {
   const [catList, setCatList] = useState<Category[]>([]);
 
-  const [selectedCats, setSelectedCats] = useState<string[]>([]);
-
-  const [changeCatFilter, setChangeCatFilter] = useState<boolean>(false);
-
   const buttonColor = 'bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-white px-4 py-4 rounded-xl text-md';
+
+  const simpleCatList = useMemo(() => (
+    catList.map(category => category.name)
+  ), [catList]);
 
   const getCategories = useCallback(() => {
     axios.get('/api/event/categories')
@@ -36,101 +39,29 @@ function CategoryFilter({ catFilter, handleSetCatFilter }: CategoryFilterProps) 
       });
   }, []);
 
-  const handleCheckboxChange = ({ target }: ChangeEvent) => {
-    const catName = target.value;
-    const isChecked = target.checked;
-
-    if (isChecked) {
-      setSelectedCats([...selectedCats, catName]);
-    } else {
-      setSelectedCats(selectedCats.filter((cat) => cat !== catName));
-    }
-  };
-
-  const handleChangeCatFilterForm = () => {
-    setChangeCatFilter(!changeCatFilter);
-  };
-
-  const handleSetCatFilterClick = () => {
-    selectedCats.length === 0 ? toast('Category filter cleared.') : toast('Set category filter.');
-    handleSetCatFilter(selectedCats);
-    setChangeCatFilter(false);
-  };
-
-  const handleClearCatFilter = () => {
-    toast('Category filter cleared.');
-    handleSetCatFilter([]);
-    setChangeCatFilter(false);
-  };
-
   useEffect(() => {
     getCategories();
   }, []);
 
-  useEffect(() => {
-    setSelectedCats(catFilter);
-  }, [catFilter]);
-
   return (
-    <div className="container mx-auto px-4 mt-4">
-      {
-        changeCatFilter ? (
-          <div className="grid grid-cols-2 gap-4 ">
-            <div>
-              <Button
-                className={buttonColor}
-                onClick={handleSetCatFilterClick}
-              >
-                Set Filter
-              </Button>
-            </div>
-            <div>
-              { catFilter.length === 0 ? (
-                  <Button
-                    className={buttonColor}
-                    onClick={handleChangeCatFilterForm}
-                  >
-                    Cancel
-                  </Button>
-                ) : (
-                  <Button
-                    className={buttonColor}
-                    onClick={handleClearCatFilter}
-                  >
-                    Clear
-                  </Button>
-                )
-              }
-            </div>
-          </div>
-        ) : (
+    <div className="container">
+      <Dialog>
+        <DialogTrigger asChild>
           <Button
             className={buttonColor}
-            onClick={handleChangeCatFilterForm}
           >
-            Select Categories
+            Categories
           </Button>
-        )
-      }
-      {
-        changeCatFilter ? catList.map((cat) => (
-          <div key={cat.id}>
-            <label className="text-gray-200">
-              <input
-                type="checkbox"
-                value={cat.name}
-                checked={selectedCats.includes(cat.name)}
-                onChange={handleCheckboxChange}
-              />
-              {` ${cat.name}`}
-            </label>
-          </div>
-        )) : (
-          <p className="text-gray-200 mt-2">
-            {catFilter.length === 0 ? '' : `Showing Categories: ${catFilter.join(', ')}`}
-          </p>
-        )
-      }
+        </DialogTrigger>
+        <FilterButtonsDialog
+          choicesList={simpleCatList}
+          initialSelection={catFilter}
+          itemType="Category"
+          title="Filter by Category"
+          description="Choose which categories you want to filter upcoming events by."
+          setFilter={handleSetCatFilter}
+        />
+      </Dialog>
     </div>
   );
 }

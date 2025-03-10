@@ -36,6 +36,7 @@ export const AnimatedList = React.memo(
       [children],
     );
 
+    // @ts-ignore
     useEffect(() => {
       if (index < childrenArray.length - 1) {
         const timeout = setTimeout(() => {
@@ -44,6 +45,7 @@ export const AnimatedList = React.memo(
 
         return () => clearTimeout(timeout);
       }
+
     }, [index, delay, childrenArray.length]);
 
     const itemsToShow = useMemo(() => {

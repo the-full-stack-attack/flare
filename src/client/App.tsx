@@ -1,12 +1,11 @@
-import '@/styles/main.css'; // Main styles
-import '@/styles/themes/dark-cosmic.css'; // Theme styles
-import '@/styles/themes/cyber-neon.css'; // Theme styles
-import React, { useState, useEffect, useMemo } from 'react';
+import '@/styles/main.css';
+import '@/styles/themes/dark-cosmic.css';
+import '@/styles/themes/cyber-neon.css';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import axios from 'axios';
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'; // Added Outlet import
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import {
   AiConversations,
-  Chatroom,
   CreateEvents,
   Events,
   Signup,
@@ -16,20 +15,27 @@ import {
   Notifications,
   AccountSettings,
 } from './views/index';
+const Chatroom = lazy(() => import('./views/Chatroom'));
 import { NavBar } from './components/NavBar';
-import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 import { UserType, UserContext } from './contexts/UserContext';
-import { AuthProvider } from './contexts/AuthContext';
-
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { SocketProvider } from './contexts/SocketContext';
 import { BackgroundGlow } from '@/components/ui/background-glow';
 import { Logout } from './components/auth/Logout';
-import { Footer } from '../components/ui/footer'
+import { Footer } from '../components/ui/footer';
 
-function HomeLayout() {
+function LayoutContent() {
+  const { isAuthenticated } = useAuth();
+  
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
+      {/* Add a higher z-index for the navbar container */}
+      <div className="relative z-20">
+        {isAuthenticated && <NavBar />}
+      </div>
       <main className="flex-grow relative z-10">
         <Outlet />
       </main>
@@ -39,16 +45,7 @@ function HomeLayout() {
 }
 
 function Layout() {
-  return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden">
-      <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
-      <NavBar />
-      <main className="flex-grow relative z-10">
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
-  );
+  return <LayoutContent />;
 }
 
 export default function App() {
@@ -108,34 +105,51 @@ export default function App() {
       <UserContext.Provider value={userState}>
         <BrowserRouter>
           <Routes>
-          {/* Public routes with HomeLayout */}
-          <Route element={<HomeLayout />}>
-            <Route path="/" element={<Home />} />
-          </Route>
 
-          {/* Other routes with NavBar Layout */}
-          <Route element={<Layout />}>
-            <Route path="Signup" element={<Signup />} />
-            <Route path="logout" element={<Logout />} />
-            
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="AiConversations" element={<AiConversations />} />
-              <Route path="/Chatroom/*" element={<Chatroom />} />
-              <Route path="CreateEvents" element={<CreateEvents />} />
-              <Route path="Events" element={<Events />} />
-              <Route path="Task" element={<Task />} />
-              <Route path="Notifications" element={<Notifications />} />
-              <Route path="Dashboard" element={<Dashboard />} />
-              <Route path='Settings' element={<AccountSettings />} />
+            <Route element={<Layout />}>
+              {/* Public routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/logout" element={<Logout />} />
+
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/aiconversations" element={<AiConversations />} />
+                <Route
+                  path="/chatroom/*"
+                  element={
+                    <Suspense
+                      fallback={
+                        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
+                          <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
+                          <div className="flex items-center justify-center w-screen pt-40">
+                            <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+                              Loading...
+                            </h1>
+                          </div>
+                        </div>
+                      }
+                    >
+                      <SocketProvider>
+                      <Chatroom />
+                      </SocketProvider>
+                    </Suspense>
+                  }
+                />
+                <Route path="/createevents" element={<CreateEvents />} />
+                <Route path="/events" element={<Events />} />
+                <Route path="/task" element={<Task />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/settings" element={<AccountSettings />} />
+              </Route>
+              
+              {/* Catch-all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
-
-            {/* Catch-all route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </UserContext.Provider>
-  </AuthProvider>
-);
+          </Routes>
+        </BrowserRouter>
+      </UserContext.Provider>
+    </AuthProvider>
+  );
 }

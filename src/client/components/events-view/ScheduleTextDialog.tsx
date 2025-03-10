@@ -1,7 +1,10 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useState, useEffect, useMemo, useContext } from 'react';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { toast } from 'sonner';
+
+import { UserContext } from '../../contexts/UserContext';
 
 import {
   DialogContent,
@@ -36,6 +39,10 @@ function ScheduleTextDialog({
   const [message, setMessage] = useState<string>('');
   const [newTextMode, setNewTextMode] = useState<boolean>(true);
   const [updateMode, setUpdateMode] = useState<boolean>(false);
+
+  const { user } = useContext(UserContext);
+
+  const navigate = useNavigate();
 
   const normalDialogButton = 'bg-gradient-to-r from-gray-700 to-pink-700 hover:from-gray-900 hover:to-pink-900 text-white';
   
@@ -161,91 +168,118 @@ function ScheduleTextDialog({
           an out if you need to leave.
         </DialogDescription>
       </DialogHeader>
-      <div className="grid gap-4 py-1">
-        <div>
-          <p><b>Event:</b> {eventTitle}</p>
-          <div className="grid grid-cols-2 gap-2">
+      {
+          user.phone_number !== null ? (
+            <>
+              <div className="grid gap-4 py-1">
+                <div>
+                  <p><b>Event:</b> {eventTitle}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <p><b>Date:</b> {`${dayjs(startTime).format('MMMM D, YYYY')}`}</p>
+                    </div>
+                    <div>
+                      <p><b>Time:</b> {`${dayjs(startTime).format('h:mm A')} - ${dayjs(endTime).format('h:mm A')}`}</p>
+                    </div>
+                  </div>
+                </div>
+                <Label htmlFor="Send Time" className="text-left">
+                  Send a Text During the Event
+                </Label>
+                <RadioGroup defaultValue={sendTime} disabled={!newTextMode}>
+                  {
+                    (
+                      now < startTimeNum + 1000 * 60 * 30 && endTimeNum - startTimeNum >= 1000 * 60 * 45
+                    ) ? (
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          id="30-minutes"
+                          value="30-minutes"
+                          className="focus:bg-white text-white"
+                          onClick={handleSendTimeSelect}
+                        />
+                        <Label htmlFor="30-minutes">{`30 minutes into the event [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 30)).format('h:mm A')}]`}</Label>
+                      </div>
+                    ) : null
+                  }
+                  {
+                    (
+                      now < startTimeNum + 1000 * 60 * 60 * 1 && endTimeNum - startTimeNum >= 1000 * 60 * 60 * 1.25
+                    ) ? (
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          id="1-hour"
+                          value="1-hour"
+                          className="focus:bg-white text-white"
+                          onClick={handleSendTimeSelect}
+                        />
+                        <Label htmlFor="1-hour">{`1 hour into the event [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 1)).format('h:mm A')}]`}</Label>
+                      </div>
+                    ) : null
+                  }
+                  {
+                    (
+                      now < startTimeNum + 1000 * 60 * 60 * 2 && endTimeNum - startTimeNum >= 1000 * 60 * 60 * 2.25
+                    ) ? (
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          id="2-hours"
+                          value="2-hours"
+                          className="focus:bg-white text-white"
+                          onClick={handleSendTimeSelect}
+                        />
+                        <Label htmlFor="2-hours">{`2 hours into the event [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 2)).format('h:mm A')}]`}</Label>
+                      </div>
+                    ) : null
+                  }
+                </RadioGroup>
+              </div>
+              <div className="grid gap-4 py-1">
+                <Label htmlFor="message" className="text-left">
+                  Custom Message
+                </Label>
+                <Textarea
+                  placeholder="Optional: Create a custom message..."
+                  readOnly={!newTextMode}
+                  value={message}
+                  onChange={handleMessageChange}
+                />
+              </div>
+            </>
+          ) : (
             <div>
-              <p><b>Date:</b> {`${dayjs(startTime).format('MMMM D, YYYY')}`}</p>
+              <p>
+                It looks like you haven't saved a number with Flare.
+                In order to schedule a text, you must save a phone number in your Account Settings.
+              </p>
+              <br></br>
+              <p>
+                <b>Disclaimer: </b>
+                Your phone number will only be sent text messages you schedule yourself and will not be used in any other way.
+              </p>
             </div>
-            <div>
-              <p><b>Time:</b> {`${dayjs(startTime).format('h:mm A')} - ${dayjs(endTime).format('h:mm A')}`}</p>
-            </div>
-          </div>
-        </div>
-        <Label htmlFor="Send Time" className="text-left">
-          Send a Text During the Event
-        </Label>
-        <RadioGroup defaultValue={sendTime} disabled={!newTextMode}>
-          {
-            (
-              now < startTimeNum + 1000 * 60 * 30 && endTimeNum - startTimeNum >= 1000 * 60 * 45
-            ) ? (
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  id="30-minutes"
-                  value="30-minutes"
-                  className="focus:bg-white text-white"
-                  onClick={handleSendTimeSelect}
-                />
-                <Label htmlFor="30-minutes">{`30 minutes into the event [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 30)).format('h:mm A')}]`}</Label>
-              </div>
-            ) : null
-          }
-          {
-            (
-              now < startTimeNum + 1000 * 60 * 60 * 1 && endTimeNum - startTimeNum >= 1000 * 60 * 60 * 1.25
-            ) ? (
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  id="1-hour"
-                  value="1-hour"
-                  className="focus:bg-white text-white"
-                  onClick={handleSendTimeSelect}
-                />
-                <Label htmlFor="1-hour">{`1 hour into the event [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 1)).format('h:mm A')}]`}</Label>
-              </div>
-            ) : null
-          }
-          {
-            (
-              now < startTimeNum + 1000 * 60 * 60 * 2 && endTimeNum - startTimeNum >= 1000 * 60 * 60 * 2.25
-            ) ? (
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  id="2-hours"
-                  value="2-hours"
-                  className="focus:bg-white text-white"
-                  onClick={handleSendTimeSelect}
-                />
-                <Label htmlFor="2-hours">{`2 hours into the event [Sends at ${dayjs(new Date(startTimeNum + 1000 * 60 * 60 * 2)).format('h:mm A')}]`}</Label>
-              </div>
-            ) : null
-          }
-        </RadioGroup>
-      </div>
-      <div className="grid gap-4 py-1">
-        <Label htmlFor="message" className="text-left">
-          Custom Message
-        </Label>
-        <Textarea
-          placeholder="Optional: Create a custom message..."
-          readOnly={!newTextMode}
-          value={message}
-          onChange={handleMessageChange}
-        />
-      </div>
+          )
+        }
       <DialogFooter>
         {newTextMode ? (
           <div className="grid grid-cols-2 gap-2">
-            <DialogClose asChild>
-              <Button type="submit" className={normalDialogButton} onClick={() => {
-                postPatchText();
-                updateMode ? toast('Scheduled text has been updated.') : toast('A text message has been scheduled.');
-              }}>
-                Schedule Text
-              </Button>
-            </DialogClose>
+              {
+                user.phone_number !== null ? (
+                  <DialogClose asChild>
+                    <Button type="submit" className={normalDialogButton} onClick={() => {
+                      postPatchText();
+                      updateMode ? toast('Scheduled text has been updated.') : toast('A text message has been scheduled.');
+                    }}>
+                      Schedule Text
+                    </Button>
+                  </DialogClose>
+                ) : (
+                  <Button className={normalDialogButton} onClick={() => { navigate('/settings'); }}>
+                    Update Phone Number
+                  </Button>
+                )
+              }
+              
             {updateMode ? <Button className={reverseNormalDialogButton} onClick={getText}>Cancel</Button> : null}
           </div>
         ) : (

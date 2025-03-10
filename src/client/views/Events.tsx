@@ -137,29 +137,37 @@ function Events() {
   }, [locationFilter, catFilter, interestsFilter]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-20 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 relative overflow-hidden pt-[40px] sm:pt-[60px] pb-12">
       <BackgroundGlow className="absolute inset-0 z-0 pointer-events-none" />
       <div className="container mx-auto px-4 content-center pt-5">
         <div className="grid grid-cols-1 lg:grid-cols-6 md:grid-cols-4">
-          <div>
-            <Button
-              className={buttonColor + 'mx-auto mx-4 mt-4 text-white'}
-              onClick={() => { navigate('/createevents'); }}
-            >
-              {<FaCalendarPlus />} Host an Event
-            </Button>
-            <LocationFilter
-              locationFilter={locationFilter}
-              handleSetLocationFilter={handleSetLocationFilter}
-            />
-            <CategoryFilter
-              catFilter={catFilter}
-              handleSetCatFilter={handleSetCatFilter}
-            />
-            <InterestsFilter
-              interestsFilter={interestsFilter}
-              handleSetInterestsFilter={handleSetInterestsFilter}
-            />
+          <div className="container pt-4 px-4 mx-auto">
+            <div className="pb-4 flex justify-center sm:justify-start">
+              <Button
+                className={buttonColor + ' text-white'}
+                onClick={() => { navigate('/createevents'); }}
+              >
+                {<FaCalendarPlus />} Host an Event
+              </Button>
+            </div>
+            <p className="text-gray-200">
+              Upcoming Events from
+              <b>{` ${locationFilter.city ? locationFilter.city : 'Anywhere'}${locationFilter.state ? `, ${locationFilter.state}` : ''}`}</b>
+            </p>
+            <div className="inline-flex justify-center content-center sm:grid grid-cols-1 gap-2 pt-2">
+              <LocationFilter
+                locationFilter={locationFilter}
+                handleSetLocationFilter={handleSetLocationFilter}
+              />
+              <CategoryFilter
+                catFilter={catFilter}
+                handleSetCatFilter={handleSetCatFilter}
+              />
+              <InterestsFilter
+                interestsFilter={interestsFilter}
+                handleSetInterestsFilter={handleSetInterestsFilter}
+              />
+            </div>
           </div>
           <div className="lg:col-span-5 md:col-span-3">
             <TabGroup
@@ -194,9 +202,9 @@ function Events() {
       </div>
       <Toaster
         toastOptions={{
-          className: 'isolate rounded-xl backdrop-blur-sm bg-gray-800/50 shadow-lg ring-1 ring-black/5 border-transparent text-white'
+          className: 'isolate rounded-xl backdrop-blur-sm bg-black/80 shadow-lg ring-1 ring-black/5 border-transparent text-white'
         }}
-        position="top-center"
+        position="bottom-center"
       />
     </div>
   );

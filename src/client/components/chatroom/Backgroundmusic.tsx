@@ -1,18 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import flamiliarmp3 from '../../assets/sounds/chatroom/flamiliarmp3.mp3';
 
-const BackgroundMusic = () => {
+
+const BackgroundMusic = React.memo(() => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
     const audio = new Audio(flamiliarmp3);
-    audio.play();
+    audio.loop = true; // Ensures continuous playback
+    audioRef.current = audio;
+    
+    const playAudio = () => {
+      audio.play().catch((error) => console.error("Audio play error:", error));
+    };
+
+    playAudio();
 
     return () => {
-      audio.pause();
-      audio.currentTime = 0; // Reset the song when unmounting
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
     };
   }, []);
 
-  return <div>{''}</div>;
-};
+  return null;
+});
 
 export default BackgroundMusic;
