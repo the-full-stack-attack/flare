@@ -12,9 +12,11 @@ const BackgroundMusic = React.memo(() => {
     
     const playAudio = () => {
       audio.play().catch((error) => console.error("Audio play error:", error));
+        audio.volume = 0.3; //
     };
 
     playAudio();
+        
 
     return () => {
       if (audioRef.current) {

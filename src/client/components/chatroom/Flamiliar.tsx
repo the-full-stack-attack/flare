@@ -149,6 +149,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
       audio
         .play()
         .catch((error) => console.error('Failed to play sound:', error));
+        if(audio) {
+          audio.volume = 0.3
+       }
     }
     const showAnswersHandler = (answers: any) => {
       if(!isMounted) return;
@@ -157,6 +160,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
       audio
         .play()
         .catch((error) => console.error('Failed to play sound:', error));
+        if(audio) {
+          audio.volume = 0.3
+       }
       setAnswersReceived(true);
       setPlayerAnswers(answers);
     }
@@ -168,6 +174,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
       audio
         .play()
         .catch((error) => console.error('Failed to play sound:', error));
+        if(audio) {
+          audio.volume = 0.3
+       }
       if (winner[0] === '') {
         winner[0] = 'No Winner :c';
         winner[1] = '';
@@ -194,6 +203,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
         audio
           .play()
           .catch((error) => console.error('Failed to play sound:', error));
+          if(audio) {
+            audio.volume = 0.3
+         }
         setColor('#cf060a');
       }
       setTimer(time.toString());
@@ -245,6 +257,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     audio
       .play()
       .catch((error) => console.error('Failed to play sound:', error));
+    if(audio) {
+       audio.volume = 0.3
+    }
     socket.emit('FlamiliarMessage', {
       message: message,
       eventId: eventId,
@@ -256,10 +271,12 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     if (e === user.username) {
       let audio = new Audio(laugh);
       audio.play();
+      audio.volume = 0.3
     } else {
       if(!hasVoted){
       let audio = new Audio(menuselect);
       audio.play();
+      audio.volume = 0.3
       socket.emit('vote', e);
       setHasVoted(true);
       }
@@ -271,9 +288,11 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     if (sizeFactor === 1) {
       setSizeFactor(1.3);
       audio.play();
+      audio.volume = 0.3
     } else {
       setSizeFactor(1);
       audio.play();
+      audio.volume = 0.3;
     }
   };
 

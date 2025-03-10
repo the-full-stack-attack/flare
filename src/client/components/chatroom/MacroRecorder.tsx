@@ -168,7 +168,7 @@ const MacroRecorder = () => {
       audio
         .play()
         .catch((error) => console.error('Failed to play sound:', error));
-
+      audio.volume = 0.3;
       return audio;
     }
 
