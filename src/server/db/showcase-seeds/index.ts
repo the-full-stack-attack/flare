@@ -6,6 +6,9 @@ import seedCategories from "../seeds/seedCategories";
 import seedInterests from "../seeds/seedInterests";
 import seedFlares from './seedFlares';
 import seedTasks from './seedTasks';
+import seedUsers from './seedUsers';
+import seedVenues from './seedVenues';
+import seedEvents from './seedEvents';
 
 dotenv.config();
 
@@ -28,6 +31,9 @@ async function showcaseSeedDB() {
     await seedInterests();
     await seedFlares();
     await seedTasks();
+    await seedUsers();
+    await seedVenues();
+    await seedEvents();
   } catch (error: unknown) {
     console.error('Error running showcase seed:', error);
   } finally {
