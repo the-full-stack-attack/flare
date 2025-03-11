@@ -19,7 +19,7 @@ export const BackgroundGlow = memo(function BackgroundGlow({ className = '' }: B
       {orbPositions.map((position, i) => (
         <motion.div
           key={i}
-          className="absolute rounded-full mix-blend-screen filter blur-xl pointer-events-none"
+          className="absolute rounded-full mix-blend-screen filter blur-md pointer-events-none"
           animate={{
             x: ["0%", "100%", "0%"],
             y: ["0%", "100%", "0%"],

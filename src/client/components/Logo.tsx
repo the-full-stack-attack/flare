@@ -11,20 +11,20 @@ interface LogoProps {
 
 export const Logo = ({ className, animate = true, size = "sm" }: LogoProps) => {
   const sizes = {
-    sm: "h-5",
-    md: "h-16",
-    lg: "h-20",
+    sm: "h-8",
+    md: "h-10",
+    lg: "h-12",
     xl: "h-28",
     "2xl": "h-36",
     navbar: "h-50"
   };
 
   return (
-    <motion.div 
+    <motion.div
       className={cn("relative isolate", className)}
-      whileHover={{ 
+      whileHover={{
         scale: 1.02,
-        transition: { duration: 0.3 } 
+        transition: { duration: 0.3 }
       }}
     >
       <motion.img
