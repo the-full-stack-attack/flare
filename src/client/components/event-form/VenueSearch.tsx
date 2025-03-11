@@ -22,6 +22,14 @@ function VenueSearch({ handleVenueSelect }) {
         state_name: '',
         zip_code: ''
     });
+    const [loadingMessage, setLoadingMessage] = useState(0);
+    
+    const loadingMessages = [
+        "Checking the venue's vibe rating...",
+        "Making sure it's flare-worthy...",
+        "Calculating the fun factor...",
+        "Measuring the memory potential..."
+    ];
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -39,6 +47,17 @@ function VenueSearch({ handleVenueSelect }) {
         setFilteredVenues([]);
         setIsLoadingVenue(false);
     }, []);
+
+    // change loading message every 5 seconds
+    useEffect(() => {
+        if (isLoadingVenue) {
+            const interval = setInterval(() => {
+                setLoadingMessage((prev) => (prev + 1) % loadingMessages.length);
+            }, 5000); 
+
+            return () => clearInterval(interval);
+        }
+    }, [isLoadingVenue]);
 
     const handleVenueSearch = async (searchTerm) => {
         try {
@@ -193,10 +212,10 @@ function VenueSearch({ handleVenueSelect }) {
                                         </div>
                                         <div className="relative z-10 h-full flex flex-col items-center justify-center">
                                             <h3 className="text-lg font-medium text-white">
-                                                Gathering Venue Data
-                                            </h3>
-                                            <p className="text-sm text-gray-300 mt-2">
                                                 Just a moment...
+                                            </h3>
+                                            <p className="text-sm text-gray-300 mt-2 text-center px-4">
+                                                {loadingMessages[loadingMessage]}
                                             </p>
                                         </div>
                                     </Card>
