@@ -123,6 +123,8 @@ export const NavBar = () => {
         });
     };
 
+    getUnreadNotificationsCount();
+
     let intervalId = setInterval(() => {
       getUnreadNotificationsCount();
     }, 5000);
@@ -192,7 +194,7 @@ export const NavBar = () => {
           </div>
 
           <div className="flex items-center space-x-2 md:space-x-4">
-            <NotificationBell count={user.Notifications?.length || 0} />
+            <NotificationBell count={unreadNotifs || 0} />
             <div className="relative">
               <motion.button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
