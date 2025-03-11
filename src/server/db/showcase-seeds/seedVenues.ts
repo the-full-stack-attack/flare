@@ -61,6 +61,29 @@ const venues: SeedVenue[] = [
     fsq_id: '4ad4c04cf964a52032f320e3',
     google_place_id: 'ChIJq8z08yGmIIYRdURBqx_JQCc',
   },
+
+  /* #2 Anna's */
+  {
+    name: `Anna's`,
+    description: `Anna's is a locals' spot turned destination dive. The drinks aren't fancy and you can always come as you are.`,
+    category: 'Bar',
+    street_address: '2601 Royal St',
+    zip_code: 70117,
+    city_name: 'New Orleans',
+    state_name: 'LA',
+    phone: '5047668376',
+    website: 'https://www.annasnola.com/',
+    pricing: '$10–20',
+    rating: 4,
+    total_reviews: 177,
+    popularTime: new Date('2025-03-09T04:58:07.000Z'), // 10:58 PM
+    wheelchair_accessible: false,
+    serves_alcohol: true,
+    is_vegan_friendly: null,
+    is_dog_friendly: true,
+    fsq_id: '60baa6407f3f8e10f8f6d6ed',
+    google_place_id: 'ChIJQRCa0N2nIIYR9hetQoh1Y3Q',
+  }
 ];
 
 const venueImages: SeedVenueImage[] = [
@@ -92,8 +115,40 @@ const venueImages: SeedVenueImage[] = [
   },
   { // 6
     path: 'https://lh3.googleusercontent.com/p/AF1QipOiZ7RA-os9oY6FCUC9Kt8wLO18ZgPCKJcp0dqJ=w408-h240-k-no-pi-10-ya280.25806-ro-0-fo100',
-    source: 'foursquare',
+    source: 'google',
     venue_id: 1,
+  },
+
+  /* #2 Anna's Images */
+  { // 7
+    path: 'https://fastly.4sqi.net/img/general/original/3421329_84d9OcikBmXMjTTiURer81bnkem9cf3AERVXkG99GU4.jpg',
+    source: 'foursquare',
+    venue_id: 2,
+  },
+  { // 8
+    path: 'https://fastly.4sqi.net/img/general/original/14845948_1UGbY1sqegopMWBPRCd4jGCiRLMt7QjGk6uSlvNwC0Y.jpg',
+    source: 'foursquare',
+    venue_id: 2,
+  },
+  { // 9
+    path: 'https://fastly.4sqi.net/img/general/original/218694_uPVQBnTatST_tNu5UqKawP_VbENpZh3ej6IUyZ_GgrQ.jpg',
+    source: 'foursquare',
+    venue_id: 2,
+  },
+  { // 10
+    path: 'https://fastly.4sqi.net/img/general/original/218694_eU9yZAv8RzIccpgLl6Vrh1SMMzgfKvy9zI0GrBT1JjU.jpg',
+    source: 'foursquare',
+    venue_id: 2,
+  },
+  { // 11
+    path: 'https://fastly.4sqi.net/img/general/original/218694_8J6jZ3YWzM3zvFUe7vIyMzqwHiV9aiX2jNgNuEK4W8Q.jpg',
+    source: 'foursquare',
+    venue_id: 2,
+  },
+  { // 12
+    path: 'https://lh5.googleusercontent.com/p/AF1QipO73AFoXZES1t2679DSmnKGUSLw_C4_zZpjYE8=w426-h240-k-no',
+    source: 'google',
+    venue_id: 2,
   },
 ];
 
@@ -129,6 +184,21 @@ const venueTags: SeedVenueTag[] = [
   { tag: 'fun', source: 'google', count: 5, venue_id: 1 }, // 28
   { tag: 'liquor', source: 'google', count: 5, venue_id: 1 }, // 29
 
+  /* #2 Anna's Tags */
+  { tag: 'town', source: 'foursquare', count: 1, venue_id: 2 }, // 30
+  { tag: 'casual', source: 'foursquare', count: 1, venue_id: 2 }, // 31
+  { tag: 'neighborhood', source: 'foursquare', count: 1, venue_id: 2 }, // 32
+  { tag: 'cosy atmosphere', source: 'foursquare', count: 1, venue_id: 2 }, // 33
+  { tag: 'prices', source: 'google', count: 10, venue_id: 2 }, // 34
+  { tag: 'atmosphere', source: 'google', count: 8, venue_id: 2 }, // 35
+  { tag: 'menu', source: 'google', count: 7, venue_id: 2 }, // 36
+  { tag: 'tacos', source: 'google', count: 6, venue_id: 2 }, // 37
+  { tag: 'pool table', source: 'google', count: 5, venue_id: 2 }, // 38
+  { tag: 'balcony', source: 'google', count: 2, venue_id: 2 }, // 39
+  { tag: 'fried tofu', source: 'google', count: 2, venue_id: 2 }, // 40
+  { tag: 'pop ups', source: 'google', count: 2, venue_id: 2 }, // 41
+  { tag: 'parade', source: 'google', count: 2, venue_id: 2 }, // 42
+  { tag: 'chicken parm', source: 'google', count: 2, venue_id: 2 }, // 43
 ];
 
 const seedVenues = async () => {
