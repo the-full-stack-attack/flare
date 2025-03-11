@@ -14,6 +14,7 @@ import Venue_Image from '../db/models/venue_images';
 import Notification from '../db/models/notifications';
 import Event_Venue_Image from '../db/models/event_venue_images';
 import Event_Venue_Tag from '../db/models/event_venue_tags';
+import User_Event from '../db/models/users_events';
 
 // helper fns
 import { getVenueDogFriendly, getVenueVeganFriendly, isVenueMatch, removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
@@ -133,12 +134,6 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             send_time: oneHourBefore,
         });
 
-        // link notification to user
-        await User_Notification.create({
-            UserId: userId,
-            NotificationId: notification.id
-        });
-
         // create the actual event
         const newEvent: any = await Event.create({
             title,
@@ -147,6 +142,19 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             description,
             hour_before_notif: notification.id,
             created_by: userId,
+        });
+
+        // add user creator as an attendee
+        await User_Event.create({
+            UserId: userId,
+            EventId: newEvent.id,
+            user_attending: true
+        });
+
+        // add notification for user creator
+        await User_Notification.create({
+            UserId: userId,
+            NotificationId: notification.id
         });
 
         // connect venue to event
