@@ -222,12 +222,13 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             })))
         }
 
+        // after creating the event, check for The Host flare achievement
+        const user: any = await User.findByPk(userId);
+        await checkForFlares(user, 'The Host');
 
-
-        res.sendStatus(200);
-
-    } catch (err: any) {
-        console.error('Failed to create event:', err);
+        res.status(201).send(newEvent);
+    } catch (error) {
+        console.error('Error in POST to /api/event: ', error);
         res.sendStatus(500);
     }
 });
