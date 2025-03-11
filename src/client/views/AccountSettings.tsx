@@ -109,7 +109,7 @@ function AccountSettings() {
   // load initial avatar data when entering edit mode
   useEffect(() => {
     if (user?.id && isEditing) {
-      axios.get(`/api/signup/user/${user.id}/avatar`)
+      axios.get(`/api/settings/user/${user.id}/avatar`)
         .then(({ data }) => {
           if (data) {
             setAvatarItems({
@@ -417,7 +417,6 @@ function AccountSettings() {
             </div>
             <div className="grid grid-cols-3 gap-2">
               {isEditing ? (
-                // Show all interests in edit mode
                 interests.map((interest, index) => (
                   <Button
                     key={index}

@@ -94,20 +94,4 @@ signUpRouter.get('/interests', (req: any, res: any) => {
     });
 });
 
-// route to get user avatar data
-signUpRouter.get('/user/:id/avatar', (req: any, res: any) => {
-  User_Avatar.findOne({
-    where: {
-      UserId: req.params.id
-    }
-  })
-    .then((avatarData) => {
-      res.send(avatarData).status(200);
-    })
-    .catch((err: Error) => {
-      console.error(err, 'error getting user avatar data');
-      res.sendStatus(500);
-    });
-});
-
 export default signUpRouter;

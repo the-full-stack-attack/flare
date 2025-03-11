@@ -93,4 +93,19 @@ settingsRouter.get('/user/:userId/interests', async (req, res) => {
     }
 })
 
+// avatar route
+settingsRouter.get('/user/:userId/avatar', async (req, res) => {
+  try {
+    const avatarData = await User_Avatar.findOne({
+      where: {
+        UserId: req.params.userId
+      }
+    });
+    res.json(avatarData);
+  } catch (err) {
+    console.error('Error getting user avatar data:', err);
+    res.sendStatus(500);
+  }
+});
+
 export default settingsRouter;
