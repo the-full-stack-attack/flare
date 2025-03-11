@@ -60,6 +60,11 @@ const notifications: SeedNotification[] = [
     message: `The upcoming event you're attending, Op Spark Showcase After Party, starts soon in an hour. Hope to see you there.`,
     send_time: new Date('2025-03-14T00:00:00.000Z'), // 03.13.25 => 7:00 PM
   },
+  { // #3: Hack Night
+    title: null,
+    message: `The upcoming event you're attending, Hack Night, starts soon in an hour. Hope to see you there.`,
+    send_time: new Date('2025-03-18T23:00:00.000Z'), // 03.18.25 => 6:00 PM
+  },
 ];
 
 const events: SeedEvent[] = [
@@ -86,6 +91,18 @@ const events: SeedEvent[] = [
     created_by: 2, // John Smith
     hour_before_notif: 2,
   },
+
+  /* #3 Hack Night */
+  {
+    title: 'Hack Night',
+    start_time: new Date('2025-03-19T00:00:00.000Z'), // 03.18.25 => 7:00 PM
+    end_time: new Date('2025-03-19T02:00:00.000Z'), // 03.18.25 => 9:00 PM
+    description: `We're aggressively unstructured, meaning that Hack Night is what you want it to be. It's a social time for some, a place to work for others. It's a great place to meet other tech-minded folk.`,
+    venue_id: 3, // The Rusty Nail
+    category_id: 9, // Professional & Career
+    created_by: 3, // Susan Bellum
+    hour_before_notif: 3,
+  },
 ];
 
 const eventInterests: SeedEventInterest[] = [
@@ -97,6 +114,10 @@ const eventInterests: SeedEventInterest[] = [
   { EventId: 2, InterestId: 7 }, // Technology
   { EventId: 2, InterestId: 10 }, // Nightlife
   { EventId: 2, InterestId: 15 }, // Community Events
+
+  /* #3: Hack Night */
+  { EventId: 3, InterestId: 7 }, // Technology
+  { EventId: 3, InterestId: 15 }, // Community Events
 ];
 
 const eventVenueImages: SeedEventVenueImage[] = [
@@ -110,6 +131,10 @@ const eventVenueImages: SeedEventVenueImage[] = [
   { display_order: 1, EventId: 2, VenueImageId: 12 },
   { display_order: 2, EventId: 2, VenueImageId: 7 },
   { display_order: 3, EventId: 2, VenueImageId: 10 },
+
+  /* #3 Hack Night */
+  { display_order: 0, EventId: 3, VenueImageId: 17 },
+  { display_order: 1, EventId: 3, VenueImageId: 13 },
 ];
 
 const eventVenueTags: SeedEventVenueTag[] = [
@@ -125,6 +150,13 @@ const eventVenueTags: SeedEventVenueTag[] = [
   { display_order: 1, EventId: 2, VenueTagId: 38 }, // Pool Table
   { display_order: 2, EventId: 2, VenueTagId: 31 }, // Casual
   { display_order: 3, EventId: 2, VenueTagId: 32 }, // Neighborhood
+
+  /* #3: Hack Night */
+  { display_order: 0, EventId: 3, VenueTagId: 44 }, // Bar
+  { display_order: 1, EventId: 3, VenueTagId: 47 }, // Outdoor Seating
+  { display_order: 2, EventId: 3, VenueTagId: 49 }, // Casual
+  { display_order: 3, EventId: 3, VenueTagId: 65 }, // Disco Lemonade
+  { display_order: 4, EventId: 3, VenueTagId: 67 }, // Courtyard
 ];
 
 const chatrooms: SeedChatroom[] = [
@@ -133,6 +165,9 @@ const chatrooms: SeedChatroom[] = [
 
   /* #2 Op Spark Showcase After Party */
   { event_id: 2 },
+
+  /* #2 Hack Night */
+  { event_id: 3 },
 ];
 
 const userEvents: SeedUserEvent[] = [
@@ -142,8 +177,12 @@ const userEvents: SeedUserEvent[] = [
   { UserId: 3, EventId: 1 }, // Susan Bellum
 
   /* #2 Op Spark Showcase After Party */
-  { UserId: 1, EventId: 1 }, // Leeroy Jenkins
-  { UserId: 2, EventId: 1 }, // John Smith
+  { UserId: 1, EventId: 2 }, // Leeroy Jenkins
+  { UserId: 2, EventId: 2 }, // John Smith
+
+  /* #3 Hack Night */
+  { UserId: 1, EventId: 3 }, // Leeroy Jenkins
+  { UserId: 3, EventId: 3 }, // Susan Bellum
 ];
 
 const seedEvents = async () => {
