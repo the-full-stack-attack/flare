@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -125,8 +126,7 @@ export const NavBar = () => {
       )}
     >
       <div className="max-w-[2000px] mx-auto relative z-10">
-        <div className="flex justify-between h-16 md:h-20 px-4 md:px-6 lg:px-8">
-          {/* Mobile menu button */}
+        <div className="flex justify-between h-14 md:h-16 px-4 md:px-6 lg:px-8">
           <div className="md:hidden flex items-center">
             <motion.button
               type="button"
@@ -145,37 +145,37 @@ export const NavBar = () => {
             </motion.button>
           </div>
 
-          {/* Logo */}
           <div
             className={cn(
-              "flex items-center justify-center relative z-10",
-              "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
-              "md:static md:left-0 md:transform-none",
-              isOpen ? "hidden" : "flex"
+              "flex relative z-10",
+              "absolute left-1/2 transform -translate-x-1/2 bottom-1",
+              "md:static md:left-0 md:transform-none md:items-end"
             )}
           >
-            <Link to="/dashboard" className="flex items-center relative isolate">
+            <Link to="/dashboard" className="flex items-end">
               <div className="relative z-10">
-                <Logo size="md" animate={true} className="h-8 md:h-10 lg:h-12" />
+                <Logo
+                  size="lg"
+                  animate={true}
+                  className="h-11 md:h-12 lg:h-12"
+                />
               </div>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {navItems.map(({ title, url, icon: Icon }) => (
               <Link
                 key={title}
                 to={url}
-                className="group px-3 lg:px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-2 text-sm lg:text-base"
+                className="group px-3 lg:px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-2"
               >
                 <Icon className="text-yellow-500 group-hover:text-orange-500 transition-colors h-5 w-5 lg:h-6 lg:w-6" />
-                <span>{title}</span>
+                <span className="hidden lg:inline text-sm lg:text-base">{title}</span>
               </Link>
             ))}
           </div>
 
-          {/* Right side items */}
           <div className="flex items-center space-x-2 md:space-x-4">
             <NotificationBell count={user.Notifications?.length || 0} />
             <div className="relative">
@@ -211,28 +211,26 @@ export const NavBar = () => {
             </div>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        <motion.div
-          initial={false}
-          animate={isOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
-          className="md:hidden overflow-hidden bg-black/90 backdrop-blur-lg border-t border-white/10"
-        >
-          <div className="px-4 py-3 space-y-1">
-            {navItems.map(({ title, url, icon: Icon }) => (
-              <Link
-                key={title}
-                to={url}
-                className="block px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-3"
-                onClick={() => setIsOpen(false)}
-              >
-                <Icon className="text-yellow-500 h-5 w-5" />
-                {title}
-              </Link>
-            ))}
-          </div>
-        </motion.div>
       </div>
+      <motion.div
+        initial={false}
+        animate={isOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
+        className="md:hidden overflow-hidden bg-black/90 backdrop-blur-lg border-t border-white/10"
+      >
+        <div className="px-4 py-3 space-y-1">
+          {navItems.map(({ title, url, icon: Icon }) => (
+            <Link
+              key={title}
+              to={url}
+              className="block px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center gap-3"
+              onClick={() => setIsOpen(false)}
+            >
+              <Icon className="text-yellow-500 h-5 w-5" />
+              {title}
+            </Link>
+          ))}
+        </div>
+      </motion.div>
     </nav>
   );
 };
