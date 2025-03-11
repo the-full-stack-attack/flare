@@ -92,7 +92,7 @@ function CreateEvents() {
   const handleVenueSelect = async (venueData) => {
     console.log('handleVenueSelect called with:', venueData);
     
-    // Handle both formats: direct venue object or {venue: venue} structure
+    // handle direct venue object or {venue: venue} structure for manual creation
     const venue = venueData.venue || venueData;
     
     try {
@@ -146,7 +146,7 @@ function CreateEvents() {
     }));
   };
 
-  // form submission handling
+  // form submission handling - need to clean this up
   const onSubmit = async (e: any) => {
     e.preventDefault();
     try {
@@ -196,7 +196,7 @@ function CreateEvents() {
         selectedTags: [],
       });
       
-      // Redirect to events page after successful submission
+      // redirect to events page after successful submission
       navigate('/events');
       
     } catch (error) {
