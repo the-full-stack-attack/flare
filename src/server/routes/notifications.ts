@@ -137,4 +137,31 @@ notifsRouter.delete('/all', async (req: any, res: Response) => {
   }
 });
 
+/*
+  GET /api/notifications/unread/count
+    - Only returns the count for the number of unread notifications
+*/
+notifsRouter.get('/unread/count', (req: any, res: Response) => {
+  User_Notification.count({
+    where: {
+      UserId: req.user.id,
+      seen: false,
+      '$Notification.send_time$': { [Op.lt]: new Date(Date.now()) },
+    },
+    include: [
+      {
+        model: Notification,
+      },
+    ],
+  })
+    .then((unreadCount: number) => {
+      res.status(200);
+      res.send({ unreadCount });
+    })
+    .catch((error: unknown) => {
+      console.error('Failed to GET /unread/count', error);
+      res.sendStatus(500);
+    });
+});
+
 export default notifsRouter;
