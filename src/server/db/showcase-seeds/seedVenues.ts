@@ -83,7 +83,30 @@ const venues: SeedVenue[] = [
     is_dog_friendly: true,
     fsq_id: '60baa6407f3f8e10f8f6d6ed',
     google_place_id: 'ChIJQRCa0N2nIIYR9hetQoh1Y3Q',
-  }
+  },
+
+  /* #3 The Rusty Nail */
+  {
+    name: `The Rusty Nail`,
+    description: `Cocktails & a vast whiskey selection in an intimate hangout with a dog-friendly patio.`,
+    category: 'Bar',
+    street_address: '1100 Constance St',
+    zip_code: 70130,
+    city_name: 'New Orleans',
+    state_name: 'LA',
+    phone: '5045255515',
+    website: 'http://www.rustynailnola.com/',
+    pricing: '$10–20',
+    rating: 4,
+    total_reviews: 1114,
+    popularTime: new Date('2025-03-09T05:40:13.000Z'), // 11:40 PM
+    wheelchair_accessible: true,
+    serves_alcohol: true,
+    is_vegan_friendly: true,
+    is_dog_friendly: true,
+    fsq_id: '4ad4c04cf964a52018f320e3',
+    google_place_id: 'ChIJ7QWtuHCmIIYROyGDt2eb7-I',
+  },
 ];
 
 const venueImages: SeedVenueImage[] = [
@@ -150,6 +173,38 @@ const venueImages: SeedVenueImage[] = [
     source: 'google',
     venue_id: 2,
   },
+
+  /* #3 The Rusty Nail Images */
+  { // 13
+    path: 'https://fastly.4sqi.net/img/general/original/724553_dzPcwYLtSWJat4Rm3J1Rjn2-nP6XR2hxTL_nqxUCU1w.jpg',
+    source: 'foursquare',
+    venue_id: 3,
+  },
+  { // 14
+    path: 'https://fastly.4sqi.net/img/general/original/19394548_dV7-jTUK228N3hvWPSFPf_xWaGc4fOqI5vY2HQqMrWk.jpg',
+    source: 'foursquare',
+    venue_id: 3,
+  },
+  { // 15
+    path: 'https://fastly.4sqi.net/img/general/original/82001_GzDH6OxOULobbz0zYcFvjKyS5TXWbeVJajjHW_1awz4.jpg',
+    source: 'foursquare',
+    venue_id: 3,
+  },
+  { // 16
+    path: 'https://fastly.4sqi.net/img/general/original/27829812_6BVexQF6eUFfop0rRwHFzHnLkd7JJkwyhxb6WW6_Gik.jpg',
+    source: 'foursquare',
+    venue_id: 3,
+  },
+  { // 17
+    path: 'https://fastly.4sqi.net/img/general/original/10304766_kInl9XF1w1nTe4mQ9mfwwevlNuT33D-NsfHuCtZcFsg.jpg',
+    source: 'foursquare',
+    venue_id: 3,
+  },
+  { // 18
+    path: 'https://lh5.googleusercontent.com/p/AF1QipNf7aHbK2YCuS6m6tN80AbStRZm-KDiWBo4sT-2=w408-h306-k-no',
+    source: 'google',
+    venue_id: 3,
+  },
 ];
 
 const venueTags: SeedVenueTag[] = [
@@ -199,6 +254,38 @@ const venueTags: SeedVenueTag[] = [
   { tag: 'pop ups', source: 'google', count: 2, venue_id: 2 }, // 41
   { tag: 'parade', source: 'google', count: 2, venue_id: 2 }, // 42
   { tag: 'chicken parm', source: 'google', count: 2, venue_id: 2 }, // 43
+
+  /* #3 The Rusty Nail Tags */
+  { tag: 'bar', source: 'foursquare', count: 1, venue_id: 3 }, // 44
+  { tag: 'well', source: 'foursquare', count: 1, venue_id: 3 }, // 45
+  { tag: 'barbecue', source: 'foursquare', count: 1, venue_id: 3 }, // 46
+  { tag: 'outdoor seating', source: 'foursquare', count: 1, venue_id: 3 }, // 47
+  { tag: 'restrooms', source: 'foursquare', count: 1, venue_id: 3 }, // 48
+  { tag: 'casual', source: 'foursquare', count: 1, venue_id: 3 }, // 49
+  { tag: 'live music', source: 'foursquare', count: 1, venue_id: 3 }, // 50
+  { tag: 'great value', source: 'foursquare', count: 1, venue_id: 3 }, // 51
+  { tag: 'authentic', source: 'foursquare', count: 1, venue_id: 3 }, // 52
+  { tag: 'happy hour', source: 'foursquare', count: 10, venue_id: 3 }, // 53
+  { tag: 'discounts', source: 'foursquare', count: 1, venue_id: 3 }, // 54
+  { tag: 'lounges', source: 'foursquare', count: 1, venue_id: 3 }, // 55
+  { tag: 'nails', source: 'foursquare', count: 1, venue_id: 3 }, // 56
+  { tag: 'tvs', source: 'foursquare', count: 1, venue_id: 3 }, // 57
+  { tag: 'trendy', source: 'foursquare', count: 1, venue_id: 3 }, // 58
+  { tag: 'good for dates', source: 'foursquare', count: 1, venue_id: 3 }, // 59
+  { tag: 'football', source: 'foursquare', count: 1, venue_id: 3 }, // 60
+  { tag: 'trivia', source: 'foursquare', count: 13, venue_id: 3 }, // 61
+  { tag: 'food trucks', source: 'foursquare', count: 1, venue_id: 3 }, // 62
+  { tag: 'hangover cure', source: 'foursquare', count: 1, venue_id: 3 }, // 63
+  { tag: 'good for singles', source: 'foursquare', count: 1, venue_id: 3 }, // 64
+  { tag: 'disco lemonade', source: 'foursquare', count: 1, venue_id: 3 }, // 65
+  { tag: 'game', source: 'google', count: 31, venue_id: 3 }, // 66
+  { tag: 'courtyard', source: 'google', count: 12, venue_id: 3 }, // 67
+  { tag: 'tv', source: 'google', count: 12, venue_id: 3 }, // 68
+  { tag: 'space', source: 'google', count: 12, venue_id: 3 }, // 69
+  { tag: 'food truck', source: 'google', count: 8, venue_id: 3 }, // 70
+  { tag: 'crawfish', source: 'google', count: 7, venue_id: 3 }, // 71
+  { tag: 'saints', source: 'google', count: 7, venue_id: 3 }, // 72
+  { tag: 'liquor', source: 'google', count: 7, venue_id: 3 }, // 73
 ];
 
 const seedVenues = async () => {
