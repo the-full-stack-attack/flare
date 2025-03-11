@@ -227,8 +227,16 @@ function Chatroom() {
       </div>
       {(!isPlayingGames && (
         <div className="flex justify-center">
+           {/* Mobile version - visible on small screens */}
+              <button 
+              className="block sm:hidden px-6 py-2 bg-gradient-to-r from-cyan-500 via-grey-500 to-blue-500 text-white rounded-xl"
+              onClick={toggleGames}
+              >
+              Ice-Breaker Games
+              </button>
+              {/*big kid version*/}
           <RainbowButton
-            className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-2"
+            className="hidden sm:inline-flex bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-2"
             onClick={toggleGames}
           >
             Ice-Breaker Games
@@ -236,8 +244,13 @@ function Chatroom() {
         </div>
       )) || (
         <div className="flex justify-center">
+          <button className="block sm:hidden px-6 py-2 bg-gradient-to-r from-cyan-500 via-grey-500 to-blue-500 text-white rounded-xl"
+          onClick={toggleGames}
+          >
+              Chat-Room Lobby
+              </button>
           <RainbowButton
-            className="bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-1"
+            className="hidden sm:inline-flex bg-gradient-to-r from-cyan-500 via-grey-100 to-blue-500 text-white mt-2"
             onClick={toggleGames}
           >
             Chat-Room Lobby
