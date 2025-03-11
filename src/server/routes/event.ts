@@ -187,7 +187,7 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             for (const tag of selectedTags) {
                 let venueTagId = tag.id;
                 
-                // If this is a custom tag (no id), create it first
+                // if this is a custom tag (no id), create it first
                 if (!tag.venue_id) {
                     const newVenueTag: any = await Venue_Tag.create({
                         tag: tag.tag,
