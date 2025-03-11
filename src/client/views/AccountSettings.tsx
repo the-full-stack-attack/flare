@@ -31,7 +31,9 @@ function AccountSettings() {
 
   const phoneDisplay = formatNumber(user.phone_number);
 
-  function formatNumber(number: string): string {
+  function formatNumber(number: string | null): string {
+    if (!number) return '';
+    
     const newNumber: string[] = number.split('');
     newNumber.splice(0, 0, '(');
     newNumber.splice(4, 0, ')');
@@ -121,7 +123,7 @@ function AccountSettings() {
               <div className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent text-4xl font-bold">
                 Your Profile
               </div>
-              {!isEditing && (
+              {!isEditing ? (
                 <Button
                   onClick={() => setIsEditing(true)}
                   className="mt-6 w-3/6 p-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-bold"
@@ -129,6 +131,24 @@ function AccountSettings() {
                   <FaPencilAlt className="h-4 w-4 mr-2" />
                   Edit Profile
                 </Button>
+              ) : (
+                <div className="flex justify-center gap-4 mt-6">
+                  <Button
+                    onClick={handleSubmit}
+                    className="w-[29%] p-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-bold"
+                  >
+                    <FaSave className="h-4 w-4 mr-2" />
+                    Save Changes
+                  </Button>
+                  <Button
+                    onClick={handleCancel}
+                    variant="outline"
+                    className="w-[29%] p-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-bold"
+                  >
+                    <FaTimes className="h-4 w-4 mr-2" />
+                    Cancel
+                  </Button>
+                </div>
               )}
             </div>
 
@@ -186,19 +206,20 @@ function AccountSettings() {
             <div className="text-xl my-2 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
               Your Interests
             </div>
-            <div className="my-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+            <div className="grid grid-cols-3 gap-2">
               {interests.map((interest, index) => (
-                <Toggle
+                <Button
                   key={index}
-                  pressed={selectedInterests.includes(interest)}
-                  onPressedChange={() => isEditing && toggleInterest(interest)}
-                  variant="outline"
-                  size="lg"
+                  onClick={() => isEditing && toggleInterest(interest)}
                   disabled={!isEditing}
-                  className="h-12 w-26 text-color-4"
+                  className={`w-full ${
+                    selectedInterests.includes(interest)
+                      ? "bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50"
+                      : "bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30"
+                  }`}
                 >
                   {interest}
-                </Toggle>
+                </Button>
               ))}
             </div>
             {!isEditing && (
@@ -206,7 +227,7 @@ function AccountSettings() {
                 <div className="text-xl my-2 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
                   Your Flares
                 </div>
-                <div className="my-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4  text-left">
+                <div className="smy-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4  text-left">
                   {userFlares.map((flare, index) => {
                     return (
                       <FlareCard key={flare.id} flare={flare} index={index} />
@@ -216,26 +237,6 @@ function AccountSettings() {
               </>
             )}
           </div>
-
-          {isEditing && (
-            <div className="flex justify-center gap-4">
-              <Button
-                onClick={handleSubmit}
-                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl"
-              >
-                <FaSave className="h-4 w-4 mr-2" />
-                Save Changes
-              </Button>
-              <Button
-                onClick={handleCancel}
-                variant="outline"
-                className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 rounded-xl"
-              >
-                <FaTimes className="h-4 w-4" />
-                Cancel
-              </Button>
-            </div>
-          )}
         </div>
       </div>
     </div>

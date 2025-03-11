@@ -60,13 +60,10 @@ function UserInfoStep({ initialData, onSubmit }) {
 
   // checks for errors on this current step
   const handleContinue = () => {
-    if (!formData.userName || !formData.phone) {
+    if (!formData.userName) {
       const newErrors = [];
       if (!formData.userName) {
         newErrors.push('Username is required');
-      }
-      if (!formData.phone) {
-        newErrors.push('Phone number is required');
       }
       setErrors(newErrors);
       return;
@@ -119,16 +116,22 @@ function UserInfoStep({ initialData, onSubmit }) {
 
             <div>
               <Label htmlFor="phone" className="text-gray-200">
-                Phone Number
+                Phone Number (Optional)
               </Label>
               <Input
                 id="phone"
                 type="text"
                 value={formData.phone}
                 onChange={handlePhoneChange}
-                placeholder="Please enter your phone number"
+                placeholder="Enter your phone number"
                 className="bg-black/50 border-transparent focus:ring-2 focus:ring-orange-500/50 text-white placeholder-gray-400"
               />
+              <p className="text-sm text-gray-400 mt-1.5 flex items-start gap-1.5">
+                <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                <span>
+                  We use SMS for event notifications and updates. You can manage this in settings anytime. Message rates may apply.
+                </span>
+              </p>
             </div>
 
             <div>

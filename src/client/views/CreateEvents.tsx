@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { useState, useEffect } from 'react';
+import React, { useContext, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { Button } from '../../components/ui/button';
 import { Card } from '../../components/ui/card';
@@ -11,6 +11,8 @@ import FormStart from '../components/event-form/FormStart';
 import Review from '../components/event-form/Review';
 import { UserContext } from '@/client/contexts/UserContext';
 import { BackgroundGlow } from '../../components/ui/background-glow';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 
 type EventData = {
   title: string;
@@ -55,6 +57,11 @@ function CreateEvents() {
   const [geoLocation, setGeoLocation] = useState();
   const [nullFields, setNullFields] = useState({});
 
+  const renderCountRef = useRef(0);
+  const navigate = useNavigate();
+
+
+
   // temp geolocation call to see if this fixes bug
   const getUserLoc = () => {
     if (navigator.geolocation) {
@@ -80,8 +87,11 @@ function CreateEvents() {
   };
 
   const handleVenueSelect = async (venueData) => {
-    const { venue, nullFields } = venueData;
-    console.log('this is user');
+    // console.log('handleVenueSelect called with:', venueData);
+    
+    // handle direct venue object or {venue: venue} structure for manual creation
+    const venue = venueData.venue || venueData;
+    
     try {
       setFormInfo((prev) => ({
         ...prev,
@@ -108,7 +118,7 @@ function CreateEvents() {
         selectedImages: [],
         Venue: venue,
       }));
-      setNullFields(nullFields);
+      setNullFields(venueData.nullFields || {});
       setStep(5);
     } catch (error) {
       console.error('Error updating form with venue:', error);
@@ -133,7 +143,7 @@ function CreateEvents() {
     }));
   };
 
-  // form submission handling
+  // form submission handling - need to clean this up
   const onSubmit = async (e: any) => {
     e.preventDefault();
     try {
@@ -148,6 +158,7 @@ function CreateEvents() {
         venue: {
           id: formInfo.Venue.id,
           fsq_id: formInfo.Venue.fsq_id,
+          description: formInfo.venueDescription,
         },
         venueDescription: formInfo.venueDescription,
         streetAddress: formInfo.streetAddress,
@@ -161,6 +172,8 @@ function CreateEvents() {
       // console.log('sending venue data this is venue: ', formattedData.venue);
 
       await axios.post('/api/event', formattedData);
+      
+      // Reset form state
       setStep(1);
       setFormInfo({
         title: '',
@@ -179,6 +192,10 @@ function CreateEvents() {
         selectedImages: [],
         selectedTags: [],
       });
+      
+      // redirect to events page after successful submission
+      navigate('/events');
+      
     } catch (error) {
       console.error('Error creating event:', error);
     }
@@ -231,29 +248,33 @@ function CreateEvents() {
             </div>
 
             <div className="p-6 border-t border-orange-500/20">
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-row justify-between gap-4">
+                <Button
+                  onClick={handlePrev}
+                  disabled={step === 1}
+                  className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black hover:text-white flex items-center gap-2"
+                >
+                  <ArrowLeft size={16} />
+                  Go Back
+                </Button>
+                
                 {step === 5 ? (
                   <Button
                     onClick={onSubmit}
-                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black hover:text-white"
+                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black hover:text-white flex items-center gap-2"
                   >
                     Submit Event
+                    <Check size={16} />
                   </Button>
                 ) : (
                   <Button
                     onClick={handleNext}
-                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black hover:text-white"
+                    className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black hover:text-white flex items-center gap-2"
                   >
                     {step === 4 ? 'Review' : 'Continue'}
+                    <ArrowRight size={16} />
                   </Button>
                 )}
-                <Button
-                  onClick={handlePrev}
-                  disabled={step === 1}
-                  className="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 hover:from-yellow-600 hover:via-orange-600 hover:to-pink-600 text-black hover:text-white"
-                >
-                  Go Back
-                </Button>
               </div>
             </div>
           </div>

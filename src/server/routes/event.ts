@@ -14,6 +14,7 @@ import Venue_Image from '../db/models/venue_images';
 import Notification from '../db/models/notifications';
 import Event_Venue_Image from '../db/models/event_venue_images';
 import Event_Venue_Tag from '../db/models/event_venue_tags';
+import User_Event from '../db/models/users_events';
 
 // helper fns
 import { getVenueDogFriendly, getVenueVeganFriendly, isVenueMatch, removeDuplicateVenues, runApifyActor, getGooglePlaceId, convertFSQPrice, getVenueTags, formatState, getVenueAlcohol, getVenueRating, getPopularTime, formatPhoneNumber, getVenueAccessibility, getVenueReviewCount, getVenueImages, }
@@ -125,23 +126,12 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         }
 
         // create notification to remind user 1 hour before event
-        // const oneHourBefore = dayjs(`${startDate} ${startTime}`).subtract(1, 'hour').toDate();
-        // const notification: any = await Notification.create({
-        //     message: `The upcoming event you're attending, ${title}, starts soon at ${dayjs(`${startDate} ${startTime}`).format('h:mm A')}. Hope to see you there.`,
-        //     send_time: oneHourBefore,
-        // });
         const oneHourBefore = new Date(startDate);
         oneHourBefore.setHours(oneHourBefore.getHours() - 1);
 
         const notification: any = await Notification.create({
-            message: `The upcoming event you're attending, ${title}, starts soon at ${new Date(startDate)}. Hope to see you there.`,
+            message: `The upcoming event you're attending, ${title}, starts in an hour. Hope to see you there!`,
             send_time: oneHourBefore,
-        });
-
-        // link notification to user
-        await User_Notification.create({
-            UserId: userId,
-            NotificationId: notification.id
         });
 
         // create the actual event
@@ -154,11 +144,28 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
             created_by: userId,
         });
 
+        // add user creator as an attendee
+        await User_Event.create({
+            UserId: userId,
+            EventId: newEvent.id,
+            user_attending: true
+        });
+
+        // add notification for user creator
+        await User_Notification.create({
+            UserId: userId,
+            NotificationId: notification.id
+        });
+
         // connect venue to event
         await newEvent.setVenue(eventVenue);
 
-
-
+        // If there's a venue description and the venue exists
+        if (venue.description && eventVenue) {
+            await eventVenue.update({
+                description: venue.description
+            });
+        }
 
         // find and add the category to event
         const assignCategory: any = await Category.findOne({
@@ -186,9 +193,22 @@ eventRouter.post('/', async (req: any, res: Response): Promise<any> => {
         // create event venue tag records
         if (selectedTags?.length > 0) {
             for (const tag of selectedTags) {
+                let venueTagId = tag.id;
+                
+                // if this is a custom tag (no id), create it first
+                if (!tag.venue_id) {
+                    const newVenueTag: any = await Venue_Tag.create({
+                        tag: tag.tag,
+                        source: 'user',
+                        count: 1,
+                        venue_id: eventVenue.id
+                    });
+                    venueTagId = newVenueTag.id;
+                }
+
                 await Event_Venue_Tag.create({
                     EventId: newEvent.id,
-                    VenueTagId: tag.id,
+                    VenueTagId: venueTagId,
                     display_order: tag.display_order
                 });
             }
