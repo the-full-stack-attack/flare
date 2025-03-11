@@ -399,7 +399,6 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
                             {renderFieldNotification('interests', 'Please select at least one interest')}
                         </div>
 
-                        {/* Date field with dayjs formatted display */}
                         <div>
                             <p className="text-gray-400">Event Date:</p>
                             <div className="relative group">

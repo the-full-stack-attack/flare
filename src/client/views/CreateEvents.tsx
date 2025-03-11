@@ -60,10 +60,7 @@ function CreateEvents() {
   const renderCountRef = useRef(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    renderCountRef.current += 1;
-    console.log(`CreateEvents render count: ${renderCountRef.current}`);
-  }, []);
+
 
   // temp geolocation call to see if this fixes bug
   const getUserLoc = () => {
@@ -90,7 +87,7 @@ function CreateEvents() {
   };
 
   const handleVenueSelect = async (venueData) => {
-    console.log('handleVenueSelect called with:', venueData);
+    // console.log('handleVenueSelect called with:', venueData);
     
     // handle direct venue object or {venue: venue} structure for manual creation
     const venue = venueData.venue || venueData;
