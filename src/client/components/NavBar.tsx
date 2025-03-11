@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -28,6 +29,7 @@ export const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [unreadNotifs, setUnreadNotifs] = useState<number>(0);
 
   // Navigation items with icons
   const navItems = [
@@ -106,10 +108,23 @@ export const NavBar = () => {
     generateAndSetAvatar();
   }, [user]);
 
+  
+
   useEffect(() => {
     getUser();
+
+    const getUnreadNotificationsCount = () => {
+      axios.get('/api/notifications/unread/count')
+        .then(({ data }) => {
+          setUnreadNotifs(data.unreadCount);
+        })
+        .catch((error: unknown) => {
+          console.error('Failed to getUnreadNotificationsCount:', error);
+        });
+    };
+
     let intervalId = setInterval(() => {
-      getUser();
+      getUnreadNotificationsCount();
     }, 5000);
     return () => {
       clearInterval(intervalId);
