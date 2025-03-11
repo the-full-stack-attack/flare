@@ -60,6 +60,7 @@ function Dashboard() {
   const [showFireworks, setShowFireworks] = useState(false);
   const [completeDisabled, setCompleteDisabled] = useState(false);
   const [userFlares, setUserFlares] = useState<FlareType[]>([]);
+  const [userFlaresReverse, setUserFlaresReverse] = useState<FlareType[]>(userFlares.reverse());
   const [unearnedFlares, setUnearnedFlares] = useState<FlareType[]>([]);
   const [closestEvent, setClosestEvent] = useState<EventData | null>(
     null
@@ -67,57 +68,6 @@ function Dashboard() {
   const [latestFlare, setLatestFlare] = useState<{ name: string } | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [currFlare, setCurrFlare] = useState<null | FlareType>(null);
-
-  const stats = [
-    {
-      id: 1,
-      label: 'Total Tasks Completed',
-      value: user.total_tasks_completed?.toString() || '0',
-      icon: FaTasks,
-      color: 'from-purple-500 to-pink-500',
-    },
-    {
-      id: 2,
-      label: 'Upcoming Event',
-      value: closestEvent || 'None scheduled',
-      icon: FaCalendarCheck,
-      color: 'from-blue-500 to-cyan-500',
-    },
-    {
-      id: 3,
-      label: 'Recent Flare',
-      value: latestFlare || 'Earn more!',
-      icon: FaMedal,
-      color: 'from-yellow-500 to-orange-500',
-    },
-  ];
-
-  const achievements = [
-    {
-      icon: FaStar,
-      title: 'First Step',
-      description: 'Completed your first social task',
-      earned: (user.total_tasks_completed || 0) > 0,
-    },
-    {
-      icon: FaUsers,
-      title: 'Social Butterfly',
-      description: 'Attended 5 events',
-      earned: (user.events_attended || 0) >= 5,
-    },
-    {
-      icon: FaChartLine,
-      title: 'Weekly Warrior',
-      description: 'Completed all weekly tasks',
-      earned: (user.weekly_task_count || 0) >= 7,
-    },
-  ];
-
-  const achievementColors: Record<string, string> = {
-    FaStar: 'from-yellow-500 to-amber-500',
-    FaUsers: 'from-blue-500 to-cyan-500',
-    FaChartLine: 'from-purple-500 to-pink-500',
-  } as const;
 
   useEffect(() => {
     const { current_task_id } = user;
@@ -133,7 +83,7 @@ function Dashboard() {
     axios
       .get(`/api/flare/${id}`)
       .then(({ data }) => {
-        setUserFlares(data);
+        setUserFlares(data.reverse());
       })
       .catch((err) => {
         console.error('Error GETing user flares on AccountSettings: ', err);
@@ -330,7 +280,7 @@ function Dashboard() {
                       </Dialog>
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {userFlares.reverse().map((flare: FlareType, index) => {
+                      {userFlares.map((flare: FlareType, index) => {
                         const colorClass = 'from-yellow-500 to-orange-500'; // fallback color
                         return (
                           <motion.div
