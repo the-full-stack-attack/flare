@@ -201,7 +201,7 @@ function Dashboard() {
             {/* Weather and Events Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Weather Panel */}
-              <div>
+              <div className="h-full">
                 <Weather />
               </div>
 
@@ -209,30 +209,34 @@ function Dashboard() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="relative group transition-all duration-300 hover:transform hover:scale-[1.02] h-full"
+                className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]"
               >
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
-                <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-4 h-full flex flex-col">
-                  <div className="flex items-center gap-3 mb-4">
-                    <FaCalendarCheck className="text-2xl text-blue-500" />
-                    <h2 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                      Next Event
-                    </h2>
-                  </div>
-                  <div className="flex-1 flex items-center justify-center">
-                    {closestEvent ? (
-                      <Event
-                        event={closestEvent}
-                        getEvents={() => {}}
-                        disableBail={true}
-                      />
-                    ) : (
-                      <div className="text-center">
-                        <p className="text-gray-200 text-lg">
-                          No upcoming events scheduled
-                        </p>
-                      </div>
-                    )}
+                <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-4">
+                  <div className="flex flex-col h-full">
+                    <div className="flex items-center gap-3 mb-4">
+                      <FaCalendarCheck className="text-2xl text-blue-500" />
+                      <h2 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                        Next Event
+                      </h2>
+                    </div>
+                    <div className="flex-1 overflow-hidden"> {/* Added overflow control */}
+                      {closestEvent ? (
+                        <div className="h-full">
+                          <Event
+                            event={closestEvent}
+                            getEvents={() => {}}
+                            disableBail={true}
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          <p className="text-gray-200 text-lg">
+                            No upcoming events scheduled
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </motion.div>
