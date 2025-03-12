@@ -60,7 +60,6 @@ function Dashboard() {
   const [showFireworks, setShowFireworks] = useState(false);
   const [completeDisabled, setCompleteDisabled] = useState(false);
   const [userFlares, setUserFlares] = useState<FlareType[]>([]);
-  const [userFlaresReverse, setUserFlaresReverse] = useState<FlareType[]>(userFlares.reverse());
   const [unearnedFlares, setUnearnedFlares] = useState<FlareType[]>([]);
   const [closestEvent, setClosestEvent] = useState<EventData | null>(
     null
@@ -83,7 +82,7 @@ function Dashboard() {
     axios
       .get(`/api/flare/${id}`)
       .then(({ data }) => {
-        setUserFlares(data.reverse());
+        setUserFlares(data);
       })
       .catch((err) => {
         console.error('Error GETing user flares on AccountSettings: ', err);
