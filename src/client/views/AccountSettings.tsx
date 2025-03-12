@@ -323,26 +323,26 @@ function AccountSettings() {
               {!isEditing ? (
                 <Button
                   onClick={() => setIsEditing(true)}
-                  className="mt-6 w-3/6 p-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-bold"
+                  className="mt-6 w-full sm:w-3/6 p-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-bold text-xs sm:text-base whitespace-normal h-auto min-h-[2.5rem] py-2"
                 >
-                  <FaPencilAlt className="h-4 w-4 mr-2" />
+                  <FaPencilAlt className="h-4 w-4 mr-2 flex-shrink-0" />
                   Edit Profile
                 </Button>
               ) : (
                 <div className="flex justify-center gap-4 mt-6">
                   <Button
                     onClick={handleSubmit}
-                    className="w-[29%] p-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-bold"
+                    className="w-[45%] sm:w-[29%] p-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-bold text-xs sm:text-base whitespace-normal h-auto min-h-[2.5rem] py-2"
                   >
-                    <FaSave className="h-4 w-4 mr-2" />
+                    <FaSave className="h-4 w-4 mr-2 flex-shrink-0" />
                     Save Changes
                   </Button>
                   <Button
                     onClick={handleCancel}
                     variant="outline"
-                    className="w-[29%] p-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-bold"
+                    className="w-[45%] sm:w-[29%] p-4 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 text-white font-bold text-xs sm:text-base whitespace-normal h-auto min-h-[2.5rem] py-2"
                   >
-                    <FaTimes className="h-4 w-4 mr-2" />
+                    <FaTimes className="h-4 w-4 mr-2 flex-shrink-0" />
                     Cancel
                   </Button>
                 </div>
@@ -391,7 +391,7 @@ function AccountSettings() {
                 <div className="flex items-center gap-4">
                   <Input
                     className="text-white max-w-md flex justify-center placeholder:text-white/50 bg-white/10 backdrop-blur-lg"
-                    type="text"
+                    type="tel"
                     placeholder={user.phone_number}
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
@@ -415,13 +415,13 @@ function AccountSettings() {
             <div className="text-xl my-2 mt-8 bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent">
               Your Interests
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {isEditing ? (
                 interests.map((interest, index) => (
                   <Button
                     key={index}
                     onClick={() => toggleInterest(interest)}
-                    className={`w-full ${
+                    className={`w-full text-xs sm:text-sm whitespace-normal h-auto min-h-[2.5rem] py-2 ${
                       selectedInterests.includes(interest)
                         ? "bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50"
                         : "bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30"
@@ -434,7 +434,7 @@ function AccountSettings() {
                 selectedInterests.map((interest, index) => (
                   <Button
                     key={index}
-                    className="w-full pointer-events-none bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50"
+                    className="w-full pointer-events-none bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 text-xs sm:text-sm whitespace-normal h-auto min-h-[2.5rem] py-2"
                   >
                     {interest}
                   </Button>
@@ -448,7 +448,7 @@ function AccountSettings() {
             {isEditing ? (
               <div className="flex flex-col space-y-4 mb-12">
                 <div className="flex justify-center">
-                  <div className="relative w-32 h-32">
+                  <div className="relative w-24 h-24 sm:w-32 sm:h-32">
                     <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,theme(colors.orange.500/0.2)_0%,theme(colors.pink.500/0.1)_50%,transparent_100%)]" />
                     <img
                       src={avatarUri}
@@ -469,7 +469,7 @@ function AccountSettings() {
                     }
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2">
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
                       {avatarOptions.skinColor.map((color) => (
                         <button
                           key={color}
@@ -482,7 +482,7 @@ function AccountSettings() {
                               : 'ring-1 ring-orange-500/30'
                           } hover:ring-orange-500/60`}
                         >
-                          <img src={previewUris.skin[color]} className="w-16 h-16" />
+                          <img src={previewUris.skin[color]} className="w-12 h-12 sm:w-16 sm:h-16" />
                         </button>
                       ))}
                     </div>
@@ -501,7 +501,7 @@ function AccountSettings() {
                     }
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2">
-                    <div className="grid grid-cols-5 gap-2">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
                       {avatarOptions.hair.map((style) => (
                         <button
                           key={style}
@@ -514,7 +514,7 @@ function AccountSettings() {
                               : 'ring-1 ring-orange-500/30'
                           } hover:ring-orange-500/60`}
                         >
-                          <img src={previewUris.hair[style]} className="w-16 h-16" />
+                          <img src={previewUris.hair[style]} className="w-12 h-12 sm:w-16 sm:h-16" />
                         </button>
                       ))}
                     </div>
@@ -533,7 +533,7 @@ function AccountSettings() {
                     }
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2">
-                    <div className="grid grid-cols-5 gap-2">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
                       {avatarOptions.hairColor.map((color) => (
                         <button
                           key={color}
@@ -546,7 +546,7 @@ function AccountSettings() {
                               : 'ring-1 ring-orange-500/30'
                           } hover:ring-orange-500/60`}
                         >
-                          <img src={previewUris.hairColor[color]} className="w-16 h-16" />
+                          <img src={previewUris.hairColor[color]} className="w-12 h-12 sm:w-16 sm:h-16" />
                         </button>
                       ))}
                     </div>
@@ -565,7 +565,7 @@ function AccountSettings() {
                     }
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2">
-                    <div className="grid grid-cols-5 gap-2">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
                       {avatarOptions.eyebrows.map((style) => (
                         <button
                           key={style}
@@ -578,7 +578,7 @@ function AccountSettings() {
                               : 'ring-1 ring-orange-500/30'
                           } hover:ring-orange-500/60`}
                         >
-                          <img src={previewUris.eyebrows[style]} className="w-16 h-16" />
+                          <img src={previewUris.eyebrows[style]} className="w-12 h-12 sm:w-16 sm:h-16" />
                         </button>
                       ))}
                     </div>
@@ -597,7 +597,7 @@ function AccountSettings() {
                     }
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2">
-                    <div className="grid grid-cols-5 gap-2">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
                       {avatarOptions.eyes.map((style) => (
                         <button
                           key={style}
@@ -610,7 +610,7 @@ function AccountSettings() {
                               : 'ring-1 ring-orange-500/30'
                           } hover:ring-orange-500/60`}
                         >
-                          <img src={previewUris.eyes[style]} className="w-16 h-16" />
+                          <img src={previewUris.eyes[style]} className="w-12 h-12 sm:w-16 sm:h-16" />
                         </button>
                       ))}
                     </div>
@@ -629,7 +629,7 @@ function AccountSettings() {
                     }
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2">
-                    <div className="grid grid-cols-5 gap-2">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
                       {avatarOptions.mouth.map((style) => (
                         <button
                           key={style}
@@ -642,7 +642,7 @@ function AccountSettings() {
                               : 'ring-1 ring-orange-500/30'
                           } hover:ring-orange-500/60`}
                         >
-                          <img src={previewUris.mouth[style]} className="w-16 h-16" />
+                          <img src={previewUris.mouth[style]} className="w-12 h-12 sm:w-16 sm:h-16" />
                         </button>
                       ))}
                     </div>
