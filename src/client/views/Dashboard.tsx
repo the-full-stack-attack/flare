@@ -197,170 +197,174 @@ function Dashboard() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            {/* Weather Panel */}
-            <div className="lg:col-span-1">
-              <Weather />
-            </div>
+          <div className="flex flex-col gap-8 mb-12">
+            {/* Weather and Events Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Weather Panel */}
+              <div>
+                <Weather />
+              </div>
 
-            {/* Events & Task Section */}
-            <div className="lg:col-span-2 space-y-8">
               {/* Upcoming Event */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-6 rounded-xl bg-black/30 backdrop-blur-lg border border-white/10"
+                className="relative group transition-all duration-300 hover:transform hover:scale-[1.02] h-full"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <FaCalendarCheck className="text-2xl text-blue-500" />
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                    Next Event
-                  </h2>
-                </div>
-                {
-                  closestEvent ? (
-                    <Event
-                      event={closestEvent}
-                      getEvents={() => {}}
-                      disableBail={true}
-                    />
-                  ) : (
-                    <p className="text-gray-200 text-lg">
-                      No upcoming events scheduled
-                    </p>
-                  )
-                }
-              </motion.div>
-
-              {/* Task Display */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mb-12"
-              >
-                <TaskDisplay
-                  task={task}
-                  completeDisabled={completeDisabled}
-                  setShowConfetti={setShowConfetti}
-                  setShowFireworks={setShowFireworks}
-                  setCompleteDisabled={setCompleteDisabled}
-                />
-              </motion.div>
-
-              {/* Flares */}
-              <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
-                <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 sm:max-h-[460px] md:max-h-[430px] lg:max-h-[343px] overflow-auto">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
-
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <FaTrophy className="text-2xl bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent" />
-                        <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
-                          Your Flares
-                        </h3>
+                <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-4 h-full flex flex-col">
+                  <div className="flex items-center gap-3 mb-4">
+                    <FaCalendarCheck className="text-2xl text-blue-500" />
+                    <h2 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                      Next Event
+                    </h2>
+                  </div>
+                  <div className="flex-1 flex items-center justify-center">
+                    {closestEvent ? (
+                      <Event
+                        event={closestEvent}
+                        getEvents={() => {}}
+                        disableBail={true}
+                      />
+                    ) : (
+                      <div className="text-center">
+                        <p className="text-gray-200 text-lg">
+                          No upcoming events scheduled
+                        </p>
                       </div>
-                    </div>
-                    {currFlare && (
-                      <Dialog open={isOpen} onOpenChange={handleDialogClose}>
-                        <DialogContent>
-                          <DialogTitle>{currFlare.name}</DialogTitle>
-                          <div className="flex items-start space-x-4">
-                            <img
-                              className="rounded-full w-24 h-24 object-cover"
-                              src={currFlare.icon}
-                            />
-                            <DialogDescription className="flex-grow">
-                              {currFlare.card_message}
-                            </DialogDescription>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
                     )}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {userFlares.map((flare: FlareType, index) => {
-                        const colorClass = 'from-yellow-500 to-orange-500'; // fallback color
-                        return (
-                          <motion.div
-                            key={index}
-                            onClick={() => { handleFlareClick(flare) }}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300 hover:cursor-pointer"
-                          >
-                            <div className="flex items-center gap-4">
-                              <img
-                                className="rounded-full sm:w-1/6 md:w-1/4 lg:w-1/3 !important"
-                                src={flare.icon}
-                              />
-                              <div className="flex-col">
-                                <p
-                                  className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
-                                >
-                                  {flare.name}
-                                </p>
-                                <p className="text-white/60 text-sm">
-                                  {flare.description}
-                                </p>
-                              </div>
-                            </div>
-                          </motion.div>
-                        );
-                      })}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Task Display */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <TaskDisplay
+                task={task}
+                completeDisabled={completeDisabled}
+                setShowConfetti={setShowConfetti}
+                setShowFireworks={setShowFireworks}
+                setCompleteDisabled={setCompleteDisabled}
+              />
+            </motion.div>
+
+            {/* Flares */}
+            <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
+              <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 lg:max-h-[343px] overflow-auto">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <FaTrophy className="text-2xl bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent" />
+                      <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
+                        Your Flares
+                      </h3>
                     </div>
+                  </div>
+                  {currFlare && (
+                    <Dialog open={isOpen} onOpenChange={handleDialogClose}>
+                      <DialogContent>
+                        <DialogTitle>{currFlare.name}</DialogTitle>
+                        <div className="flex items-start space-x-4">
+                          <img
+                            className="rounded-full w-24 h-24 object-cover"
+                            src={currFlare.icon}
+                          />
+                          <DialogDescription className="flex-grow">
+                            {currFlare.card_message}
+                          </DialogDescription>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  )}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    {userFlares.map((flare: FlareType, index) => {
+                      const colorClass = 'from-yellow-500 to-orange-500'; // fallback color
+                      return (
+                        <motion.div
+                          key={index}
+                          onClick={() => { handleFlareClick(flare) }}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300 hover:cursor-pointer"
+                        >
+                          <div className="flex items-center gap-4">
+                            <img
+                              className="rounded-full w-12 h-12 object-cover" // Fixed size regardless of breakpoint
+                              src={flare.icon}
+                            />
+                            <div className="flex-col">
+                              <p
+                                className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
+                              >
+                                {flare.name}
+                              </p>
+                              <p className="text-white/60 text-sm">
+                                {flare.description}
+                              </p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Unearned Flares */}
-              <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
-                <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 sm:max-h-[460px] md:max-h-[430px] lg:max-h-[343px] overflow-auto">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
+            {/* Unearned Flares */}
+            <div className="relative group transition-all duration-300 hover:transform hover:scale-[1.02]">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.07] to-white/[0.03] blur" />
+              <div className="relative rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-xl p-6 lg:max-h-[343px] overflow-auto">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
 
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <FaTrophy className="text-2xl bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent" />
-                        <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
-                          Unearned Flares
-                        </h3>
-                      </div>
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <FaTrophy className="text-2xl bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent" />
+                      <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
+                        Unearned Flares
+                      </h3>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {unearnedFlares.map((flare: FlareType, index) => {
-                        const colorClass = 'from-yellow-500 to-orange-500'; // fallback color
-                        return (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300"
-                          >
-                            <div className="flex items-center gap-4">
-                              <img
-                                className="rounded-full blur sm:w-1/6 md:w-1/4 lg:w-1/3"
-                                src={flare.icon}
-                              />
-                              <div className="flex-col">
-                                <p
-                                  className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
-                                >
-                                  {flare.name}
-                                </p>
-                                <p className="text-white/60 text-sm">
-                                  {flare.description}
-                                </p>
-                              </div>
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    {unearnedFlares.map((flare: FlareType, index) => {
+                      const colorClass = 'from-yellow-500 to-orange-500'; // fallback color
+                      return (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300"
+                        >
+                          <div className="flex items-center gap-4">
+                            <img
+                              className="rounded-full w-12 h-12 object-cover blur" // Same fixed size with blur effect
+                              src={flare.icon}
+                            />
+                            <div className="flex-col">
+                              <p
+                                className={`font-medium bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}
+                              >
+                                {flare.name}
+                              </p>
+                              <p className="text-white/60 text-sm">
+                                {flare.description}
+                              </p>
                             </div>
-                          </motion.div>
-                        );
-                      })}
-                    </div>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
