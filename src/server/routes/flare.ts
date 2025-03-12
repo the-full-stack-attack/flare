@@ -21,7 +21,7 @@ flareRouter.get('/:id', async (req: any, res: Response) => {
       const imageUrl: string = await getImageUrl(imageKey);
       flare.dataValues.icon = imageUrl;
       }
-    res.status(200).send(flares);
+    res.status(200).send(flares.reverse());
   } catch (err) {
     console.error('Error in GET to /api/flare/:id: ', err);
     res.sendStatus(500);
