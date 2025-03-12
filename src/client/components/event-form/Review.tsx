@@ -254,7 +254,8 @@ function Review({formInfo, nullFields, handleFieldChange, setFormInfo}) {
             </div>
 
             <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-                <div className="backdrop-blur-lg bg-black/30 rounded-xl border border-orange-500/20 p-4 sm:p-6">
+                <div className="relative backdrop-blur-lg rounded-xl border border-orange-500/20 p-4 sm:p-6">
+                    <div className="absolute inset-0 bg-black/80 rounded-xl -z-10"></div>
                     <h3 className="text-lg font-semibold bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent mb-4">
                         Event Information
                     </h3>
