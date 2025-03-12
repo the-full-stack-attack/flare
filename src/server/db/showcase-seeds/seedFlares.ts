@@ -29,18 +29,10 @@ type FlareType = {
   milestone: number | null;
   description: string;
   notification_message: string;
+  card_message: string;
 };
 type FlareArr = any[];
-type UploadParams = {
-  Bucket: string;
-  Key: string;
-  Body: ReadStream;
-  ACL?: 'public-read';
-  ContentType: string;
-};
-// Function to create flare achievements and input them into the database
 
-// Use a class to build flares and pass in arrays?
 class Flare {
   name: string;
   type: string | '';
@@ -50,9 +42,10 @@ class Flare {
   milestone: number;
   description: string;
   notification_message: string;
+  card_message: string;
   constructor(flareInfo: any[]) {
     // Destructure the array
-    const [name, type, icon, achievement, value, milestone, description, notification_message] =
+    const [name, type, icon, achievement, value, milestone, description, notification_message, card_message] =
       flareInfo;
     this.name = name;
     this.type = type;
@@ -62,6 +55,7 @@ class Flare {
     this.milestone = milestone;
     this.description = description;
     this.notification_message = notification_message;
+    this.card_message = card_message;
   }
 }
 /* PLAN
@@ -83,6 +77,7 @@ const butterFlareEffect: FlareArr = [
   null,
   'Signup for Flare',
   'You\'ve earned the Butterflare Effect Flare for signing up for Flare! Flares are achievements you unlock by hitting milestones on the Flare app! The Butterflare Effect is represented by the Phoenix, symbolizing the transformative power of new beginnings and the potential for amazing growth!',
+  'You earned the ButterFlare Effect Flare for signing up for Flare! This flare is represented by the Phoenix, symbolizing the transformative power of new beginnings and the potential for amazing growth!',
 ];
 const goGetter: FlareArr = [
   'Go Getter',
@@ -93,6 +88,7 @@ const goGetter: FlareArr = [
   null,
   'Complete your first task',
   'You\'ve earned the Go Getter Flare for completing your first task! This Flare is represented by the Horse, a symbol of your proactive spirit and the exciting journey you\'ve just begun!',
+  'You earned the Go Getter Flare for completing your first task! This Flare is represented by the Horse, a symbol of your proactive spirit and the exciting journey you\'ve just begun!',
 ];
 const theHost: FlareArr = [
   'The Host',
@@ -103,6 +99,7 @@ const theHost: FlareArr = [
   null,
   'Create an event',
   'You\'ve earned The Host Flare for creating your first event! This Flare is represented by the Wolf, a symbol of your ability to bring people together and lead the pack!',
+  'You earned The Host Flare for creating your first event! This Flare is represented by the Wolf, a symbol of your ability to bring people together and lead the pack!',
 ];
 const storedThoughts: FlareArr = [
   'Stored Thoughts(x3)',
@@ -113,6 +110,7 @@ const storedThoughts: FlareArr = [
   null,
   'Save 3 AI conversations',
   'You\'ve earned the Stored Thoughts (x3) Flare for saving 3 conversations with the AI social coach! This Flare is represented by three Owls, symbolizing the wisdom and insight you\'re gaining through mindful reflection and therapeutic conversations!',
+  'You earned the Stored Thoughts (x3) Flare for saving 3 conversations with the AI social coach! This Flare is represented by three Owls, symbolizing the wisdom and insight you\'re gaining through mindful reflection and therapeutic conversations!',
 ];
 const theSpark: FlareArr = [
   'The Spark',
@@ -123,6 +121,7 @@ const theSpark: FlareArr = [
   null,
   'Attend your first event',
   'You\'ve earned The Spark Flare for attending your first event with Flare! This Flare is represented by a Burning Fire, a reminder that even the smallest spark of connection and inspiration can ignite something truly amazing!',
+  'You earned The Spark Flare for attending your first event with Flare! This Flare is represented by a Burning Fire, a reminder that even the smallest spark of connection and inspiration can ignite something truly amazing!',
 ];
 const multiTasker: FlareArr = [
   'Multitasker',
@@ -133,6 +132,7 @@ const multiTasker: FlareArr = [
   5,
   'Complete 5 tasks',
   'You\'ve earned the Multitasker Flare for successfully completing 5 tasks! This Flare is represented by the Falcon, a symbol of your exceptional focus, unwavering determination, and the efficient way you soar through multiple challenges with precision!',
+  'You earned the Multitasker Flare for successfully completing 5 tasks! This Flare is represented by the Falcon, a symbol of your exceptional focus, unwavering determination, and the efficient way you soar through multiple challenges with precision!',
 ];
 const socialDynamo: FlareArr = [
   'Social Dynamo',
@@ -143,6 +143,7 @@ const socialDynamo: FlareArr = [
   5,
   'Attend 5 events',
   'You\'ve earned the Social Dynamo Flare for attending 5 events! This Flare is represented by the Fox, a symbol of your charismatic presence, quick wit, and the vibrant connections you forge within the social landscape.',
+  'You earned the Social Dynamo Flare for attending 5 events! This Flare is represented by the Fox, a symbol of your charismatic presence, quick wit, and the vibrant connections you forge within the social landscape.',
 ];
 const venueVirtuoso: FlareArr = [
   'Venue Virtuoso',
@@ -152,7 +153,7 @@ const venueVirtuoso: FlareArr = [
   0,
   null,
   'Input venue data',
-  'You\'ve earned the Venue Virtuoso Flare for updating venue information! This Flare is represented by the Stag, symbolizing your guiding presence and skillful management in crafting the perfect event experience!',
+  'You earned the Venue Virtuoso Flare for updating venue information! This Flare is represented by the Stag, symbolizing your guiding presence and skillful management in crafting the perfect event experience!',
 ];
 
 flareArrays.push(

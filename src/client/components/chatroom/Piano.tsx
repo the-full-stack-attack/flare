@@ -53,6 +53,9 @@ const Keyboard = React.memo(() => {
     if (audio) {
       audio.currentTime = 0; // Restart the sound
       audio.play();
+      if(audio) {
+        audio.volume = 0.3
+     }
       setActiveKey(key);
   
       // Ensure timeout is cleared before setting a new one

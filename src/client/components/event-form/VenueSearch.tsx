@@ -22,6 +22,14 @@ function VenueSearch({ handleVenueSelect }) {
         state_name: '',
         zip_code: ''
     });
+    const [loadingMessage, setLoadingMessage] = useState(0);
+    
+    const loadingMessages = [
+        "Checking the venue's vibe rating...",
+        "Making sure it's flare-worthy...",
+        "Calculating the fun factor...",
+        "Measuring the memory potential..."
+    ];
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -39,6 +47,17 @@ function VenueSearch({ handleVenueSelect }) {
         setFilteredVenues([]);
         setIsLoadingVenue(false);
     }, []);
+
+    // change loading message every 5 seconds
+    useEffect(() => {
+        if (isLoadingVenue) {
+            const interval = setInterval(() => {
+                setLoadingMessage((prev) => (prev + 1) % loadingMessages.length);
+            }, 5000); 
+
+            return () => clearInterval(interval);
+        }
+    }, [isLoadingVenue]);
 
     const handleVenueSearch = async (searchTerm) => {
         try {
@@ -61,19 +80,45 @@ function VenueSearch({ handleVenueSelect }) {
     };
 
     const onVenueSelect = async (venue) => {
+        console.log('onVenueSelect called with venue:', venue);
+        console.log('venue type:', typeof venue);
+        
+        if (!venue) {
+            console.error('venue object is undefined');
+            return;
+        }
+        
         setIsLoadingVenue(true);
+        
         try {
-            // request venue details from foursquare api
-            const response = await axios.get(`/api/event/venue/${venue.fsq_id}`);
-            // pass to CreateEvents
-            await handleVenueSelect(response.data);
+            // console.log('venue.id:', venue.id);
+            // console.log('venue.fsq_id:', venue.fsq_id);
+            
+            if (venue.id) {
+                // console.log('Using venue from database with id:', venue.id);
+                await handleVenueSelect(venue);
+            } 
+            else if (venue.fsq_id) {
+                // console.log('Fetching venue details for fsq_id:', venue.fsq_id);
+                try {
+                    const response = await axios.get(`/api/event/venue/${venue.fsq_id}`);
+                    // console.log('API response:', response.data);
+                    await handleVenueSelect(response.data);
+                } catch (error) {
+                    console.error('error fetching venue details:', error);
+                    // console.log('Falling back to original venue data');
+                    await handleVenueSelect(venue);
+                }
+            } 
+            else {
+                // console.log('Using fallback case for venue with no id or fsq_id');
+                await handleVenueSelect(venue);
+            }
         } catch (error) {
-            console.error('Error fetching venue details:', error);
+            console.error('error in onVenueSelect:', error);
         } finally {
             setIsLoadingVenue(false);
         }
-        setVenueSearch('');
-        setFilteredVenues([]);
     };
 
     const handleCreateVenue = async () => {
@@ -167,10 +212,10 @@ function VenueSearch({ handleVenueSelect }) {
                                         </div>
                                         <div className="relative z-10 h-full flex flex-col items-center justify-center">
                                             <h3 className="text-lg font-medium text-white">
-                                                Gathering Venue Data
-                                            </h3>
-                                            <p className="text-sm text-gray-300 mt-2">
                                                 Just a moment...
+                                            </h3>
+                                            <p className="text-sm text-gray-300 mt-2 text-center px-4">
+                                                {loadingMessages[loadingMessage]}
                                             </p>
                                         </div>
                                     </Card>
