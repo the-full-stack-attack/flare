@@ -81,7 +81,7 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
   const [color, setColor] = useState<string>('#ffffff');
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
   const appRef = useRef(null);
-
+  const [bGMusic, setBGMusic] = useState(true);
   const [sizeFactor, setSizeFactor] = useState<number>(1);
   const style = new TextStyle({
     align: 'left',
@@ -149,6 +149,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
       audio
         .play()
         .catch((error) => console.error('Failed to play sound:', error));
+        if(audio) {
+          audio.volume = 0.3
+       }
     }
     const showAnswersHandler = (answers: any) => {
       if(!isMounted) return;
@@ -157,6 +160,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
       audio
         .play()
         .catch((error) => console.error('Failed to play sound:', error));
+        if(audio) {
+          audio.volume = 0.3
+       }
       setAnswersReceived(true);
       setPlayerAnswers(answers);
     }
@@ -168,6 +174,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
       audio
         .play()
         .catch((error) => console.error('Failed to play sound:', error));
+        if(audio) {
+          audio.volume = 0.3
+       }
       if (winner[0] === '') {
         winner[0] = 'No Winner :c';
         winner[1] = '';
@@ -194,6 +203,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
         audio
           .play()
           .catch((error) => console.error('Failed to play sound:', error));
+          if(audio) {
+            audio.volume = 0.3
+         }
         setColor('#cf060a');
       }
       setTimer(time.toString());
@@ -245,6 +257,9 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     audio
       .play()
       .catch((error) => console.error('Failed to play sound:', error));
+    if(audio) {
+       audio.volume = 0.3
+    }
     socket.emit('FlamiliarMessage', {
       message: message,
       eventId: eventId,
@@ -256,10 +271,12 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     if (e === user.username) {
       let audio = new Audio(laugh);
       audio.play();
+      audio.volume = 0.3
     } else {
       if(!hasVoted){
       let audio = new Audio(menuselect);
       audio.play();
+      audio.volume = 0.3
       socket.emit('vote', e);
       setHasVoted(true);
       }
@@ -271,11 +288,17 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
     if (sizeFactor === 1) {
       setSizeFactor(1.3);
       audio.play();
+      audio.volume = 0.3
     } else {
       setSizeFactor(1);
       audio.play();
+      audio.volume = 0.3;
     }
   };
+
+  const toggleMusic = () => {
+    setBGMusic(!bGMusic);
+  }
 
   return (
     <div>
@@ -286,11 +309,13 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
         <div className="flex justify-center ">
           {' '}
           <Button
-            className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700 mt-2"
+            className="bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700 mt-2 ml-2"
             onClick={quitFlamiliar}
           >
             QUIT
           </Button>{' '}
+          <Button  className={`${bGMusic === true ? 'bg-gradient-to-r from-red-500 via-orange-500 to-pink-500 text-grey-700' : 'bg-gradient-to-r from-red-500 via-red-800 to-red-500 text-grey-700' } mt-2 ml-2`}
+          onClick={toggleMusic}>{'MUSIC'}</Button>
         </div>
       )}
       {!quit && (
@@ -386,7 +411,7 @@ function Flamiliar({toggleFlamiliar, socket}: FlamiliarPropTypes ) {
                       )}
                     </pixiContainer>
                   </Application>
-                  <BackgroundMusic />
+                  { bGMusic && <BackgroundMusic /> }
                 </div>
               )}
             </div>

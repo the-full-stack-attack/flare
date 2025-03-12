@@ -168,7 +168,7 @@ const MacroRecorder = () => {
       audio
         .play()
         .catch((error) => console.error('Failed to play sound:', error));
-
+      audio.volume = 0.3;
       return audio;
     }
 
@@ -320,11 +320,16 @@ const MacroRecorder = () => {
     <div>
       {!showRecs ? (
         <div className="grid grid-cols-3 justify-center p-3">
-          <RainbowButton className={''}onClick={toggleDJ}>QUIT GAME</RainbowButton>
-          <RainbowButton className='col-span-1 ml-4' onClick={toggleShowRecs}>
+          <button className='block bg-black text-white sm:hidden'onClick={toggleDJ}>QUIT GAME</button>
+          <button className='col-span-1 ml-4 bg-black text-white sm:hidden' onClick={toggleShowRecs}>
+            Submitted Mixes
+          </button>
+          <button className={' ml-4 bg-black text-white sm:hidden'}onClick={toggleColor}>Change Colors</button>
+          <RainbowButton className='hidden sm:inline-block'onClick={toggleDJ}>QUIT GAME</RainbowButton>
+          <RainbowButton className='hidden sm:inline-block col-span-1 ml-4' onClick={toggleShowRecs}>
             Submitted Mixes
           </RainbowButton>
-          <RainbowButton className={'ml-4'}onClick={toggleColor}>Change Colors</RainbowButton>
+          <RainbowButton className={'hidden sm:inline-block ml-4'}onClick={toggleColor}>Change Colors</RainbowButton>
         </div>
       ) : (
         <Card className="max-h-[200px] w-full overflow-hidden border border-gray-300 shadow-lg bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border-orange-800 mt-2 mb-2">
@@ -424,11 +429,12 @@ const MacroRecorder = () => {
                   </Card>
                 )}
               </div>
-              <RainbowButton className="text-gray-200" onClick={submitMix}>
+              
+              <Button className="bg-gradient-to-r from-red-600 via-red-400 to-red-600 border-orange-600 text-gray-950" onClick={submitMix}>
                 {' '}
-                SUBMIT!{' '}
-              </RainbowButton>
-
+                Submit{' '}
+              </Button>
+              
               <Button
                 className="bg-gradient-to-r from-gray-950 via-gray-700 to-gray-900 border-orange-700 text-gray-200"
                 onClick={clearRecordings}

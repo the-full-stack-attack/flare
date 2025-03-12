@@ -14,8 +14,8 @@ signUpRouter.post('/', (req: any, res: any) => {
     {
       username: userName,
       full_name: full_Name,
-      phone_number: phone,
-        avatar_uri: avatarUri,
+      phone_number: phone || null,
+      avatar_uri: avatarUri,
     },
     {
       where: {
@@ -28,7 +28,7 @@ signUpRouter.post('/', (req: any, res: any) => {
         where: { google_id: req.user.google_id },
       })
       .then(async (newUser) => {
-          console.log(newUser?.dataValues.id, 'a number hopefully');
+          // console.log(newUser?.dataValues.id, 'a number hopefully');
           // Initialize a variable to hold the interest that
           // matches the users selected interest at each index
           for (let i = 0; i < selectedInterests.length; i++) {
