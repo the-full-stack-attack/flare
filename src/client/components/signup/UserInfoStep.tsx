@@ -120,7 +120,7 @@ function UserInfoStep({ initialData, onSubmit }) {
               </Label>
               <Input
                 id="phone"
-                type="text"
+                type="tel"
                 value={formData.phone}
                 onChange={handlePhoneChange}
                 placeholder="Enter your phone number"

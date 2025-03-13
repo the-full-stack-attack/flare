@@ -63,7 +63,7 @@ function InterestsStep({ initialData, onSubmit, onBack }) {
                   key={`interest-${index}`}
                   onClick={() => addToSelectedInterests(interest)}
                   type="button"
-                  className="w-full bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30"
+                  className="w-full bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-pink-500/20 border border-orange-500/30 hover:from-yellow-500/30 hover:via-orange-500/30 hover:to-pink-500/30 text-xs sm:text-sm whitespace-normal h-auto min-h-[2.5rem] py-2"
                 >
                   {interest}
                 </Button>
@@ -82,7 +82,7 @@ function InterestsStep({ initialData, onSubmit, onBack }) {
                   name="selectedInterest"
                   onClick={() => removeSelectedInterests(interest)}
                   type="button"
-                  className="w-full bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50"
+                  className="w-full bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-pink-500/40 border border-orange-500/50 hover:from-yellow-500/50 hover:via-orange-500/50 hover:to-pink-500/50 text-xs sm:text-sm whitespace-normal h-auto min-h-[2.5rem] py-2"
                 >
                   {interest}
                 </Button>
